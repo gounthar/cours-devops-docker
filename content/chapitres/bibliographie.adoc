@@ -1,0 +1,39 @@
+[{invert}]
+= Bibliographie
+
+== Ligne de commande
+
+* https://tldp.org
+* https://en.wikipedia.org/wiki/POSIX
+* https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop
+* https://linuxhandbook.com/linux-directory-structure/
+
+== Git / VCS
+
+* https://docs.github.com
+* https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control
+* http://martinfowler.com/bliki/VersionControlTools.html
+* http://martinfowler.com/bliki/FeatureBranch.html
+* https://about.gitlab.com/2014/09/29/gitlab-flow/
+* https://www.atlassian.com/git/tutorials/comparing-workflows
+* http://nvie.com/posts/a-successful-git-branching-model/
+
+== Intégration Continue
+
+* http://martinfowler.com/articles/continuousIntegration.html
+* http://martinfowler.com/bliki/ContinuousDelivery.html
+* https://jaxenter.com/implementing-continuous-delivery-117916.html
+* https://technologyconversations.com/2014/04/29/continuous-delivery-introduction-to-concepts-and-tools/
+* http://blog.arungupta.me/continuous-integration-delivery-deployment-maturity-model
+* http://blog.crisp.se/2013/02/05/yassalsundman/continuous-delivery-vs-continuous-deployment
+
+== Docker
+
+* https://gounthar.github.io/cours/cnam-docker-2018
+* https://kodekloud.com/blog/docker-for-beginners/
+* https://www.slideshare.net/dotCloud/why-docker
+* https://docs.docker.com/engine/reference/builder/
+* https://www.r-bloggers.com/2021/05/best-practices-for-r-with-docker/
+* https://github.com/wagoodman/dive
+* https://docs.docker.com/engine/tutorials/networkingcontainers/
+* https://towardsdatascience.com/docker-networking-919461b7f498

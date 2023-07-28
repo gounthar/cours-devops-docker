@@ -1,0 +1,26 @@
+services:
+  serve: &slides-base
+    build:
+      context: ./
+      cache_from:
+        - ${IMAGE_CACHE_NAME:-slides-builder}
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+    image: ${IMAGE_CACHE_NAME:-slides-builder}
+    environment:
+      - PRESENTATION_URL=${PRESENTATION_URL}
+      - REPOSITORY_URL=${REPOSITORY_URL}
+    user: ${CURRENT_UID}
+    volumes:
+      - ./content:/app/content
+      - ./dist:/app/dist
+      - ./assets:/app/assets
+      - ./gulp/gulpfile.js:/app/gulpfile.js
+      - ./gulp/tasks:/app/tasks
+      - ./npm-packages:/app/npm-packages
+    ports:
+      - "8000:8000"
+
+  build:
+    <<: *slides-base
+    command: "build"
