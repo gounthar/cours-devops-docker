@@ -1,0 +1,7 @@
+---
+upgrade: true
+reject:
+  ## As we are using (asciidoctor-)revealJS 4.x,
+  ## we must stay keep reveal.js-menu in 1.X (as the 2.x only works with revealJS 5.x line)
+  - "reveal.js-menu"
+...

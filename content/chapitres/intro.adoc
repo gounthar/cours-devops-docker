@@ -1,0 +1,29 @@
+[{invert}]
+= Introduction
+
+== Introduction - suite
+
+image::trollface.png[width=50]
+
+== 🎓 Exercice : Environnement préfabriqué simple
+
+* *But* : exécuter la commande `cat README.md | cowsay` dans le workflow avec un environnement le plus proche possible du développement
+** En utilisant le même environnement que GitPod (*même version de Ubuntu* et de `cowsay`)
+
+* 👷🏽‍♀️ C'est à vous de mettre à jour le workflow pour exécuter les étapes dans la même image Docker que GitPod :
+** 💡 link:{gitpod_github_repo_url}/tree/main/.gitpod.yml#L5[Image utilisée dans GitPod,window="_blank"]
+** 💡 link:https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idcontainer[Utilisation d'un container comme runner GitHub Actions,window="_blank"]
+** 💡 link:https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#docker-container-filesystem[Contraintes d'exécution de container dans GitHub Actions (`--user=root`),window="_blank"]
+
+== ✅ Solution : Environnement préfabriqué simple
+
+[source,yaml]
+----
+include::../code-samples/gh-actions/ci-docker-image.yml[tags="common,container,checkout,run-cowsay"]
+----
+
+== !
+
+* Quel est l'impact en terme de temps d'exécution du changement précédent ?
+
+* *Problème :* Le temps entre une modification et le retour est crucial

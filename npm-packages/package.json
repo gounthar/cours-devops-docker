@@ -1,0 +1,27 @@
+{
+    "name": "cours-devops-docker",
+    "version": "1.0.0",
+    "description": "🇫🇷 Support de cours pour le module devops, sous section docker",
+    "repository": "https://github.com/gounthar/cours-devops-docker",
+    "dependencies": {
+        "font-awesome": "^4.7.0",
+        "reveal.js-copycode": "1.1.2",
+        "reveal.js-menu": "2.1.0",
+        "reveal.js-toolbar": "0.2.1"
+    },
+    "devDependencies": {
+        "@asciidoctor/reveal.js": "4.1.0",
+        "asciidoctor": "^2.2.6",
+        "browser-sync": "^2.29.3",
+        "gulp": "4.0.2",
+        "gulp-autoprefixer": "8.0.0",
+        "gulp-csso": "4.0.1",
+        "gulp-exec": "5.0.0",
+        "gulp-ignore": "3.0.0",
+        "gulp-rename": "2.0.0",
+        "gulp-sass": "5.1.0",
+        "merge-stream": "2.0.0",
+        "qrcode": "1.5.3",
+        "sass": "^1.64.1"
+    }
+}

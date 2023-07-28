@@ -1,0 +1,42 @@
+[{invert}]
+= Bonjour !
+
+[.small]
+La suite: vers le bas ⬇️
+
+[{invert}]
+== Bruno VERACHTEN
+
+* Developer Advocate 🥑 chez https://www.cloudbees.com[CloudBees,window="_blank"] pour le projet link:https://www.jenkins.io/[Jenkins,window="_blank"] 👨🏻‍⚖️
+
+* Me contacter :
+** {author_mail}
+** link:https://github.com/gounthar[{github_icon} gounthar,window="_blank"]
+** link:https://bruno.verachten.fr/[]
+** link:https://fr.linkedin.com/in/poddingue[{linkedin_icon} Bruno Verachten,window=_blank]
+** link:https://twitter.com/poddingue[{twitter_icon} @poddingue,window=_blank]
+
+== Et vous ?
+
+video::yourturn.mp4[width="600",options="autoplay,loop,nocontrols"]
+
+== A propos du cours
+
+* Bla Bla Bla
+
+* Contenu entièrement libre et open-source
+
+[.small]
+** N'hésitez pas ouvrir des Pull Request si vous voyez des améliorations ou problèmes: link:{repositoryUrl}/pulls[sur cette page,window="_blank"] (😉 wink wink)
+
+== Plan
+
+video::plan.mp4[width="200",options="autoplay,loop,nocontrols"]
+
+* Bla
+* Bleu
+* Bli
+
+
+[.small]
+La suite: vers la droite ➡️

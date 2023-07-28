@@ -1,0 +1,31 @@
+# tag::common[]
+name: Bonjour
+on:
+  - push
+jobs:
+  dire_bonjour:
+    runs-on: ubuntu-20.04 # Same as GitPod
+# end::common[]
+# tag::container[]
+    container:
+      image: ghcr.io/gounthar/cours-devops-docker-gitpod
+      options: --user=root
+# end::container[]
+# tag::common[]
+    steps:
+# end::common[]
+# tag::checkout[]
+      - uses: actions/checkout@v3 # Récupère le contenu du dépôt correspondant au commit du workflow en cours
+# end::checkout[]
+# tag::show-readme[]
+      - run: ls -l # Liste les fichier du répertoire courant
+      - run: cat README.md # Affiche le contenu du fichier `README.md` à la base du dépôt
+# end::show-readme[]
+# tag::apt-cowsay[]
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y cowsay
+# end::apt-cowsay[]
+# tag::run-cowsay[]
+      - run: cat README.md | cowsay
+# end::run-cowsay[]
