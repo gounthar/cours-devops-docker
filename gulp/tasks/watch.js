@@ -6,7 +6,7 @@ module.exports = function (gulp, plugins, current_config) {
         // Watch for AsciiDoctor sources
         gulp.watch([
             current_config.sourcesDir + '/**/*.adoc', // AsciiDoctor sources
-            current_config.docinfosPath + '/**/*.html' // Docinfos
+            current_config.sourcesDir + '/**/*docinfo*.html', // AsciiDoctor Docinfo files
         ], gulp.series('html'));
 
         // Watch for media

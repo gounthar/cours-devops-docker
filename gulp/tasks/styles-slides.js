@@ -8,7 +8,7 @@ module.exports = function (gulp, plugins, current_config) {
             .pipe(plugins.rename('build.css'))
             .pipe(plugins.autoprefixer())
             .pipe(plugins.csso())
-            .pipe(gulp.dest(current_config.distDir + '/styles/'))
+            .pipe(gulp.dest(current_config.buildDir + '/styles/'))
             .pipe(plugins.browserSync.stream());
     });
 };
