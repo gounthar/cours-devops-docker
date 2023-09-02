@@ -15,8 +15,8 @@
 :revealjsdir: ./reveal.js
 :revealjs_history: true
 :revealjs_margin: 0.1
-:revealjs_width: 1280
-:revealjs_height: 800
+:revealjs_width: 1920
+:revealjs_height: 1080
 :revealjs_minscale: 0.2
 :revealjs_maxscale: 1.5
 :revealjs_slideNumber: true
@@ -30,5 +30,5 @@
 :pdf_icon: icon:file-pdf[set=fa]
 :revealjs_customtheme: ./styles/build.css
 :invert: state=invert,background-color="rgb(248, 228, 130)"
-:author_mail: {mail_icon} me@localhost.local
+:author_mail: {mail_icon} gounthar@gmail.com
 :gitpod_github_repo_url: https://github.com/gounthar/cours-devops-docker-gitpod
