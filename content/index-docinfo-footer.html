@@ -1,0 +1,36 @@
+<script src="reveal.js/plugin/reveal.js-copycode/copycode.js"></script>
+<script src="reveal.js/reveal.js-plugins/menu/menu.js"></script>
+<script src="reveal.js/plugin/search/search.js"></script>
+<link rel="stylesheet" href="reveal.js/reveal.js-plugins/chalkboard/style.css">
+<link rel="stylesheet" href="reveal.js/reveal.js-plugins/customcontrols/style.css">
+<script src="reveal.js/reveal.js-plugins/chalkboard/plugin.js"></script>
+<script src="reveal.js/reveal.js-plugins/customcontrols/plugin.js"></script>
+<script>
+  Reveal.configure({
+    copycode: {
+      button: "hover", // Allow not showing button when exporting to PDF
+      display: "both",
+      clipboardjspath: "scripts/clipboard.min.js",
+      style: {
+        scale: 0.7,
+      },
+    },
+    customcontrols: {
+      controls: [
+        { icon: '<i class="fa fa-pen-square"></i>',
+          title: 'Toggle chalkboard (B)',
+          action: 'RevealChalkboard.toggleChalkboard();'
+        },
+        { icon: '<i class="fa fa-pen"></i>',
+          title: 'Toggle notes canvas (C)',
+          action: 'RevealChalkboard.toggleNotesCanvas();'
+        }
+      ]
+    },
+  })
+  Reveal.registerPlugin(CopyCode)
+  Reveal.registerPlugin(RevealMenu)
+  Reveal.registerPlugin(RevealSearch)
+  Reveal.registerPlugin(RevealChalkboard)
+  Reveal.registerPlugin(RevealCustomControls)
+</script>

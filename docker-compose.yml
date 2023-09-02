@@ -1,26 +1,49 @@
+x-slides-base: &slides-base
+  build:
+    context: ./
+    args:
+      BUILDKIT_INLINE_CACHE: 1
+  environment:
+    - PRESENTATION_URL=${PRESENTATION_URL}
+    - REPOSITORY_URL=${REPOSITORY_URL}
+  user: ${CURRENT_UID}
+  tmpfs:
+    - ${BUILD_DIR} # Faster gulp I/O operations
+  volumes:
+    - ./content:/app/content
+    - ./assets:/app/assets
+    - ${DIST_DIR}:/app/dist
+    - ./gulp/gulpfile.js:/app/gulpfile.js
+    - ./gulp/tasks:/app/tasks
+    - ./npm-packages:/app/npm-packages
+
 services:
-  serve: &slides-base
-    build:
-      context: ./
-      cache_from:
-        - ${IMAGE_CACHE_NAME:-slides-builder}
-      args:
-        BUILDKIT_INLINE_CACHE: 1
-    image: ${IMAGE_CACHE_NAME:-slides-builder}
-    environment:
-      - PRESENTATION_URL=${PRESENTATION_URL}
-      - REPOSITORY_URL=${REPOSITORY_URL}
-    user: ${CURRENT_UID}
-    volumes:
-      - ./content:/app/content
-      - ./dist:/app/dist
-      - ./assets:/app/assets
-      - ./gulp/gulpfile.js:/app/gulpfile.js
-      - ./gulp/tasks:/app/tasks
-      - ./npm-packages:/app/npm-packages
+  serve:
+    <<: *slides-base
     ports:
       - "8000:8000"
 
   build:
     <<: *slides-base
-    command: "build"
+    depends_on:
+      qrcode:
+        condition: service_completed_successfully # Must NOT run in parallel
+    entrypoint: >
+      sh -xc 'gulp build && cp -r "${BUILD_DIR}"/* /app/dist/'
+
+  qrcode:
+    <<: *slides-base
+    entrypoint: /app/node_modules/.bin/qrcode
+    command: >
+      -t png -o /app/content/media/qrcode.png ${PRESENTATION_URL}
+
+  pdf:
+    image: ghcr.io/astefanutti/decktape:3.7.0
+    depends_on:
+      build:
+        condition: service_completed_successfully # PDF is generated from the dist/index.html
+    user: ${CURRENT_UID}
+    volumes:
+      - ${DIST_DIR}:/slides
+    command: >
+      /slides/index.html /slides/slides.pdf --size='2048x1536' --pause 0

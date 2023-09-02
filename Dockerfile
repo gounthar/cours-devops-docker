@@ -5,7 +5,8 @@ FROM node:18-alpine
 RUN apk add --no-cache \
   curl \
   git \
-  tini
+  tini \
+  unzip
 
 # Install NPM dependencies globally (latest versions)
 # hadolint ignore=DL3016,DL3059
@@ -19,8 +20,16 @@ RUN ln -s /app/npm-packages/package.json /app/package.json \
   && ln -s /app/npm-packages/package-lock.json /app/package-lock.json
 
 WORKDIR /app
-# Install NPM dependencies using the package-lock.json or fallback to classic install
-RUN npm install-clean || npm install
+
+ARG FONTAWESOME_VERSION=6.4.0
+RUN curl --silent --show-error --location --output /tmp/fontawesome.zip \
+    "https://use.fontawesome.com/releases/v${FONTAWESOME_VERSION}/fontawesome-free-${FONTAWESOME_VERSION}-web.zip" \
+  && unzip -q /tmp/fontawesome.zip -d /tmp \
+  && mv /tmp/"fontawesome-free-${FONTAWESOME_VERSION}-web" /app/fontawesome \
+  && rm -rf /tmp/font*
+
+# Install NPM dependencies using the package-lock.json
+RUN { npm install-clean && npx update-browserslist-db@latest; } || npm install
 
 ## Link some NPM commands installed as dependencies to be available within the PATH
 # There muste be 1 and only 1 `npm link` for each command

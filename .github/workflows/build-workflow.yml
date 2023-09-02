@@ -6,24 +6,32 @@ on:
       - '*'
   push:
     branches-ignore:
-      - gh_pages
+      - gh-pages
     tags:
       - '*'
   pull_request:
   workflow_dispatch:
 
 env:
-  PRINCIPAL_BRANCH: "main"
+  REPOSITORY_URL: https://github.com/${{ github.repository_owner }}/${{ github.repository }}
+  PRESENTATION_URL: https://${{ github.repository_owner }}.github.io/${{ github.repository }}/${{ github.ref_name }}
 
 jobs:
   build-slides:
     name: 'Build Slides'
     runs-on: ubuntu-latest
     steps:
+      - name: 'Check environment'
+        run: |
+          docker compose version
+          echo $REPOSITORY_URL
+          echo $PRESENTATION_URL
       - name: 'Checkout'
         uses: actions/checkout@master
-      - name: 'Build'
+      - name: Build HTML slides
         run: make build
+      - name: Build PDF slides
+        run: make pdf # Reuses the 'make build' steps
       - name: 'Verify'
         run: make verify
       - name: 'Upload dist/ as artefact'
@@ -32,28 +40,9 @@ jobs:
           name: dist
           path: dist/
 
-  build-pdf:
-    name: 'Build PDF'
-    runs-on: ubuntu-latest
-    # Only generate PDF when pushing code on a branch of the repository
-    if: github.event_name == 'push'
-    steps:
-      - name: 'Checkout'
-        uses: actions/checkout@master
-      - name: 'Build'
-        run: make build
-      - name: PDF on main branch
-        if: github.ref == 'refs/heads/${{ env.PRINCIPAL_BRANCH }}'
-        run: make pdf
-      - name: 'Upload dist/slides.pdf as artefact'
-        uses: actions/upload-artifact@v3
-        with:
-          name: pdf
-          path: dist/slides.pdf
-
   deploy:
     runs-on: ubuntu-latest
-    needs: [build-slides,build-pdf]
+    needs: [build-slides]
     # Only run deploy when pushing code on a branch of the repository
     if: github.event_name == 'push'
     steps:
@@ -62,30 +51,9 @@ jobs:
       with:
         name: dist
         path: ./dist
-    - name: 'Download dist/slides.pdf artefact'
-      uses: actions/download-artifact@v3
-      with:
-        name: pdf
-        path: ./dist
-    - name: Get tag value
-      if: startsWith(github.ref, 'refs/tags/')
-      id: tags
-      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
-    - name: 'Deploy Tag'
-      if: startsWith(github.ref, 'refs/tags/')
+    - name: 'Deploy to GitHub Pages'
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./dist
-        destination_dir: ${{ steps.tags.outputs.tag }}
-    - name: Get branch name
-      if: startsWith(github.ref, 'refs/heads/')
-      id: branches
-      run: echo ::set-output name=branch::${GITHUB_REF#refs/heads/}
-    - name: 'Deploy Main Branch'
-      if: startsWith(github.ref, 'refs/heads/')
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist
-        destination_dir: ${{ steps.branches.outputs.branch }}
+        destination_dir: ${{ github.ref_name }}/
