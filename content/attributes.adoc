@@ -7,8 +7,8 @@
 :revealjs_customtheme: ./styles/build.css
 :revealjs_history: true
 :revealjs_margin: 0.1
-:revealjs_width: 1280
-:revealjs_height: 800
+:revealjs_width: 1920
+:revealjs_height: 1080
 :revealjs_minscale: 0.2
 :revealjs_maxscale: 1.5
 :revealjs_slideNumber: true
@@ -26,5 +26,5 @@
 :twitter_icon: pass:[<span class="fab fa-twitter"></span>]
 :github_icon: pass:[<span class="fab fa-github"></span>]
 :pdf_icon: pass:[<span class="far fa-file-pdf"></span>]
-:author_mail: {mail_icon} me@localhost.local
+:author_mail: {mail_icon} gounthar@gmail.com
 :gitpod_github_repo_url: https://github.com/gounthar/cours-devops-docker-gitpod
