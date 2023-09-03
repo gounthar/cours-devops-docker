@@ -22,9 +22,11 @@ video::yourturn.mp4[width="600",options="autoplay,loop,nocontrols"]
 
 == A propos du cours
 
-* Bla Bla Bla
+* Première itération d'une découverte Docker
 
 * Contenu entièrement libre et open-source
+
+* Méchamment basé sur le travail de https://github.com/dduportal[Damien Duportal] et https://www.linkedin.com/in/awillemant/?originalSubdomain=fr[Amaury Willemant]
 
 [.small]
 ** N'hésitez pas ouvrir des Pull Request si vous voyez des améliorations ou problèmes: link:{repositoryUrl}/pulls[sur cette page,window="_blank"] (😉 wink wink)
@@ -33,9 +35,14 @@ video::yourturn.mp4[width="600",options="autoplay,loop,nocontrols"]
 
 video::plan.mp4[width="200",options="autoplay,loop,nocontrols"]
 
-* Bla
-* Bleu
-* Bli
+* Intro
+* Containers
+* Images
+* Fichiers, nommage, inspect
+* Volumes
+* Réseaux
+* Docker Compose
+* Bonus
 
 
 [.small]
