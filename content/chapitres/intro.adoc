@@ -1,7 +1,4 @@
 [{invert}]
-= Introduction
-
-== Introduction - suite
 
 = Docker
 
