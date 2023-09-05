@@ -111,6 +111,12 @@ image::containerconteneuraccidenteavariejpg_5e8b87ccc8c27.jpg[position=left, opa
 [.column]
 --
 10 ans déjà...
+
+image::piWorkshop.png[position=left, opacity=0.1]
+
+* parler de mes débuts en 2015/2016
+* parler de balena
+
 --
 
 [.notes]
@@ -161,11 +167,89 @@ Docker apporte une séparation claire des préoccupations grâce à ses conteneu
 En résumé, Docker apporte une séparation des préoccupations claire en isolant chaque composant d'une application dans son propre conteneur. Cela facilite le déploiement, la gestion et la maintenance des applications, tout en garantissant la portabilité et la stabilité des performances.
 --
 
+[%auto-animate]
 == Comment ça marche ?
 
 "Virtualisation **Légère**"
 
 image::container_vs_vm.jpg[]
+
+[.notes]
+--
+La virtualisation légère, dans le contexte des conteneurs Docker, est une méthode de virtualisation qui permet d'exécuter plusieurs environnements isolés (conteneurs) sur un seul système d'exploitation (hôte). Contrairement à la virtualisation traditionnelle, où chaque machine virtuelle (VM) nécessite son propre système d'exploitation, les conteneurs partagent le même noyau du système d'exploitation de l'hôte.
+
+Les principales caractéristiques de la virtualisation légère sont les suivantes :
+
+1. Isolation : Chaque conteneur est isolé des autres, ce qui signifie qu'ils ne peuvent pas interférer les uns avec les autres. Cela permet d'exécuter différentes applications avec leurs propres dépendances sans conflits.
+2. Efficacité des ressources : Étant donné que les conteneurs partagent le même noyau du système d'exploitation, ils sont beaucoup plus légers en termes de ressources que les machines virtuelles. Cela permet d'exécuter de nombreux conteneurs sur une seule machine physique, ce qui est efficace en termes d'utilisation des ressources.
+3. Démarrage rapide : Les conteneurs se lancent rapidement, en quelques secondes, car ils n'ont pas besoin de démarrer un système d'exploitation complet. Cela permet une mise à l'échelle rapide des applications.
+4. Portabilité : Les conteneurs sont portables, ce qui signifie qu'ils fonctionnent de la même manière sur n'importe quel système qui prend en charge Docker. Cela simplifie le déploiement et la gestion des applications.
+
+En résumé, la virtualisation légère des conteneurs Docker permet d'exécuter efficacement plusieurs environnements isolés sur un même système d'exploitation, offrant ainsi une isolation, une efficacité des ressources, un démarrage rapide et une portabilité des applications.
+--
+
+[%auto-animate]
+== Comment ça marche ?
+
+Virtualisation
+
+image::types_of_hypervisors.png["https://medium.com/teamresellerclub/type-1-and-type-2-hypervisors-what-makes-them-different-6a1755d6ae2c"]
+
+[.notes]
+--
+Un hyperviseur est un logiciel spécialisé qui permet d'exécuter plusieurs systèmes d'exploitation (comme Windows, Linux, etc.) sur un seul matériel physique (comme un serveur). Il agit comme une couche d'abstraction entre le matériel et les systèmes d'exploitation invités.
+
+Il existe deux types d'hyperviseurs :
+
+Hyperviseurs de type 1 (ou bare-metal) : Ils s'installent directement sur le matériel physique et n'ont pas besoin d'un système d'exploitation hôte. Ils sont très efficaces et sont généralement utilisés dans les centres de données pour exécuter plusieurs VM de manière isolée.
+
+Hyperviseurs de type 2 (ou hosted) : Ils s'exécutent sur un système d'exploitation existant, comme une application. Ils sont généralement utilisés pour la virtualisation de bureau ou le développement, mais sont moins efficaces que les hyperviseurs de type 1.
+
+En résumé, un hyperviseur vous permet d'exécuter plusieurs systèmes d'exploitation sur un seul serveur physique, ce qui vous permet de maximiser l'utilisation des ressources matérielles et de simplifier la gestion des environnements informatiques.
+--
+
+[%auto-animate]
+[.columns]
+== Comment ça marche ?
+
+[.column]
+Virtualisation
+
+[.column]
+---
+image::type-1-hypervisor-examples.png["https://www.ubackup.com/enterprise-backup/type-1-hypervisor-vs-type-2.html"]
+--
+
+[.column]
+---
+image::type-2-hypervisor-examples.png["https://www.ubackup.com/enterprise-backup/type-1-hypervisor-vs-type-2.html"]
+--
+
+[%auto-animate]
+== Comment ça marche ?
+
+"Virtualisation **Légère**"
+
+image::container_vs_vm.jpg[]
+
+* Légère, vraiment?
+
+[%auto-animate]
+== Légère, vraiment!
+
+image::RPiDockerConChallenge.png[background, size=contain, position=left, opacity=0.1]
+
+[.small]
+http://web.archive.org/web/20200810061020/https://www.docker.com/blog/raspberry-pi-dockercon-challenge-winner/
+
+
+[%auto-animate]
+== Légère, vraiment!
+
+image::esxpi.png[background, size=contain, position=left, opacity=0.1]
+
+[.small]
+https://www.architecting.it/blog/esxi-on-raspberry-pi/
 
 == Conteneur != VM
 
@@ -173,13 +257,31 @@ image::container_vs_vm.jpg[]
 
 image::vm-and-container.png[]
 
-==  VMs && Conteneurs
+[.notes]
+--
+Les hyperviseurs et les machines virtuelles (VM) sont comme des maisons entièrement meublées où chaque invité a sa propre maison séparée.
+
+* Chaque maison est une VM, avec son propre système d'exploitation et ses ressources, et elles peuvent fonctionner sur le même serveur physique.
+* En revanche, les conteneurs sont comme des appartements dans un même immeuble. Ils partagent la même infrastructure, comme les escaliers et les couloirs (le noyau du système d'exploitation), mais chaque appartement (conteneur) est séparé et possède son propre espace privé. Les conteneurs partagent efficacement les ressources du serveur, car ils évitent de dupliquer tout le système d'exploitation, ce qui les rend plus légers et plus rapides que les VM.
+
+En résumé, les VM sont comme des maisons séparées, tandis que les conteneurs sont comme des appartements dans le même bâtiment, partageant certaines parties communes mais offrant toujours une séparation.
+--
+
+==  VMs & Conteneurs
 
 Non exclusifs mutuellement
 
 image::cont-vm-not-excl.png[]
 
-== Comment ça marche ?
+[.notes]
+--
+Les machines virtuelles (VM) et les conteneurs peuvent être utilisés ensemble pour obtenir les avantages des deux mondes.
+
+* Les VMs offrent une isolation plus forte en exécutant des systèmes d'exploitation virtuels complets, ce qui les rend idéales pour des charges de travail nécessitant une sécurité et une isolation élevées.
+Les conteneurs, en revanche, sont légers et rapides, ce qui les rend parfaits pour exécuter de nombreuses applications sur un seul serveur.
+* En combinant les deux, vous pouvez exécuter des VMs pour isoler et protéger des charges de travail sensibles, tout en utilisant des conteneurs pour exécuter des applications légères et faciles à gérer.
+Cela permet une flexibilité accrue dans la gestion des ressources et des charges de travail sur votre infrastructure informatique.
+--
 
 == 🎓 Exercice : Votre premier conteneur
 

@@ -5,9 +5,34 @@
 La suite: vers le bas ⬇️
 
 [{invert}]
-== Bruno VERACHTEN
+== !
 
+image::docker_love.png[background, size=contain, position=center, opacity=0.1]
+
+[.notes]
+--
+On en reparlera après, mais j'aime Docker depuis longtemps, d'un amour platonique et non réciproque.
+
+1. ESN, sécurité des laptops et méfiance
+2. Early days, Raspberry Pi & consorts
+3. Ce n'est pas qu'un projet open source. Et si j'y bossais ?
+--
+
+[{invert}]
+[.columns]
+== !
+
+[.column]
+--
 image::logo.svg[background, size=contain, position=left, opacity=0.1]
+--
+
+
+[.column]
+--
+
+[.strong]
+Bruno VERACHTEN
 
 * Sr Developer Relations chez https://www.cloudbees.com[CloudBees,window="_blank"] pour le projet link:https://www.jenkins.io/[Jenkins,window="_blank"] 👨🏻‍⚖️
 
@@ -17,10 +42,11 @@ image::logo.svg[background, size=contain, position=left, opacity=0.1]
 ** link:https://bruno.verachten.fr/[]
 ** link:https://fr.linkedin.com/in/poddingue[{linkedin_icon} Bruno Verachten,window=_blank]
 ** link:https://twitter.com/poddingue[{twitter_icon} @poddingue,window=_blank]
+--
 
 == Et vous ?
 
-video::yourturn.mp4[width="600",options="autoplay,loop,nocontrols"]
+video::yourturn.mp4[width="600",options="autoplay,nocontrols"]
 
 [{invert}]
 == A propos du cours
