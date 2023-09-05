@@ -10,11 +10,131 @@ image::docker-logo-monochromatic.png[width=200]
 
 🤔 Quel est le problème ?
 
-== !
+[%auto-animate]
+== Pourquoi commencer par un problème ?
+
+image::docker-logo-monochromatic.png[width=200]
+
+🤔 Commençons plutôt par une définition:
+
+> Docker c'est ...
+
+[.notes]
+--
+* Demander à l'assistance une définition
+--
+
+[%auto-animate]
+== Pourquoi commencer par un problème ?
+
+image::docker-logo-monochromatic.png[width=200]
+
+🤔 Définition quelque peu datée (2014):
+
+> Docker is ...
+
+[.notes]
+--
+* Demander à l'assistance une définition
+* make a point
+--
+
+[%auto-animate]
+== Pourquoi commencer par un problème ?
+
+image::docker-logo-monochromatic.png[width=200]
+
+🤔 Définition quelque peu datée (2014):
+
+> Docker is a toolset for Linux containers designed to ‘build, ship and run’ distributed applications.
+
+[.small]
+https://www.infoq.com/articles/docker-future/
+
+[.notes]
+--
+* https://www.infoq.com/articles/docker-future/
+--
+
+[%auto-animate]
+== Linux containers ?
+
+image::docker-logo-monochromatic.png[width=200]
+
+🤔 Nous voilà bien...
+
+> C'est quoi un container?
+
+[.notes]
+--
+* https://www.infoq.com/articles/docker-future/
+--
+
+[%auto-animate]
+== Linux containers ?
+
+image::docker-logo-monochromatic.png[width=200]
+
+🤔 Nous voilà bien...
+
+> C'est quoi un container?
+
+[.small]
+Vous voulez la version enfant de 5 ans? Je ne crois pas...
+
+[.notes]
+--
+* J'ai la version "les containers expliqués à un enfant de 5 ans", mais pas sûr que vous appréciez...
+* On va donc passer à la suite, et on y revient dans un moment.
+* Imagine que tu as une boîte magique appelée "conteneur".
+* Cette boîte peut contenir toutes sortes de choses, comme des jouets, des bonbons ou même des dessins.
+* Maintenant, dans le monde de l'informatique, un conteneur Docker est un peu comme cette boîte magique.
+* Mais au lieu de jouets ou de bonbons, un conteneur Docker peut contenir des programmes et toutes les choses dont ces programmes ont besoin pour fonctionner.
+* Par exemple, il peut contenir un site Web, une application ou même une partie d'un jeu vidéo.
+* Ce qui est vraiment cool avec les conteneurs Docker, c'est qu'ils sont très spéciaux.
+* Chaque conteneur est comme une petite boîte magique qui garde tout bien organisé à l'intérieur.
+* Et tu peux facilement prendre cette boîte magique et la mettre sur n'importe quel ordinateur, qu'il soit grand ou petit, comme si tu transportais tes jouets préférés chez un ami.
+* Cela signifie que les conteneurs Docker aident les développeurs à s'assurer que leurs programmes fonctionnent de la même manière partout où ils les utilisent. C'est comme si tu pouvais t'amuser avec tes jouets préférés chez toi, chez un ami, ou même à l'école, et tout fonctionnerait toujours comme prévu.
+* En résumé, un conteneur Docker est comme une boîte magique pour les programmes informatiques.
+* Il garde tout bien organisé à l'intérieur et peut être déplacé facilement d'un ordinateur à un autre, comme si tu emportais tes jouets préférés partout où tu vas. C'est super pratique pour les personnes qui créent des choses sur l'ordinateur !
+--
+
+[{invert}]
+[.columns]
+== Docker est vieux
+
+[.column]
+--
+image::containerconteneuraccidenteavariejpg_5e8b87ccc8c27.jpg[position=left, opacity=0.1]
+--
+
+[.column]
+--
+10 ans déjà...
+--
+
+[.notes]
+--
+* The story of Docker starts in Paris with a startup called DotCloud, founded by Solomon Hykes, Kamel Founadi,
+and Sebastien Pahl in 2008 to provide cloud hosting services for software developers.
+* It was first released as an open source project by DotCloud in March 2013.
+* The project quickly became popular, leading to DotCloud rebranded as Docker Inc
+--
+
+== On n'avait pas parlé d'un problème?
 
 image::matrixfromhell.jpg[]
 
 Problème de temps **exponentiel**
+
+[.notes]
+--
+* Le "problème de la matrice de l'enfer" (ou "matrix from hell" en anglais) est une expression qui fait référence à la complexité croissante des configurations logicielles dans le monde de l'informatique.
+* Avant l'arrivée de Docker, il était souvent difficile de gérer toutes les dépendances et les paramètres nécessaires pour exécuter des applications sur différents ordinateurs.
+* Docker tente de résoudre ce problème en introduisant la notion de conteneurs.
+* Les conteneurs Docker sont des environnements autonomes qui contiennent une application et toutes ses dépendances, y compris les bibliothèques et les paramètres. Cela signifie que les développeurs peuvent créer un conteneur qui fonctionne parfaitement sur leur propre ordinateur, puis le partager avec d'autres sans se soucier des différences entre les environnements.
+* En résumé, Docker résout le "problème de la matrice de l'enfer" en permettant aux développeurs de créer des conteneurs contenant leurs applications, ce qui garantit que celles-ci fonctionneront de la même manière partout, évitant ainsi les tracas liés aux configurations complexes.
+--
 
 == Déjà vu ?
 
@@ -27,6 +147,19 @@ image::also-a-matrix-from-hell.png[]
 "Separation of Concerns"
 
 image::blue-shipping-container.png[]
+
+[.notes]
+--
+Faire le parallèle avec les containers marchands contenant des jouets, de l'électronique, de la nourriture, le tout connecté au même bateau, sans pour autant être interdépendants.
+Docker apporte une séparation claire des préoccupations grâce à ses conteneurs. Cette séparation des préoccupations signifie que chaque composant d'une application est isolé dans son propre conteneur. Voici comment cela fonctionne :
+
+1. Isolation des Composants : Avec Docker, chaque composant d'une application (comme une base de données, un serveur web, etc.) est emballé dans un conteneur distinct. Ces conteneurs fonctionnent de manière indépendante les uns des autres, ce qui signifie que si un composant rencontre un problème ou nécessite une mise à jour, cela n'affecte pas les autres composants.
+2. Portabilité : Les conteneurs Docker encapsulent non seulement l'application, mais aussi toutes ses dépendances. Cela garantit que l'application fonctionnera de la même manière quel que soit l'endroit où vous l'exécutez, que ce soit sur votre ordinateur local, un serveur en nuage ou ailleurs. Cela simplifie la gestion de l'application à l'échelle.
+3. Facilité de Déploiement : En raison de cette séparation, le déploiement d'applications devient plus simple. Vous pouvez gérer chaque conteneur individuellement, les mettre à jour sans perturber le reste de l'application, et même les répliquer pour mettre en place des configurations complexes.
+4. Gestion des Ressources : Docker permet également de gérer efficacement les ressources de l'ordinateur hôte. Chaque conteneur a sa propre allocation de ressources, ce qui empêche un conteneur de monopoliser toute la puissance de calcul, garantissant ainsi des performances stables pour toutes les parties de l'application.
+
+En résumé, Docker apporte une séparation des préoccupations claire en isolant chaque composant d'une application dans son propre conteneur. Cela facilite le déploiement, la gestion et la maintenance des applications, tout en garantissant la portabilité et la stabilité des performances.
+--
 
 == Comment ça marche ?
 

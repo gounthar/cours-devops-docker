@@ -7,7 +7,9 @@ La suite: vers le bas ⬇️
 [{invert}]
 == Bruno VERACHTEN
 
-* Developer Advocate 🥑 chez https://www.cloudbees.com[CloudBees,window="_blank"] pour le projet link:https://www.jenkins.io/[Jenkins,window="_blank"] 👨🏻‍⚖️
+image::logo.svg[background, size=contain, position=left, opacity=0.1]
+
+* Sr Developer Relations chez https://www.cloudbees.com[CloudBees,window="_blank"] pour le projet link:https://www.jenkins.io/[Jenkins,window="_blank"] 👨🏻‍⚖️
 
 * Me contacter :
 ** {author_mail}
@@ -20,9 +22,10 @@ La suite: vers le bas ⬇️
 
 video::yourturn.mp4[width="600",options="autoplay,loop,nocontrols"]
 
+[{invert}]
 == A propos du cours
 
-* Première itération d'une découverte Docker
+* Première itération d'une découverte Docker dans le cadre du DevOps
 
 * Contenu entièrement libre et open-source
 
@@ -31,9 +34,16 @@ video::yourturn.mp4[width="600",options="autoplay,loop,nocontrols"]
 [.small]
 ** N'hésitez pas ouvrir des Pull Request si vous voyez des améliorations ou problèmes: link:{repositoryUrl}/pulls[sur cette page,window="_blank"] (😉 wink wink)
 
-== Plan
+[.notes]
+--
+* Ceci n'est pas un cours exhaustif de Docker, nous n'en avons pas le temps, et ce n'est pas le but.
+* Ce que nous voulons est vous enseigner les rudiments pour que vous soyez armés pour la seconde partie de ce module
+* La partie Gitlab a besoin de ces pré-requis
+--
 
-video::plan.mp4[width="200",options="autoplay,loop,nocontrols"]
+[background-video="plan.mp4",background-video-loop=true,background-video-muted=true]
+[{invert}]
+== Plan
 
 * Intro
 * Containers
