@@ -27,6 +27,9 @@ include::./chapitres/welcome.adoc[leveloffset=1]
 // Introduction
 include::./chapitres/intro.adoc[leveloffset=1]
 
+// Base
+include::./chapitres/docker-base.adoc[leveloffset=1]
+
 // Containers
 include::./chapitres/containers.adoc[leveloffset=1]
 
