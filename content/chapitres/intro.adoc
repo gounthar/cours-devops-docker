@@ -370,6 +370,14 @@ image::esxpi.png[background, size=contain, position=left, opacity=0.1]
 [.small]
 https://www.architecting.it/blog/esxi-on-raspberry-pi/
 
+[%auto-animate]
+== Conteneur != VM
+
+image::docker-n-est-pas-VM.png[]
+
+* Idée erronée mais citée trop fréquemment !
+
+[%auto-animate]
 == Conteneur != VM
 
 "Separation of concerns": 1 "tâche" par conteneur
