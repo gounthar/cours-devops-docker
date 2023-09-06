@@ -2,6 +2,8 @@
 
 = Docker
 
+image::empty_harbor.png[background, size=cover, position=left, opacity=0.1]
+
 "La Base"
 
 == Pourquoi ?
@@ -126,6 +128,123 @@ and Sebastien Pahl in 2008 to provide cloud hosting services for software develo
 * It was first released as an open source project by DotCloud in March 2013.
 * The project quickly became popular, leading to DotCloud rebranded as Docker Inc
 --
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+image::base_du_problème_sans_dev.png[]
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+image::base_du_problème_sans_dev_et_ops.png[]
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+image::base_du_problème_sans_stabilité.png[]
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+image::base_du_problème_sans_frontièrel.png[]
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+image::base_du_problème_final.png[]
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+Histoire vraie.
+
+[width="100%",cols="^m,e",frame=none,grid=none]
+|=======
+|Hey salut  ! |
+|=======
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+Histoire vraie.
+
+[width="100%",cols="^m,e",frame=none,grid=none]
+|=======
+|Hey salut  ! |
+| | cc
+|=======
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+Histoire vraie.
+
+[width="100%",cols="^m,e",frame=none,grid=none]
+|=======
+|Hey salut  ! |
+| | cc
+|Tu peux mettre à jour les packages système steup ? j'ai un truc à tester. |
+|=======
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+Histoire vraie.
+
+[width="100%",cols="^m,e",frame=none,grid=none]
+|=======
+|Hey salut  ! |
+| | cc
+|Tu peux mettre à jour les packages système steup ? j'ai un truc à tester. |
+| | nan
+|=======
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+Histoire vraie.
+
+[width="100%",cols="^m,e",frame=none,grid=none]
+|=======
+|Hey salut  ! |
+| | cc
+|Tu peux mettre à jour les packages système steup ? j'ai un truc à tester. |
+| | nan
+| ??? |
+|=======
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+Histoire vraie.
+
+[width="100%",cols="^m,e",frame=none,grid=none]
+|=======
+|Hey salut  ! |
+| | cc
+|Tu peux mettre à jour les packages système steup ? j'ai un truc à tester. |
+| | nan
+| ??? |
+| | pas standard dsl
+|=======
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+Histoire vraie.
+
+[width="100%",cols="^m,e",frame=none,grid=none]
+|=======
+|Hey salut  ! |
+| | cc
+|Tu peux mettre à jour les packages système steup ? j'ai un truc à tester. |
+| | nan
+| ??? |
+| | pas standard dsl
+|=======
+
+image::1072129428-image16.png[]
 
 == On n'avait pas parlé d'un problème?
 
@@ -271,7 +390,7 @@ En résumé, les VM sont comme des maisons séparées, tandis que les conteneurs
 
 Non exclusifs mutuellement
 
-image::cont-vm-not-excl.png[]
+image::containers-and-vms-together.png[]
 
 [.notes]
 --
@@ -282,405 +401,4 @@ Les conteneurs, en revanche, sont légers et rapides, ce qui les rend parfaits p
 * En combinant les deux, vous pouvez exécuter des VMs pour isoler et protéger des charges de travail sensibles, tout en utilisant des conteneurs pour exécuter des applications légères et faciles à gérer.
 Cela permet une flexibilité accrue dans la gestion des ressources et des charges de travail sur votre infrastructure informatique.
 --
-
-== 🎓 Exercice : Votre premier conteneur
-
-C'est à vous (ouf) !
-
-* Retournez dans Gitpod
-* Dans un terminal, tapez la commande suivante :
-
-[source,bash]
-----
-docker container run hello-world
-# Equivalent de l'ancienne commande 'docker run'
-----
-
-== 🩻 Anatomie
-
-* Un service "Docker Engine" tourne en tâche de fond et publie une API REST
-* La commande `docker run ...` a envoyé une requête `POST` au service
-* Le service a télécharge une **Image** Docker depuis le registre **DockerHub**,
-* Puis a exécuté un **conteneur** basé sur cette image
-
-== 🎓 Exercice : Où est mon conteneur ?
-
-C'est à vous !
-
-[source,bash]
-----
-docker container ls --help
-# ...
-docker container ls
-# ...
-docker container ls --all
-----
-
-=> 🤔 comment comprenez vous les résultats des 2 dernières commandes ?
-
-== ✅ Solution : Où est mon conteneur ?
-
-Le conteneur est toujours présent dans le "Docker Engine" même en étant arrêté
-
-[source,shell]
-----
-CONTAINER ID   IMAGE         COMMAND    CREATED          STATUS                      PORTS     NAMES
-109a9cdd3ec8   hello-world   "/hello"   33 seconds ago   Exited (0) 17 seconds ago             festive_faraday
-----
-
-* Un conteneur == une commande "conteneurisée"
-** cf. colonne "*COMMAND*"
-
-* Quand la commande s'arrête : le conteneur s'arrête
-** cf. code de sortie dans la colonne "*STATUS*"
-
-== 🎓 Exercice : Cycle de vie d'un conteneur simple
-
-* Lancez un nouveau conteneur nommé `bonjour`
-** 💡 `docker container run --help` ou https://docs.docker.com/engine/reference/commandline/container_run/[Documentation en ligne,window="_blank"]
-
-* Affichez les "logs" du conteneur (==traces d'exécution écrites sur le stdout + stderr de la commande conteneurisée)
-** 💡 `docker container logs  --help` ou https://docs.docker.com/engine/reference/commandline/container_logs/[Documentation en ligne,window="_blank"]
-
-* Lancez le conteneur avec la commande https://docs.docker.com/engine/reference/commandline/container_start/[`docker container start`,window="_blank"]
-** Regardez le résultat dans les logs
-
-* Supprimez le container avec la commande https://docs.docker.com/engine/reference/commandline/container_rm/[`docker container rm`,window="_blank"]
-
-== ✅ Solution : Cycle de vie d'un conteneur simple
-
-[source,bash]
-----
-docker container run --name=bonjour hello-world
-# Affiche le texte habituel
-
-docker container logs bonjour
-# Affiche le même texte : pratique si on a fermé le terminal
-
-docker container start bonjour
-# N'affiche pas le texte mais l'identifiant unique du conteneur 'bonjour'
-
-docker container logs bonjour
-# Le texte est affiché 2 fois !
-
-docker container ls --all
-# Le conteneur est présent
-docker container rm bonjour
-docker container ls --all
-# Le conteneur n'est plus là : il a été supprimé ainsi que ses logs
-
-docker container logs bonjour
-# Error: No such container: bonjour
-----
-
-== 🤔 Que contient "hello-world" ?
-
-* C'est une "image" de conteneur, c'est à dire un modèle (template)
-représentant une application auto-suffisante.
-** On peut voir ça comme un "paquetage" autonome
-
-* C'est un système de fichier complet:
-** Il y a au moins une racine `/`
-** Ne contient que ce qui est censé être nécessaire (dépendances, librairies, binaires, etc.)
-
-== Docker Hub
-
-* https://hub.docker.com/ : C'est le registre d'images "par défaut"
-** Exemple : Image officielle de https://hub.docker.com/_/ubuntu[conteneur "Ubuntu"]
-
-* 🎓 Cherchez l'image `hello-world` pour en voir la page de documentation
-** 💡 pas besoin de créer de compte pour ça
-
-* Il existe d'autre "registres" en fonction des besoins (GitHub GHCR, Google GCR, etc.)
-
-== 🎓 Exercice : conteneur interactif
-
-* Quel distribution Linux est utilisée dans le terminal Gitpod ?
-** 💡 Regardez le fichier `/etc/os-release`
-
-* Exécutez un conteneur interactif basé sur `alpine:3.17` (une distribution Linux ultra-légère) et regardez le contenu du fichier au même emplacement
-** 💡 `docker container run --help`
-** 💡 Demandez un https://en.wikipedia.org/wiki/TTY[`tty`] à Docker
-** 💡 Activez le mode interactif
-
-* Exécutez la même commande dans un conteneur basé sur la même image mais en *NON* interactif
-** 💡 Comment surcharger la commande par défaut ?
-
-== ✅ Solution : conteneur interactif
-
-[source,bash]
-----
-$ cat /etc/os-release
-# ... Ubuntu ....
-
-$ docker container run --tty --interactive alpine:3.17
-/ # cat /etc/os-release
-# ... Alpine ...
-# Notez que le "prompt" du terminal est différent DANS le conteneur
-/ # exit
-$ docker container ls --all
-
-$ docker container run alpine:3.17 cat /etc/os-release
-# ... Alpine ...
-----
-
-== 🎓 Exercice : conteneur en tâche de fond
-
-* Exécutez un conteneur, basé sur l'image `nginx` en tâche de fond ("Background"), nommé `webserver-1`
-** 💡 On parle de processus "détaché" (ou bien "démonisé")
-** ⚠️ Pensez bien à `docker container ls`
-
-* Regardez le contenu du fichier `/etc/os-release` dans ce conteneur
-** 💡 `docker container exec`
-
-* Essayez d'arrêter, démarrer puis redémarrer le conteneur
-** ⚠️ Pensez bien à `docker container ls` à chaque fois
-** 💡 `stop`, `start`, `restart`
-
-== ✅ Solution : conteneur en tâche de fond
-
-[source,bash]
-----
-docker container run --detach --name=webserver-1 nginx
-# <ID du conteneur>
-
-docker container ls
-docker container ls --all
-
-docker container exec webserver-1 cat /etc/os-release
-# ... Debian ...
-
-docker container stop webserver-1
-docker container ls
-docker container ls --all
-
-docker container start webserver-1
-docker container ls
-docker container ls --all
-
-docker container start webserver-1
-docker container ls
-----
-
-== Checkpoint 🎯
-
-* Docker essaye de résoudre le problème de l'empaquetage le plus "portable" possible
-** On n'en a pas encore vu les effets, ça arrive !
-
-* Vous avez vu qu'un containeur permet d'exécuter une commande dans un environnement "préparé"
-** Catalogue d'images Docker par défaut : Le https://hub.docker.com[Docker Hub]
-
-* Vous avez vu qu'on peut exécuter des conteneurs selon 3 modes :
-** "One shot"
-** Interactif
-** En tâche de fond
-
-=> 🤔 Mais comment ces images sont-elles fabriquées ? Quelle confiance leur accorder ?
-
-== !
-
-image::Diapositive12.PNG[width=1280]
-
-== !
-
-image::Diapositive13.PNG[width=1280]
-
-== !
-
-image::Diapositive14.PNG[width=1280]
-
-== !
-
-image::Diapositive15.PNG[width=1280]
-
-== !
-
-image::Diapositive16.PNG[width=1280]
-== !
-
-image::Diapositive16.PNG[width=1280]
-
-== !
-
-image::Diapositive17.PNG[width=1280]
-
-== !
-
-image::Diapositive18.PNG[width=1280]
-
-== !
-
-image::Diapositive19.PNG[width=1280]
-
-== !
-
-image::Diapositive20.PNG[width=1280]
-
-== !
-
-image::Diapositive21.PNG[width=1280]
-
-== !
-
-image::Diapositive22.PNG[width=1280]
-
-== !
-
-image::Diapositive23.PNG[width=1280]
-
-== !
-
-image::Diapositive24.PNG[width=1280]
-
-== !
-
-image::Diapositive25.PNG[width=1280]
-
-== !
-
-image::Diapositive26.PNG[width=1280]
-
-== !
-
-image::Diapositive27.PNG[width=1280]
-
-== !
-
-image::Diapositive28.PNG[width=1280]
-
-== !
-
-image::Diapositive29.PNG[width=1280]
-
-== !
-
-image::Diapositive30.PNG[width=1280]
-
-== !
-
-image::Diapositive31.PNG[width=1280]
-
-== !
-
-image::Diapositive32.PNG[width=1280]
-
-== !
-
-image::Diapositive33.PNG[width=1280]
-
-== !
-
-image::Diapositive34.PNG[width=1280]
-
-== !
-
-image::Diapositive35.PNG[width=1280]
-
-== !
-
-image::Diapositive36.PNG[width=1280]
-
-== !
-
-image::Diapositive37.PNG[width=1280]
-
-== !
-
-image::Diapositive38.PNG[width=1280]
-
-== !
-
-image::Diapositive39.PNG[width=1280]
-
-== !
-
-image::Diapositive40.PNG[width=1280]
-
-== !
-
-image::Diapositive41.PNG[width=1280]
-
-== !
-
-image::Diapositive42.PNG[width=1280]
-
-== !
-
-image::Diapositive43.PNG[width=1280]
-
-== !
-
-image::Diapositive44.PNG[width=1280]
-
-== !
-
-image::Diapositive45.PNG[width=1280]
-
-== !
-
-image::Diapositive46.PNG[width=1280]
-
-== !
-
-image::Diapositive47.PNG[width=1280]
-
-== !
-
-image::Diapositive48.PNG[width=1280]
-
-== !
-
-image::Diapositive49.PNG[width=1280]
-
-== !
-
-image::Diapositive50.PNG[width=1280]
-
-== !
-
-image::Diapositive51.PNG[width=1280]
-
-== !
-
-image::Diapositive52.PNG[width=1280]
-
-== !
-
-image::Diapositive53.PNG[width=1280]
-
-== !
-
-image::Diapositive54.PNG[width=1280]
-
-== !
-
-image::Diapositive55.PNG[width=1280]
-
-== !
-
-image::Diapositive56.PNG[width=1280]
-
-== !
-
-image::Diapositive57.PNG[width=1280]
-
-== !
-
-image::Diapositive58.PNG[width=1280]
-
-== !
-
-image::Diapositive59.PNG[width=1280]
-
-== !
-
-image::Diapositive60.PNG[width=1280]
-
-== !
-
-image::Diapositive61.PNG[width=1280]
-
-== !
-
-image::Diapositive62.PNG[width=1280]
 

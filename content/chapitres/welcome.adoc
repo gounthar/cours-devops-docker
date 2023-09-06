@@ -1,4 +1,5 @@
 [{invert}]
+
 = Bonjour !
 
 [.small]
@@ -68,10 +69,11 @@ video::yourturn.mp4[width="600",options="autoplay,nocontrols"]
 --
 
 [background-video="plan.mp4",background-video-loop=true,background-video-muted=true]
-[{invert}]
+[{dark-background}]
 == Plan
 
 * Intro
+* Base
 * Containers
 * Images
 * Fichiers, nommage, inspect
