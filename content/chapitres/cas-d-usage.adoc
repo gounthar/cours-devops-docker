@@ -109,3 +109,17 @@ image::outillage-jetable.png[]
 * On instancie des applications sans les installer
 * On crée le container, on l'utilise puis on le jette
 
+
+[%auto-animate]
+[.columns]
+== Beau boulot! 🤗
+
+[.column]
+image::empty_ship.png[height=720]
+
+[.column]
+--
+On a la base, remplissons là maintenant de containers!
+[.small]
+La suite: vers la droite ➡️
+--

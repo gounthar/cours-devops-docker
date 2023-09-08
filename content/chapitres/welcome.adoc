@@ -2,6 +2,8 @@
 
 = Bonjour !
 
+image::hello-from-docker.svg[]
+
 [.small]
 La suite: vers le bas ⬇️
 
@@ -68,6 +70,21 @@ video::yourturn.mp4[width="600",options="autoplay,nocontrols"]
 * La partie Gitlab a besoin de ces pré-requis
 --
 
+== Calendrier
+
+🚧 Work in progress... 🚧
+
+// * *Présentiel* 🎓 Jeudi 14 septembre 2023 - 9h -> 19h
+// * *Distanciel* 🛏️ Vendredi 15 septembre 2023 - 08h -> 17h
+
+== Evaluation
+
+video::ohno.mp4[width="200",options="autoplay,loop,nocontrols"]
+
+* Pourquoi ? s'assurer que vous avez acquis un minimum de concepts
+* Quoi ? Une note sur 20, basée sur une liste de critères exhaustifs
+* Comment ? Un projet GitHub (public) à me rendre (timing à déterminer ensemble)
+
 [background-video="plan.mp4",background-video-loop=true,background-video-muted=true]
 [{dark-background}]
 == Plan
@@ -81,7 +98,6 @@ video::yourturn.mp4[width="600",options="autoplay,nocontrols"]
 * Réseaux
 * Docker Compose
 * Bonus
-
 
 [.small]
 La suite: vers la droite ➡️

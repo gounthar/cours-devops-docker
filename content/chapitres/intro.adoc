@@ -1,3 +1,6 @@
+
+include::../attributes.adoc[]
+
 [{invert}]
 
 = Docker
@@ -102,31 +105,65 @@ Vous voulez la version enfant de 5 ans? Je ne crois pas...
 --
 
 [{invert}]
-[.columns]
+[%auto-animate]
 == Docker est vieux
 
-[.column]
---
-image::containerconteneuraccidenteavariejpg_5e8b87ccc8c27.jpg[position=left, opacity=0.1]
---
-
-[.column]
---
 10 ans déjà...
 
-image::piWorkshop.png[position=left, opacity=0.1]
-
-* parler de mes débuts en 2015/2016
-* parler de balena
-
---
+image::containerconteneuraccidenteavariejpg_5e8b87ccc8c27.jpg[position=left, opacity=0.1]
 
 [.notes]
 --
+
 * The story of Docker starts in Paris with a startup called DotCloud, founded by Solomon Hykes, Kamel Founadi,
 and Sebastien Pahl in 2008 to provide cloud hosting services for software developers.
 * It was first released as an open source project by DotCloud in March 2013.
 * The project quickly became popular, leading to DotCloud rebranded as Docker Inc
+--
+
+[{invert}]
+[%auto-animate]
+== Docker est vieux
+
+Mais moi aussi...
+
+image::piWorkshop.png[position=left, opacity=0.1]
+
+[.notes]
+--
+* parler de mes débuts en 2015/2016
+** Reprendre la déclaration du début: j'ai toujours été brouillon, devops avant que le mot n'existe, trifouillant 1000 projets à la fois, et donc la matrix from hell, c'était mon quotidien
+** Machine Linux non officielle, non autorisée, docker impossible sur nos machines de dév, obligé de passer par une VM
+** Docker intéressant, mais interdit en prod, impossible en dév...
+** Là dessus arrive Damien, qui nous fait un workshop Docker sur Raspberry, et là je craque
+** J'ai besoin d'un laboratoire à distance de terminaux Android, et Docker sur Raspberry Pi pourrait être la solution
+--
+
+[{invert}]
+[%auto-animate]
+== Docker on arm
+
+Aucune raison que ça soit réservé aux puissants! La révolution vaincra!
+
+image::resin-ports-docker-to-arm.png[position=left, opacity=0.1]
+
+[.notes]
+--
+* Parler de balena
+--
+
+[{invert}]
+[%auto-animate]
+== Docker on *
+
+Linux everywhere... And then Docker to follow.
+
+image::buildx_multi_arch.png[position=left, opacity=0.1]
+
+[.notes]
+--
+* Parler de riscv, de buildx qui permet de builder pour riscv alors que docker pour riscv n'est pas encore supporté
+* Finir par sortir la Radxa Zero, la brancher, s'y connecter et faire le docker container run hello world
 --
 
 [%auto-animate]
@@ -337,12 +374,12 @@ Virtualisation
 [.column]
 ---
 image::type-1-hypervisor-examples.png["https://www.ubackup.com/enterprise-backup/type-1-hypervisor-vs-type-2.html"]
---
+---
 
 [.column]
 ---
 image::type-2-hypervisor-examples.png["https://www.ubackup.com/enterprise-backup/type-1-hypervisor-vs-type-2.html"]
---
+---
 
 [%auto-animate]
 == Comment ça marche ?
@@ -376,6 +413,56 @@ https://www.architecting.it/blog/esxi-on-raspberry-pi/
 image::docker-n-est-pas-VM.png[]
 
 * Idée erronée mais citée trop fréquemment !
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-9.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-8.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-7.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-6.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-5.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-4.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-3.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-2.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-1.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm.png[]
 
 [%auto-animate]
 == Conteneur != VM

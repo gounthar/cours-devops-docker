@@ -4,7 +4,7 @@
 
 C'est à vous (ouf) !
 
-* Retournez dans Gitpod
+* Allez dans Gitpod
 * Dans un terminal, tapez la commande suivante :
 
 [source,bash]
@@ -13,12 +13,52 @@ docker container run hello-world
 # Equivalent de l'ancienne commande 'docker run'
 ----
 
+[%auto-animate]
 == 🩻 Anatomie
 
 * Un service "Docker Engine" tourne en tâche de fond et publie une API REST
-* La commande `docker run ...` a envoyé une requête `POST` au service
-* Le service a télécharge une **Image** Docker depuis le registre **DockerHub**,
+* La commande `docker run ...` a lancé un client docker qui a envoyé une requête `POST` au service docker
+* Le service a téléchargé une **Image** Docker depuis le registre **DockerHub**,
 * Puis a exécuté un **conteneur** basé sur cette image
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::output3_with_transparency.png[]
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::output4_with_transparency.png[]
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::output5_with_transparency.png[]
+[%auto-animate]
+== 🩻 Anatomie
+
+image::output6_with_transparency.png[]
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::output7_with_transparency.png[]
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::output8_with_transparency.png[]
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::output9_with_transparency.png[]
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::output10_with_transparency.png[]
 
 == 🎓 Exercice : Où est mon conteneur ?
 

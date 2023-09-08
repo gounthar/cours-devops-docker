@@ -31,6 +31,9 @@ include::./chapitres/intro.adoc[leveloffset=1]
 // Cas d'usage
 include::./chapitres/cas-d-usage.adoc[leveloffset=1]
 
+// Préparer son environnement de travail
+include::./chapitres/dev-env.adoc[leveloffset=1]
+
 // Base
 include::./chapitres/docker-base.adoc[leveloffset=1]
 
@@ -67,3 +70,12 @@ image::qrcode.png["QRCode to this presentation",height=150]
 
 [.small]
 link:{repositoryUrl}[Source on {github_icon} : {repositoryUrl},window="_blank"]
+
+[.notes]
+--
+* Pour transformer des diapos extraites de PowerPoint en les croppant et en remplaçant le blanc par du transparent:
+** for i in {3..10}
+** do
+** convert Diapositive${i}.PNG -crop 9583x4167+1917+1750 -transparent white -resize 1920x output${i}_with_transparency.png
+** done
+--
