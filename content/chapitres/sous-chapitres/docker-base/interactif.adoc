@@ -99,7 +99,7 @@ $ docker container run alpine:3.18.3 cat /etc/os-release
 [%auto-animate]
 == 🏓 Utiliser un container interactif
 
-Revenons à notre container interactif de tout à l'heure...
+Revenons dans notre container interactif de tout à l'heure...
 
 [source,shell]
 ----
@@ -317,7 +317,6 @@ docker container run
 * Cette commande instancie un "nouveau container à chaque fois" !
 * Chaque container est différent.
 * Aucun partage entre les containers à part le contenu de base de l'image.
-
 
 [%auto-animate]
 == 🏓 Utiliser un container interactif

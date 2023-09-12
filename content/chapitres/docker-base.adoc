@@ -243,6 +243,7 @@ include::./sous-chapitres/docker-base/interactif.adoc[leveloffset=1]
 
 // Utiliser un conteneur en tâche de fond
 include::./sous-chapitres/docker-base/demons.adoc[leveloffset=1]
+
 == Checkpoint 🎯
 
 * Docker essaye de résoudre le problème de l'empaquetage le plus "portable" possible
