@@ -599,7 +599,7 @@ $ docker container run --tty --interactive alpine:3.18.3
 $ docker container ls --all
 
 $ docker container run alpine:3.18.3 cat /etc/os-release
-# ... Alpine ...</code></pre></div></div></div></section><section id="utiliser_un_container_interactif" data-auto-animate><h2>🏓 Utiliser un container interactif</h2><div class="slide-content"><div class="paragraph"><p>Revenons à notre container interactif de tout à l&#8217;heure&#8230;&#8203;</p></div>
+# ... Alpine ...</code></pre></div></div></div></section><section id="utiliser_un_container_interactif" data-auto-animate><h2>🏓 Utiliser un container interactif</h2><div class="slide-content"><div class="paragraph"><p>Revenons dans notre container interactif de tout à l&#8217;heure&#8230;&#8203;</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">/ # curl google.fr</code></pre></div></div></div></section><section id="utiliser_un_container_interactif_2" data-auto-animate><h2>🏓 Utiliser un container interactif</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">/ # curl google.fr
 /bin/sh: curl: not found</code></pre></div></div></div></section><section id="utiliser_un_container_interactif_3" data-auto-animate><h2>🏓 Utiliser un container interactif</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">/ # curl google.fr
 /bin/sh: curl: not found</code></pre></div></div>
@@ -664,7 +664,221 @@ Mon Sep 25 10:33:52 UTC 2023
 Mon Sep 25 10:33:53 UTC 2023
 Mon Sep 25 10:33:54 UTC 2023
 Mon Sep 25 10:33:55 UTC 2023
-Mon Sep 25 10:33:56 UTC 2023</code></pre></div></div></div></section><section id="exercice_conteneur_en_tâche_de_fond"><h2>🎓 Exercice : conteneur en tâche de fond</h2><div class="slide-content"><div class="ulist"><ul><li><p>Exécutez un conteneur, basé sur l&#8217;image <code>nginx</code> en tâche de fond ("Background"), nommé <code>webserver-1</code></p><div class="ulist"><ul><li><p>💡 On parle de processus "détaché" (ou bien "démonisé")</p></li><li><p>⚠️ Pensez bien à <code>docker container ls</code></p></li></ul></div></li><li><p>Regardez le contenu du fichier <code>/etc/os-release</code> dans ce conteneur</p><div class="ulist"><ul><li><p>💡 <code>docker container exec</code></p></li></ul></div></li><li><p>Essayez d&#8217;arrêter, démarrer puis redémarrer le conteneur</p><div class="ulist"><ul><li><p>⚠️ Pensez bien à <code>docker container ls</code> à chaque fois</p></li><li><p>💡 <code>stop</code>, <code>start</code>, <code>restart</code></p></li></ul></div></li></ul></div></div></section><section id="solution_conteneur_en_tâche_de_fond"><h2>✅ Solution : conteneur en tâche de fond</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach --name=webserver-1 nginx
+Mon Sep 25 10:33:56 UTC 2023
+...</code></pre></div></div></div></section><section id="conteneur_en_tâche_de_fond_3" data-auto-animate><h2>⛅ Conteneur en tâche de fond</h2><div class="slide-content"><div class="paragraph"><p>Lançons un container bien particulier…</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container run -it jpetazzo/clock
+Mon Sep 25 10:33:51 UTC 2023
+Mon Sep 25 10:33:52 UTC 2023
+Mon Sep 25 10:33:53 UTC 2023
+Mon Sep 25 10:33:54 UTC 2023
+Mon Sep 25 10:33:55 UTC 2023
+Mon Sep 25 10:33:56 UTC 2023
+...</code></pre></div></div>
+<div class="paragraph"><p>Ce container va tourner indéfiniment sauf si on le stoppe avec ⌨️ <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>C</kbd></span>…</p></div></div></section><section id="conteneur_en_tâche_de_fond_4" data-auto-animate><h2>⛅ Conteneur en tâche de fond</h2><div class="slide-content"><div class="paragraph"><p>Lançons un container bien particulier…</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container run -it jpetazzo/clock
+Mon Sep 25 10:33:51 UTC 2023
+Mon Sep 25 10:33:52 UTC 2023
+Mon Sep 25 10:33:53 UTC 2023
+Mon Sep 25 10:33:54 UTC 2023
+Mon Sep 25 10:33:55 UTC 2023
+Mon Sep 25 10:33:56 UTC 2023
+...</code></pre></div></div>
+<div class="paragraph"><p>Ce container va tourner indéfiniment sauf si on le stoppe avec ⌨️ <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>C</kbd></span>…</p></div>
+<div class="paragraph"><p>… mais ca va stopper le container !</p></div>
+<div class="imageblock"><img src="media/lapalissade.jpg" alt="lapalissade"></div></div></section><section id="conteneur_en_tâche_de_fond_5" data-auto-animate><h2>⛅ Conteneur en tâche de fond</h2><div class="slide-content"><div class="paragraph"><p>Lançons un container bien particulier…</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container run -it jpetazzo/clock
+Mon Sep 25 10:33:51 UTC 2023
+Mon Sep 25 10:33:52 UTC 2023
+Mon Sep 25 10:33:53 UTC 2023
+Mon Sep 25 10:33:54 UTC 2023
+Mon Sep 25 10:33:55 UTC 2023
+Mon Sep 25 10:33:56 UTC 2023
+...</code></pre></div></div>
+<div class="paragraph"><p>Ce container va tourner indéfiniment sauf si on le stoppe avec ⌨️ <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>C</kbd></span>…</p></div>
+<div class="paragraph"><p>… mais ca va stopper le container !</p></div>
+<div class="paragraph"><p>Oui car quand on stoppe le processus principal d&#8217;un container, ce dernier n&#8217;a plus de raison d&#8217;exister et s&#8217;arrête naturellement.</p></div></div></section><section id="conteneur_en_tâche_de_fond_6" data-auto-animate><h2>⛅ Conteneur en tâche de fond</h2><div class="slide-content"><div class="paragraph"><p>La solution : le flag <code>-d</code></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container run -d jpetazzo/clock</code></pre></div></div></div></section><section id="conteneur_en_tâche_de_fond_7" data-auto-animate><h2>⛅ Conteneur en tâche de fond</h2><div class="slide-content"><div class="paragraph"><p>La solution : le flag <code>-d</code></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container run -d jpetazzo/clock
+399f3b23bc0585991afa80dfee854cf0a953d782b99153b4e2cbc74ab6b07770</code></pre></div></div>
+<div class="paragraph"><p>Le retour de cette commande correspond à l&#8217;identifiant unique du container.</p></div>
+<div class="paragraph"><p>Cette fois-ci, le container tourne, mais  en arrière plan !</p></div></div></section><section id="conteneur_en_tâche_de_fond_8" data-auto-animate><h2>⛅ Conteneur en tâche de fond</h2><div class="slide-content"><div class="imageblock"><img src="media/1460541815-image8.png" alt="1460541815 image8"></div>
+<div class="paragraph"><p><em>" </em><em>Okay</em><em>, maintenant il n&#8217;écrit la date nulle part… mais toutes les secondes… à l&#8217;aide ! "</em></p></div></div></section><section id="conteneur_en_tâche_de_fond_9" data-auto-animate><h2>⛅ Conteneur en tâche de fond</h2><div class="slide-content"><div class="paragraph"><p>Le processus principal de ce container écrit dans la sortie standard… du container !</p></div>
+<div class="paragraph"><p>Comment retrouver le contenu de la sortie standard du container ?</p></div></div></section><section id="conteneur_en_tâche_de_fond_10" data-auto-animate><h2>⛅ Conteneur en tâche de fond</h2><div class="slide-content"><div class="paragraph"><p>Le processus principal de ce container écrit dans la sortie standard… du container !</p></div>
+<div class="paragraph"><p>Comment retrouver le contenu de la sortie standard du container ?</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker logs 399f3</code></pre></div></div></div></section><section id="conteneur_en_tâche_de_fond_11" data-auto-animate><h2>⛅ Conteneur en tâche de fond</h2><div class="slide-content"><div class="paragraph"><p>Le processus principal de ce container écrit dans la sortie standard… du container !</p></div>
+<div class="paragraph"><p>Comment retrouver le contenu de la sortie standard du container ?</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker logs 399f3
+Tue Sep 12 12:37:01 UTC 2023
+Tue Sep 12 12:37:02 UTC 2023
+Tue Sep 12 12:37:03 UTC 2023
+Tue Sep 12 12:37:04 UTC 2023
+Tue Sep 12 12:37:05 UTC 2023
+Tue Sep 12 12:37:06 UTC 2023
+Tue Sep 12 12:37:07 UTC 2023
+Tue Sep 12 12:37:08 UTC 2023
+Tue Sep 12 12:37:09 UTC 2023
+Tue Sep 12 12:37:10 UTC 2023
+Tue Sep 12 12:37:11 UTC 2023</code></pre></div></div></div></section><section id="conteneur_en_tâche_de_fond_12" data-auto-animate><h2>⛅ Conteneur en tâche de fond</h2><div class="slide-content"><div class="paragraph"><p>Le processus principal de ce container écrit dans la sortie standard… du container !</p></div>
+<div class="paragraph"><p>Comment retrouver le contenu de la sortie standard du container ?</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker logs 399f3
+Tue Sep 12 12:37:01 UTC 2023
+Tue Sep 12 12:37:02 UTC 2023
+Tue Sep 12 12:37:03 UTC 2023
+Tue Sep 12 12:37:04 UTC 2023
+Tue Sep 12 12:37:05 UTC 2023
+Tue Sep 12 12:37:06 UTC 2023
+Tue Sep 12 12:37:07 UTC 2023
+Tue Sep 12 12:37:08 UTC 2023
+Tue Sep 12 12:37:09 UTC 2023
+Tue Sep 12 12:37:10 UTC 2023
+Tue Sep 12 12:37:11 UTC 2023</code></pre></div></div>
+<div class="paragraph"><p>Ouf ! On n&#8217;est pas obligé de saisir l&#8217;identifiant complet ! Il suffit de fournir le nombre suffisant de caractères pour que ce soit discriminant.</p></div></div></section><section id="lister_les_containers" data-auto-animate><h2>📖 Lister les containers</h2><div class="slide-content"><div class="paragraph"><p>Comment savoir si j&#8217;ai des containers en cours d&#8217;exécution ?</p></div>
+<div class="paragraph"><p>💡 Commande vue un peu plus tôt&#8230;&#8203;</p></div></div></section><section id="lister_les_containers_2" data-auto-animate><h2>📖 Lister les containers</h2><div class="slide-content"><div class="paragraph"><p>Comment savoir si j&#8217;ai des containers en cours d&#8217;exécution ?</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container ls</code></pre></div></div></div></section><section id="lister_les_containers_3" data-auto-animate><h2>📖 Lister les containers</h2><div class="slide-content"><div class="paragraph"><p>Comment savoir si j&#8217;ai des containers en cours d&#8217;exécution ?</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container ls
+CONTAINER ID   IMAGE                           COMMAND                  CREATED        STATUS       PORTS                    NAMES
+02cbf2fb3721   cours-devops-docker-serve       "/sbin/tini -g gulp …"   3 hours ago    Up 3 hours   0.0.0.0:8000-&gt;8000/tcp   cours-devops-docker-serve-1
+ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago   Up 3 hours                            buildx_buildkit_exciting_williams0</code></pre></div></div></div></section><section id="lister_les_containers_4" data-auto-animate><h2>📖 Lister les containers</h2><div class="slide-content"><div class="paragraph"><p>Comment savoir si j&#8217;ai des containers en cours d&#8217;exécution ?</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container ls
+CONTAINER ID   IMAGE                           COMMAND                  CREATED        STATUS       PORTS                    NAMES
+02cbf2fb3721   cours-devops-docker-serve       "/sbin/tini -g gulp …"   3 hours ago    Up 3 hours   0.0.0.0:8000-&gt;8000/tcp   cours-devops-docker-serve-1
+ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago   Up 3 hours                            buildx_buildkit_exciting_williams0</code></pre></div></div>
+<div class="paragraph"><p>On obtient un tableau de tous les containers en cours d&#8217;exécution.</p></div></div></section><section id="stop_start" data-auto-animate><h2>🛑 🏁 Stop / Start</h2><div class="slide-content"><div class="paragraph"><p>Il est possible de stopper un container.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container stop 399f3</code></pre></div></div></div></section><section id="stop_start_2" data-auto-animate><h2>🛑 🏁 Stop / Start</h2><div class="slide-content"><div class="paragraph"><p>Il est possible de stopper un container.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container stop 399f3</code></pre></div></div>
+<div class="paragraph"><p>Pour redémarrer un container :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container start 399f3</code></pre></div></div></div></section><section id="lister_tous_les_containers" data-auto-animate><h2>📖 Lister tous les containers</h2><div class="slide-content"><div class="paragraph"><p>Même les 💀.</p></div></div></section><section id="lister_tous_les_containers_2" data-auto-animate><h2>📖 Lister tous les containers</h2><div class="slide-content"><div class="paragraph"><p>Comment savoir si j&#8217;ai des containers stoppés ?</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container ls --all</code></pre></div></div></div></section><section id="lister_tous_les_containers_3" data-auto-animate><h2>📖 Lister tous les containers</h2><div class="slide-content"><div class="paragraph"><p>Comment savoir si j&#8217;ai des containers stoppés ?</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container ls --all
+CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                        PORTS                    NAMES
+90725f661d4e   hello-world                     "/hello"                 13 seconds ago   Exited (0) 12 seconds ago                              hardcore_wescoff
+9d0a6586b9e1   busybox                         "echo hello world"       22 seconds ago   Exited (0) 21 seconds ago                              gracious_moser
+368ed08a35e3   jpetazzo/clock                  "/bin/sh -c 'while d…"   6 minutes ago    Up 5 minutes                                           sweet_clarke
+c036e57bbf05   jpetazzo/clock                  "/bin/sh -c 'while d…"   17 minutes ago   Exited (130) 17 minutes ago                            cool_euclid
+02cbf2fb3721   cours-devops-docker-serve       "/sbin/tini -g gulp …"   3 hours ago      Up 3 hours                    0.0.0.0:8000-&gt;8000/tcp   cours-devops-docker-serve-1
+ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago     Up 4 hours                                             buildx_buildkit_exciting_williams0</code></pre></div></div></div></section><section id="lister_tous_les_containers_4" data-auto-animate><h2>📖 Lister tous les containers</h2><div class="slide-content"><div class="paragraph"><p>Comment savoir si j&#8217;ai des containers stoppés ?</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell"> docker container ls --all
+CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                        PORTS                    NAMES
+90725f661d4e   hello-world                     "/hello"                 13 seconds ago   Exited (0) 12 seconds ago                              hardcore_wescoff
+9d0a6586b9e1   busybox                         "echo hello world"       22 seconds ago   Exited (0) 21 seconds ago                              gracious_moser
+368ed08a35e3   jpetazzo/clock                  "/bin/sh -c 'while d…"   6 minutes ago    Up 5 minutes                                           sweet_clarke
+c036e57bbf05   jpetazzo/clock                  "/bin/sh -c 'while d…"   17 minutes ago   Exited (130) 17 minutes ago                            cool_euclid
+02cbf2fb3721   cours-devops-docker-serve       "/sbin/tini -g gulp …"   3 hours ago      Up 3 hours                    0.0.0.0:8000-&gt;8000/tcp   cours-devops-docker-serve-1
+ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago     Up 4 hours                                             buildx_buildkit_exciting_williams0</code></pre></div></div>
+<div class="paragraph"><p>Avec le flag <code>-a</code> , on obtient un tableau de tous les containers quel que soit leur état.</p></div></div></section><section id="nettoyage" data-auto-animate><h2>🧽 Nettoyage</h2><div class="slide-content"><div class="paragraph"><p>Tout container stoppé peut être supprimé.</p></div></div></section><section id="nettoyage_2" data-auto-animate><h2>🧽 Nettoyage</h2><div class="slide-content"><div class="paragraph"><p>Tout container stoppé peut être supprimé.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container rm 90725f661d4e</code></pre></div></div></div></section><section id="nettoyage_3" data-auto-animate><h2>🧽 Nettoyage</h2><div class="slide-content"><div class="paragraph"><p>Tout container stoppé peut être supprimé.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container rm 90725f661d4e
+90725f661d4e</code></pre></div></div></div></section><section id="nettoyage_4" data-auto-animate><h2>🧽 Nettoyage</h2><div class="slide-content"><div class="paragraph"><p>Tout container stoppé peut être supprimé.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container rm 90725f661d4e
+90725f661d4e</code></pre></div></div>
+<div class="paragraph"><p>Container "auto-nettoyant" 🗑️</p></div></div></section><section id="nettoyage_5" data-auto-animate><h2>🧽 Nettoyage</h2><div class="slide-content"><div class="paragraph"><p>Tout container stoppé peut être supprimé.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container rm 90725f661d4e
+90725f661d4e</code></pre></div></div>
+<div class="paragraph"><p>Container "auto-nettoyant" 🗑️</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container run -it --rm jpetazzo/clock</code></pre></div></div>
+<div class="paragraph small"><small>Aussitôt stoppé, aussitôt supprimé !</small></div></div></section><section id="rappel_cycle_de_vie_dun_container" data-auto-animate><h2>⏰ Rappel: cycle de vie d&#8217;un container</h2><div class="slide-content"><div class="imageblock"><img src="media/output68_with_transparency.png" alt="output68 with transparency"></div></div></section><section id="rappel_cycle_de_vie_dun_container_2" data-auto-animate><h2>⏰ Rappel: cycle de vie d&#8217;un container</h2><div class="slide-content"><div class="imageblock"><img src="media/output69_with_transparency.png" alt="output69 with transparency"></div></div></section><section id="rappel_cycle_de_vie_dun_container_3" data-auto-animate><h2>⏰ Rappel: cycle de vie d&#8217;un container</h2><div class="slide-content"><div class="imageblock"><img src="media/output70_with_transparency.png" alt="output70 with transparency"></div></div></section><section id="rappel_cycle_de_vie_dun_container_4" data-auto-animate><h2>⏰ Rappel: cycle de vie d&#8217;un container</h2><div class="slide-content"><div class="imageblock"><img src="media/output71_with_transparency.png" alt="output71 with transparency"></div></div></section><section id="rappel_cycle_de_vie_dun_container_5" data-auto-animate><h2>⏰ Rappel: cycle de vie d&#8217;un container</h2><div class="slide-content"><div class="imageblock"><img src="media/output72_with_transparency.png" alt="output72 with transparency"></div>
+<aside class="notes"><div class="paragraph"><p><code>docker container create</code> is used to create a new container but without starting it immediately.
+When you run docker create, Docker creates a container based on the specified image and prepares it to run, but it remains in a stopped state.
+You can then start the container using the <code>docker container start</code> command.</p></div>
+<div class="paragraph"><p>Here&#8217;s the basic syntax of the docker create command:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container create [OPTIONS] IMAGE [COMMAND] [ARG...]</code></pre></div></div>
+<div class="ulist"><ul><li><p><code>OPTIONS</code> are various flags and settings you can apply to the container creation.</p></li><li><p><code>IMAGE</code> is the name or ID of the Docker image to use for creating the container.</p></li><li><p><code>COMMAND</code> (optional) specifies the command to run when the container starts.</p></li><li><p><code>ARG</code> (optional) provides arguments to pass to the command.</p></li></ul></div>
+<div class="paragraph"><p>For example, to create a new container from an image called <code>myapp-image</code> without starting it immediately, you would use:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container create --name myapp-container myapp-image</code></pre></div></div>
+<div class="paragraph"><p>After creating the container, you can start it with:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container start myapp-container</code></pre></div></div>
+<div class="paragraph"><p>This separation of creation and starting allows you to configure the container further or set up networking and volumes before actually running the container.</p></div></aside></div></section><section id="reprendre_le_contrôle" data-auto-animate><h2>🔄 Reprendre le contrôle</h2><div class="slide-content"><div class="paragraph"><p>Sur un container en arrière-plan</p></div></div></section><section id="reprendre_le_contrôle_2" data-auto-animate><h2>🔄 Reprendre le contrôle</h2><div class="slide-content"><div class="paragraph"><p>Sur un container en arrière-plan</p></div>
+<div class="paragraph"><p>Il est possible d&#8217;interagir avec un container en arrière-plan en cours d&#8217;exécution.</p></div></div></section><section id="reprendre_le_contrôle_3" data-auto-animate><h2>🔄 Reprendre le contrôle</h2><div class="slide-content"><div class="paragraph"><p>Sur un container en arrière-plan</p></div>
+<div class="paragraph"><p>Il est possible d&#8217;interagir avec un container en arrière-plan en cours d&#8217;exécution.</p></div>
+<div class="paragraph"><p>La commande suivante permet de lancer une commande à l&#8217;intérieur d&#8217;un container.</p></div></div></section><section id="reprendre_le_contrôle_4" data-auto-animate><h2>🔄 Reprendre le contrôle</h2><div class="slide-content"><div class="paragraph"><p>Sur un container en arrière-plan</p></div>
+<div class="paragraph"><p>Il est possible d&#8217;interagir avec un container en arrière-plan en cours d&#8217;exécution.</p></div>
+<div class="paragraph"><p>La commande suivante permet de lancer une commande à l&#8217;intérieur d&#8217;un container.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container exec &lt;containerID&gt; echo "hello"</code></pre></div></div></div></section><section id="reprendre_le_contrôle_5" data-auto-animate><h2>🔄 Reprendre le contrôle</h2><div class="slide-content"><div class="paragraph"><p>Sur un container en arrière-plan</p></div>
+<div class="paragraph"><p>Il est possible d&#8217;interagir avec un container en arrière-plan en cours d&#8217;exécution.</p></div>
+<div class="paragraph"><p>La commande suivante permet de lancer une commande à l&#8217;intérieur d&#8217;un container.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container ls</code></pre></div></div></div></section><section id="reprendre_le_contrôle_6" data-auto-animate><h2>🔄 Reprendre le contrôle</h2><div class="slide-content"><div class="paragraph"><p>Sur un container en arrière-plan</p></div>
+<div class="paragraph"><p>Il est possible d&#8217;interagir avec un container en arrière-plan en cours d&#8217;exécution.</p></div>
+<div class="paragraph"><p>La commande suivante permet de lancer une commande à l&#8217;intérieur d&#8217;un container.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container ls
+CONTAINER ID   IMAGE                           COMMAND                  CREATED        STATUS       PORTS                    NAMES
+368ed08a35e3   jpetazzo/clock                  "/bin/sh -c 'while d…"   4 hours ago    Up 4 hours                            sweet_clarke
+02cbf2fb3721   cours-devops-docker-serve       "/sbin/tini -g gulp …"   7 hours ago    Up 7 hours   0.0.0.0:8000-&gt;8000/tcp   cours-devops-docker-serve-1
+ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago   Up 7 hours                            buildx_buildkit_exciting_williams0</code></pre></div></div></div></section><section id="reprendre_le_contrôle_7" data-auto-animate><h2>🔄 Reprendre le contrôle</h2><div class="slide-content"><div class="paragraph"><p>Sur un container en arrière-plan</p></div>
+<div class="paragraph"><p>Il est possible d&#8217;interagir avec un container en arrière-plan en cours d&#8217;exécution.</p></div>
+<div class="paragraph"><p>La commande suivante permet de lancer une commande à l&#8217;intérieur d&#8217;un container.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container ls
+CONTAINER ID   IMAGE                           COMMAND                  CREATED        STATUS       PORTS                    NAMES
+368ed08a35e3   jpetazzo/clock                  "/bin/sh -c 'while d…"   4 hours ago    Up 4 hours                            sweet_clarke
+02cbf2fb3721   cours-devops-docker-serve       "/sbin/tini -g gulp …"   7 hours ago    Up 7 hours   0.0.0.0:8000-&gt;8000/tcp   cours-devops-docker-serve-1
+ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago   Up 7 hours                            buildx_buildkit_exciting_williams0
+
+docker container exec 368ed08a35e3 echo hello
+hello</code></pre></div></div></div></section><section id="reprendre_le_contrôle_8" data-auto-animate><h2>🔄 Reprendre le contrôle</h2><div class="slide-content"><div class="paragraph"><p>Sur un container en arrière-plan</p></div>
+<div class="imageblock"><img src="media/1107521466-image9.png" alt="1107521466 image9"></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container exec –it &lt;containerID&gt; bash</code></pre></div></div>
+<div class="paragraph"><p>Ca fonctionne aussi en interactif !</p></div></div></section><section id="exercice_conteneur_en_tâche_de_fond"><h2>🎓 Exercice : conteneur en tâche de fond</h2><div class="slide-content"><div class="paragraph"><p>Étapes</p></div>
+<div class="ulist"><ul><li><p>Lancer un container "daemon" <code>jpetazzo/clock</code></p></li><li><p>Utiliser l&#8217;équivalent de <code>tail –f</code> pour lire la sortie standard du container 💡</p></li><li><p>Lancer un second container "daemon" 👹</p></li><li><p>Stocker l&#8217;identifiant de ce container dans une variable du shell, en une seule commande et en jouant avec <code>docker container ls</code></p></li><li><p>Stopper le container avec cet identifiant</p></li><li><p>Afficher les containers lancés 🏃📦</p></li><li><p>Afficher les containers arrêtés 🛑📦</p></li></ul></div></div></section><section id="solution_conteneur_en_tâche_de_fond"><h2>✅ Solution : conteneur en tâche de fond</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Lancer un container "daemon" `jpetazzo/clock`
+docker container run --detach --name first-clock jpetazzo/clock
+
+# Utiliser l'équivalent de `tail –f` pour lire la sortie standard du container 💡
+docker container logs -f first-clock
+
+# * Lancer un second container "daemon" 👹
+docker container run --detach --name second-clock jpetazzo/clock
+
+# Stocker l'identifiant de ce container dans une variable du shell, en une seule commande et en jouant avec `docker container ls`
+# --filter "name=second-clock" filters the list of containers to include only those with the name "second-clock."
+container_id=$(docker container ls -q --filter "name=second-clock")
+
+# Stopper le container avec cet identifiant
+docker container stop "$container_id"
+
+# Afficher les containers lancés  🏃📦
+docker container ls
+
+# Afficher les containers arrêtés 🛑📦
+docker container ls --filter "status=exited"</code></pre></div></div></div></section><section id="exercice_conteneur_en_tâche_de_fond_2"><h2>🎓 Exercice : conteneur en tâche de fond</h2><div class="slide-content"><div class="ulist"><ul><li><p>Relancer un des containers arrêtés.</p></li><li><p>Exécuter un `ps –ef `dans ce container</p></li><li><p>Quel est le PID du process principal ?</p></li><li><p>Vérifier que le container "tourne" toujours</p></li><li><p>Supprimer l&#8217;image (tip : <code>docker rmi</code>)</p></li><li><p>Supprimer les containers</p></li><li><p>Supprimer l&#8217;image (pour de vrai cette fois)</p></li></ul></div></div></section><section id="solution_conteneur_en_tâche_de_fond_2"><h2>✅ Solution : conteneur en tâche de fond</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Relancer un des containers arrêtés.
+docker container start second-clock
+
+# Exécuter un `ps –ef `dans ce container
+docker container exec second-clock ps -ef
+PID   USER     TIME  COMMAND
+    1 root      0:00 /bin/sh -c while date; do sleep 1; done
+   56 root      0:00 sleep 1
+   57 root      0:00 ps -ef
+
+# Quel est le PID du process principal ?
+# 1
+
+# Vérifier que le container "tourne" toujours
+docker container ls
+CONTAINER ID   IMAGE                           COMMAND                  CREATED         STATUS              PORTS                    NAMES
+7d7085809ad2   cours-devops-docker-serve       "/sbin/tini -g gulp …"   6 minutes ago   Up 5 minutes        0.0.0.0:8000-&gt;8000/tcp   cours-devops-docker-serve-1
+edea0c46c6d8   jpetazzo/clock                  "/bin/sh -c 'while d…"   9 minutes ago   Up About a minute                            second-clock
+ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago    Up 11 hours                                  buildx_buildkit_exciting_williams0
+
+# Supprimer l'image (tip : `docker rmi`)
+docker rmi jpetazzo/clock
+Error response from daemon: conflict: unable to remove repository reference "jpetazzo/clock" (must force) - container edea0c46c6d8 is using its referenced image 7a8965d6553e
+
+# Supprimer les containers
+docker stop second-clock
+second-clock
+
+docker rm second-clockl
+second-clock
+# Supprimer l'image (pour de vrai cette fois)
+docker rmi jpetazzo/clock
+
+Untagged: jpetazzo/clock:latest
+Untagged: jpetazzo/clock@sha256:dc06bbc3744f7200404bff0bbb2516925e7adea115e07de9da8b36bf15fe3dd3
+Deleted: sha256:7a8965d6553ea2289485744ef20521e0dd0d12ab51773f271882913b79813750
+Deleted: sha256:67f770da229bf16d0c280f232629b0c1f1243a884df09f6b940a1c7288535a6d</code></pre></div></div>
+<aside class="notes"><div class="paragraph"><p>Dans Docker, le PID (Process ID) principal est toujours 1, car c&#8217;est une convention spécifique à Docker.
+Cette convention facilite la gestion des processus dans les conteneurs en isolant chaque processus du conteneur du système hôte.
+En assignant toujours le PID 1 au processus principal du conteneur, Docker peut surveiller ce processus pour s&#8217;assurer qu&#8217;il est en cours d&#8217;exécution.
+Cela permet également d&#8217;éviter des conflits potentiels avec les processus du système hôte, car les PID sont spécifiques à chaque espace de conteneur.
+En résumé, cette convention est une pratique standard qui contribue à l&#8217;isolation et à la gestion efficace des processus dans les conteneurs Docker.</p></div></aside></div></section><section id="exercice_conteneur_en_tâche_de_fond_3"><h2>🎓 Exercice : conteneur en tâche de fond</h2><div class="slide-content"><div class="ulist"><ul><li><p>Exécutez un conteneur, basé sur l&#8217;image <code>nginx</code> en tâche de fond ("Background"), nommé <code>webserver-1</code></p><div class="ulist"><ul><li><p>💡 On parle de processus "détaché" (ou bien "démonisé") 👹</p></li><li><p>⚠️ Pensez bien à <code>docker container ls</code></p></li></ul></div></li><li><p>Regardez le contenu du fichier <code>/etc/os-release</code> dans ce conteneur</p><div class="ulist"><ul><li><p>💡 <code>docker container exec</code></p></li></ul></div></li><li><p>Essayez d&#8217;arrêter, démarrer puis redémarrer le conteneur</p><div class="ulist"><ul><li><p>⚠️ Pensez bien à <code>docker container ls</code> à chaque fois</p></li><li><p>💡 <code>stop</code>, <code>start</code>, <code>restart</code></p></li></ul></div></li></ul></div></div></section><section id="solution_conteneur_en_tâche_de_fond_3"><h2>✅ Solution : conteneur en tâche de fond</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach --name=webserver-1 nginx
 # &lt;ID du conteneur&gt;
 
 docker container ls
@@ -682,7 +896,10 @@ docker container ls
 docker container ls --all
 
 docker container start webserver-1
-docker container ls</code></pre></div></div></div></section><section id="checkpoint_2"><h2>Checkpoint 🎯</h2><div class="slide-content"><div class="ulist"><ul><li><p>Docker essaye de résoudre le problème de l&#8217;empaquetage le plus "portable" possible</p><div class="ulist"><ul><li><p>On n&#8217;en a pas encore vu les effets, ça arrive !</p></li></ul></div></li><li><p>Vous avez vu qu&#8217;un containeur permet d&#8217;exécuter une commande dans un environnement "préparé"</p><div class="ulist"><ul><li><p>Catalogue d&#8217;images Docker par défaut : Le <a href="https://hub.docker.com">Docker Hub</a></p></li></ul></div></li><li><p>Vous avez vu qu&#8217;on peut exécuter des conteneurs selon 3 modes :</p><div class="ulist"><ul><li><p>"One shot"</p></li><li><p>Interactif</p></li><li><p>En tâche de fond</p></li></ul></div></li></ul></div>
+docker container ls</code></pre></div></div></div></section><section id="checkpoint_2" class="columns"><h2>Checkpoint 🎯</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p>Vous savez désormais:</p></div>
+<div class="ulist"><ul><li><p>Maîtriser le cycle de vie des containers</p></li><li><p>Interagir avec les containers existants</p></li></ul></div>
+<div class="imageblock"><img src="media/1706694417-image2.png" alt="1706694417 image2"></div></div></div>
+<div class="openblock column"><div class="content"><div class="imageblock"><img src="media/1497094497-image10.gif" alt="1497094497 image10"></div></div></div></div></section><section id="checkpoint_3"><h2>Checkpoint 🎯</h2><div class="slide-content"><div class="ulist"><ul><li><p>Docker essaye de résoudre le problème de l&#8217;empaquetage le plus "portable" possible</p><div class="ulist"><ul><li><p>On n&#8217;en a pas encore vu les effets, ça arrive !</p></li></ul></div></li><li><p>Vous avez vu qu&#8217;un containeur permet d&#8217;exécuter une commande dans un environnement "préparé"</p><div class="ulist"><ul><li><p>Catalogue d&#8217;images Docker par défaut : Le <a href="https://hub.docker.com">Docker Hub</a></p></li></ul></div></li><li><p>Vous avez vu qu&#8217;on peut exécuter des conteneurs selon 3 modes :</p><div class="ulist"><ul><li><p>"One shot"</p></li><li><p>Interactif</p></li><li><p>En tâche de fond</p></li></ul></div></li></ul></div>
 <div class="paragraph"><p>&#8658; 🤔 Mais comment ces images sont-elles fabriquées ? Quelle confiance leur accorder ?</p></div></div></section></section>
 <section id="containers_2"><h2>Containers</h2></section>
 <section id="images"><h2>Images</h2></section>
@@ -695,7 +912,7 @@ docker container ls</code></pre></div></div></div></section><section id="checkpo
 <div class="paragraph small"><small><a href="https://gounthar.github.io/gounthar/cours-devops-docker/updated-dependencies">Slides: https://gounthar.github.io/gounthar/cours-devops-docker/updated-dependencies</a></small></div>
 <div class="imageblock"><img src="media/qrcode.png" alt="QRCode to this presentation" height="150"></div>
 <div class="paragraph small"><small><a href="https://github.com/gounthar/gounthar/cours-devops-docker" target="_blank">Source on <span class="icon"><i class="fab fa-github"></i></span> : https://github.com/gounthar/gounthar/cours-devops-docker</a></small></div>
-<aside class="notes"><div class="ulist"><ul><li><p>Pour transformer des diapos extraites de PowerPoint en les croppant et en remplaçant le blanc par du transparent:</p><div class="ulist"><ul><li><p>for i in {3..10}</p></li><li><p>do</p></li><li><p>convert Diapositive${i}.PNG -crop 9583x4167+1917+1750 -transparent white -resize 1920x output${i}_with_transparency.png</p></li><li><p>done</p></li></ul></div></li><li><p>Pour transformer un PPT en asciidoc (pour en récupérer le texte et les images, il ne faut rien en attendre d&#8217;autre):</p><div class="ulist"><ul><li><p>java -jar pptx2adoc.jar Slide.pptx</p></li><li><p>Le projet se trouve là: <a href="https://github.com/ullenboom/ppt2asciidocslides" class="bare">https://github.com/ullenboom/ppt2asciidocslides</a></p></li></ul></div></li></ul></div></aside></div></section></div></div><script src="./reveal.js/dist/reveal.js"></script><script>Array.prototype.slice.call(document.querySelectorAll('.slides section')).forEach(function(slide) {
+<aside class="notes"><div class="ulist"><ul><li><p>Pour transformer des diapos extraites de PowerPoint en les croppant et en remplaçant le blanc par du transparent:</p><div class="ulist"><ul><li><p>for i in {3..10}</p></li><li><p>do</p></li><li><p>convert Diapositive${i}.PNG -crop 9583x4167+1917+1750 -transparent white -resize 1920x output${i}_with_transparency.png</p></li><li><p>done</p></li></ul></div></li><li><p>Pour transformer un PPT en asciidoc (pour en récupérer le texte et les images, il ne faut rien en attendre d&#8217;autre):</p><div class="ulist"><ul><li><p>java -jar pptx2adoc.jar Slide.pptx</p></li><li><p>Le projet se trouve là: <a href="https://github.com/ullenboom/ppt2asciidocslides" class="bare">https://github.com/ullenboom/ppt2asciidocslides</a></p></li></ul></div></li><li><p>Certains des memes ont été généré grâce à memerator: <a href="https://damemerator.netlify.app/" class="bare">https://damemerator.netlify.app/</a></p></li></ul></div></aside></div></section></div></div><script src="./reveal.js/dist/reveal.js"></script><script>Array.prototype.slice.call(document.querySelectorAll('.slides section')).forEach(function(slide) {
   if (slide.getAttribute('data-background-color')) return;
   // user needs to explicitly say he wants CSS color to override otherwise we might break custom css or theme (#226)
   if (!(slide.classList.contains('canvas') || slide.classList.contains('background'))) return;
