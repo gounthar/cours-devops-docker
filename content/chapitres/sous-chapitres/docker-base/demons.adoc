@@ -1,0 +1,63 @@
+[%auto-animate]
+== ⛅ Conteneur en tâche de fond
+
+Lançons un container bien particulier…
+
+[source,shell]
+----
+docker container run -it jpetazzo/clock
+----
+
+[%auto-animate]
+== ⛅ Conteneur en tâche de fond
+
+Lançons un container bien particulier…
+
+[source,shell]
+----
+docker container run -it jpetazzo/clock
+Mon Sep 25 10:33:51 UTC 2023
+Mon Sep 25 10:33:52 UTC 2023
+Mon Sep 25 10:33:53 UTC 2023
+Mon Sep 25 10:33:54 UTC 2023
+Mon Sep 25 10:33:55 UTC 2023
+Mon Sep 25 10:33:56 UTC 2023
+----
+
+== 🎓 Exercice : conteneur en tâche de fond
+
+* Exécutez un conteneur, basé sur l'image `nginx` en tâche de fond ("Background"), nommé `webserver-1`
+** 💡 On parle de processus "détaché" (ou bien "démonisé")
+** ⚠️ Pensez bien à `docker container ls`
+
+* Regardez le contenu du fichier `/etc/os-release` dans ce conteneur
+** 💡 `docker container exec`
+
+* Essayez d'arrêter, démarrer puis redémarrer le conteneur
+** ⚠️ Pensez bien à `docker container ls` à chaque fois
+** 💡 `stop`, `start`, `restart`
+
+== ✅ Solution : conteneur en tâche de fond
+
+[source,bash]
+----
+docker container run --detach --name=webserver-1 nginx
+# <ID du conteneur>
+
+docker container ls
+docker container ls --all
+
+docker container exec webserver-1 cat /etc/os-release
+# ... Debian ...
+
+docker container stop webserver-1
+docker container ls
+docker container ls --all
+
+docker container start webserver-1
+docker container ls
+docker container ls --all
+
+docker container start webserver-1
+docker container ls
+----

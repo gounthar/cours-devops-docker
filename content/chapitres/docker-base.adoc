@@ -1,4 +1,4 @@
-= C'est à vous!
+= Containers
 
 == 🎓 Exercice : Votre premier conteneur
 
@@ -17,7 +17,7 @@ docker container run hello-world
 == 🩻 Anatomie
 
 * Un service "Docker Engine" tourne en tâche de fond et publie une API REST
-* La commande `docker run ...` a lancé un client docker qui a envoyé une requête `POST` au service docker
+* La commande `docker container run ...` a lancé un client docker qui a envoyé une requête `POST` au service docker
 * Le service a téléchargé une **Image** Docker depuis le registre **DockerHub**,
 * Puis a exécuté un **conteneur** basé sur cette image
 
@@ -60,6 +60,16 @@ image::output9_with_transparency.png[]
 
 image::output10_with_transparency.png[]
 
+[%auto-animate]
+== 🩻 Anatomie
+
+image::dollar_date.png[]
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::shell_dans_shell_pour_date.png[]
+
 == 🎓 Exercice : Où est mon conteneur ?
 
 C'est à vous !
@@ -90,6 +100,83 @@ CONTAINER ID   IMAGE         COMMAND    CREATED          STATUS                 
 
 * Quand la commande s'arrête : le conteneur s'arrête
 ** cf. code de sortie dans la colonne "*STATUS*"
+
+[%auto-animate]
+== 🫁 Rappels d'anatomie
+
+[source, shell]
+----
+$ docker container run busybox echo hello world
+----
+
+[%auto-animate]
+== 🫁 Rappels d'anatomie
+
+[source, shell]
+----
+$ docker container run busybox echo hello world
+----
+
+* Le moteur Docker crée un container à partir de l'image "busybox".
+
+[%auto-animate]
+== 🫁 Rappels d'anatomie
+
+[source, shell]
+----
+$ docker container run busybox echo hello world
+----
+
+* Le moteur Docker crée un container à partir de l'image "busybox".
+* Le moteur Docker démarre le container créé.
+
+[%auto-animate]
+== 🫁 Rappels d'anatomie
+
+[source, shell]
+----
+$ docker container run busybox echo hello world
+----
+
+* Le moteur Docker crée un container à partir de l'image "busybox".
+* Le moteur Docker démarre le container créé.
+* La commande "echo hello world" est exécutée à l'intérieur du container.
+
+[%auto-animate]
+== 🫁 Rappels d'anatomie
+
+[source, shell]
+----
+$ docker container run busybox echo hello world
+----
+
+* Le moteur Docker crée un container à partir de l'image "busybox".
+* Le moteur Docker démarre le container créé.
+* La commande "echo hello world" est exécutée à l'intérieur du container.
+* On obtient le résultat dans la sortie standard de la machine hôte.
+
+[%auto-animate]
+== 🫁 Rappels d'anatomie
+
+[source, shell]
+----
+$ docker container run busybox echo hello world
+----
+
+* Le moteur Docker crée un container à partir de l'image "busybox".
+* Le moteur Docker démarre le container créé.
+* La commande "echo hello world" est exécutée à l'intérieur du container.
+* On obtient le résultat dans la sortie standard de la machine hôte.
+* Le container est stoppé.
+
+[%auto-animate]
+== 🍽️ Cas d'usage
+
+Outillage jetable
+
+image::outillage-jetable.png[]
+
+* Tester une version de Maven, de JDK, de NPM, …
 
 == 🎓 Exercice : Cycle de vie d'un conteneur simple
 
@@ -150,75 +237,12 @@ représentant une application auto-suffisante.
 
 * Il existe d'autre "registres" en fonction des besoins (GitHub GHCR, Google GCR, etc.)
 
-== 🎓 Exercice : conteneur interactif
+// Utiliser un conteneur interactif
+include::./sous-chapitres/docker-base/interactif.adoc[leveloffset=1]
 
-* Quel distribution Linux est utilisée dans le terminal Gitpod ?
-** 💡 Regardez le fichier `/etc/os-release`
 
-* Exécutez un conteneur interactif basé sur `alpine:3.17` (une distribution Linux ultra-légère) et regardez le contenu du fichier au même emplacement
-** 💡 `docker container run --help`
-** 💡 Demandez un https://en.wikipedia.org/wiki/TTY[`tty`] à Docker
-** 💡 Activez le mode interactif
-
-* Exécutez la même commande dans un conteneur basé sur la même image mais en *NON* interactif
-** 💡 Comment surcharger la commande par défaut ?
-
-== ✅ Solution : conteneur interactif
-
-[source,bash]
-----
-$ cat /etc/os-release
-# ... Ubuntu ....
-
-$ docker container run --tty --interactive alpine:3.17
-/ # cat /etc/os-release
-# ... Alpine ...
-# Notez que le "prompt" du terminal est différent DANS le conteneur
-/ # exit
-$ docker container ls --all
-
-$ docker container run alpine:3.17 cat /etc/os-release
-# ... Alpine ...
-----
-
-== 🎓 Exercice : conteneur en tâche de fond
-
-* Exécutez un conteneur, basé sur l'image `nginx` en tâche de fond ("Background"), nommé `webserver-1`
-** 💡 On parle de processus "détaché" (ou bien "démonisé")
-** ⚠️ Pensez bien à `docker container ls`
-
-* Regardez le contenu du fichier `/etc/os-release` dans ce conteneur
-** 💡 `docker container exec`
-
-* Essayez d'arrêter, démarrer puis redémarrer le conteneur
-** ⚠️ Pensez bien à `docker container ls` à chaque fois
-** 💡 `stop`, `start`, `restart`
-
-== ✅ Solution : conteneur en tâche de fond
-
-[source,bash]
-----
-docker container run --detach --name=webserver-1 nginx
-# <ID du conteneur>
-
-docker container ls
-docker container ls --all
-
-docker container exec webserver-1 cat /etc/os-release
-# ... Debian ...
-
-docker container stop webserver-1
-docker container ls
-docker container ls --all
-
-docker container start webserver-1
-docker container ls
-docker container ls --all
-
-docker container start webserver-1
-docker container ls
-----
-
+// Utiliser un conteneur en tâche de fond
+include::./sous-chapitres/docker-base/demons.adoc[leveloffset=1]
 == Checkpoint 🎯
 
 * Docker essaye de résoudre le problème de l'empaquetage le plus "portable" possible

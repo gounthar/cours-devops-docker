@@ -78,4 +78,8 @@ link:{repositoryUrl}[Source on {github_icon} : {repositoryUrl},window="_blank"]
 ** do
 ** convert Diapositive${i}.PNG -crop 9583x4167+1917+1750 -transparent white -resize 1920x output${i}_with_transparency.png
 ** done
+
+* Pour transformer un PPT en asciidoc (pour en récupérer le texte et les images, il ne faut rien en attendre d'autre):
+** java -jar pptx2adoc.jar Slide.pptx
+** Le projet se trouve là: https://github.com/ullenboom/ppt2asciidocslides
 --
