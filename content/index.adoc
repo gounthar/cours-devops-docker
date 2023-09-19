@@ -37,9 +37,6 @@ include::./chapitres/dev-env.adoc[leveloffset=1]
 // Base
 include::./chapitres/docker-base.adoc[leveloffset=1]
 
-// Containers
-include::./chapitres/containers.adoc[leveloffset=1]
-
 // Images
 include::./chapitres/images.adoc[leveloffset=1]
 
