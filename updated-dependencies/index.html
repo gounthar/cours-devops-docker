@@ -901,8 +901,112 @@ docker container ls</code></pre></div></div></div></section><section id="checkpo
 <div class="imageblock"><img src="media/1706694417-image2.png" alt="1706694417 image2"></div></div></div>
 <div class="openblock column"><div class="content"><div class="imageblock"><img src="media/1497094497-image10.gif" alt="1497094497 image10"></div></div></div></div></section><section id="checkpoint_3"><h2>Checkpoint 🎯</h2><div class="slide-content"><div class="ulist"><ul><li><p>Docker essaye de résoudre le problème de l&#8217;empaquetage le plus "portable" possible</p><div class="ulist"><ul><li><p>On n&#8217;en a pas encore vu les effets, ça arrive !</p></li></ul></div></li><li><p>Vous avez vu qu&#8217;un containeur permet d&#8217;exécuter une commande dans un environnement "préparé"</p><div class="ulist"><ul><li><p>Catalogue d&#8217;images Docker par défaut : Le <a href="https://hub.docker.com">Docker Hub</a></p></li></ul></div></li><li><p>Vous avez vu qu&#8217;on peut exécuter des conteneurs selon 3 modes :</p><div class="ulist"><ul><li><p>"One shot"</p></li><li><p>Interactif</p></li><li><p>En tâche de fond</p></li></ul></div></li></ul></div>
 <div class="paragraph"><p>&#8658; 🤔 Mais comment ces images sont-elles fabriquées ? Quelle confiance leur accorder ?</p></div></div></section></section>
-<section id="containers_2"><h2>Containers</h2></section>
-<section id="images"><h2>Images</h2></section>
+<section><section id="docker_images" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Docker Images</h2><div class="slide-content"><div class="imageblock"><img src="media/multi-layered-cake.jpeg" alt="multi layered cake" width="900"></div></div></section><section id="pourquoi_des_images"><h2>🤔 Pourquoi des images ?</h2><div class="slide-content"><div class="ulist"><ul><li><p>Un <strong>conteneur</strong> est toujours exécuté depuis une <strong>image</strong>.</p></li><li><p>Une <strong>image de conteneur</strong> (ou "Image Docker") est un  modèle ("template") d&#8217;application auto-suffisant.</p></li></ul></div>
+<div class="paragraph"><p>&#8658; Permet de fournir un livrable portable (ou presque).</p></div></div></section><section id="cest_quoi_une_image" data-auto-animate><h2>🤔 C&#8217;est quoi une image ?</h2><div class="slide-content"><div class="paragraph"><p>C&#8217;est une collection de fichiers et de metadonnées.</p></div></div></section><section id="cest_quoi_une_image_2"><h2>🤔 C&#8217;est quoi une image ?</h2><div class="slide-content"><div class="paragraph"><p>C&#8217;est une collection de fichiers et de metadonnées.</p></div>
+<div class="paragraph"><p>C&#8217;est une suite de couches superposées.</p></div></div></section><section id="cest_quoi_une_image_3"><h2>🤔 C&#8217;est quoi une image ?</h2><div class="slide-content"><div class="paragraph"><p>C&#8217;est une collection de fichiers et de metadonnées.</p></div>
+<div class="paragraph"><p>C&#8217;est une suite de couches superposées.</p></div>
+<div class="imageblock"><img src="media/images-output5_with_transparency.png" alt="images output5 with transparency"></div></div></section><section id="cest_quoi_une_image_4" data-auto-animate><h2>🤔 C&#8217;est quoi une image ?</h2><div class="slide-content"><div class="paragraph"><p>C&#8217;est une collection de fichiers et de metadonnées.</p></div>
+<div class="paragraph"><p>C&#8217;est une suite de couches superposées.</p></div>
+<div class="imageblock"><img src="media/images-output6_with_transparency.png" alt="images output6 with transparency"></div></div></section><section id="détail_des_couches" data-auto-animate><h2>🍰 Détail des couches</h2><div class="slide-content"><div class="paragraph"><p>Exemple d&#8217;une image Apache HTTPd "custom"</p></div>
+<div class="imageblock"><img src="media/images-output8_with_transparency.png" alt="images output8 with transparency"></div></div></section><section id="détail_des_couches_2" data-auto-animate><h2>🍰 Détail des couches</h2><div class="slide-content"><div class="paragraph"><p>Exemple d&#8217;une image Apache HTTPd "custom"</p></div>
+<div class="imageblock"><img src="media/images-output9_with_transparency.png" alt="images output9 with transparency"></div></div></section><section id="détail_des_couches_3" data-auto-animate><h2>🍰 Détail des couches</h2><div class="slide-content"><div class="paragraph"><p>Exemple d&#8217;une image Apache HTTPd "custom"</p></div>
+<div class="imageblock"><img src="media/images-output10_with_transparency.png" alt="images output10 with transparency"></div></div></section><section id="détail_des_couches_4" data-auto-animate><h2>🍰 Détail des couches</h2><div class="slide-content"><div class="paragraph"><p>Exemple d&#8217;une image Apache HTTPd "custom"</p></div>
+<div class="imageblock"><img src="media/images-output11_with_transparency.png" alt="images output11 with transparency"></div></div></section><section id="détail_des_couches_5" data-auto-animate><h2>🍰 Détail des couches</h2><div class="slide-content"><div class="paragraph"><p>Exemple d&#8217;une image Apache HTTPd "custom"</p></div>
+<div class="imageblock"><img src="media/images-output12_with_transparency.png" alt="images output12 with transparency"></div></div></section><section id="détail_des_couches_6" data-auto-animate><h2>🍰 Détail des couches</h2><div class="slide-content"><div class="paragraph"><p>Exemple d&#8217;une image Apache HTTPd "custom"</p></div>
+<div class="imageblock"><img src="media/images-output13_with_transparency.png" alt="images output13 with transparency"></div>
+<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {8..13}; do convert Diapositive${i}.PNG -crop 10221x4830+1556+2420 -transparent white -resize x1080 images-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="dicton_du_jour"><h2>Dicton du jour</h2><div class="slide-content"><div class="paragraph"><p><strong><em>"L&#8217;image est à la classe ce que le container est à l&#8217;objet"</em></strong></p></div>
+<div class="imageblock"><img src="media/dicton-du-jour.png" alt="dicton du jour"></div></div></section><section><div class="slide-content"><div class="paragraph"><p>🤔 Application Auto-Suffisante ?</p></div>
+<div class="imageblock"><img src="media/docker-app-self-sufficient.png" alt="docker app self sufficient" width="900"></div></div></section><section id="cest_quoi_le_principe"><h2>C&#8217;est quoi le principe ?</h2><div class="slide-content"><div class="imageblock"><img src="media/dockerfile-flow.png" alt="dockerfile flow"></div></div></section><section id="le_livre_de_recettes" data-auto-animate><h2>🐋 Le livre de recettes</h2><div class="slide-content"><div class="imageblock"><img src="media/dockerfile.png" alt="dockerfile"></div></div></section><section id="le_livre_de_recettes_2" data-auto-animate><h2>🐋 Le livre de recettes</h2><div class="slide-content"><div class="imageblock"><img src="media/dockerfile.png" alt="dockerfile"></div></div></section><section id="le_livre_de_recettes_3" data-auto-animate><h2>🐋 Le livre de recettes</h2><div class="slide-content"><div class="imageblock"><img src="media/dockerfile.png" alt="dockerfile"></div>
+<div class="paragraph"><p>Un simple fichier nommé "Dockerfile" (majuscule sur le D et pas d&#8217;extension).</p></div></div></section><section id="le_livre_de_recettes_4" data-auto-animate><h2>🐋 Le livre de recettes</h2><div class="slide-content"><div class="imageblock"><img src="media/dockerfile.png" alt="dockerfile"></div>
+<div class="paragraph"><p>Un simple fichier nommé "Dockerfile" (majuscule sur le D et pas d&#8217;extension).</p></div>
+<div class="paragraph"><p>C&#8217;est du texte, très pratique à stocker dans Git.</p></div></div></section><section id="le_livre_de_recettes_5" data-auto-animate><h2>🐋 Le livre de recettes</h2><div class="slide-content"><div class="imageblock"><img src="media/dockerfile.png" alt="dockerfile"></div>
+<div class="paragraph"><p>Un simple fichier nommé "Dockerfile" (majuscule sur le D et pas d&#8217;extension).</p></div>
+<div class="paragraph"><p>C&#8217;est du texte, très pratique à stocker dans Git.</p></div>
+<div class="paragraph"><p>Une suite de clé-valeur.</p></div></div></section><section id="pourquoi_fabriquer_sa_propre_image"><h2>🤔 Pourquoi fabriquer sa propre image ?</h2><div class="slide-content"><div class="paragraph"><p>❗️ Problème :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cat /etc/os-release
+# ...
+git --version
+# ...
+
+# Même version de Linux que dans GitPod
+docker container run --rm ubuntu:20.04 git --version
+# docker: Error response from daemon: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: "git": executable file not found in $PATH: unknown.
+
+# En interactif ?
+docker container run --rm --tty --interactive ubuntu:20.04 git --version</code></pre></div></div></div></section><section id="fabriquer_sa_première_image"><h2>🎓 Fabriquer sa première image</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> fabriquer une image Docker qui contient <code>git</code></p></li><li><p>Dans votre workspace Gitpod, créez un dossier nommé <code>docker-git/</code></p></li><li><p>Dans ce dossier, créer un fichier <code>Dockerfile</code> avec le contenu ci-dessous :</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-noescape="true" data-lang="Dockerfile">FROM ubuntu:20.04
+RUN apt-get update &amp;&amp; apt-get install --yes --no-install-recommends git</code></pre></div></div></li><li><p>Fabriquez votre image avec la commande <code>docker image build --tag=docker-git &lt;chemin/vers/docker-git/</code></p></li><li><p>Testez l&#8217;image fraîchement fabriquée</p><div class="ulist"><ul><li><p>💡 <code>docker image ls</code></p></li></ul></div></li></ul></div></div></section><section id="fabriquer_sa_première_image_2"><h2>✅ Fabriquer sa première image</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cat &lt;&lt;EOF &gt;Dockerfile
+FROM ubuntu:20.04
+RUN apt-get update &amp;&amp; apt-get install --yes --no-install-recommends git
+EOF
+
+docker image build --tag=docker-git ./
+
+docker image ls | grep docker-git
+
+# Doit fonctionner
+docker container run --rm docker-git:latest git --version</code></pre></div></div></div></section><section id="conventions_de_nommage_des_images"><h2>Conventions de nommage des images</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-plaintext hljs" data-noescape="true" data-lang="plaintext">[REGISTRY/][NAMESPACE/]NAME[:TAG|@DIGEST]</code></pre></div></div>
+<div class="ulist"><ul><li><p>Pas de Registre ? Défaut: <code>registry.docker.com</code></p></li><li><p>Pas de Namespace ? Défaut: <code>library</code></p></li><li><p>Pas de tag ? Valeur par défaut: <code>latest</code></p><div class="ulist"><ul><li><p>⚠️ Friends don&#8217;t let friends use <code>latest</code></p></li></ul></div></li><li><p>Digest: signature unique basée sur le contenu</p></li></ul></div></div></section><section id="conventions_de_nommage_exemples"><h2>Conventions de nommage : Exemples</h2><div class="slide-content"><div class="ulist"><ul><li><p><code>ubuntu:20.04</code> &#8658; <code>registry.docker.com/library/ubuntu:20.04</code></p></li><li><p><code>dduportal/docker-asciidoctor</code> &#8658; <code>registry.docker.com/dduportal/docker-asciidoctor:latest</code></p></li><li><p><code>ghcr.io/dduportal/docker-asciidoctor:1.3.2@sha256:xxxx</code></p></li></ul></div></div></section><section id="utilisons_les_tags"><h2>🎓 Utilisons les tags</h2><div class="slide-content"><div class="ulist"><ul><li><p>Rappel : ⚠️ Friends don&#8217;t let friends use <code>latest</code></p></li><li><p>Il est temps de "taguer" votre première image !</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image tag docker-git:latest docker-git:1.0.0</code></pre></div></div></li><li><p>Testez le fonctionnement avec le nouveau tag</p></li><li><p>Comparez les 2 images dans la sortie de <code>docker image ls</code></p></li></ul></div></div></section><section id="utilisons_les_tags_2"><h2>✅ Utilisons les tags</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image tag docker-git:latest docker-git:1.0.0
+
+# 2 lignes
+docker image ls | grep docker-git
+# 1 ligne
+docker image ls | grep docker-git | grep latest
+# 1 ligne
+docker image ls | grep docker-git | grep '1.0.0'
+
+# Doit fonctionner
+docker container run --rm docker-git:1.0.0 git --version</code></pre></div></div></div></section><section id="mettre_à_jour_votre_image_1_1_0"><h2>🎓 Mettre à jour votre image (1.1.0)</h2><div class="slide-content"><div class="ulist"><ul><li><p>Mettez à jour votre image en version <code>1.1.0</code> avec les changements suivants :</p><div class="ulist"><ul><li><p>Ajoutez un <a href="https://docs.docker.com/engine/reference/builder/#label" target="_blank"><code>LABEL</code></a> dont la clef est <code>description</code> (et la valeur de votre choix)</p></li><li><p>Configurez <code>git</code> pour utiliser une branche <code>main</code> par défaut au lieu de <code>master</code> (commande <code>git config --global init.defaultBranch main</code>)</p></li></ul></div></li><li><p>Indices :</p><div class="ulist"><ul><li><p>💡 Commande <code>docker image inspect &lt;image name&gt;</code></p></li><li><p>💡 Commande <code>git config --get init.defaultBranch</code> (dans le conteneur)</p></li><li><p>💡 Ajoutez des lignes <strong>à la fin</strong> du <code>Dockerfile</code></p></li><li><p>💡 <a href="https://docs.docker.com/engine/reference/builder/" target="_blank">Documentation de référence des <code>Dockerfile</code></a></p></li></ul></div></li></ul></div></div></section><section id="mettre_à_jour_votre_image_1_1_0_2"><h2>✅ Mettre à jour votre image (1.1.0)</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cat ./Dockerfile
+FROM ubuntu:20.04
+RUN apt-get update &amp;&amp; apt-get install --yes --no-install-recommends git
+LABEL description="Une image contenant git préconfiguré"
+RUN git config --global init.defaultBranch main
+
+docker image build -t docker-git:1.1.0 ./docker-git/
+# Sending build context to Docker daemon  2.048kB
+# Step 1/4 : FROM ubuntu:20.04
+#  ---&gt; e40cf56b4be3
+# Step 2/4 : RUN apt-get update &amp;&amp; apt-get install --yes --no-install-recommends git
+#  ---&gt; Using cache
+#  ---&gt; 926b8d87f128
+# Step 3/4 : LABEL description="Une image contenant git préconfiguré"
+#  ---&gt; Running in 0695fc62ecc8
+# Removing intermediate container 0695fc62ecc8
+#  ---&gt; 68c7d4fb8c88
+# Step 4/4 : RUN git config --global init.defaultBranch main
+#  ---&gt; Running in 7fb54ecf4070
+# Removing intermediate container 7fb54ecf4070
+#  ---&gt; 2858ff394edb
+Successfully built 2858ff394edb
+Successfully tagged docker-git:1.1.0
+
+docker container run --rm docker-git:1.0.0 git config --get init.defaultBranch
+docker container run --rm docker-git:1.1.0 git config --get init.defaultBranch
+# main</code></pre></div></div></div></section><section id="cache_dimages_layers"><h2>Cache d&#8217;images &amp; Layers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-plaintext hljs" data-noescape="true" data-lang="plaintext">Step 2/4 : RUN apt-get update &amp;&amp; apt-get install --yes --no-install-recommends git
+  ---&gt; Using cache</code></pre></div></div>
+<div class="paragraph"><p>🤔 En fait, Docker n&#8217;a PAS exécuté cette commande la seconde fois &#8658; ça va beaucoup plus vite !</p></div>
+<div class="imageblock"><img src="media/docker-layers.jpg" alt="docker layers" width="400"></div>
+<div class="paragraph"><p>🎓 Essayez de voir les layers avec (dans Gitpod) <a href="https://github.com/wagoodman/dive" target="_blank"><code>dive &lt;image&gt;:&lt;tag&gt;</code></a></p></div></div></section><section id="cache_dimages_layers_2"><h2>🎓 Cache d&#8217;images &amp; Layers</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> manipuler le cache d&#8217;images</p></li><li><p>Commencez par vérifier que le cache est utilisé : relancez la dernière commande <code>docker image build</code> (plusieurs fois s&#8217;il le faut)</p></li><li><p>Invalidez le cache en ajoutant le paquet APT <code>make</code> à installer en même temps que <code>git</code></p><div class="ulist"><ul><li><p>⚠️ Tag <code>1.2.0</code></p></li></ul></div></li><li><p>Vérifiez que le cache est bien présent de nouveau</p></li></ul></div></div></section><section id="cache_dimages_layers_3"><h2>✅ Cache d&#8217;images &amp; Layers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Build one time
+docker image build -t docker-git:1.1.0 ./docker-git/
+# Second time is fully cached
+docker image build -t docker-git:1.1.0 ./docker-git/
+
+cat Dockerfile
+# FROM ubuntu:20.04
+# RUN apt-get update &amp;&amp; apt-get install --yes --no-install-recommends git make
+# LABEL description="Une image contenant git préconfiguré"
+# RUN git config --global init.defaultBranch main
+
+# Build one time
+docker image build -t docker-git:1.2.0 ./docker-git/
+# Second time is fully cached
+docker image build -t docker-git:1.2.0 ./docker-git/
+
+## Vérification
+# Renvoie une erreur
+docker run --rm docker-git:1.1.0 make --version
+# Doit fonctionner
+docker run --rm docker-git:1.2.0 make --version</code></pre></div></div></div></section><section id="checkpoint_4"><h2>Checkpoint 🎯</h2><div class="slide-content"><div class="ulist"><ul><li><p>Une image Docker fournit un environnement de système de fichier auto-suffisant (application, dépendances, binaries, etc.) comme modèle de base d&#8217;un conteneur</p></li><li><p>Les images Docker ont une convention de nommage permettant d&#8217;identifier les images très précisément</p></li><li><p>On peut spécifier une recette de fabrication d&#8217;image à l&#8217;aide d&#8217;un <code>Dockerfile</code> et de la commande <code>docker image build</code></p></li></ul></div>
+<div class="paragraph"><p>&#8658; 🤔 et si on utilisait Docker pour nous aider dans l&#8217;intégration continue ?</p></div></div></section></section>
 <section id="fichiers_nommage_inspect"><h2>Fichiers, nommage, inspect&#8230;&#8203;</h2></section>
 <section id="volumes"><h2>Volumes</h2></section>
 <section id="réseaux"><h2>Réseaux</h2></section>
