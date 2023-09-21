@@ -30,5 +30,6 @@
 :pdf_icon: icon:file-pdf[set=fa]
 :revealjs_customtheme: ./styles/build.css
 :invert: state=invert,background-color="rgb(248, 228, 130)"
+:invert2: state=invert,background-color="rgb(248, 228, 130)"
 :author_mail: {mail_icon} gounthar@gmail.com
 :gitpod_github_repo_url: https://github.com/gounthar/cours-devops-docker

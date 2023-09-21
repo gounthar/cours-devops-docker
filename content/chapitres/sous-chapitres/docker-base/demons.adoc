@@ -5,7 +5,7 @@ Lançons un container bien particulier…
 
 [source,shell]
 ----
-docker container run -it jpetazzo/clock
+docker container run  --interactive --tty jpetazzo/clock
 ----
 
 [%auto-animate]
@@ -15,7 +15,7 @@ Lançons un container bien particulier…
 
 [source,shell]
 ----
-docker container run -it jpetazzo/clock
+docker container run  --interactive --tty jpetazzo/clock
 Mon Sep 25 10:33:51 UTC 2023
 Mon Sep 25 10:33:52 UTC 2023
 Mon Sep 25 10:33:53 UTC 2023
@@ -32,7 +32,7 @@ Lançons un container bien particulier…
 
 [source,shell]
 ----
-docker container run -it jpetazzo/clock
+docker container run  --interactive --tty jpetazzo/clock
 Mon Sep 25 10:33:51 UTC 2023
 Mon Sep 25 10:33:52 UTC 2023
 Mon Sep 25 10:33:53 UTC 2023
@@ -51,7 +51,7 @@ Lançons un container bien particulier…
 
 [source,shell]
 ----
-docker container run -it jpetazzo/clock
+docker container run  --interactive --tty jpetazzo/clock
 Mon Sep 25 10:33:51 UTC 2023
 Mon Sep 25 10:33:52 UTC 2023
 Mon Sep 25 10:33:53 UTC 2023
@@ -74,7 +74,7 @@ Lançons un container bien particulier…
 
 [source,shell]
 ----
-docker container run -it jpetazzo/clock
+docker container run  --interactive --tty jpetazzo/clock
 Mon Sep 25 10:33:51 UTC 2023
 Mon Sep 25 10:33:52 UTC 2023
 Mon Sep 25 10:33:53 UTC 2023
@@ -93,21 +93,21 @@ Oui car quand on stoppe le processus principal d'un container, ce dernier n'a pl
 [%auto-animate]
 == ⛅ Conteneur en tâche de fond
 
-La solution : le flag `-d`
+La solution : le flag  `--detach`
 
 [source,shell]
 ----
-docker container run -d jpetazzo/clock
+docker container run --detach jpetazzo/clock
 ----
 
 [%auto-animate]
 == ⛅ Conteneur en tâche de fond
 
-La solution : le flag `-d`
+La solution : le flag  `--detach`
 
 [source,shell]
 ----
-docker container run -d jpetazzo/clock
+docker container run --detach jpetazzo/clock
 399f3b23bc0585991afa80dfee854cf0a953d782b99153b4e2cbc74ab6b07770
 ----
 
@@ -307,7 +307,7 @@ c036e57bbf05   jpetazzo/clock                  "/bin/sh -c 'while d…"   17 min
 ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago     Up 4 hours                                             buildx_buildkit_exciting_williams0
 ----
 
-Avec le flag `-a` , on obtient un tableau de tous les containers quel que soit leur état.
+Avec le flag  `--all` , on obtient un tableau de tous les containers quel que soit leur état.
 
 [%auto-animate]
 == 🧽 Nettoyage
@@ -363,7 +363,7 @@ Container "auto-nettoyant" 🗑️
 
 [source,shell]
 ----
-docker container run -it --rm jpetazzo/clock
+docker container run  --interactive --tty --rm jpetazzo/clock
 ----
 
 [.small]
@@ -528,7 +528,7 @@ image::1107521466-image9.png[]
 
 [source,shell]
 ----
-docker container exec –it <containerID> bash
+docker container exec --interactive --tty <containerID> bash
 ----
 
 Ca fonctionne aussi en interactif !

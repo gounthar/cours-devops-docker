@@ -3,7 +3,7 @@
 
 [source,shell]
 ----
-docker container run -it alpine
+docker container run  --interactive --tty alpine
 ----
 
 [%auto-animate]
@@ -11,7 +11,7 @@ docker container run -it alpine
 
 [source,shell]
 ----
-docker container run -it alpine
+docker container run  --interactive --tty alpine
 / #
 ----
 
@@ -20,7 +20,7 @@ docker container run -it alpine
 
 [source,shell]
 ----
-docker container run -it alpine
+docker container run  --interactive --tty alpine
 / #
 ----
 
@@ -31,7 +31,7 @@ docker container run -it alpine
 
 [source,shell]
 ----
-docker container run -it alpine
+docker container run  --interactive --tty alpine
 / #
 ----
 
@@ -43,7 +43,7 @@ docker container run -it alpine
 
 [source,shell]
 ----
-docker container run -it alpine
+docker container run  --interactive --tty alpine
 / #
 ----
 
@@ -56,7 +56,7 @@ docker container run -it alpine
 
 [source,shell]
 ----
-docker container run -it alpine
+docker container run  --interactive --tty alpine
 / #
 ----
 
@@ -225,7 +225,7 @@ Si on veut réutiliser `cURL` sur Alpine, c'est simple, on relance le shell, non
 
 [source,shell]
 ----
-docker container run -it alpine
+docker container run  --interactive --tty alpine
 ----
 
 [%auto-animate]
@@ -242,7 +242,7 @@ Si on veut réutiliser `cURL` sur Alpine, c'est simple, on relance le shell, non
 
 [source,shell]
 ----
-docker container run -it alpine
+docker container run  --interactive --tty alpine
 ----
 
 On relance `cURL`:
@@ -266,7 +266,7 @@ Si on veut réutiliser `cURL` sur Alpine, c'est simple, on relance le shell, non
 
 [source,shell]
 ----
-docker container run -it alpine
+docker container run  --interactive --tty alpine
 ----
 
 On relance `cURL`:

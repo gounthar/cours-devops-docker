@@ -115,11 +115,18 @@ image::outillage-jetable.png[]
 == Beau boulot! 🤗
 
 [.column]
-image::empty_ship.png[height=720]
+--
+image::bitmoji-well done.png[]
+--
 
 [.column]
 --
 On a la base, remplissons là maintenant de containers!
 [.small]
 La suite: vers la droite ➡️
+--
+
+[.column]
+--
+image::empty_ship.png[height=720]
 --

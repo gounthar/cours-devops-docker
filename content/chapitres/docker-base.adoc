@@ -1,5 +1,7 @@
 = Containers
 
+image::blue-shipping-container.png[background, size=contain, position=left, opacity=0.1]
+
 == 🎓 Exercice : Votre premier conteneur
 
 C'est à vous (ouf) !

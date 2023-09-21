@@ -13,9 +13,13 @@ image::multi-layered-cake.jpeg[width=900]
 [%auto-animate]
 == 🤔 C'est quoi une image ?
 
+image::multi-layered-cake-removebg-preview.png[background, size=contain, position=left, opacity=0.1]
+
 C'est une collection de fichiers et de metadonnées.
 
 == 🤔 C'est quoi une image ?
+
+image::multi-layered-cake-removebg-preview.png[background, size=contain, position=left, opacity=0.1]
 
 C'est une collection de fichiers et de metadonnées.
 
@@ -107,6 +111,7 @@ image::dockerfile-flow.png[]
 [%auto-animate]
 == 🐋 Le livre de recettes
 
+image::moby-kitchen.jpeg[]
 image::dockerfile.png[]
 
 [%auto-animate]
@@ -195,7 +200,65 @@ docker image ls | grep docker-git
 docker container run --rm docker-git:latest git --version
 ----
 
-== Conventions de nommage des images
+== On les trouve où, ces images ?
+
+[%step]
+Dans les registres Docker
+[%step]
+En local
+
+[%step]
+[source,bash]
+----
+$ docker images
+REPOSITORY                                  TAG                             IMAGE ID       CREATED         SIZE
+jenkinsciinfra/jenkins-agent-ubuntu-22.04   latest                          c87afa001ba1   25 hours ago    6.89GB
+cours-devops-docker-serve                   latest                          6b7b6a3145fd   27 hours ago    427MB
+cours-devops-docker-qrcode                  latest                          43f91abb9cfa   27 hours ago    427MB
+jenkins/jenkins                             2.419-rhel-ubi8-jdk11           9e2076ee44fa   3 days ago      507MB
+jenkins/jenkins                             2.419-slim                      b93a74bd73b4   3 days ago      394MB
+jenkins/jenkins                             2.419                           2193a96f254a   3 days ago      478MB
+jenkins/jenkins                             2.419-jdk11                     2193a96f254a   3 days ago      478MB
+jenkins/jenkins                             2.419-alpine                    f700f6333bf2   3 days ago      249MB
+jenkins/jenkins                             2.419-rhel-ubi9-jdk17           0dbee3b2c2fc   3 days ago      485MB
+jenkins/jenkins                             2.419-slim-jdk17                d9a360e0a9bf   3 days ago      393MB
+jenkins/jenkins                             2.419-jdk17                     1695080429f5   3 days ago      476MB
+jenkins/jenkins                             2.419-alpine-jdk17              2ea0017744c8   3 days ago      249MB
+jenkins/jenkins                             2.419-rhel-ubi9-jdk21-preview   66ee1f18309d   3 days ago      494MB
+jenkins/jenkins                             2.419-slim-jdk21-preview        e31d85782d2b   3 days ago      414MB
+jenkins/jenkins                             2.419-jdk21                     c1e6c123a3c7   3 days ago      485MB
+jenkins/jenkins                             2.419-alpine-jdk21-preview      97764348fde6   3 days ago      261MB
+jdk21                                       latest                          ba476a3f2cd9   5 days ago      218MB
+mycurl                                      1.0                             292bf6b4a4df   6 days ago      13.3MB
+myjava                                      1.42                            05b6d3da385e   6 days ago      198MB
+<none>                                      <none>                          7bc71c53e776   7 days ago      427MB
+<none>                                      <none>                          b45a84c7d06b   7 days ago      427MB
+jenkins/jenkins                             latest-jdk21-preview            5b5828e392bf   8 days ago      485MB
+moby/buildkit                               buildx-stable-1                 9291fad3b41c   4 weeks ago     172MB
+alpine                                      latest                          7e01a0d0a1dc   6 weeks ago     7.34MB
+busybox                                     latest                          a416a98b71e2   2 months ago    4.26MB
+docker/volumes-backup-extension             1.1.4                           6872a696b721   3 months ago    119MB
+portainer/portainer-docker-extension        2.18.3                          3d18fe6d6805   4 months ago    273MB
+felipecruz/alpine-tar-zstd                  latest                          31988344315d   12 months ago   6.99MB
+justincormack/nsenter1                      latest                          c81481184b1b   5 years ago     101kB
+----
+
+== Les registres Docker
+
+Ce sont des plates-formes qui hébergent les images.
+
+Il est possible de créer ses propres registres (ex : registre privé d'entreprise)
+
+== !
+
+image::node_Official_Image_Docker_Hub.png[background, size=cover, position=left, opacity=0.1]
+
+[.notes]
+--
+https://hub.docker.com/
+--
+
+== 📷🏷️ Conventions de nommage des images
 
 [source, plaintext]
 ----
@@ -208,7 +271,7 @@ docker container run --rm docker-git:latest git --version
 ** ⚠️ Friends don't let friends use `latest`
 * Digest: signature unique basée sur le contenu
 
-== Conventions de nommage : Exemples
+== 📷🏷️ Conventions de nommage : Exemples
 
 * `ubuntu:20.04` => `registry.docker.com/library/ubuntu:20.04`
 * `dduportal/docker-asciidoctor` => `registry.docker.com/dduportal/docker-asciidoctor:latest`
@@ -216,7 +279,7 @@ docker container run --rm docker-git:latest git --version
 
 == 🎓 Utilisons les tags
 
-* Rappel : ⚠️ Friends don't let friends use `latest`
+* Rappel : ⚠️ Friends don't let friends use `latest` 👫
 
 * Il est temps de "taguer" votre première image !
 +

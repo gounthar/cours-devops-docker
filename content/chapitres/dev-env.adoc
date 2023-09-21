@@ -13,7 +13,15 @@ link:https://gitpod.io[GitPod.io,window="_blank"] : Environnement de développem
 * **But:** reproductible
 * Puissance de calcul sur un serveur distant
 * Éditeur de code VSCode dans le navigateur
-* Gratuit pour 50h par mois (⚠️)
+
+[%step]
+WARNING: Gratuit pour 50h par mois (⚠️)
+[%step]
+WARNING: Ça, c'était avant (⚠️)
+[%step]
+WARNING: Gratuit pour 10h par mois (⚠️)
+[%step]
+WARNING: Gratuit pour 50h par mois si compte {linkedin_icon} lié (⚠️)
 
 == Démarrer avec GitPod 🚀
 
@@ -98,6 +106,13 @@ Source disponible dans : link:{gitpod_github_repo_url}[{github_icon} {gitpod_git
 ** ... et ouvrir n'importe quel autre fichier...
 
 Bien, on peut maintenant fermer ce workspace, il ne s'agirait pas de gaspiller vos 50 heures.
+
+== 📚 Et Gitlab?
+
+GitPod fonctionne aussi avec gitlab.com, mais pour les instances on premise, il faut l'installer, l'instancier, avoir un "inner cloud"
+
+[%step]
+Bref, on ne l'a pas ici. `¯\_(ツ)_/¯`
 
 [.small]
 On peut commencer !
