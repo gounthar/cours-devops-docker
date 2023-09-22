@@ -109,34 +109,25 @@ image::docker-app-self-sufficient.png[width=900]
 image::dockerfile-flow.png[]
 
 [%auto-animate]
-== 🐋 Le livre de recettes
+== 🐋 📖🍳 Le livre de recettes
 
 image::moby-kitchen.jpeg[]
 image::dockerfile.png[]
 
 [%auto-animate]
-== 🐋 Le livre de recettes
+== 🐋 📖🍳 Le livre de recettes
 
 image::dockerfile.png[]
 
 [%auto-animate]
-== 🐋 Le livre de recettes
-
-image::dockerfile.png[]
-
-Un simple fichier nommé "Dockerfile" (majuscule sur le D et pas d'extension).
-
-[%auto-animate]
-== 🐋 Le livre de recettes
+== 🐋 📖🍳 Le livre de recettes
 
 image::dockerfile.png[]
 
 Un simple fichier nommé "Dockerfile" (majuscule sur le D et pas d'extension).
 
-C'est du texte, très pratique à stocker dans Git.
-
 [%auto-animate]
-== 🐋 Le livre de recettes
+== 🐋 📖🍳 Le livre de recettes
 
 image::dockerfile.png[]
 
@@ -144,7 +135,16 @@ Un simple fichier nommé "Dockerfile" (majuscule sur le D et pas d'extension).
 
 C'est du texte, très pratique à stocker dans Git.
 
-Une suite de clé-valeur.
+[%auto-animate]
+== 🐋 📖🍳 Le livre de recettes
+
+image::dockerfile.png[]
+
+Un simple fichier nommé "Dockerfile" (majuscule sur le D et pas d'extension).
+
+C'est du texte, très pratique à stocker dans Git.
+
+Une suite de clef-valeur.
 
 == 🤔 Pourquoi fabriquer sa propre image ?
 
@@ -158,11 +158,11 @@ git --version
 # ...
 
 # Même version de Linux que dans GitPod
-docker container run --rm ubuntu:20.04 git --version
+docker container run --rm ubuntu:22.04 git --version
 # docker: Error response from daemon: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: "git": executable file not found in $PATH: unknown.
 
 # En interactif ?
-docker container run --rm --tty --interactive ubuntu:20.04 git --version
+docker container run --rm --tty --interactive ubuntu:22.04 git --version
 ----
 
 == 🎓 Fabriquer sa première image
@@ -174,11 +174,11 @@ docker container run --rm --tty --interactive ubuntu:20.04 git --version
 +
 [source,Dockerfile]
 ----
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 RUN apt-get update && apt-get install --yes --no-install-recommends git
 ----
 
-* Fabriquez votre image avec la commande `docker image build --tag=docker-git <chemin/vers/docker-git/`
+* Fabriquez votre image avec la commande `docker image build --tag=docker-git chemin/vers/docker-git/`
 
 * Testez l'image fraîchement fabriquée
 ** 💡 `docker image ls`
@@ -188,7 +188,7 @@ RUN apt-get update && apt-get install --yes --no-install-recommends git
 [source,bash]
 ----
 cat <<EOF >Dockerfile
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 RUN apt-get update && apt-get install --yes --no-install-recommends git
 EOF
 
@@ -200,12 +200,188 @@ docker image ls | grep docker-git
 docker container run --rm docker-git:latest git --version
 ----
 
-== On les trouve où, ces images ?
+[%auto-animate]
+== 🐋 📖🍳 Fabriquer son image
+
+Un peu de cuisine...
+
+image::445636559-image7.gif[]
+
+[%auto-animate]
+== 🐋 📖🍳 Fabriquer son image
+
+**💪🏁 DÉFI**
+
+Créer une image alpine avec un JRE installé.
 
 [%step]
-Dans les registres Docker
+**📖🍳 RECETTE**
+
 [%step]
-En local
+* On part d'une image Alpine
+[%step]
+* On installe un JRE
+
+[%auto-animate]
+== !
+
+image::images-output52_with_transparency.png[background,size=contain]
+
+[%auto-animate]
+== !
+
+image::images-output53_with_transparency.png[background,size=contain]
+
+[%auto-animate]
+== !
+
+image::images-output54_with_transparency.png[background,size=contain]
+
+[%auto-animate]
+== !
+
+image::images-output56_with_transparency.png[background,size=contain]
+
+[.notes]
+--
+[source,bash]
+----
+for i in {52..56}; do convert Diapositive${i}.PNG -crop 9580x5224+1879+1795 -transparent white -resize x1080 images-output${i}_with_transparency.png; done
+----
+--
+
+[%auto-animate]
+[.columns]
+== 🐋 📖🍳 Fabriquer son image
+
+[.column]
+--
+image::images-output56_with_transparency.png[]
+--
+
+[.column]
+--
+[source,Docker]
+----
+include::../code-samples/images/defi/Dockerfile[]
+----
+--
+
+[.notes]
+--
+[source,bash]
+----
+for i in {52..56}; do convert Diapositive${i}.PNG -crop 9580x5224+1879+1795 -transparent white -resize x1080 images-output${i}_with_transparency.png; done
+----
+--
+
+[%auto-animate]
+== 🐋 📖🍳 Cuistot, au boulot!
+
+image::images-output57_with_transparency.png[]
+
+[%auto-animate]
+== 🐋 📖🍳 Cuistot, au boulot!
+
+image::images-output58_with_transparency.png[]
+
+[%auto-animate]
+== 🐋 📖🍳 Cuistot, au boulot!
+
+image::images-output59_with_transparency.png[]
+
+[%auto-animate]
+[.columns]
+== 🐋 📖🍳 Cuistot, au boulot!
+
+[.column]
+--
+image::images-output59_with_transparency.png[]
+--
+
+[.column]
+--
+[source,bash]
+----
+docker image build -t myjava:1.42 .
+----
+--
+
+[.notes]
+--
+[source,bash]
+----
+docker image build -t myjava:1.42 .
+
+----
+--
+
+[%auto-animate]
+== 🪜 Étapes de construction
+
+image::images-output60_with_transparency.png[]
+
+[%auto-animate]
+== 🪜 Étapes de construction
+
+image::images-output61_with_transparency.png[]
+
+[%auto-animate]
+== 🪜 Étapes de construction
+
+image::images-output62_with_transparency.png[]
+
+[.notes]
+--
+[source,bash]
+----
+for i in {60..62}; do convert Diapositive${i}.PNG -crop 9068x5265+1920+1827 -transparent white -resize x1080 images-output${i}_with_transparency.png; done
+----
+--
+
+== Et après ?
+
+[%step]
+Quand le build se termine, il se trouve dans le registre local.
+
+[%step]
+[source,bash]
+----
+docker images
+REPOSITORY       TAG                 IMAGE ID
+myjava           1.42                d3017f59d5e2
+----
+
+== L'image est dispo !
+
+[%step]
+[source,bash]
+----
+docker container run --interactive --tty myjava:1.42 sh
+/ $
+----
+
+[%step]
+[source,bash]
+----
+/ $ java -version
+openjdk version "17.0.8" 2023-07-18
+OpenJDK Runtime Environment (build 17.0.8+7-alpine-r0)
+OpenJDK 64-Bit Server VM (build 17.0.8+7-alpine-r0, mixed mode, sharing)
+----
+
+[%step]
+image::278458282-image10.gif[]
+
+== Registre local, mais encore?
+
+On les trouve où, ces images ?
+
+[%step]
+En local, on l'a vu.
+
+[%step]
+Dans les registres Docker.
 
 [%step]
 [source,bash]
@@ -258,22 +434,163 @@ image::node_Official_Image_Docker_Hub.png[background, size=cover, position=left,
 https://hub.docker.com/
 --
 
+== 🖼️ Les images
+
+Avant d'instancier un container, il faut récupérer l'image en local.
+
+[%step]
+Méthode explicite :
+[%step]
+[source,bash]
+----
+docker image pull mysql
+----
+
+[%step]
+[.small]
+On rapatrie l'image en local mais on n'en fait rien.
+
+[%step]
+Méthode implicite :
+[%step]
+[source,bash]
+----
+docker container run -d mysql
+----
+
+[%step]
+[.small]
+On rapatrie l'image et on démarre un container dans la foulée.
+
+== 🍰 Un téléchargement par couches
+
+[%step]
+[source,bash]
+----
+$ docker image pull mysql
+Using default tag: latest
+latest: Pulling from library/mysql
+5f70bf18a086: Pull complete
+a734b0ff4ca6: Already exists
+ec46eb0ce0a7: Pull complete
+a74b383379bc: Pull complete
+Digest: sha256:42dc1b67073f7ebab1...8c8d36c9031e408db0d
+Status: Downloaded newer image for mysql:latest
+----
+
+[%step]
+Les couches déjà présentes en local ne sont pas téléchargées de nouveau !
+
+[%auto-animate]
+== 🖼🏷️ Conventions de nommage des images
+
+image::images-output26_with_transparency.png[]
+
+
+[%auto-animate]
+== 🖼🏷️ Conventions de nommage des images
+
+image::images-output27_with_transparency.png[]
+
+
+[%auto-animate]
+== 🖼🏷️ Conventions de nommage des images
+
+image::images-output28_with_transparency.png[]
+
+[%auto-animate]
+== 🖼🏷️ Conventions de nommage des images
+
+image::images-output29_with_transparency.png[]
+
+[.notes]
+--
+[source,bash]
+----
+for i in {26..29}; do convert Diapositive${i}.PNG -crop 8962x4645+2183+2192 -transparent white -resize x1080 images-output${i}_with_transparency.png; done
+----
+--
+
+[%auto-animate]
+== !
+
+image::images-output31_with_transparency.png[background,size=contain]
+
+[%auto-animate]
+== !
+
+image::images-output32_with_transparency.png[background,size=contain]
+
+[%auto-animate]
+== !
+
+image::images-output33_with_transparency.png[background,size=contain]
+
+[%auto-animate]
+== !
+
+image::images-output34_with_transparency.png[background,size=contain]
+
+[.notes]
+--
+[source,bash]
+----
+for i in {31..34}; do convert Diapositive${i}.PNG -crop 8904x5130+2256+2006 -transparent white -resize x1080 images-output${i}_with_transparency.png; done
+----
+--
+
 == 📷🏷️ Conventions de nommage des images
 
+[%step]
+Une même image peut avoir plusieurs noms et tags !
+
+[%step]
+Le tag "latest" est régulièrement réaffecté sur les registres distants.
+
+[%step]
+**Plusieurs noms pour une signature**
+
+== !
+
+image::different_labels_same_checksum.png[background,size=contain]
+
+== 📷🏷️ Conventions de nommage des images
+
+Une même image peut avoir plusieurs noms et tags !
+
+Le tag "latest" est régulièrement réaffecté sur les registres distants.
+
+**Plusieurs noms pour une signature**
+
+**Tags disponibles pour MySQL**
+
+image::mysql_tags.png[width=1900]
+
+
+== 📷🏷️ Conventions de nommage des images
+
+Pour résumer...
+
+[%step]
 [source, plaintext]
 ----
 [REGISTRY/][NAMESPACE/]NAME[:TAG|@DIGEST]
 ----
 
+[%step]
 * Pas de Registre ? Défaut: `registry.docker.com`
+[%step]
 * Pas de Namespace ? Défaut: `library`
+[%step]
 * Pas de tag ? Valeur par défaut: `latest`
-** ⚠️ Friends don't let friends use `latest`
+[%step]
+** ⚠️ Friends don't let friends use `latest` 👫
+[%step]
 * Digest: signature unique basée sur le contenu
 
 == 📷🏷️ Conventions de nommage : Exemples
 
-* `ubuntu:20.04` => `registry.docker.com/library/ubuntu:20.04`
+* `ubuntu:22.04` => `registry.docker.com/library/ubuntu:22.04`
 * `dduportal/docker-asciidoctor` => `registry.docker.com/dduportal/docker-asciidoctor:latest`
 * `ghcr.io/dduportal/docker-asciidoctor:1.3.2@sha256:xxxx`
 
@@ -325,14 +642,14 @@ docker container run --rm docker-git:1.0.0 git --version
 [source,bash]
 ----
 cat ./Dockerfile
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 RUN apt-get update && apt-get install --yes --no-install-recommends git
 LABEL description="Une image contenant git préconfiguré"
 RUN git config --global init.defaultBranch main
 
 docker image build -t docker-git:1.1.0 ./docker-git/
 # Sending build context to Docker daemon  2.048kB
-# Step 1/4 : FROM ubuntu:20.04
+# Step 1/4 : FROM ubuntu:22.04
 #  ---> e40cf56b4be3
 # Step 2/4 : RUN apt-get update && apt-get install --yes --no-install-recommends git
 #  ---> Using cache
@@ -388,7 +705,7 @@ docker image build -t docker-git:1.1.0 ./docker-git/
 docker image build -t docker-git:1.1.0 ./docker-git/
 
 cat Dockerfile
-# FROM ubuntu:20.04
+# FROM ubuntu:22.04
 # RUN apt-get update && apt-get install --yes --no-install-recommends git make
 # LABEL description="Une image contenant git préconfiguré"
 # RUN git config --global init.defaultBranch main
@@ -404,6 +721,9 @@ docker run --rm docker-git:1.1.0 make --version
 # Doit fonctionner
 docker run --rm docker-git:1.2.0 make --version
 ----
+
+include::sous-chapitres/images/entrypoint.adoc[]
+
 
 == Checkpoint 🎯
 

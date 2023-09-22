@@ -71,16 +71,23 @@ link:{repositoryUrl}[Source on {github_icon} : {repositoryUrl},window="_blank"]
 [.notes]
 --
 * Pour transformer des diapos extraites de PowerPoint en les croppant et en remplaçant le blanc par du transparent:
-** for i in {3..10}
-** do
-** convert Diapositive${i}.PNG -crop 9583x4167+1917+1750 -transparent white -resize 1920x output${i}_with_transparency.png
-** done
+
+[source,bash]
+----
+for i in {3..10}
+do
+  convert Diapositive${i}.PNG -crop 9583x4167+1917+1750 -transparent white -resize 1920x output${i}_with_transparency.png
+done
+----
 
 * Pour transformer un PPT en asciidoc (pour en récupérer le texte et les images, il ne faut rien en attendre d'autre):
-** java -jar pptx2adoc.jar Slide.pptx
+
+[source,bash]
+----
+java -jar pptx2adoc.jar Slide.pptx
+----
+
 ** Le projet se trouve là: https://github.com/ullenboom/ppt2asciidocslides
 
-
 * Certains des memes ont été généré grâce à memerator: https://damemerator.netlify.app/
-
 --

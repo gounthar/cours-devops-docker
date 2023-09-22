@@ -12,7 +12,7 @@ docker container run  --interactive --tty alpine
 [source,shell]
 ----
 docker container run  --interactive --tty alpine
-/ #
+/ $
 ----
 
 [%auto-animate]
@@ -21,7 +21,7 @@ docker container run  --interactive --tty alpine
 [source,shell]
 ----
 docker container run  --interactive --tty alpine
-/ #
+/ $
 ----
 
 * On lance un container à partir de l'image "alpine"
@@ -32,7 +32,7 @@ docker container run  --interactive --tty alpine
 [source,shell]
 ----
 docker container run  --interactive --tty alpine
-/ #
+/ $
 ----
 
 * On lance un container à partir de l'image "alpine"
@@ -44,7 +44,7 @@ docker container run  --interactive --tty alpine
 [source,shell]
 ----
 docker container run  --interactive --tty alpine
-/ #
+/ $
 ----
 
 * On lance un container à partir de l'image "alpine"
@@ -57,7 +57,7 @@ docker container run  --interactive --tty alpine
 [source,shell]
 ----
 docker container run  --interactive --tty alpine
-/ #
+/ $
 ----
 
 * On lance un container à partir de l'image "alpine"
@@ -86,10 +86,10 @@ $ cat /etc/os-release
 # ... Ubuntu ....
 
 $ docker container run --tty --interactive alpine:3.18.3
-/ # cat /etc/os-release
+/ $ cat /etc/os-release
 # ... Alpine ...
 # Notez que le "prompt" du terminal est différent DANS le conteneur
-/ # exit
+/ $ exit
 $ docker container ls --all
 
 $ docker container run alpine:3.18.3 cat /etc/os-release
@@ -103,7 +103,7 @@ Revenons dans notre container interactif de tout à l'heure...
 
 [source,shell]
 ----
-/ # curl google.fr
+/ $ curl google.fr
 ----
 
 [%auto-animate]
@@ -111,7 +111,7 @@ Revenons dans notre container interactif de tout à l'heure...
 
 [source,shell]
 ----
-/ # curl google.fr
+/ $ curl google.fr
 /bin/sh: curl: not found
 ----
 
@@ -120,34 +120,18 @@ Revenons dans notre container interactif de tout à l'heure...
 
 [source,shell]
 ----
-/ # curl google.fr
-/bin/sh: curl: not found
-----
-
-`cURL` n'est pas disponible par défaut sur Alpine. Il faut l'installer au préalable
-
-[%auto-animate]
-== 🏓 Utiliser un container interactif
-
-[source,shell]
-----
-/ # curl google.fr
+/ $ curl google.fr
 /bin/sh: curl: not found
 ----
 
 `cURL` n'est pas disponible par défaut sur Alpine. Il faut l'installer au préalable
 
-[source,shell]
-----
-/ # apk update && apk add curl
-----
-
 [%auto-animate]
 == 🏓 Utiliser un container interactif
 
 [source,shell]
 ----
-/ # curl google.fr
+/ $ curl google.fr
 /bin/sh: curl: not found
 ----
 
@@ -155,7 +139,23 @@ Revenons dans notre container interactif de tout à l'heure...
 
 [source,shell]
 ----
-/ # apk update && apk add curl
+/ $ apk update && apk add curl
+----
+
+[%auto-animate]
+== 🏓 Utiliser un container interactif
+
+[source,shell]
+----
+/ $ curl google.fr
+/bin/sh: curl: not found
+----
+
+`cURL` n'est pas disponible par défaut sur Alpine. Il faut l'installer au préalable
+
+[source,shell]
+----
+/ $ apk update && apk add curl
 fetch https://dl-cdn.alpinelinux.org/alpine/v3.18/main/x86_64/APKINDEX.tar.gz
 fetch https://dl-cdn.alpinelinux.org/alpine/v3.18/community/x86_64/APKINDEX.tar.gz
 v3.18.3-169-gd5adf7d7d28 [https://dl-cdn.alpinelinux.org/alpine/v3.18/main]
@@ -178,7 +178,7 @@ OK: 12 MiB in 22 packages
 
 [source,shell]
 ----
-/ # curl google.fr
+/ $ curl google.fr
 <HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
 <TITLE>301 Moved</TITLE></HEAD><BODY>
 <H1>301 Moved</H1>
@@ -196,7 +196,7 @@ On peut quitter `sh` et revenir à la machine hôte !
 
 [source,shell]
 ----
-/ # exit
+/ $ exit
 ----
 
 [%auto-animate]
@@ -206,7 +206,7 @@ On peut quitter `sh` et revenir à la machine hôte !
 
 [source,shell]
 ----
-/ # exit
+/ $ exit
 ----
 
 Si on veut réutiliser `cURL` sur Alpine, c'est simple, on relance le shell, non? 🤔
@@ -218,24 +218,7 @@ On peut quitter `sh` et revenir à la machine hôte !
 
 [source,shell]
 ----
-/ # exit
-----
-
-Si on veut réutiliser `cURL` sur Alpine, c'est simple, on relance le shell, non? 🤔
-
-[source,shell]
-----
-docker container run  --interactive --tty alpine
-----
-
-[%auto-animate]
-== 🏓 Utiliser un container interactif
-
-On peut quitter `sh` et revenir à la machine hôte !
-
-[source,shell]
-----
-/ # exit
+/ $ exit
 ----
 
 Si on veut réutiliser `cURL` sur Alpine, c'est simple, on relance le shell, non? 🤔
@@ -245,13 +228,6 @@ Si on veut réutiliser `cURL` sur Alpine, c'est simple, on relance le shell, non
 docker container run  --interactive --tty alpine
 ----
 
-On relance `cURL`:
-
-[source,shell]
-----
-/ # curl google.fr
-----
-
 [%auto-animate]
 == 🏓 Utiliser un container interactif
 
@@ -259,7 +235,7 @@ On peut quitter `sh` et revenir à la machine hôte !
 
 [source,shell]
 ----
-/ # exit
+/ $ exit
 ----
 
 Si on veut réutiliser `cURL` sur Alpine, c'est simple, on relance le shell, non? 🤔
@@ -273,7 +249,31 @@ On relance `cURL`:
 
 [source,shell]
 ----
-/ # curl google.fr
+/ $ curl google.fr
+----
+
+[%auto-animate]
+== 🏓 Utiliser un container interactif
+
+On peut quitter `sh` et revenir à la machine hôte !
+
+[source,shell]
+----
+/ $ exit
+----
+
+Si on veut réutiliser `cURL` sur Alpine, c'est simple, on relance le shell, non? 🤔
+
+[source,shell]
+----
+docker container run  --interactive --tty alpine
+----
+
+On relance `cURL`:
+
+[source,shell]
+----
+/ $ curl google.fr
 /bin/sh: curl: not found
 ----
 

@@ -40,8 +40,8 @@ image::logo.svg[background, size=contain, position=left, opacity=0.1]
 [.strong]
 Bruno VERACHTEN
 
+image::cloudbees.svg[fit=line]
 * Sr Developer Relations chez https://www.cloudbees.com[CloudBees,window="_blank"] pour le projet link:https://www.jenkins.io/[Jenkins,window="_blank"] 👨🏻‍⚖️
-
 * Me contacter :
 ** {author_mail}
 ** link:https://github.com/gounthar[{github_icon} gounthar,window="_blank"]

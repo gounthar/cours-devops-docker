@@ -10,6 +10,7 @@
 :idprefix:
 :imagesdir: media/
 :stylesdir: ./styles/
+:sourcedir: content/code-samples/
 :customcss: ./styles/build.css
 :revealjs_hash: true
 :revealjsdir: ./reveal.js

@@ -1,0 +1,220 @@
+[%auto-animate]
+== Comportement par défaut des containers
+
+Deux instructions permettent de définir la commande à lancer au démarrage du container.
+
+[%step]
+image::cmd.png[]
+
+[%auto-animate]
+== Comportement par défaut des containers
+
+Deux instructions permettent de définir la commande à lancer au démarrage du container.
+
+image::cmd-entrypoint.png[]
+
+[%step]
+Laquelle choisir ???
+
+[%auto-animate]
+== CMD vs ENTRYPOINT
+
+Cas d'usage : énoncé du besoin.
+
+[%step]
+Besoin : je veux utiliser `cURL` mais il n'est pas présent sur la machine hôte.
+
+[%step]
+**Facile !**
+
+[%step]
+[source,bash]
+----
+docker container run --rm curlimages/curl curl -x http://prx:3128 -L --connect-timeout 60  "http://google.com"
+----
+
+[%step]
+image::1956754704-image11.jpeg[]
+
+[.notes]
+--
+Pour ceux qui n'auraient pas de proxy parce que vous n'utilisez pas le réseau de la fac... On peut en lancer un avec Docker.
+Tout d'abord, créer un fichier `squid.conf` avec comme contenu:
+
+[source,conf]
+----
+http_port 3128
+acl all src all
+http_access allow all
+----
+
+On peut ensuite lancer le proxy:
+[source,bash]
+----
+docker run --name squid -d --restart=always --publish 3128:3128 -v $(pwd)/squid.conf:/etc/squid/squid.conf sameersbn/squid:3.5.27-2
+----
+
+Puis changer la commande en:
+[source,bash]
+----
+docker container run --rm curlimages/curl curl -x http://host.docker.internal:3128 -L --connect-timeout 60  "http://google.com"
+----
+--
+
+[%auto-animate]
+[.columns]
+== CMD vs ENTRYPOINT
+
+[.column.is-one-fifth]
+--
+Cas d'usage.
+On va s'outiller!
+--
+
+[.column.is-half]
+--
+[%step]
+[source,dockerfile]
+----
+include::../../../code-samples/images/cmd-vs-entrypoint/my-curl/Dockerfile[]
+----
+--
+
+[%step]
+[.column]
+--
+[source,bash]
+----
+docker image build -t my-curl:1.0 .
+----
+
+[%step]
+[source,bash]
+----
+docker container run --rm my-curl:1.0
+<!doctype html><html [...]
+google blahblahblah [...]
+</html>
+----
+
+[%step]
+image::my-girl.gif[]
+
+--
+
+[%auto-animate]
+== CMD vs ENTRYPOINT
+
+Cas d'usage.
+
+[%step]
+image::images-output84_with_transparency.png[%auto-animate]
+
+== CMD vs ENTRYPOINT
+
+Cas d'usage.
+
+image::images-output85_with_transparency.png[%auto-animate]
+
+[%step]
+image::1602759072-image12.gif[]
+
+[.notes]
+--
+[source,bash]
+----
+for i in {84..85}; do convert Diapositive${i}.PNG -crop 9670x2727+1832+2166 -transparent white -resize x1080 images-output${i}_with_transparency.png; done
+----
+--
+
+== CMD vs ENTRYPOINT
+Cas d'usage: un cran plus loin.
+
+L'image actuelle, c'est bien mais pas hyper flexible !
+
+[%step]
+Et si on la rendait paramétrable ?
+
+[%step]
+[source,bash]
+----
+docker container run --rm my-curl:2.0 http://google.com
+docker container run --rm my-curl:2.0 http://facebook.com
+docker container run --rm my-curl:2.0 http://twitter.com
+----
+
+[%auto-animate]
+[.columns]
+== CMD vs ENTRYPOINT
+
+[.column.is-one-fifth]
+--
+Cas d'usage, un cran plus loin
+
+Paramétrable, et hop!
+--
+
+[.column.is-half]
+--
+[%step]
+[source,dockerfile]
+----
+include::../../../code-samples/images/cmd-vs-entrypoint/my-curl/parametrable/Dockerfile[]
+----
+--
+
+[%step]
+[.column]
+--
+[source,bash]
+----
+docker image build -t my-curl:2.0 .
+----
+
+[%step]
+[source,bash]
+----
+docker container run --rm my-curl:2.0 http://google.com
+<!doctype html><html [...]
+google blahblahblah [...]
+</html>
+----
+--
+
+
+[%auto-animate]
+[.columns]
+== CMD vs ENTRYPOINT
+
+[.column.is-one-fifth]
+--
+Cas d'usage, un cran plus loin
+
+Paramétrable, et hop!
+--
+
+[.column.is-half]
+--
+[source,dockerfile]
+----
+include::../../../code-samples/images/cmd-vs-entrypoint/my-curl/parametrable/Dockerfile[]
+----
+
+image::override.png[]
+--
+
+[.column]
+--
+[source,bash]
+----
+docker image build -t my-curl:2.0 .
+----
+
+[source,bash]
+----
+docker container run --rm my-curl:2.0 http://google.com
+<!doctype html><html [...]
+google blahblahblah [...]
+</html>
+----
+--
