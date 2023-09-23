@@ -13,13 +13,23 @@ image::qrcode.png["QRCode to this presentation",height=150]
 * Contenu sous licence link:https://creativecommons.org/licenses/by/4.0/[Creative Commons Attribution 4.0 International License,window="_blank"]
 * Code source de la présentation: link:{repositoryUrl}[{github_icon} {repositoryUrl},window="_blank"]
 
-[{invert}]
+[background-color="MediumBlue"]
+[.dark.background]
+[.columns]
 == Comment utiliser cette présentation ?
 
+[.column]
+--
+image::logo-t-shirt-transparent-1080.png[background, size=contain, position=left, opacity=0.1]
+--
+
+[.column]
+--
 * Pour naviguer, utilisez les flèches en bas à droite (ou celles de votre clavier)
 ** Gauche/Droite: changer de chapitre
 ** Haut/Bas: naviguer dans un chapitre
 * Pour avoir une vue globale : utiliser la touche "o" (pour "*Overview*")
+--
 
 // Welcome
 include::./chapitres/welcome.adoc[leveloffset=1]

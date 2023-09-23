@@ -24,13 +24,35 @@
  .reveal section[data-state="invert"] ul,
  .reveal section[data-state="invert"] li,
  .reveal section[data-state="invert"] small {
-     color: #383D3D; }
+   color: #383D3D; }
  .reveal section[data-state="invert"] h1,
  .reveal section[data-state="invert"] h2,
  .reveal section[data-state="invert"] div.title p {
    color: #383D3D; }
  .reveal .controls section[data-state="invert"]{
    color: #383D3D; }
+
+/////// Styles for dark images background
+.reveal section[data-state="dark-background"] p,
+.reveal section[data-state="dark-background"] ul,
+.reveal section[data-state="dark-background"] li,
+.reveal section[data-state="dark-background"] small {
+  color: #ffffff; }
+.reveal section[data-state="dark-background"] h1,
+.reveal section[data-state="dark-background"] h2,
+.reveal section[data-state="dark-background"] div.title p {
+  color: #ffffff; }
+.reveal .controls section[data-state="dark-background"]{
+  color: #ffffff; }
+
+section.dark.background {
+  color: #F0F1EB;
+}
+section.dark.background h2 {
+  color: #F0F1EB;
+  background-color: MediumBlue; /* Background color */
+  display: inline-block; /* Make the background close to the text */
+}
 
  /*********************************************
   * GLOBAL STYLES

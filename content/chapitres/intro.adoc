@@ -497,3 +497,41 @@ Les conteneurs, en revanche, sont légers et rapides, ce qui les rend parfaits p
 Cela permet une flexibilité accrue dans la gestion des ressources et des charges de travail sur votre infrastructure informatique.
 --
 
+== 🤡 Docker, c'est pas un peu une VM quand même?
+
+image::mobyvm.png[height=1000]
+
+== 🤡 Docker, c'est pas un peu une VM quand même?
+
+* Docker sur Windows pour exécuter des conteneurs Linux :
+[%step]
+** Hyper-V : Sous Windows, Docker utilise souvent Hyper-V pour exécuter des machines virtuelles légères (VM) Linux.
+[%step]
+** Performance : Docker sur Windows pour les conteneurs Linux peut être légèrement moins performant que Docker sur Linux natif.
+[%step]
+** Isolation : Isolation différente de celle des conteneurs Linux natifs.
+[%step]
+* Docker sur Linux pour exécuter des conteneurs Linux :
+[%step]
+** Native : Docker fonctionne nativement car il partage le même noyau Linux.
+[%step]
+** Efficacité : Il  est très efficace en termes de consommation de ressources.
+[%step]
+** Isolation : Isolation basée sur les cgroups et les namespaces du noyau Linux.
+
+[.notes]
+--
+* Docker sur Linux pour exécuter des conteneurs Linux :
+** Native : Sur un système Linux, Docker fonctionne nativement car il partage le même noyau Linux. Il offre donc une performance optimale et une intégration transparente avec le système hôte.
+** Efficacité : Comme Docker sur Linux partage le noyau du système hôte, il est très efficace en termes de consommation de ressources. Les conteneurs Linux sont légers et se lancent rapidement.
+** Isolation : Les conteneurs Linux sur Docker offrent une isolation basée sur les cgroups et les namespaces du noyau Linux. Cela permet d'isoler efficacement les applications et de garantir qu'elles n'interfèrent pas les unes avec les autres.
+** Images Linux : Docker sur Linux est optimisé pour les images de conteneurs Linux. Vous utiliserez principalement des images Linux pour vos conteneurs.
+
+* Docker sur Windows pour exécuter des conteneurs Linux :
+** Hyper-V : Sur un système Windows, Docker utilise souvent Hyper-V pour exécuter des machines virtuelles légères (VM) Linux. Cela signifie que vous exécutez un hyperviseur (Hyper-V) pour exécuter Linux, ce qui ajoute une couche de virtualisation.
+** Performance : En raison de la virtualisation, Docker sur Windows pour les conteneurs Linux peut être légèrement moins performant que Docker sur Linux natif. Il existe une surcharge en raison de la virtualisation.
+** Isolation : Les conteneurs Linux s'exécutent dans des VM légères, ce qui ajoute une isolation, mais elle est différente de celle des conteneurs Linux natifs. Les conteneurs Linux s'exécutent toujours sur le même noyau, mais ils sont isolés au niveau du système de fichiers.
+** Images Linux : Vous utilisez également des images Linux pour les conteneurs Linux exécutés sous Docker sur Windows.
+
+En résumé, Docker sur Linux est la meilleure option pour exécuter des conteneurs Linux, car il offre une intégration transparente et des performances optimales. Docker sur Windows utilise Hyper-V pour exécuter des conteneurs Linux, ce qui ajoute une couche de virtualisation et peut entraîner une légère perte de performances. Cependant, cela fonctionne bien lorsque vous avez besoin d'exécuter des conteneurs Linux sur une machine Windows.
+--
