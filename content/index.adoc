@@ -13,19 +13,54 @@ image::qrcode.png["QRCode to this presentation",height=150]
 * Contenu sous licence link:https://creativecommons.org/licenses/by/4.0/[Creative Commons Attribution 4.0 International License,window="_blank"]
 * Code source de la présentation: link:{repositoryUrl}[{github_icon} {repositoryUrl},window="_blank"]
 
-[{invert}]
+[background-color="MediumBlue"]
+[.dark.background]
+[.columns]
 == Comment utiliser cette présentation ?
 
+[.column]
+--
+image::logo-t-shirt-transparent-1080.png[background, size=contain, position=left, opacity=0.1]
+--
+
+[.column]
+--
 * Pour naviguer, utilisez les flèches en bas à droite (ou celles de votre clavier)
 ** Gauche/Droite: changer de chapitre
 ** Haut/Bas: naviguer dans un chapitre
 * Pour avoir une vue globale : utiliser la touche "o" (pour "*Overview*")
+--
 
 // Welcome
 include::./chapitres/welcome.adoc[leveloffset=1]
 
 // Introduction
 include::./chapitres/intro.adoc[leveloffset=1]
+
+
+// Cas d'usage
+include::./chapitres/cas-d-usage.adoc[leveloffset=1]
+
+// Préparer son environnement de travail
+include::./chapitres/dev-env.adoc[leveloffset=1]
+
+// Base
+include::./chapitres/docker-base.adoc[leveloffset=1]
+
+// Images
+include::./chapitres/images.adoc[leveloffset=1]
+
+// Fichiers
+include::./chapitres/fichiers-nommage-inspect.adoc[leveloffset=1]
+
+// Volumes
+include::./chapitres/volumes.adoc[leveloffset=1]
+
+// Réseaux
+include::./chapitres/reseaux.adoc[leveloffset=1]
+
+// Docker compose
+include::./chapitres/compose.adoc[leveloffset=1]
 
 // Bibliographie
 include::./chapitres/bibliographie.adoc[leveloffset=1]
@@ -42,3 +77,27 @@ image::qrcode.png["QRCode to this presentation",height=150]
 
 [.small]
 link:{repositoryUrl}[Source on {github_icon} : {repositoryUrl},window="_blank"]
+
+[.notes]
+--
+* Pour transformer des diapos extraites de PowerPoint en les croppant et en remplaçant le blanc par du transparent:
+
+[source,bash]
+----
+for i in {3..10}
+do
+  convert Diapositive${i}.PNG -crop 9583x4167+1917+1750 -transparent white -resize 1920x output${i}_with_transparency.png
+done
+----
+
+* Pour transformer un PPT en asciidoc (pour en récupérer le texte et les images, il ne faut rien en attendre d'autre):
+
+[source,bash]
+----
+java -jar pptx2adoc.jar Slide.pptx
+----
+
+** Le projet se trouve là: https://github.com/ullenboom/ppt2asciidocslides
+
+* Certains des memes ont été généré grâce à memerator: https://damemerator.netlify.app/
+--

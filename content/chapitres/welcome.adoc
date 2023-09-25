@@ -1,42 +1,109 @@
 [{invert}]
+
 = Bonjour !
+
+
+image::bitmoji-hello.png[width=200,transparent=true]
+
+image::hello-from-docker.svg[]
 
 [.small]
 La suite: vers le bas ⬇️
 
 [{invert}]
-== Bruno VERACHTEN
+== !
 
-* Developer Advocate 🥑 chez https://www.cloudbees.com[CloudBees,window="_blank"] pour le projet link:https://www.jenkins.io/[Jenkins,window="_blank"] 👨🏻‍⚖️
+image::docker_love.png[background, size=contain, position=center, opacity=0.1]
 
+[.notes]
+--
+On en reparlera après, mais j'aime Docker depuis longtemps, d'un amour platonique et non réciproque.
+
+1. ESN, sécurité des laptops et méfiance
+2. Early days, Raspberry Pi & consorts
+3. Ce n'est pas qu'un projet open source. Et si j'y bossais ?
+--
+
+[{invert}]
+[.columns]
+== !
+
+[.column]
+--
+image::logo.svg[background, size=contain, position=left, opacity=0.1]
+--
+
+
+[.column]
+--
+
+[.strong]
+Bruno VERACHTEN
+
+image::cloudbees.svg[fit=line]
+* Sr Developer Relations chez https://www.cloudbees.com[CloudBees,window="_blank"] pour le projet link:https://www.jenkins.io/[Jenkins,window="_blank"] 👨🏻‍⚖️
 * Me contacter :
 ** {author_mail}
 ** link:https://github.com/gounthar[{github_icon} gounthar,window="_blank"]
 ** link:https://bruno.verachten.fr/[]
 ** link:https://fr.linkedin.com/in/poddingue[{linkedin_icon} Bruno Verachten,window=_blank]
 ** link:https://twitter.com/poddingue[{twitter_icon} @poddingue,window=_blank]
+--
 
 == Et vous ?
 
-video::yourturn.mp4[width="600",options="autoplay,loop,nocontrols"]
+video::yourturn.mp4[width="600",options="autoplay,nocontrols"]
 
+[{invert}]
 == A propos du cours
 
-* Bla Bla Bla
+* Première itération d'une découverte Docker dans le cadre du DevOps
 
 * Contenu entièrement libre et open-source
+
+* Méchamment basé sur le travail de https://github.com/dduportal[Damien Duportal] et https://www.linkedin.com/in/awillemant/?originalSubdomain=fr[Amaury Willemant]
 
 [.small]
 ** N'hésitez pas ouvrir des Pull Request si vous voyez des améliorations ou problèmes: link:{repositoryUrl}/pulls[sur cette page,window="_blank"] (😉 wink wink)
 
+[.notes]
+--
+* Ceci n'est pas un cours exhaustif de Docker, nous n'en avons pas le temps, et ce n'est pas le but.
+* Ce que nous voulons est vous enseigner les rudiments pour que vous soyez armés pour la seconde partie de ce module
+* La partie Gitlab a besoin de ces pré-requis
+--
+
+== Calendrier
+
+🚧 Work in progress... 🚧
+
+* 26 septembre après-midi
+* 24 octobre après-midi
+* ...
+// * *Présentiel* 🎓 Jeudi 14 septembre 2023 - 9h -> 19h
+// * *Distanciel* 🛏️ Vendredi 15 septembre 2023 - 08h -> 17h
+
+== 📊 Évaluation
+
+video::ohno.mp4[width="200",options="autoplay,loop,nocontrols"]
+
+* Pourquoi ? s'assurer que vous avez acquis un minimum de concepts
+* Quoi ? Sans doute une note sur 20, basée sur une liste de critères exhaustifs
+* Comment ? Un projet Gitlab (probable) ou GitHub (peu probable) à me rendre (timing à déterminer ensemble)
+
+[background-video="plan.mp4",background-video-loop=true,background-video-muted=true]
+[{dark-background}]
 == Plan
 
-video::plan.mp4[width="200",options="autoplay,loop,nocontrols"]
-
-* Bla
-* Bleu
-* Bli
-
+* Intro
+* Base
+* Containers
+* Images
+* Fichiers, nommage, inspect
+* Volumes
+* Réseaux
+* Docker Compose
+* Bonus
 
 [.small]
 La suite: vers la droite ➡️

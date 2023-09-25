@@ -1,0 +1,132 @@
+
+[%auto-animate]
+== Cas d'usage
+
+Le bac à sable
+
+image::bac_à_sable.png[]
+
+[%auto-animate]
+== Cas d'usage
+
+Le bac à sable
+
+image::bac_à_sable.png[]
+
+* Un environnement tout propre tout neuf !
+
+
+[%auto-animate]
+== Cas d'usage
+
+Le bac à sable
+
+image::bac_à_sable.png[]
+
+* Un environnement tout propre tout neuf !
+* Le poste de travail n'est pas impacté
+
+[%auto-animate]
+== Cas d'usage
+
+Le bac à sable
+
+image::bac_à_sable.png[]
+
+* Un environnement tout propre tout neuf !
+* Le poste de travail n'est pas impacté
+* La configuration reste également isolée sans effet sur le poste de travail
+
+[%auto-animate]
+== Cas d'usage
+
+La machine de dév
+
+image::dis-le-encore-une-fois.png[]
+
+[%auto-animate]
+== Cas d'usage
+
+La machine de dév
+
+image::dis-le-encore-une-fois.png[]
+
+* Avoir un environnement reproductible pour rendre homogène le développement et les tests.
+
+[%auto-animate]
+== Cas d'usage
+
+La machine de dév
+
+image::docker-birth.png[]
+
+[%auto-animate]
+== Cas d'usage
+
+La machine de dév
+
+image::give-computer-client.png[]
+
+[%auto-animate]
+== Cas d'usage
+
+Déploiement en production
+
+image::prod-probleme.png[]
+
+[%auto-animate]
+== Cas d'usage
+
+Déploiement en production
+
+image::prod-probleme.png[]
+
+* Avec un container, si ca fonctionne en local, ca fonctionne en prod !
+
+[%auto-animate]
+== Cas d'usage
+
+Outillage jetable
+
+image::outillage-jetable.png[]
+
+[%auto-animate]
+== Cas d'usage
+
+Outillage jetable
+
+image::outillage-jetable.png[]
+
+* On instancie des applications sans les installer
+
+[%auto-animate]
+== Cas d'usage
+
+Outillage jetable
+
+image::outillage-jetable.png[]
+
+* On instancie des applications sans les installer
+* On crée le container, on l'utilise puis on le jette
+
+
+[%auto-animate]
+[.columns]
+== Beau boulot! 🤗
+
+[.column]
+--
+image::bitmoji-well done.png[]
+--
+
+[.column]
+--
+On a la base, remplissons là maintenant de containers!
+[.small]
+La suite: vers la droite ➡️
+--
+
+[.column]
+--
+image::empty_ship.png[height=720]
+--

@@ -1,0 +1,691 @@
+[%auto-animate]
+== ⛅ Conteneur en tâche de fond
+
+Lançons un container bien particulier…
+
+[source,shell]
+----
+docker container run  --interactive --tty jpetazzo/clock
+----
+
+[%auto-animate]
+== ⛅ Conteneur en tâche de fond
+
+Lançons un container bien particulier…
+
+[source,shell]
+----
+docker container run  --interactive --tty jpetazzo/clock
+Mon Sep 25 10:33:51 UTC 2023
+Mon Sep 25 10:33:52 UTC 2023
+Mon Sep 25 10:33:53 UTC 2023
+Mon Sep 25 10:33:54 UTC 2023
+Mon Sep 25 10:33:55 UTC 2023
+Mon Sep 25 10:33:56 UTC 2023
+...
+----
+
+[%auto-animate]
+== ⛅ Conteneur en tâche de fond
+
+Lançons un container bien particulier…
+
+[source,shell]
+----
+docker container run  --interactive --tty jpetazzo/clock
+Mon Sep 25 10:33:51 UTC 2023
+Mon Sep 25 10:33:52 UTC 2023
+Mon Sep 25 10:33:53 UTC 2023
+Mon Sep 25 10:33:54 UTC 2023
+Mon Sep 25 10:33:55 UTC 2023
+Mon Sep 25 10:33:56 UTC 2023
+...
+----
+
+Ce container va tourner indéfiniment sauf si on le stoppe avec ⌨️ kbd:[Ctrl + C]…
+
+[%auto-animate]
+== ⛅ Conteneur en tâche de fond
+
+Lançons un container bien particulier…
+
+[source,shell]
+----
+docker container run  --interactive --tty jpetazzo/clock
+Mon Sep 25 10:33:51 UTC 2023
+Mon Sep 25 10:33:52 UTC 2023
+Mon Sep 25 10:33:53 UTC 2023
+Mon Sep 25 10:33:54 UTC 2023
+Mon Sep 25 10:33:55 UTC 2023
+Mon Sep 25 10:33:56 UTC 2023
+...
+----
+
+Ce container va tourner indéfiniment sauf si on le stoppe avec ⌨️ kbd:[Ctrl + C]…
+
+… mais ca va stopper le container !
+
+image::lapalissade.jpg[]
+
+[%auto-animate]
+== ⛅ Conteneur en tâche de fond
+
+Lançons un container bien particulier…
+
+[source,shell]
+----
+docker container run  --interactive --tty jpetazzo/clock
+Mon Sep 25 10:33:51 UTC 2023
+Mon Sep 25 10:33:52 UTC 2023
+Mon Sep 25 10:33:53 UTC 2023
+Mon Sep 25 10:33:54 UTC 2023
+Mon Sep 25 10:33:55 UTC 2023
+Mon Sep 25 10:33:56 UTC 2023
+...
+----
+
+Ce container va tourner indéfiniment sauf si on le stoppe avec ⌨️ kbd:[Ctrl + C]…
+
+… mais ca va stopper le container !
+
+Oui car quand on stoppe le processus principal d'un container, ce dernier n'a plus de raison d'exister et s'arrête naturellement.
+
+[%auto-animate]
+== ⛅ Conteneur en tâche de fond
+
+La solution : le flag  `--detach`
+
+[source,shell]
+----
+docker container run --detach jpetazzo/clock
+----
+
+[%auto-animate]
+== ⛅ Conteneur en tâche de fond
+
+La solution : le flag  `--detach`
+
+[source,shell]
+----
+docker container run --detach jpetazzo/clock
+399f3b23bc0585991afa80dfee854cf0a953d782b99153b4e2cbc74ab6b07770
+----
+
+Le retour de cette commande correspond à l'identifiant unique du container.
+
+Cette fois-ci, le container tourne, mais  en arrière plan !
+
+[%auto-animate]
+== ⛅ Conteneur en tâche de fond
+
+image::1460541815-image8.png[]
+
+__" ____Okay____, maintenant il n'écrit la date nulle part… mais toutes les secondes… à l'aide ! "__
+
+[%auto-animate]
+== ⛅ Conteneur en tâche de fond
+
+Le processus principal de ce container écrit dans la sortie standard… du container !
+
+Comment retrouver le contenu de la sortie standard du container ?
+
+[%auto-animate]
+== ⛅ Conteneur en tâche de fond
+
+Le processus principal de ce container écrit dans la sortie standard… du container !
+
+Comment retrouver le contenu de la sortie standard du container ?
+
+[source,shell]
+----
+docker logs 399f3
+----
+
+[%auto-animate]
+== ⛅ Conteneur en tâche de fond
+
+Le processus principal de ce container écrit dans la sortie standard… du container !
+
+Comment retrouver le contenu de la sortie standard du container ?
+
+[source,shell]
+----
+docker logs 399f3
+Tue Sep 12 12:37:01 UTC 2023
+Tue Sep 12 12:37:02 UTC 2023
+Tue Sep 12 12:37:03 UTC 2023
+Tue Sep 12 12:37:04 UTC 2023
+Tue Sep 12 12:37:05 UTC 2023
+Tue Sep 12 12:37:06 UTC 2023
+Tue Sep 12 12:37:07 UTC 2023
+Tue Sep 12 12:37:08 UTC 2023
+Tue Sep 12 12:37:09 UTC 2023
+Tue Sep 12 12:37:10 UTC 2023
+Tue Sep 12 12:37:11 UTC 2023
+----
+
+[%auto-animate]
+== ⛅ Conteneur en tâche de fond
+
+Le processus principal de ce container écrit dans la sortie standard… du container !
+
+Comment retrouver le contenu de la sortie standard du container ?
+
+[source,shell]
+----
+docker logs 399f3
+Tue Sep 12 12:37:01 UTC 2023
+Tue Sep 12 12:37:02 UTC 2023
+Tue Sep 12 12:37:03 UTC 2023
+Tue Sep 12 12:37:04 UTC 2023
+Tue Sep 12 12:37:05 UTC 2023
+Tue Sep 12 12:37:06 UTC 2023
+Tue Sep 12 12:37:07 UTC 2023
+Tue Sep 12 12:37:08 UTC 2023
+Tue Sep 12 12:37:09 UTC 2023
+Tue Sep 12 12:37:10 UTC 2023
+Tue Sep 12 12:37:11 UTC 2023
+----
+
+Ouf ! On n'est pas obligé de saisir l'identifiant complet ! Il suffit de fournir le nombre suffisant de caractères pour que ce soit discriminant.
+
+[%auto-animate]
+== 📖 Lister les containers
+
+Comment savoir si j'ai des containers en cours d'exécution ?
+
+💡 Commande vue un peu plus tôt...
+
+[%auto-animate]
+== 📖 Lister les containers
+
+Comment savoir si j'ai des containers en cours d'exécution ?
+[source,shell]
+----
+docker container ls
+----
+
+[%auto-animate]
+== 📖 Lister les containers
+
+Comment savoir si j'ai des containers en cours d'exécution ?
+[source,shell]
+----
+docker container ls
+CONTAINER ID   IMAGE                           COMMAND                  CREATED        STATUS       PORTS                    NAMES
+02cbf2fb3721   cours-devops-docker-serve       "/sbin/tini -g gulp …"   3 hours ago    Up 3 hours   0.0.0.0:8000->8000/tcp   cours-devops-docker-serve-1
+ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago   Up 3 hours                            buildx_buildkit_exciting_williams0
+----
+
+[%auto-animate]
+== 📖 Lister les containers
+
+Comment savoir si j'ai des containers en cours d'exécution ?
+[source,shell]
+----
+docker container ls
+CONTAINER ID   IMAGE                           COMMAND                  CREATED        STATUS       PORTS                    NAMES
+02cbf2fb3721   cours-devops-docker-serve       "/sbin/tini -g gulp …"   3 hours ago    Up 3 hours   0.0.0.0:8000->8000/tcp   cours-devops-docker-serve-1
+ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago   Up 3 hours                            buildx_buildkit_exciting_williams0
+----
+
+On obtient un tableau de tous les containers en cours d'exécution.
+
+[%auto-animate]
+== 🛑 🏁 Stop / Start
+
+Il est possible de stopper un container.
+
+[source,bash]
+----
+docker container stop 399f3
+----
+
+[%auto-animate]
+== 🛑 🏁 Stop / Start
+
+Il est possible de stopper un container.
+
+[source,bash]
+----
+docker container stop 399f3
+----
+
+Pour redémarrer un container :
+
+[source,bash]
+----
+docker container start 399f3
+----
+
+[%auto-animate]
+== 📖 Lister tous les containers
+
+Même les 💀.
+
+[%auto-animate]
+== 📖 Lister tous les containers
+
+Comment savoir si j'ai des containers stoppés ?
+
+[source,shell]
+----
+docker container ls --all
+----
+
+[%auto-animate]
+== 📖 Lister tous les containers
+
+Comment savoir si j'ai des containers stoppés ?
+
+[source,shell]
+----
+docker container ls --all
+CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                        PORTS                    NAMES
+90725f661d4e   hello-world                     "/hello"                 13 seconds ago   Exited (0) 12 seconds ago                              hardcore_wescoff
+9d0a6586b9e1   busybox                         "echo hello world"       22 seconds ago   Exited (0) 21 seconds ago                              gracious_moser
+368ed08a35e3   jpetazzo/clock                  "/bin/sh -c 'while d…"   6 minutes ago    Up 5 minutes                                           sweet_clarke
+c036e57bbf05   jpetazzo/clock                  "/bin/sh -c 'while d…"   17 minutes ago   Exited (130) 17 minutes ago                            cool_euclid
+02cbf2fb3721   cours-devops-docker-serve       "/sbin/tini -g gulp …"   3 hours ago      Up 3 hours                    0.0.0.0:8000->8000/tcp   cours-devops-docker-serve-1
+ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago     Up 4 hours                                             buildx_buildkit_exciting_williams0
+----
+
+[%auto-animate]
+== 📖 Lister tous les containers
+
+Comment savoir si j'ai des containers stoppés ?
+
+[source,shell]
+----
+ docker container ls --all
+CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                        PORTS                    NAMES
+90725f661d4e   hello-world                     "/hello"                 13 seconds ago   Exited (0) 12 seconds ago                              hardcore_wescoff
+9d0a6586b9e1   busybox                         "echo hello world"       22 seconds ago   Exited (0) 21 seconds ago                              gracious_moser
+368ed08a35e3   jpetazzo/clock                  "/bin/sh -c 'while d…"   6 minutes ago    Up 5 minutes                                           sweet_clarke
+c036e57bbf05   jpetazzo/clock                  "/bin/sh -c 'while d…"   17 minutes ago   Exited (130) 17 minutes ago                            cool_euclid
+02cbf2fb3721   cours-devops-docker-serve       "/sbin/tini -g gulp …"   3 hours ago      Up 3 hours                    0.0.0.0:8000->8000/tcp   cours-devops-docker-serve-1
+ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago     Up 4 hours                                             buildx_buildkit_exciting_williams0
+----
+
+Avec le flag  `--all` , on obtient un tableau de tous les containers quel que soit leur état.
+
+[%auto-animate]
+== 🧽 Nettoyage
+
+Tout container stoppé peut être supprimé.
+
+[%auto-animate]
+== 🧽 Nettoyage
+
+Tout container stoppé peut être supprimé.
+
+[source,shell]
+----
+docker container rm 90725f661d4e
+----
+
+[%auto-animate]
+== 🧽 Nettoyage
+
+Tout container stoppé peut être supprimé.
+
+[source,shell]
+----
+docker container rm 90725f661d4e
+90725f661d4e
+----
+
+[%auto-animate]
+== 🧽 Nettoyage
+
+Tout container stoppé peut être supprimé.
+
+[source,shell]
+----
+docker container rm 90725f661d4e
+90725f661d4e
+----
+
+Container "auto-nettoyant" 🗑️
+
+[%auto-animate]
+== 🧽 Nettoyage
+
+Tout container stoppé peut être supprimé.
+
+[source,shell]
+----
+docker container rm 90725f661d4e
+90725f661d4e
+----
+
+Container "auto-nettoyant" 🗑️
+
+[source,shell]
+----
+docker container run  --interactive --tty --rm jpetazzo/clock
+----
+
+[.small]
+Aussitôt stoppé, aussitôt supprimé !
+
+[%auto-animate]
+== ⏰ Rappel: cycle de vie d'un container
+
+image::output68_with_transparency.png[]
+
+[%auto-animate]
+== ⏰ Rappel: cycle de vie d'un container
+
+image::output69_with_transparency.png[]
+
+[%auto-animate]
+== ⏰ Rappel: cycle de vie d'un container
+
+image::output70_with_transparency.png[]
+
+[%auto-animate]
+== ⏰ Rappel: cycle de vie d'un container
+
+image::output71_with_transparency.png[]
+
+[%auto-animate]
+== ⏰ Rappel: cycle de vie d'un container
+
+image::output72_with_transparency.png[]
+
+[.notes]
+--
+`docker container create` is used to create a new container but without starting it immediately.
+When you run docker create, Docker creates a container based on the specified image and prepares it to run, but it remains in a stopped state.
+You can then start the container using the `docker container start` command.
+
+Here's the basic syntax of the docker create command:
+
+[source,bash]
+----
+docker container create [OPTIONS] IMAGE [COMMAND] [ARG...]
+----
+
+* `OPTIONS` are various flags and settings you can apply to the container creation.
+* `IMAGE` is the name or ID of the Docker image to use for creating the container.
+* `COMMAND` (optional) specifies the command to run when the container starts.
+* `ARG` (optional) provides arguments to pass to the command.
+
+For example, to create a new container from an image called `myapp-image` without starting it immediately, you would use:
+
+[source,bash]
+----
+docker container create --name myapp-container myapp-image
+----
+
+After creating the container, you can start it with:
+
+[source,bash]
+----
+docker container start myapp-container
+----
+
+This separation of creation and starting allows you to configure the container further or set up networking and volumes before actually running the container.
+--
+
+[%auto-animate]
+== 🔄 Reprendre le contrôle
+
+Sur un container en arrière-plan
+
+[%auto-animate]
+== 🔄 Reprendre le contrôle
+
+Sur un container en arrière-plan
+
+Il est possible d'interagir avec un container en arrière-plan en cours d'exécution.
+
+[%auto-animate]
+== 🔄 Reprendre le contrôle
+
+Sur un container en arrière-plan
+
+Il est possible d'interagir avec un container en arrière-plan en cours d'exécution.
+
+La commande suivante permet de lancer une commande à l'intérieur d'un container.
+
+[%auto-animate]
+== 🔄 Reprendre le contrôle
+
+Sur un container en arrière-plan
+
+Il est possible d'interagir avec un container en arrière-plan en cours d'exécution.
+
+La commande suivante permet de lancer une commande à l'intérieur d'un container.
+
+[source,shell]
+----
+docker container exec <containerID> echo "hello"
+----
+
+[%auto-animate]
+== 🔄 Reprendre le contrôle
+
+Sur un container en arrière-plan
+
+Il est possible d'interagir avec un container en arrière-plan en cours d'exécution.
+
+La commande suivante permet de lancer une commande à l'intérieur d'un container.
+
+[source,shell]
+----
+docker container ls
+----
+
+
+[%auto-animate]
+== 🔄 Reprendre le contrôle
+
+Sur un container en arrière-plan
+
+Il est possible d'interagir avec un container en arrière-plan en cours d'exécution.
+
+La commande suivante permet de lancer une commande à l'intérieur d'un container.
+
+[source,shell]
+----
+docker container ls
+CONTAINER ID   IMAGE                           COMMAND                  CREATED        STATUS       PORTS                    NAMES
+368ed08a35e3   jpetazzo/clock                  "/bin/sh -c 'while d…"   4 hours ago    Up 4 hours                            sweet_clarke
+02cbf2fb3721   cours-devops-docker-serve       "/sbin/tini -g gulp …"   7 hours ago    Up 7 hours   0.0.0.0:8000->8000/tcp   cours-devops-docker-serve-1
+ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago   Up 7 hours                            buildx_buildkit_exciting_williams0
+----
+
+[%auto-animate]
+== 🔄 Reprendre le contrôle
+
+Sur un container en arrière-plan
+
+Il est possible d'interagir avec un container en arrière-plan en cours d'exécution.
+
+La commande suivante permet de lancer une commande à l'intérieur d'un container.
+
+[source,shell]
+----
+docker container ls
+CONTAINER ID   IMAGE                           COMMAND                  CREATED        STATUS       PORTS                    NAMES
+368ed08a35e3   jpetazzo/clock                  "/bin/sh -c 'while d…"   4 hours ago    Up 4 hours                            sweet_clarke
+02cbf2fb3721   cours-devops-docker-serve       "/sbin/tini -g gulp …"   7 hours ago    Up 7 hours   0.0.0.0:8000->8000/tcp   cours-devops-docker-serve-1
+ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago   Up 7 hours                            buildx_buildkit_exciting_williams0
+
+docker container exec 368ed08a35e3 echo hello
+hello
+----
+
+[%auto-animate]
+== 🔄 Reprendre le contrôle
+
+Sur un container en arrière-plan
+
+
+image::1107521466-image9.png[]
+
+[source,shell]
+----
+docker container exec --interactive --tty <containerID> bash
+----
+
+Ca fonctionne aussi en interactif !
+
+== 🎓 Exercice : conteneur en tâche de fond
+
+Étapes
+
+* Lancer un container "daemon" `jpetazzo/clock`
+* Utiliser l'équivalent de `tail –f` pour lire la sortie standard du container 💡
+* Lancer un second container "daemon" 👹
+* Stocker l'identifiant de ce container dans une variable du shell, en une seule commande et en jouant avec `docker container ls`
+* Stopper le container avec cet identifiant
+* Afficher les containers lancés 🏃📦
+* Afficher les containers arrêtés 🛑📦
+
+== ✅ Solution : conteneur en tâche de fond
+
+[source,bash]
+----
+# Lancer un container "daemon" `jpetazzo/clock`
+docker container run --detach --name first-clock jpetazzo/clock
+
+# Utiliser l'équivalent de `tail –f` pour lire la sortie standard du container 💡
+docker container logs -f first-clock
+
+# * Lancer un second container "daemon" 👹
+docker container run --detach --name second-clock jpetazzo/clock
+
+# Stocker l'identifiant de ce container dans une variable du shell, en une seule commande et en jouant avec `docker container ls`
+# --filter "name=second-clock" filters the list of containers to include only those with the name "second-clock."
+container_id=$(docker container ls -q --filter "name=second-clock")
+
+# Stopper le container avec cet identifiant
+docker container stop "$container_id"
+
+# Afficher les containers lancés  🏃📦
+docker container ls
+
+# Afficher les containers arrêtés 🛑📦
+docker container ls --filter "status=exited"
+----
+
+== 🎓 Exercice : conteneur en tâche de fond
+
+* Relancer un des containers arrêtés.
+* Exécuter un `ps –ef `dans ce container
+* Quel est le PID du process principal ?
+* Vérifier que le container "tourne" toujours
+* Supprimer l'image (tip : `docker rmi`)
+* Supprimer les containers
+* Supprimer l'image (pour de vrai cette fois)
+
+== ✅ Solution : conteneur en tâche de fond
+
+[source,bash]
+----
+# Relancer un des containers arrêtés.
+docker container start second-clock
+
+# Exécuter un `ps –ef `dans ce container
+docker container exec second-clock ps -ef
+PID   USER     TIME  COMMAND
+    1 root      0:00 /bin/sh -c while date; do sleep 1; done
+   56 root      0:00 sleep 1
+   57 root      0:00 ps -ef
+
+# Quel est le PID du process principal ?
+# 1
+
+# Vérifier que le container "tourne" toujours
+docker container ls
+CONTAINER ID   IMAGE                           COMMAND                  CREATED         STATUS              PORTS                    NAMES
+7d7085809ad2   cours-devops-docker-serve       "/sbin/tini -g gulp …"   6 minutes ago   Up 5 minutes        0.0.0.0:8000->8000/tcp   cours-devops-docker-serve-1
+edea0c46c6d8   jpetazzo/clock                  "/bin/sh -c 'while d…"   9 minutes ago   Up About a minute                            second-clock
+ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago    Up 11 hours                                  buildx_buildkit_exciting_williams0
+
+# Supprimer l'image (tip : `docker rmi`)
+docker rmi jpetazzo/clock
+Error response from daemon: conflict: unable to remove repository reference "jpetazzo/clock" (must force) - container edea0c46c6d8 is using its referenced image 7a8965d6553e
+
+# Supprimer les containers
+docker stop second-clock
+second-clock
+
+docker rm second-clockl
+second-clock
+# Supprimer l'image (pour de vrai cette fois)
+docker rmi jpetazzo/clock
+
+Untagged: jpetazzo/clock:latest
+Untagged: jpetazzo/clock@sha256:dc06bbc3744f7200404bff0bbb2516925e7adea115e07de9da8b36bf15fe3dd3
+Deleted: sha256:7a8965d6553ea2289485744ef20521e0dd0d12ab51773f271882913b79813750
+Deleted: sha256:67f770da229bf16d0c280f232629b0c1f1243a884df09f6b940a1c7288535a6d
+----
+
+[.notes]
+--
+Dans Docker, le PID (Process ID) principal est toujours 1, car c'est une convention spécifique à Docker.
+Cette convention facilite la gestion des processus dans les conteneurs en isolant chaque processus du conteneur du système hôte.
+En assignant toujours le PID 1 au processus principal du conteneur, Docker peut surveiller ce processus pour s'assurer qu'il est en cours d'exécution.
+Cela permet également d'éviter des conflits potentiels avec les processus du système hôte, car les PID sont spécifiques à chaque espace de conteneur.
+En résumé, cette convention est une pratique standard qui contribue à l'isolation et à la gestion efficace des processus dans les conteneurs Docker.
+--
+
+== 🎓 Exercice : conteneur en tâche de fond
+
+* Exécutez un conteneur, basé sur l'image `nginx` en tâche de fond ("Background"), nommé `webserver-1`
+** 💡 On parle de processus "détaché" (ou bien "démonisé") 👹
+** ⚠️ Pensez bien à `docker container ls`
+
+* Regardez le contenu du fichier `/etc/os-release` dans ce conteneur
+** 💡 `docker container exec`
+
+* Essayez d'arrêter, démarrer puis redémarrer le conteneur
+** ⚠️ Pensez bien à `docker container ls` à chaque fois
+** 💡 `stop`, `start`, `restart`
+
+== ✅ Solution : conteneur en tâche de fond
+
+[source,bash]
+----
+docker container run --detach --name=webserver-1 nginx
+# <ID du conteneur>
+
+docker container ls
+docker container ls --all
+
+docker container exec webserver-1 cat /etc/os-release
+# ... Debian ...
+
+docker container stop webserver-1
+docker container ls
+docker container ls --all
+
+docker container start webserver-1
+docker container ls
+docker container ls --all
+
+docker container start webserver-1
+docker container ls
+----
+
+[.columns]
+== Checkpoint 🎯
+
+[.column]
+--
+Vous savez désormais:
+
+* Maîtriser le cycle de vie des containers
+* Interagir avec les containers existants
+
+image::1706694417-image2.png[]
+--
+
+[.column]
+--
+image::1497094497-image10.gif[]
+--

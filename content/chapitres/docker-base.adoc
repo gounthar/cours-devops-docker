@@ -1,0 +1,262 @@
+= Containers
+
+image::blue-shipping-container.png[background, size=contain, position=left, opacity=0.1]
+
+== 🎓 Exercice : Votre premier conteneur
+
+C'est à vous (ouf) !
+
+* Allez dans Gitpod
+* Dans un terminal, tapez la commande suivante :
+
+[source,bash]
+----
+docker container run hello-world
+# Equivalent de l'ancienne commande 'docker run'
+----
+
+[%auto-animate]
+== 🩻 Anatomie
+
+* Un service "Docker Engine" tourne en tâche de fond et publie une API REST
+* La commande `docker container run ...` a lancé un client docker qui a envoyé une requête `POST` au service docker
+* Le service a téléchargé une **Image** Docker depuis le registre **DockerHub**,
+* Puis a exécuté un **conteneur** basé sur cette image
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::output3_with_transparency.png[]
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::output4_with_transparency.png[]
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::output5_with_transparency.png[]
+[%auto-animate]
+== 🩻 Anatomie
+
+image::output6_with_transparency.png[]
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::output7_with_transparency.png[]
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::output8_with_transparency.png[]
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::output9_with_transparency.png[]
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::output10_with_transparency.png[]
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::dollar_date.png[]
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::shell_dans_shell_pour_date.png[]
+
+== 🎓 Exercice : Où est mon conteneur ?
+
+C'est à vous !
+
+[source,bash]
+----
+docker container ls --help
+# ...
+docker container ls
+# ...
+docker container ls --all
+----
+
+=> 🤔 comment comprenez vous les résultats des 2 dernières commandes ?
+
+== ✅ Solution : Où est mon conteneur ?
+
+Le conteneur est toujours présent dans le "Docker Engine" même en étant arrêté
+
+[source,shell]
+----
+CONTAINER ID   IMAGE         COMMAND    CREATED          STATUS                      PORTS     NAMES
+109a9cdd3ec8   hello-world   "/hello"   33 seconds ago   Exited (0) 17 seconds ago             festive_faraday
+----
+
+* Un conteneur == une commande "conteneurisée"
+** cf. colonne "*COMMAND*"
+
+* Quand la commande s'arrête : le conteneur s'arrête
+** cf. code de sortie dans la colonne "*STATUS*"
+
+[%auto-animate]
+== 🫁 Rappels d'anatomie
+
+[source, shell]
+----
+$ docker container run busybox echo hello world
+----
+
+[%auto-animate]
+== 🫁 Rappels d'anatomie
+
+[source, shell]
+----
+$ docker container run busybox echo hello world
+----
+
+* Le moteur Docker crée un container à partir de l'image "busybox".
+
+[%auto-animate]
+== 🫁 Rappels d'anatomie
+
+[source, shell]
+----
+$ docker container run busybox echo hello world
+----
+
+* Le moteur Docker crée un container à partir de l'image "busybox".
+* Le moteur Docker démarre le container créé.
+
+[%auto-animate]
+== 🫁 Rappels d'anatomie
+
+[source, shell]
+----
+$ docker container run busybox echo hello world
+----
+
+* Le moteur Docker crée un container à partir de l'image "busybox".
+* Le moteur Docker démarre le container créé.
+* La commande "echo hello world" est exécutée à l'intérieur du container.
+
+[%auto-animate]
+== 🫁 Rappels d'anatomie
+
+[source, shell]
+----
+$ docker container run busybox echo hello world
+----
+
+* Le moteur Docker crée un container à partir de l'image "busybox".
+* Le moteur Docker démarre le container créé.
+* La commande "echo hello world" est exécutée à l'intérieur du container.
+* On obtient le résultat dans la sortie standard de la machine hôte.
+
+[%auto-animate]
+== 🫁 Rappels d'anatomie
+
+[source, shell]
+----
+$ docker container run busybox echo hello world
+----
+
+* Le moteur Docker crée un container à partir de l'image "busybox".
+* Le moteur Docker démarre le container créé.
+* La commande "echo hello world" est exécutée à l'intérieur du container.
+* On obtient le résultat dans la sortie standard de la machine hôte.
+* Le container est stoppé.
+
+[%auto-animate]
+== 🍽️ Cas d'usage
+
+Outillage jetable
+
+image::outillage-jetable.png[]
+
+* Tester une version de Maven, de JDK, de NPM, …
+
+== 🎓 Exercice : Cycle de vie d'un conteneur simple
+
+* Lancez un nouveau conteneur nommé `bonjour`
+** 💡 `docker container run --help` ou https://docs.docker.com/engine/reference/commandline/container_run/[Documentation en ligne,window="_blank"]
+
+* Affichez les "logs" du conteneur (==traces d'exécution écrites sur le stdout + stderr de la commande conteneurisée)
+** 💡 `docker container logs  --help` ou https://docs.docker.com/engine/reference/commandline/container_logs/[Documentation en ligne,window="_blank"]
+
+* Lancez le conteneur avec la commande https://docs.docker.com/engine/reference/commandline/container_start/[`docker container start`,window="_blank"]
+** Regardez le résultat dans les logs
+
+* Supprimez le container avec la commande https://docs.docker.com/engine/reference/commandline/container_rm/[`docker container rm`,window="_blank"]
+
+== ✅ Solution : Cycle de vie d'un conteneur simple
+
+[source,bash]
+----
+docker container run --name=bonjour hello-world
+# Affiche le texte habituel
+
+docker container logs bonjour
+# Affiche le même texte : pratique si on a fermé le terminal
+
+docker container start bonjour
+# N'affiche pas le texte mais l'identifiant unique du conteneur 'bonjour'
+
+docker container logs bonjour
+# Le texte est affiché 2 fois !
+
+docker container ls --all
+# Le conteneur est présent
+docker container rm bonjour
+docker container ls --all
+# Le conteneur n'est plus là : il a été supprimé ainsi que ses logs
+
+docker container logs bonjour
+# Error: No such container: bonjour
+----
+
+== 🤔 Que contient "hello-world" ?
+
+* C'est une "image" de conteneur, c'est à dire un modèle (template)
+représentant une application auto-suffisante.
+** On peut voir ça comme un "paquetage" autonome
+
+* C'est un système de fichier complet:
+** Il y a au moins une racine `/`
+** Ne contient que ce qui est censé être nécessaire (dépendances, librairies, binaires, etc.)
+
+== Docker Hub
+
+* https://hub.docker.com/ : C'est le registre d'images "par défaut"
+** Exemple : Image officielle de https://hub.docker.com/_/ubuntu[conteneur "Ubuntu"]
+
+* 🎓 Cherchez l'image `hello-world` pour en voir la page de documentation
+** 💡 pas besoin de créer de compte pour ça
+
+* Il existe d'autre "registres" en fonction des besoins (GitHub GHCR, Google GCR, etc.)
+
+// Utiliser un conteneur interactif
+include::./sous-chapitres/docker-base/interactif.adoc[leveloffset=1]
+
+
+// Utiliser un conteneur en tâche de fond
+include::./sous-chapitres/docker-base/demons.adoc[leveloffset=1]
+
+== Checkpoint 🎯
+
+* Docker essaye de résoudre le problème de l'empaquetage le plus "portable" possible
+** On n'en a pas encore vu les effets, ça arrive !
+
+* Vous avez vu qu'un containeur permet d'exécuter une commande dans un environnement "préparé"
+** Catalogue d'images Docker par défaut : Le https://hub.docker.com[Docker Hub]
+
+* Vous avez vu qu'on peut exécuter des conteneurs selon 3 modes :
+** "One shot"
+** Interactif
+** En tâche de fond
+
+=> 🤔 Mais comment ces images sont-elles fabriquées ? Quelle confiance leur accorder ?

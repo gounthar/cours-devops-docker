@@ -1,0 +1,118 @@
+[{invert}]
+= Préparer votre environnement de travail
+
+== Outils Nécessaires 🛠
+
+* Un navigateur web récent (et décent)
+* Un compte sur link:https://github.com[{github_icon} GitHub,window="_blank"]
+
+== GitPod
+
+link:https://gitpod.io[GitPod.io,window="_blank"] : Environnement de développement dans le ☁️ "nuage"
+
+* **But:** reproductible
+* Puissance de calcul sur un serveur distant
+* Éditeur de code VSCode dans le navigateur
+
+[%step]
+WARNING: Gratuit pour 50h par mois (⚠️)
+[%step]
+WARNING: Ça, c'était avant (⚠️)
+[%step]
+WARNING: Gratuit pour 10h par mois (⚠️)
+[%step]
+WARNING: Gratuit pour 50h par mois si compte {linkedin_icon} lié (⚠️)
+
+== Démarrer avec GitPod 🚀
+
+* Rendez vous sur link:https://gitpod.io[window="_blank"]
+
+* Authentifiez vous en utilisant votre compte GitHub:
+** Bouton "Login" en haut à droite
+** Puis choisissez le lien "{github_icon} Continue with GitHub"
+
+[.small]
+⚠️ Pour les "autorisations", passez sur la slide suivante
+
+== Autorisations demandées par GitPod 🔓
+
+Lors de votre première connexion, GitPod va vous demander l'accès (à accepter) à votre email public configuré dans GitHub :
+
+image::gitpod-github-permissions.png[width=400]
+
+[.small]
+⚠️ Passez à la slide suivante avant d'aller plus loin
+
+== Validation du Compte GitPod 📱
+
+GitPod vous demande votre numéro de téléphone mobile afin d'éviter les abus (service gratuit).
+Saisissez un numéro de téléphone valide pour recevoir par SMS un code de déblocage :
+
+image::gitpod-phone-validation.png[width=400]
+
+[.small]
+⚠️ Passez à la slide suivante avant d'aller plus loin
+
+== Choix de l'Éditeur de Code ✎
+
+Choisissez l'éditeur "VSCode Browser" (la première tuile) :
+
+image::gitpod-select-editor.png[width=600]
+
+[.small]
+⚠️ Passez à la slide suivante avant d'aller plus loin
+
+== Workspaces GitPod 🗂
+
+* Vous arrivez sur la link:https://gitpod.io/workspaces[page listant les "workspaces" GitPod,window="_blank"] :
+
+* Un workspace est une instance d'un environnement de travail virtuel (C'est un ordinateur distant)
+
+* ⚠  Faites attention à réutiliser le même workspace tout au long de ce cours ⚠
+
+image::gitpod-workspaces.png[width=600]
+
+== Permissions GitPod <-> GitHub 🔐
+
+* Pour les besoins de ce cours, vous devez autoriser GitPod à pouvoir effectuer certaines modification dans vos dépôts GitHub
+* Rendez-vous sur https://gitpod.io/user/integrations[la page des intégrations avec GitPod,window="_blank"]
+* Éditez les permissions de la ligne "GitHub" (les 3 petits points à droits) et sélectionnez uniquement :
+** `user:email`
+** `public_repo`
+** `workflow`
+
+== Démarrer l'environnement GitPod
+
+Cliquez sur le bouton ci-dessous pour démarrer un environnement GitPod personnalisé:
+
+image::https://gitpod.io/button/open-in-gitpod.svg[link="https://gitpod.io#{gitpod_github_repo_url}",window="_blank"]
+
+Après quelques secondes (minutes?), vous avez accès à l'environnement:
+
+* Gauche: navigateur de fichiers ("Workspace")
+* Haut: éditeur de texte ("Get Started")
+* Bas: Terminal interactif
+* À droite en bas: plein de popups à ignorer (ou pas?)
+
+[.small]
+Source disponible dans : link:{gitpod_github_repo_url}[{github_icon} {gitpod_github_repo_url}, window="_blank"]
+
+== Checkpoint 🎯
+
+* Vous devriez pouvoir taper la commande `whoami` dans le terminal de GitPod:
+** Retour attendu: `gitpod`
+
+* Vous devriez pouvoir fermer le fichier "Get Started"...
+** ... et ouvrir n'importe quel autre fichier...
+
+Bien, on peut maintenant fermer ce workspace, il ne s'agirait pas de gaspiller vos 50 heures.
+
+== 📚 Et Gitlab?
+
+GitPod fonctionne aussi avec gitlab.com, mais pour les instances on premise, il faut l'installer, l'instancier, avoir un "inner cloud"
+
+[%step]
+Bref, on ne l'a pas ici. `¯\_(ツ)_/¯`
+
+[.small]
+On peut commencer !

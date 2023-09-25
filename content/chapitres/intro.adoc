@@ -1,29 +1,539 @@
+
+include::../attributes.adoc[]
+
 [{invert}]
-= Introduction
 
-== Introduction - suite
+[.container.background]
+= Docker
 
-image::trollface.png[width=50]
+image::empty_harbor.png[background, size=cover, position=left, opacity=0.1]
 
-== 🎓 Exercice : Environnement préfabriqué simple
+[%title]
+"La Base"
 
-* *But* : exécuter la commande `cat README.md | cowsay` dans le workflow avec un environnement le plus proche possible du développement
-** En utilisant le même environnement que GitPod (*même version de Ubuntu* et de `cowsay`)
+== Pourquoi ?
 
-* 👷🏽‍♀️ C'est à vous de mettre à jour le workflow pour exécuter les étapes dans la même image Docker que GitPod :
-** 💡 link:{gitpod_github_repo_url}/tree/main/.gitpod.yml#L5[Image utilisée dans GitPod,window="_blank"]
-** 💡 link:https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idcontainer[Utilisation d'un container comme runner GitHub Actions,window="_blank"]
-** 💡 link:https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#docker-container-filesystem[Contraintes d'exécution de container dans GitHub Actions (`--user=root`),window="_blank"]
+image::docker-logo-monochromatic.png[width=200]
 
-== ✅ Solution : Environnement préfabriqué simple
+🤔 Quel est le problème ?
 
-[source,yaml]
-----
-include::../code-samples/gh-actions/ci-docker-image.yml[tags="common,container,checkout,run-cowsay"]
-----
+[%auto-animate]
+== Pourquoi commencer par un problème ?
 
-== !
+image::docker-logo-monochromatic.png[width=200]
 
-* Quel est l'impact en terme de temps d'exécution du changement précédent ?
+🤔 Commençons plutôt par une définition:
 
-* *Problème :* Le temps entre une modification et le retour est crucial
+> Docker c'est ...
+
+[.notes]
+--
+* Demander à l'assistance une définition
+--
+
+[%auto-animate]
+== Pourquoi commencer par un problème ?
+
+image::docker-logo-monochromatic.png[width=200]
+
+🤔 Définition quelque peu datée (2014):
+
+> Docker is ...
+
+[.notes]
+--
+* Demander à l'assistance une définition
+* make a point
+--
+
+[%auto-animate]
+== Pourquoi commencer par un problème ?
+
+image::docker-logo-monochromatic.png[width=200]
+
+🤔 Définition quelque peu datée (2014):
+
+> Docker is a toolset for Linux containers designed to ‘build, ship and run’ distributed applications.
+
+[.small]
+https://www.infoq.com/articles/docker-future/
+
+[.notes]
+--
+* https://www.infoq.com/articles/docker-future/
+--
+
+[%auto-animate]
+== Linux containers ?
+
+image::docker-logo-monochromatic.png[width=200]
+
+🤔 Nous voilà bien...
+
+> C'est quoi un container?
+
+[.notes]
+--
+* https://www.infoq.com/articles/docker-future/
+--
+
+[%auto-animate]
+== Linux containers ?
+
+image::docker-logo-monochromatic.png[width=200]
+
+🤔 Nous voilà bien...
+
+> C'est quoi un container?
+
+[.small]
+Vous voulez la version enfant de 5 ans? Je ne crois pas...
+
+[.notes]
+--
+* J'ai la version "les containers expliqués à un enfant de 5 ans", mais pas sûr que vous appréciez...
+* On va donc passer à la suite, et on y revient dans un moment.
+* Imagine que tu as une boîte magique appelée "conteneur".
+* Cette boîte peut contenir toutes sortes de choses, comme des jouets, des bonbons ou même des dessins.
+* Maintenant, dans le monde de l'informatique, un conteneur Docker est un peu comme cette boîte magique.
+* Mais au lieu de jouets ou de bonbons, un conteneur Docker peut contenir des programmes et toutes les choses dont ces programmes ont besoin pour fonctionner.
+* Par exemple, il peut contenir un site Web, une application ou même une partie d'un jeu vidéo.
+* Ce qui est vraiment cool avec les conteneurs Docker, c'est qu'ils sont très spéciaux.
+* Chaque conteneur est comme une petite boîte magique qui garde tout bien organisé à l'intérieur.
+* Et tu peux facilement prendre cette boîte magique et la mettre sur n'importe quel ordinateur, qu'il soit grand ou petit, comme si tu transportais tes jouets préférés chez un ami.
+* Cela signifie que les conteneurs Docker aident les développeurs à s'assurer que leurs programmes fonctionnent de la même manière partout où ils les utilisent. C'est comme si tu pouvais t'amuser avec tes jouets préférés chez toi, chez un ami, ou même à l'école, et tout fonctionnerait toujours comme prévu.
+* En résumé, un conteneur Docker est comme une boîte magique pour les programmes informatiques.
+* Il garde tout bien organisé à l'intérieur et peut être déplacé facilement d'un ordinateur à un autre, comme si tu emportais tes jouets préférés partout où tu vas. C'est super pratique pour les personnes qui créent des choses sur l'ordinateur !
+--
+
+[{invert}]
+[%auto-animate]
+== Docker est vieux
+
+10 ans déjà...
+
+image::containerconteneuraccidenteavariejpg_5e8b87ccc8c27.jpg[position=left, opacity=0.1]
+
+[.notes]
+--
+
+* The story of Docker starts in Paris with a startup called DotCloud, founded by Solomon Hykes, Kamel Founadi,
+and Sebastien Pahl in 2008 to provide cloud hosting services for software developers.
+* It was first released as an open source project by DotCloud in March 2013.
+* The project quickly became popular, leading to DotCloud rebranded as Docker Inc
+--
+
+[{invert}]
+[%auto-animate]
+== Docker est vieux
+
+Mais moi aussi...
+
+image::piWorkshop.png[position=left, opacity=0.1]
+
+[.notes]
+--
+* parler de mes débuts en 2015/2016
+** Reprendre la déclaration du début: j'ai toujours été brouillon, devops avant que le mot n'existe, trifouillant 1000 projets à la fois, et donc la matrix from hell, c'était mon quotidien
+** Machine Linux non officielle, non autorisée, docker impossible sur nos machines de dév, obligé de passer par une VM
+** Docker intéressant, mais interdit en prod, impossible en dév...
+** Là dessus arrive Damien, qui nous fait un workshop Docker sur Raspberry, et là je craque
+** J'ai besoin d'un laboratoire à distance de terminaux Android, et Docker sur Raspberry Pi pourrait être la solution
+--
+
+[{invert}]
+[%auto-animate]
+== Docker on arm
+
+Aucune raison que ça soit réservé aux puissants! La révolution vaincra!
+
+image::resin-ports-docker-to-arm.png[position=left, opacity=0.1]
+
+[.notes]
+--
+* Parler de balena
+--
+
+[{invert}]
+[%auto-animate]
+== Docker on *
+
+Linux everywhere... And then Docker to follow.
+
+image::buildx_multi_arch.png[position=left, opacity=0.1]
+
+[.notes]
+--
+* Parler de riscv, de buildx qui permet de builder pour riscv alors que docker pour riscv n'est pas encore supporté
+* Finir par sortir la Radxa Zero, la brancher, s'y connecter et faire le docker container run hello world
+--
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+image::base_du_problème_sans_dev.png[]
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+image::base_du_problème_sans_dev_et_ops.png[]
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+image::base_du_problème_sans_stabilité.png[]
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+image::base_du_problème_sans_frontièrel.png[]
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+image::base_du_problème_final.png[]
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+Histoire vraie.
+
+[width="100%",cols="^m,e",frame=none,grid=none]
+|=======
+|Hey salut  ! |
+|=======
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+Histoire vraie.
+
+[width="100%",cols="^m,e",frame=none,grid=none]
+|=======
+|Hey salut  ! |
+| | cc
+|=======
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+Histoire vraie.
+
+[width="100%",cols="^m,e",frame=none,grid=none]
+|=======
+|Hey salut  ! |
+| | cc
+|Tu peux mettre à jour les packages système steup ? j'ai un truc à tester. |
+|=======
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+Histoire vraie.
+
+[width="100%",cols="^m,e",frame=none,grid=none]
+|=======
+|Hey salut  ! |
+| | cc
+|Tu peux mettre à jour les packages système steup ? j'ai un truc à tester. |
+| | nan
+|=======
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+Histoire vraie.
+
+[width="100%",cols="^m,e",frame=none,grid=none]
+|=======
+|Hey salut  ! |
+| | cc
+|Tu peux mettre à jour les packages système steup ? j'ai un truc à tester. |
+| | nan
+| ??? |
+|=======
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+Histoire vraie.
+
+[width="100%",cols="^m,e",frame=none,grid=none]
+|=======
+|Hey salut  ! |
+| | cc
+|Tu peux mettre à jour les packages système steup ? j'ai un truc à tester. |
+| | nan
+| ??? |
+| | pas standard dsl
+|=======
+
+[%auto-animate]
+== On n'avait pas parlé d'un problème?
+
+Histoire vraie.
+
+[width="100%",cols="^m,e",frame=none,grid=none]
+|=======
+|Hey salut  ! |
+| | cc
+|Tu peux mettre à jour les packages système steup ? j'ai un truc à tester. |
+| | nan
+| ??? |
+| | pas standard dsl
+|=======
+
+image::1072129428-image16.png[]
+
+== On n'avait pas parlé d'un problème?
+
+image::matrixfromhell.jpg[]
+
+Problème de temps **exponentiel**
+
+[.notes]
+--
+* Le "problème de la matrice de l'enfer" (ou "matrix from hell" en anglais) est une expression qui fait référence à la complexité croissante des configurations logicielles dans le monde de l'informatique.
+* Avant l'arrivée de Docker, il était souvent difficile de gérer toutes les dépendances et les paramètres nécessaires pour exécuter des applications sur différents ordinateurs.
+* Docker tente de résoudre ce problème en introduisant la notion de conteneurs.
+* Les conteneurs Docker sont des environnements autonomes qui contiennent une application et toutes ses dépendances, y compris les bibliothèques et les paramètres. Cela signifie que les développeurs peuvent créer un conteneur qui fonctionne parfaitement sur leur propre ordinateur, puis le partager avec d'autres sans se soucier des différences entre les environnements.
+* En résumé, Docker résout le "problème de la matrice de l'enfer" en permettant aux développeurs de créer des conteneurs contenant leurs applications, ce qui garantit que celles-ci fonctionneront de la même manière partout, évitant ainsi les tracas liés aux configurations complexes.
+--
+
+== Déjà vu ?
+
+L'IT n'est pas la seule industrie à résoudre des problèmes...
+
+image::also-a-matrix-from-hell.png[]
+
+== Solution: Le conteneur intermodal
+
+"Separation of Concerns"
+
+image::blue-shipping-container.png[]
+
+[.notes]
+--
+Faire le parallèle avec les containers marchands contenant des jouets, de l'électronique, de la nourriture, le tout connecté au même bateau, sans pour autant être interdépendants.
+Docker apporte une séparation claire des préoccupations grâce à ses conteneurs. Cette séparation des préoccupations signifie que chaque composant d'une application est isolé dans son propre conteneur. Voici comment cela fonctionne :
+
+1. Isolation des Composants : Avec Docker, chaque composant d'une application (comme une base de données, un serveur web, etc.) est emballé dans un conteneur distinct. Ces conteneurs fonctionnent de manière indépendante les uns des autres, ce qui signifie que si un composant rencontre un problème ou nécessite une mise à jour, cela n'affecte pas les autres composants.
+2. Portabilité : Les conteneurs Docker encapsulent non seulement l'application, mais aussi toutes ses dépendances. Cela garantit que l'application fonctionnera de la même manière quel que soit l'endroit où vous l'exécutez, que ce soit sur votre ordinateur local, un serveur en nuage ou ailleurs. Cela simplifie la gestion de l'application à l'échelle.
+3. Facilité de Déploiement : En raison de cette séparation, le déploiement d'applications devient plus simple. Vous pouvez gérer chaque conteneur individuellement, les mettre à jour sans perturber le reste de l'application, et même les répliquer pour mettre en place des configurations complexes.
+4. Gestion des Ressources : Docker permet également de gérer efficacement les ressources de l'ordinateur hôte. Chaque conteneur a sa propre allocation de ressources, ce qui empêche un conteneur de monopoliser toute la puissance de calcul, garantissant ainsi des performances stables pour toutes les parties de l'application.
+
+En résumé, Docker apporte une séparation des préoccupations claire en isolant chaque composant d'une application dans son propre conteneur. Cela facilite le déploiement, la gestion et la maintenance des applications, tout en garantissant la portabilité et la stabilité des performances.
+--
+
+[%auto-animate]
+== Comment ça marche ?
+
+"Virtualisation **Légère**"
+
+image::container_vs_vm.jpg[]
+
+[.notes]
+--
+La virtualisation légère, dans le contexte des conteneurs Docker, est une méthode de virtualisation qui permet d'exécuter plusieurs environnements isolés (conteneurs) sur un seul système d'exploitation (hôte). Contrairement à la virtualisation traditionnelle, où chaque machine virtuelle (VM) nécessite son propre système d'exploitation, les conteneurs partagent le même noyau du système d'exploitation de l'hôte.
+
+Les principales caractéristiques de la virtualisation légère sont les suivantes :
+
+1. Isolation : Chaque conteneur est isolé des autres, ce qui signifie qu'ils ne peuvent pas interférer les uns avec les autres. Cela permet d'exécuter différentes applications avec leurs propres dépendances sans conflits.
+2. Efficacité des ressources : Étant donné que les conteneurs partagent le même noyau du système d'exploitation, ils sont beaucoup plus légers en termes de ressources que les machines virtuelles. Cela permet d'exécuter de nombreux conteneurs sur une seule machine physique, ce qui est efficace en termes d'utilisation des ressources.
+3. Démarrage rapide : Les conteneurs se lancent rapidement, en quelques secondes, car ils n'ont pas besoin de démarrer un système d'exploitation complet. Cela permet une mise à l'échelle rapide des applications.
+4. Portabilité : Les conteneurs sont portables, ce qui signifie qu'ils fonctionnent de la même manière sur n'importe quel système qui prend en charge Docker. Cela simplifie le déploiement et la gestion des applications.
+
+En résumé, la virtualisation légère des conteneurs Docker permet d'exécuter efficacement plusieurs environnements isolés sur un même système d'exploitation, offrant ainsi une isolation, une efficacité des ressources, un démarrage rapide et une portabilité des applications.
+--
+
+[%auto-animate]
+== Comment ça marche ?
+
+Virtualisation
+
+image::types_of_hypervisors.png["https://medium.com/teamresellerclub/type-1-and-type-2-hypervisors-what-makes-them-different-6a1755d6ae2c"]
+
+[.notes]
+--
+Un hyperviseur est un logiciel spécialisé qui permet d'exécuter plusieurs systèmes d'exploitation (comme Windows, Linux, etc.) sur un seul matériel physique (comme un serveur). Il agit comme une couche d'abstraction entre le matériel et les systèmes d'exploitation invités.
+
+Il existe deux types d'hyperviseurs :
+
+Hyperviseurs de type 1 (ou bare-metal) : Ils s'installent directement sur le matériel physique et n'ont pas besoin d'un système d'exploitation hôte. Ils sont très efficaces et sont généralement utilisés dans les centres de données pour exécuter plusieurs VM de manière isolée.
+
+Hyperviseurs de type 2 (ou hosted) : Ils s'exécutent sur un système d'exploitation existant, comme une application. Ils sont généralement utilisés pour la virtualisation de bureau ou le développement, mais sont moins efficaces que les hyperviseurs de type 1.
+
+En résumé, un hyperviseur vous permet d'exécuter plusieurs systèmes d'exploitation sur un seul serveur physique, ce qui vous permet de maximiser l'utilisation des ressources matérielles et de simplifier la gestion des environnements informatiques.
+--
+
+[%auto-animate]
+[.columns]
+== Comment ça marche ?
+
+[.column]
+Virtualisation
+
+[.column]
+---
+image::type-1-hypervisor-examples.png["https://www.ubackup.com/enterprise-backup/type-1-hypervisor-vs-type-2.html"]
+---
+
+[.column]
+---
+image::type-2-hypervisor-examples.png["https://www.ubackup.com/enterprise-backup/type-1-hypervisor-vs-type-2.html"]
+---
+
+[%auto-animate]
+== Comment ça marche ?
+
+"Virtualisation **Légère**"
+
+image::container_vs_vm.jpg[]
+
+* Légère, vraiment?
+
+[%auto-animate]
+== Légère, vraiment!
+
+image::RPiDockerConChallenge.png[background, size=contain, position=left, opacity=0.1]
+
+[.small]
+http://web.archive.org/web/20200810061020/https://www.docker.com/blog/raspberry-pi-dockercon-challenge-winner/
+
+
+[%auto-animate]
+== Légère, vraiment!
+
+image::esxpi.png[background, size=contain, position=left, opacity=0.1]
+
+[.small]
+https://www.architecting.it/blog/esxi-on-raspberry-pi/
+
+[%auto-animate]
+== Conteneur != VM
+
+image::docker-n-est-pas-VM.png[]
+
+* Idée erronée mais citée trop fréquemment !
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-9.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-8.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-7.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-6.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-5.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-4.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-3.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-2.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm-1.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+image::not-a-vm.png[]
+
+[%auto-animate]
+== Conteneur != VM
+
+"Separation of concerns": 1 "tâche" par conteneur
+
+image::vm-and-container.png[]
+
+[.notes]
+--
+Les hyperviseurs et les machines virtuelles (VM) sont comme des maisons entièrement meublées où chaque invité a sa propre maison séparée.
+
+* Chaque maison est une VM, avec son propre système d'exploitation et ses ressources, et elles peuvent fonctionner sur le même serveur physique.
+* En revanche, les conteneurs sont comme des appartements dans un même immeuble. Ils partagent la même infrastructure, comme les escaliers et les couloirs (le noyau du système d'exploitation), mais chaque appartement (conteneur) est séparé et possède son propre espace privé. Les conteneurs partagent efficacement les ressources du serveur, car ils évitent de dupliquer tout le système d'exploitation, ce qui les rend plus légers et plus rapides que les VM.
+
+En résumé, les VM sont comme des maisons séparées, tandis que les conteneurs sont comme des appartements dans le même bâtiment, partageant certaines parties communes mais offrant toujours une séparation.
+--
+
+==  VMs & Conteneurs
+
+Non exclusifs mutuellement
+
+image::containers-and-vms-together.png[]
+
+[.notes]
+--
+Les machines virtuelles (VM) et les conteneurs peuvent être utilisés ensemble pour obtenir les avantages des deux mondes.
+
+* Les VMs offrent une isolation plus forte en exécutant des systèmes d'exploitation virtuels complets, ce qui les rend idéales pour des charges de travail nécessitant une sécurité et une isolation élevées.
+Les conteneurs, en revanche, sont légers et rapides, ce qui les rend parfaits pour exécuter de nombreuses applications sur un seul serveur.
+* En combinant les deux, vous pouvez exécuter des VMs pour isoler et protéger des charges de travail sensibles, tout en utilisant des conteneurs pour exécuter des applications légères et faciles à gérer.
+Cela permet une flexibilité accrue dans la gestion des ressources et des charges de travail sur votre infrastructure informatique.
+--
+
+== 🤡 Docker, c'est pas un peu une VM quand même?
+
+image::mobyvm.png[height=1000]
+
+== 🤡 Docker, c'est pas un peu une VM quand même?
+
+* Docker sur Windows pour exécuter des conteneurs Linux :
+[%step]
+** Hyper-V : Sous Windows, Docker utilise souvent Hyper-V pour exécuter des machines virtuelles légères (VM) Linux.
+[%step]
+** Performance : Docker sur Windows pour les conteneurs Linux peut être légèrement moins performant que Docker sur Linux natif.
+[%step]
+** Isolation : Isolation différente de celle des conteneurs Linux natifs.
+[%step]
+* Docker sur Linux pour exécuter des conteneurs Linux :
+[%step]
+** Native : Docker fonctionne nativement car il partage le même noyau Linux.
+[%step]
+** Efficacité : Il  est très efficace en termes de consommation de ressources.
+[%step]
+** Isolation : Isolation basée sur les cgroups et les namespaces du noyau Linux.
+
+[.notes]
+--
+* Docker sur Linux pour exécuter des conteneurs Linux :
+** Native : Sur un système Linux, Docker fonctionne nativement car il partage le même noyau Linux. Il offre donc une performance optimale et une intégration transparente avec le système hôte.
+** Efficacité : Comme Docker sur Linux partage le noyau du système hôte, il est très efficace en termes de consommation de ressources. Les conteneurs Linux sont légers et se lancent rapidement.
+** Isolation : Les conteneurs Linux sur Docker offrent une isolation basée sur les cgroups et les namespaces du noyau Linux. Cela permet d'isoler efficacement les applications et de garantir qu'elles n'interfèrent pas les unes avec les autres.
+** Images Linux : Docker sur Linux est optimisé pour les images de conteneurs Linux. Vous utiliserez principalement des images Linux pour vos conteneurs.
+
+* Docker sur Windows pour exécuter des conteneurs Linux :
+** Hyper-V : Sur un système Windows, Docker utilise souvent Hyper-V pour exécuter des machines virtuelles légères (VM) Linux. Cela signifie que vous exécutez un hyperviseur (Hyper-V) pour exécuter Linux, ce qui ajoute une couche de virtualisation.
+** Performance : En raison de la virtualisation, Docker sur Windows pour les conteneurs Linux peut être légèrement moins performant que Docker sur Linux natif. Il existe une surcharge en raison de la virtualisation.
+** Isolation : Les conteneurs Linux s'exécutent dans des VM légères, ce qui ajoute une isolation, mais elle est différente de celle des conteneurs Linux natifs. Les conteneurs Linux s'exécutent toujours sur le même noyau, mais ils sont isolés au niveau du système de fichiers.
+** Images Linux : Vous utilisez également des images Linux pour les conteneurs Linux exécutés sous Docker sur Windows.
+
+En résumé, Docker sur Linux est la meilleure option pour exécuter des conteneurs Linux, car il offre une intégration transparente et des performances optimales. Docker sur Windows utilise Hyper-V pour exécuter des conteneurs Linux, ce qui ajoute une couche de virtualisation et peut entraîner une légère perte de performances. Cependant, cela fonctionne bien lorsque vous avez besoin d'exécuter des conteneurs Linux sur une machine Windows.
+--
