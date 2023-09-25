@@ -3,10 +3,12 @@ include::../attributes.adoc[]
 
 [{invert}]
 
+[.container.background]
 = Docker
 
 image::empty_harbor.png[background, size=cover, position=left, opacity=0.1]
 
+[%title]
 "La Base"
 
 == Pourquoi ?

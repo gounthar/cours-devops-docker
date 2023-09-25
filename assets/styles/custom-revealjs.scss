@@ -54,6 +54,18 @@ section.dark.background h2 {
   display: inline-block; /* Make the background close to the text */
 }
 
+section.container.background h2 {
+  color: #F0F1EB;
+  background-color: #72332b; /* Background color */
+  display: inline-block; /* Make the background close to the text */
+}
+
+section.container.background p {
+  color: #FFFFFF;
+  background-color: #A89993; /* Background color */
+  display: inline-block; /* Make the background close to the text */
+}
+
  /*********************************************
   * GLOBAL STYLES
   *********************************************/
