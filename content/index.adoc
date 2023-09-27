@@ -20,7 +20,7 @@ image::qrcode.png["QRCode to this presentation",height=150]
 
 [.column]
 --
-image::logo-t-shirt-transparent-1080.png[background, size=contain, position=left, opacity=0.1]
+image::logo-t-shirt-transparent-1080.png[background, size=contain, position=left, opacity=0.1, "image générée par ideogram.ai avec un prompt créé par chatGPT]
 --
 
 [.column]
