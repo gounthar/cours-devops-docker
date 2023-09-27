@@ -1,0 +1,236 @@
+[{invert}]
+= Ligne de commande
+
+Guide de survie
+
+== 🤔 Problématique
+
+* Communication Humain <-> Machine
+
+* Base commune de TOUS les outils
+
+[{invert}]
+== CLI
+
+- 🇬🇧 CLI == "Command Line Interface"
+- 🇫🇷 "Interface de Ligne de Commande"
+
+== REPL
+
+Pour les théoriciens et curieux :
+
+- 🇬🇧 REPL == "Read–eval–print loop"
+
+https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop[]
+
+== Anatomie d'une commande
+
+[source,bash]
+----
+ls --color=always -l /bin
+----
+
+* Séparateur : l'espace
+* Premier élément (`ls`) : c'est la commande
+* Les éléments commençant par un tiret `-` sont des "options" et/ou drapeaux ("flags")
+** "Option" == "Optionnel"
+* Les autres éléments sont des arguments  (`/bin`)
+** Nécessaire (par opposition)
+
+== Manuel des commande
+
+* Afficher le manuel de `<commande>` :
++
+[source,bash]
+----
+# Commande 'man' avec comme argument le nom de ladite commande
+man <commande>
+----
+
+** Navigation avec les flèches haut et bas
+*** Tapez `/` puis une chaîne de texte pour chercher
+*** Touche `n` pour sauter d’occurrence en occurrence
+** Touche `q` pour quitter
+
+🎓 Essayez avec `ls`, chercher le mot `color`
+
+[.small]
+- 💡 La majorité des commandes fournit également une option (`--help`), un flag (`-h`)  ou un argument (`help`)
+- Google c'est pratique aussi hein !
+
+== Raccourcis
+
+Dans un terminal Unix/Linux/WSL :
+
+* `CTRL + C` : Annuler le process ou prompt en cours
+* `CTRL + L` : Nettoyer le terminal
+* `CTRL + A` : Positionner le curseur au début de la ligne
+* `CTRL + E` : Positionner le curseur à la fin de la ligne
+* `CTRL + R` : Rechercher dans l'historique de commandes
+
+[.small]
+🎓 Essayez-les !
+
+== Commandes de base 1/2
+
+* `pwd` : Afficher le répertoire courant
+** 🎓 Option `-P` ?
+* `ls` : Lister le contenu du répertoire courant
+** 🎓 Options `-a` et `-l` ?
+* `cd` : Changer de répertoire
+** 🎓 Sans argument : que se passe t'il ?
+* `cat` : Afficher le contenu d'un fichier
+** 🎓 Essayez avec plusieurs arguments
+* `mkdir` : créer un répertoire
+** 🎓 Option `-p` ?
+
+== Commandes de base 2/2
+
+* `echo` : Afficher un (des) message(s)
+* `rm` : Supprimer un fichier ou dossier
+* `touch` : Créer un fichier
+* `grep` : Chercher un motif de texte
+
+== Arborescence de fichiers 1/2
+
+* Le système de fichier a une structure d'arbre
+** La racine du disque dur c'est `/` : 🎓 `ls -l /`
+** Le séparateur c'est également `/` : 🎓 `ls -l /usr/bin`
+
+* Deux types de chemins :
+** Absolu (depuis la racine): Commence par `/` (Ex. `/usr/bin`)
+** Sinon c'est relatif (e.g. depuis le dossier courant) (Ex `./bin` ou `local/bin/`)
+
+image::linux-directory-structure.png[width=400]
+
+[.small]
+link:https://linuxhandbook.com/linux-directory-structure/[Source,window="_blank"]
+
+== Arborescence de fichiers 2/2
+
+* Le dossier "courant" c'est `.` : 🎓 `ls -l ./bin # Dans le dossier /usr`
+* Le dossier "parent" c'est `..` : 🎓 `ls -l ../ # Dans le dossier /usr`
+
+
+* `~` (tilde) c'est un raccourci vers le dossier de l'utilisateur courant : 🎓 `ls -l ~`
+* Sensible à la casse (majuscules/minuscules) et aux espaces :
+🎓
++
+[source,bash]
+----
+ls -l /bin
+ls -l /Bin
+mkdir ~/"Accent tué"
+ls -d ~/Accent\ tué
+----
+
+== Un language (?)
+
+* Variables interpolées avec le caractère "dollar" `$` :
++
+[source,bash]
+----
+echo $MA_VARIABLE
+echo "$MA_VARIABLE"
+echo ${MA_VARIABLE}
+
+# Recommendation
+echo "${MA_VARIABLE}"
+
+MA_VARIABLE="Salut tout le monde"
+
+echo "${MA_VARIABLE}"
+----
+
+* Sous commandes avec `$(<command>)`:
+
+[source,bash]
+----
+echo ">> Contenu de /tmp :\n$(ls /tmp)"
+----
+
+* Des `if`, des `for` et plein d'autres trucs (link:https://tldp.org/LDP/abs/html/[window="_blank"])
+
+== Codes de sortie
+
+* Chaque exécution de commande renvoie un code de retour (🇬🇧 "exit code")
+** Nombre entier entre 0 et 255 (en link:https://en.wikipedia.org/wiki/POSIX[POSIX,window="_blank"])
+
+* Code accessible dans la variable *éphémère* `$?` :
+
+[source,bash]
+----
+ls /tmp
+echo $?
+
+ls /do_not_exist
+echo $?
+
+# Une seconde fois. Que se passe-t'il ?
+echo $?
+----
+
+== Entrée, sortie standard et d'erreur
+
+image:cli-ios.png[]
+
+[source,bash]
+----
+ls -l /tmp
+echo "Hello" > /tmp/hello.txt
+ls -l /tmp
+ls -l /tmp >/dev/null
+ls -l /tmp 1>/dev/null
+
+ls -l /do_not_exist
+ls -l /do_not_exist 1>/dev/null
+ls -l /do_not_exist 2>/dev/null
+
+ls -l /tmp /do_not_exist
+ls -l /tmp /do_not_exist 1>/dev/null 2>&1
+----
+
+== Pipelines
+
+* Le caractère "pipe" `|` permet de chaîner des commandes
+** Le "stdout" de la première commande est branchée sur le "stdin" de la seconde
+
+* Exemple : Afficher les fichiers/dossiers contenant le lettre `d` dans le dossier `/bin` :
+
+[source,bash]
+----
+ls -l /bin
+
+ls -l /bin | grep "d" --color=auto
+----
+
+== Exécution 1/2
+
+* Les commandes sont des fichier binaires exécutables sur le système :
++
+[source,bash]
+----
+command -v cat # équivalent de "which cat"
+
+ls -l "$(command -v cat)"
+----
+
+* La variable d'environnement `$PATH` liste les dossiers dans lesquels chercher les binaires
+** 💡 Utiliser cette variable quand une commande fraîchement installée n'est pas trouvée
+
+== Exécution 2/2
+
+* Exécution de scripts :
+** Soit appel direct avec l'interprétateur : `sh ~/monscript.txt`
+** Soit droit d'exécution avec un "shebang" (e.g. `#!/bin/bash`)
++
+[source,bash]
+----
+$ chmod +x ./monscript.sh
+
+$ head -n1 ./monscript.sh
+#!/bin/bash
+
+$ ./monscript.sh
+# Exécution
+----
