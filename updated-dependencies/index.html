@@ -599,7 +599,7 @@ représentant une application auto-suffisante.</p><div class="ulist"><ul><li><p>
 / $</code></pre></div></div>
 <div class="ulist"><ul><li><p>On lance un container à partir de l&#8217;image "alpine"</p></li><li><p>On lance un <code>sh</code>  dans ce container</p></li><li><p>On redirige l&#8217;entrée standard avec -i</p></li></ul></div></div></section><section id="lancer_un_container_interactif_6" data-auto-animate><h2>🏓 Lancer un container interactif</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container run  --interactive --tty alpine
 / $</code></pre></div></div>
-<div class="ulist"><ul><li><p>On lance un container à partir de l&#8217;image "alpine"</p></li><li><p>On lance un <code>sh</code>  dans ce container</p></li><li><p>On redirige l&#8217;entrée standard avec -i</p></li><li><p>On déclare un pseudo-terminal avec -t</p></li></ul></div></div></section><section id="exercice_conteneur_interactif"><h2>🎓 Exercice : conteneur interactif</h2><div class="slide-content"><div class="ulist"><ul><li><p>Quel distribution Linux est utilisée dans le terminal Gitpod ?</p><div class="ulist"><ul><li><p>💡 Regardez le fichier <code>/etc/os-release</code></p></li></ul></div></li><li><p>Exécutez un conteneur interactif basé sur <code>alpine:3.18.3</code> (une distribution Linux ultra-légère) et regardez le contenu du fichier au même emplacement</p><div class="ulist"><ul><li><p>💡 <code>docker container run --help</code></p></li><li><p>💡 Demandez un <a href="https://en.wikipedia.org/wiki/TTY"><code>tty</code></a> à Docker</p></li><li><p>💡 Activez le mode interactif</p></li></ul></div></li><li><p>Exécutez la même commande dans un conteneur basé sur la même image mais en <strong>NON</strong> interactif</p><div class="ulist"><ul><li><p>💡 Comment surcharger la commande par défaut ?</p></li></ul></div></li></ul></div></div></section><section id="solution_conteneur_interactif"><h2>✅ Solution : conteneur interactif</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ cat /etc/os-release
+<div class="ulist"><ul><li><p>On lance un container à partir de l&#8217;image "alpine"</p></li><li><p>On lance un <code>sh</code>  dans ce container</p></li><li><p>On redirige l&#8217;entrée standard avec -i</p></li><li><p>On déclare un pseudo-terminal avec -t</p></li></ul></div></div></section><section id="exercice_conteneur_interactif"><h2>🎓 Exercice : conteneur interactif</h2><div class="slide-content"><div class="ulist"><ul><li><p>Quelle distribution Linux est utilisée dans le terminal Gitpod ?</p><div class="ulist"><ul><li><p>💡 Regardez le fichier <code>/etc/os-release</code></p></li></ul></div></li><li><p>Exécutez un conteneur interactif basé sur <code>alpine:3.18.3</code> (une distribution Linux ultra-légère) et regardez le contenu du fichier au même emplacement</p><div class="ulist"><ul><li><p>💡 <code>docker container run --help</code></p></li><li><p>💡 Demandez un <a href="https://en.wikipedia.org/wiki/TTY"><code>tty</code></a> à Docker</p></li><li><p>💡 Activez le mode interactif</p></li></ul></div></li><li><p>Exécutez la même commande dans un conteneur basé sur la même image mais en <strong>NON</strong> interactif</p><div class="ulist"><ul><li><p>💡 Comment surcharger la commande par défaut ?</p></li></ul></div></li></ul></div></div></section><section id="solution_conteneur_interactif"><h2>✅ Solution : conteneur interactif</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ cat /etc/os-release
 # ... Ubuntu ....
 
 $ docker container run --tty --interactive alpine:3.18.3
@@ -1326,8 +1326,8 @@ Reveal.initialize({
   // The "normal" size of the presentation, aspect ratio will be preserved
   // when the presentation is scaled to fit different resolutions. Can be
   // specified using percentage units.
-  width: 1920,
-  height: 1080,
+  width: 1280,
+  height: 720,
 
   // Factor of the display size that should remain empty around the content
   margin: 0.1,
@@ -1403,13 +1403,13 @@ function toArray(o) {
 }
 
 Reveal.addEventListener('slidechanged', function () {
-  layoutSlideContents(1920, 1080)
+  layoutSlideContents(1280, 720)
 });
 Reveal.addEventListener('ready', function () {
-  layoutSlideContents(1920, 1080)
+  layoutSlideContents(1280, 720)
 });
 Reveal.addEventListener('resize', function () {
-  layoutSlideContents(1920, 1080)
+  layoutSlideContents(1280, 720)
 });</script><link rel="stylesheet" href="./reveal.js/plugin/highlight/monokai.css"/>
 <script src="highlightjs/highlight.min.js"></script>
 <script src="highlightjs/languages/groovy.min.js"></script>
