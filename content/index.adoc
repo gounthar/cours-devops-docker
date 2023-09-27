@@ -44,6 +44,12 @@ include::./chapitres/cas-d-usage.adoc[leveloffset=1]
 // Préparer son environnement de travail
 include::./chapitres/dev-env.adoc[leveloffset=1]
 
+// Guide de survie de la ligne de commande
+include::./chapitres/cli.adoc[leveloffset=1]
+
+// Guide de survie de git
+include::./chapitres/git-base.adoc[leveloffset=1]
+
 // Base
 include::./chapitres/docker-base.adoc[leveloffset=1]
 
