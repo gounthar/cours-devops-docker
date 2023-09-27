@@ -67,7 +67,7 @@ docker container run  --interactive --tty alpine
 
 == 🎓 Exercice : conteneur interactif
 
-* Quel distribution Linux est utilisée dans le terminal Gitpod ?
+* Quelle distribution Linux est utilisée dans le terminal Gitpod ?
 ** 💡 Regardez le fichier `/etc/os-release`
 
 * Exécutez un conteneur interactif basé sur `alpine:3.18.3` (une distribution Linux ultra-légère) et regardez le contenu du fichier au même emplacement
