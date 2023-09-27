@@ -16,8 +16,8 @@
 :revealjsdir: ./reveal.js
 :revealjs_history: true
 :revealjs_margin: 0.1
-:revealjs_width: 1920
-:revealjs_height: 1080
+:revealjs_width: 1280
+:revealjs_height: 720
 :revealjs_minscale: 0.2
 :revealjs_maxscale: 1.5
 :revealjs_slideNumber: true
