@@ -1282,7 +1282,375 @@ ENTRYPOINT ["curl","-x", "http://prx:3128", "-L", "--connect-timeout", "60"]
 google blahblahblah [...]
 &lt;/html&gt;</code></pre></div></div></div></div></div></section><section id="checkpoint_5"><h2>Checkpoint 🎯</h2><div class="slide-content"><div class="ulist"><ul><li><p>Une image Docker fournit un environnement de système de fichier auto-suffisant (application, dépendances, binaries, etc.) comme modèle de base d&#8217;un conteneur</p></li><li><p>Les images Docker ont une convention de nommage permettant d&#8217;identifier les images très précisément</p></li><li><p>On peut spécifier une recette de fabrication d&#8217;image à l&#8217;aide d&#8217;un <code>Dockerfile</code> et de la commande <code>docker image build</code></p></li></ul></div>
 <div class="paragraph"><p>&#8658; 🤔 et si on utilisait Docker pour nous aider dans l&#8217;intégration continue ?</p></div></div></section></section>
-<section id="fichiers_nommage_inspect"><h2>Fichiers, nommage, inspect&#8230;&#8203;</h2></section>
+<section><section id="fichiers_nommage_inspect"><h2>Fichiers, nommage, inspect&#8230;&#8203;</h2></section><section id="nos_fichiers_dans_les_images"><h2>nOS fichiers dans les images</h2></section><section id="le_répertoire_de_travail"><h2>Le répertoire de travail</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --interactive --tty httpd pwd /usr/local/apache2</code></pre></div></div></div></section><section id="le_répertoire_de_travail_2"><h2>Le répertoire de travail</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --interactive --tty httpd pwd /usr/local/apache2</code></pre></div></div>
+<div class="paragraph"><p>Comment paramétrer le répertoire de travail de tous nos containers ?</p></div></div></section><section id="workdir"><h2>WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18
+WORKDIR /repertoire/travail
+RUN echo hello &gt; ./world.txt</code></pre></div></div></div></section><section id="workdir_2"><h2>WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18
+WORKDIR /repertoire/travail
+RUN echo hello &gt; ./world.txt</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-img .
+...
+$ docker container run mon-img cat /repertoire/travail/world.txt
+hello
+$ docker container run mon-img pwd
+/repertoire/travail
+$ docker container run --workdir /home mon-img pwd
+/home</code></pre></div></div></div></section><section id="workdir_3"><h2>WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18
+WORKDIR /repertoire/travail
+RUN echo hello &gt; ./world.txt</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-img .
+...
+$ docker container run mon-img cat /repertoire/travail/world.txt
+hello
+$ docker container run mon-img pwd
+/repertoire/travail
+$ docker container run --workdir /home mon-img pwd
+/home</code></pre></div></div>
+<div class="paragraph"><p>override du WORKDIR</p></div></div></section><section id="embarquer_des_fichiers"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Cas d&#8217;usage.</p></div></div></section><section id="embarquer_des_fichiers_2"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Cas d&#8217;usage.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">ls
+app.js</code></pre></div></div></div></section><section id="embarquer_des_fichiers_3"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Cas d&#8217;usage.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">ls
+app.js
+$ docker container run --workdir /customdir node app.js
+&lt;error : app.js not found&gt;</code></pre></div></div></div></section><section id="embarquer_des_fichiers_4"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Cas d&#8217;usage.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">ls
+app.js
+$ docker container run --workdir /customdir node app.js
+&lt;error : app.js not found&gt;
+$ docker container run --workdir /customdir --entrypoint ls node
+&lt;0 fichiers présents !&gt;</code></pre></div></div></div></section><section id="embarquer_des_fichiers_5"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Cas d&#8217;usage.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">ls
+app.js
+$ docker container run --workdir /customdir node app.js
+&lt;error : app.js not found&gt;
+$ docker container run --workdir /customdir --entrypoint ls node
+&lt;0 fichiers présents !&gt;</code></pre></div></div>
+<div class="paragraph"><p>Comment fournir des fichiers à mes containers ?</p></div></div></section><section id="embarquer_des_fichiers_6"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Copie de fichiers.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM node:20.8.0-alpine3.18
+COPY ./* /app</code></pre></div></div></div></section><section id="embarquer_des_fichiers_7"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Copie de fichiers.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM node:20.8.0-alpine3.18
+COPY ./* /app</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-node .
+...
+$ docker container run --workdir /app --entrypoint ls mon-node
+app.js
+$ docker container run mon-node node /app.js
+yeeeahhhh !</code></pre></div></div></div></section><section id="embarquer_des_fichiers_8"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Le mot clé <code>ADD</code>.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM image
+ADD https://mon-nexus/foo/bar/1.0/package.tar /uncompressed/</code></pre></div></div></div></section><section id="embarquer_des_fichiers_9"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Le mot clé <code>ADD</code>.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM image
+ADD https://mon-nexus/foo/bar/1.0/package.tar /uncompressed/</code></pre></div></div>
+<div class="paragraph"><p>Il permet d&#8217;ajouter des fichiers aux images, tout comme <code>COPY</code>.</p></div>
+<div class="paragraph"><p>Il est capable de télécharger directement d&#8217;une URL</p></div>
+<div class="paragraph"><p>Il est capable de "untar" automatiquement.</p></div>
+<div class="paragraph"><p>On le retrouve dans d&#8217;anciens Dockerfile mais il tend à disparaître.</p></div></div></section><section id="embarquer_des_fichiers_10"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Le mot clé <code>ADD</code></p></div>
+<div class="paragraph"><p>source : <a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy" class="bare">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy</a></p></div>
+<div class="imageblock"><img src="media/1108215415-image2.png" alt="1108215415 image2"></div></div></section><section id="embarquer_des_fichiers_11"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Le mot clé <code>ADD</code>.</p></div>
+<div class="paragraph"><p>source : <a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy" class="bare">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy</a></p></div>
+<div class="imageblock"><img src="media/1108215415-image2.png" alt="1108215415 image2"></div></div></section><section id="embarquer_des_fichiers_12"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Oui, mais pas la terre entière !</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag myjava:1.42 ./
+Sending build context to Docker daemon  172.8MB</code></pre></div></div></div></section><section id="embarquer_des_fichiers_13"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Oui, mais pas la terre entière !</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag myjava:1.42 ./
+Sending build context to Docker daemon  172.8MB</code></pre></div></div>
+<div class="paragraph"><p>Répertoire contenant le Dockerfile.
+NB : tous les fichiers présents dans ce répertoire seront envoyés au Docker daemon pour construire vos images !</p></div></div></section><section id="embarquer_des_fichiers_14"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Oui, mais pas la terre entière !</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag myjava:1.42 ./
+Sending build context to Docker daemon  172.8MB</code></pre></div></div>
+<div class="paragraph"><p>Répertoire contenant le Dockerfile.
+NB : tous les fichiers présents dans ce répertoire seront envoyés au Docker daemon pour construire vos images !</p></div>
+<div class="paragraph"><p>?!!!</p></div></div></section><section id="embarquer_des_fichiers_15"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Oui, mais pas la terre entière !</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag myjava:1.42 ./
+Sending build context to Docker daemon  172.8MB</code></pre></div></div>
+<div class="paragraph"><p>Répertoire contenant le Dockerfile.
+NB : tous les fichiers présents dans ce répertoire seront envoyés au Docker daemon pour construire vos images !</p></div>
+<div class="paragraph"><p>Si un gros fichier traîne dans le dossier alors qu&#8217;il n&#8217;est même pas utilisé ni référencé dans le Dockerfile, il sera tout de même envoyé au Docker daemon.</p></div>
+<div class="paragraph"><p>?!!!</p></div></div></section><section id="embarquer_des_fichiers_16"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Oui, mais pas la terre entière !</p></div>
+<div class="paragraph"><p><em>"M&#8217;en fous ! j&#8217;ai une machine de fou et un réseau de fou ! YOLO !"</em></p></div>
+<div class="paragraph"><p>et si la CI fait plusieurs builds par minute ?</p></div>
+<div class="paragraph"><p>Et si un vieux Keystore traîne dans les sources ?</p></div>
+<div class="paragraph"><p><code>.git/</code> ? <code>.idea/</code> ? vraiment ?</p></div>
+<div class="paragraph"><p>Attention à l&#8217;invalidation de cache d&#8217;un step de build à cause de l&#8217;ajout d&#8217;un fichier inutile !</p></div></div></section><section id="dockerignore"><h2><code>.dockerignore</code></h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-.dockerignore hljs" data-noescape="true" data-lang=".dockerignore"># ignore les dossiers .git et .cache
+.git
+.cache</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-.dockerignore hljs" data-noescape="true" data-lang=".dockerignore"># ignore tous les fichiers *.class dans tous les dossiers
+**/*.class</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-.dockerignore hljs" data-noescape="true" data-lang=".dockerignore"># ignore les markdown sauf les README*.md (README-secret.md sera tout de même ignoré par contre)
+*.md
+!README*.md
+README-secret.md</code></pre></div></div></div></section><section id="dockerfile"><h2>Dockerfile</h2><div class="slide-content"><div class="paragraph"><p>Les commandes principales (pour l&#8217;instant)</p></div>
+<table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:50%"><col style="width:50%"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Commande</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Usage</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">FROM</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Pour spécifier l&#8217;image à partir de laquelle on construit la nouvelle image</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">LABEL</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Pour décrire l&#8217;image à partir de clé/valeur</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">RUN</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Pour exécuter une action au moment du build</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">ENV</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Pour insérer une variable d&#8217;environnement dans tous les futurs containers de cette image</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">ENTRYPOINT</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Pour définir une commande à lancer au démarrage du container</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">CMD</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Pour définir une commande à lancer au démarrage du container ou pour compléter un ENTRYPOINT existant</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">COPY</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Pour insérer des fichiers dans l&#8217;image</p></td></tr></table></div></section><section id="renommage_des_images"><h2>Renommage des images</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker tag 0e5574283393 fedora/httpd:version-1.0</code></pre></div></div></div></section><section id="renommage_des_images_2"><h2>Renommage des images</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker tag 0e5574283393 fedora/httpd:version-1.0</code></pre></div></div>
+<div class="paragraph"><p>ID existant</p></div></div></section><section id="renommage_des_images_3"><h2>Renommage des images</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker tag 0e5574283393 fedora/httpd:version-1.0</code></pre></div></div>
+<div class="paragraph"><p>ID existant</p></div>
+<div class="paragraph"><p>tag à ajouter</p></div></div></section><section id="renommage_des_images_4"><h2>Renommage des images</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker tag 0e5574283393 fedora/httpd:version-1.0</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker tag httpd fedora/httpd:version-1.0</code></pre></div></div>
+<div class="paragraph"><p><code>httpd:latest</code> sera taggué en <code>fedora/httpd:version1.0</code></p></div>
+<div class="paragraph"><p>ID existant</p></div>
+<div class="paragraph"><p>tag à ajouter</p></div></div></section><section id="les_images_2"><h2>LES IMAGES</h2><div class="slide-content"><div class="paragraph"><p>Le bilan</p></div>
+<div class="paragraph"><p>Vous savez désormais:</p></div>
+<div class="ulist"><ul><li><p>Rédiger un Dockerfile</p></li><li><p>Nommer vos images</p></li><li><p>Créer vos outils</p></li></ul></div>
+<div class="imageblock"><img src="media/349338016-image3.jpeg" alt="349338016 image3"></div></div></section><section id="les_images_3"><h2>LES IMAGES</h2><div class="slide-content"><div class="paragraph"><p>Le bilan</p></div>
+<div class="paragraph"><p>Vous savez désormais:</p></div>
+<div class="ulist"><ul><li><p>Rédiger un Dockerfile</p></li><li><p>Nommer vos images</p></li><li><p>Créer vos outils</p></li></ul></div>
+<div class="imageblock"><img src="media/349338016-image3.jpeg" alt="349338016 image3"></div>
+<div class="imageblock"><img src="media/384835330-image4.gif" alt="384835330 image4"></div></div></section><section id="les_registries"><h2>Les registries</h2><div class="slide-content"><div class="imageblock"><img src="media/104336496-image5.png" alt="104336496 image5"></div></div></section><section id="golden_rule"><h2>Golden Rule</h2><div class="slide-content"><div class="paragraph"><p><strong>La construction d&#8217;une image doit être automatisée.</strong></p></div></div></section><section id="automatique_sécurisé"><h2>Automatique == sécurisé</h2><div class="slide-content"><div class="paragraph"><p>Le fait de déléguer la construction des images permet d&#8217;ajouter toute une chaîne de traitement, de contrôles des images pour s&#8217;assurer qu&#8217;elle respecte les règles RSSI.</p></div>
+<div class="paragraph"><p>patch management</p></div>
+<div class="paragraph"><p>droits sur le FS</p></div>
+<div class="paragraph"><p>user</p></div>
+<div class="paragraph notes"><p>C&#8217;est quoi le RSSI ?
+RSSI : définition. Le responsable de la sécurité des systèmes d&#8217;information (ou RSSI pour Responsable de la Sécurité des Systèmes d&#8217;Information) définit et développe la politique de sécurité de l&#8217;information de son entreprise.</p></div></div></section><section id="exemple_de_mise_en_place"><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
+<div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
+<div class="imageblock"><img src="media/382662575-image7.png" alt="382662575 image7"></div>
+<div class="paragraph"><p><strong>TEST</strong></p></div>
+<div class="paragraph"><p><strong>PROD</strong></p></div>
+<div class="paragraph"><p><strong>Sources</strong></p></div></div></section><section id="exemple_de_mise_en_place_2"><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
+<div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
+<div class="imageblock"><img src="media/382662575-image7.png" alt="382662575 image7"></div>
+<div class="imageblock"><img src="media/1380203359-image8.png" alt="1380203359 image8"></div>
+<div class="paragraph"><p><strong>TEST</strong></p></div>
+<div class="paragraph"><p><strong>PROD</strong></p></div>
+<div class="paragraph"><p><strong>1</strong></p></div>
+<div class="paragraph"><p>Un automate récupère les sources de l&#8217;image, la construit et la pousse sur une registry de test</p></div>
+<div class="paragraph"><p><strong>Sources</strong></p></div></div></section><section id="exemple_de_mise_en_place_3"><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
+<div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
+<div class="imageblock"><img src="media/382662575-image7.png" alt="382662575 image7"></div>
+<div class="imageblock"><img src="media/1380203359-image8.png" alt="1380203359 image8"></div>
+<div class="paragraph"><p><strong>TEST</strong></p></div>
+<div class="paragraph"><p><strong>PROD</strong></p></div>
+<div class="paragraph"><p><strong>1</strong></p></div>
+<div class="paragraph"><p>Un automate récupère les sources de l&#8217;image, la construit et la pousse sur une registry de test</p></div>
+<div class="paragraph"><p><strong>Sources</strong></p></div>
+<div class="imageblock"><img src="media/1208052068-image9.jpeg" alt="1208052068 image9"></div></div></section><section id="exemple_de_mise_en_place_4"><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
+<div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
+<div class="imageblock"><img src="media/382662575-image7.png" alt="382662575 image7"></div>
+<div class="imageblock"><img src="media/1380203359-image8.png" alt="1380203359 image8"></div>
+<div class="imageblock"><img src="media/1380203359-image8.png" alt="1380203359 image8"></div>
+<div class="paragraph"><p><strong>TEST</strong></p></div>
+<div class="paragraph"><p><strong>PROD</strong></p></div>
+<div class="paragraph"><p><strong>1</strong></p></div>
+<div class="paragraph"><p>Un automate récupère les sources de l&#8217;image, la construit et la pousse sur une registry de test</p></div>
+<div class="paragraph"><p><strong>2</strong></p></div>
+<div class="paragraph"><p>Un automate récupère l&#8217;image sur la registry de test, effectue les contrôles et si elle est valide, la pousse sur la registry de prod</p></div>
+<div class="paragraph"><p><strong>Sources</strong></p></div>
+<div class="imageblock"><img src="media/1208052068-image9.jpeg" alt="1208052068 image9"></div></div></section><section id="exemple_de_mise_en_place_5"><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
+<div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
+<div class="imageblock"><img src="media/382662575-image7.png" alt="382662575 image7"></div>
+<div class="imageblock"><img src="media/1380203359-image8.png" alt="1380203359 image8"></div>
+<div class="imageblock"><img src="media/1380203359-image8.png" alt="1380203359 image8"></div>
+<div class="paragraph"><p><strong>TEST</strong></p></div>
+<div class="paragraph"><p><strong>PROD</strong></p></div>
+<div class="paragraph"><p><strong>1</strong></p></div>
+<div class="paragraph"><p>Un automate récupère les sources de l&#8217;image, la construit et la pousse sur une registry de test</p></div>
+<div class="paragraph"><p><strong>2</strong></p></div>
+<div class="paragraph"><p>Un automate récupère l&#8217;image sur la registry de test, effectue les contrôles et si elle est valide, la pousse sur la registry de prod</p></div>
+<div class="paragraph"><p><strong>Sources</strong></p></div>
+<div class="imageblock"><img src="media/1208052068-image9.jpeg" alt="1208052068 image9"></div>
+<div class="imageblock"><img src="media/1208052068-image9.jpeg" alt="1208052068 image9"></div></div></section><section id="exemple_continuous_build"><h2>Exemple : continuous build</h2><div class="slide-content"><div class="imageblock"><img src="media/107490784-image13.png" alt="107490784 image13"></div></div></section><section id="travaux_pratiques_5"><h2>Travaux pratiques #5</h2><div class="slide-content"><div class="paragraph"><p><a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05</a></p></div>
+<div class="imageblock"><img src="media/636764807-image14.png" alt="636764807 image14"></div>
+<aside class="notes"><div class="paragraph"><p>Solution là: <a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05/-/tree/solution?ref_type=heads" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05/-/tree/solution?ref_type=heads</a></p></div></aside></div></section><section id="inspection_et_nommage_des_containers"><h2>Inspection et nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/1712651753-image15.png" alt="1712651753 image15"></div></div></section><section id="nommage_des_containers"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container logs 47d6
+Tue Oct 2400:39:52 UTC 2023
+Tue Oct 2400:39:53 UTC 2023
+...</code></pre></div></div></div></section><section id="nommage_des_containers_2"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container logs 47d6
+Tue Oct 2400:39:52 UTC 2023
+Tue Oct 2400:39:53 UTC 2023
+...</code></pre></div></div></div></section><section id="nommage_des_containers_3"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container logs 47d6
+Tue Oct 2400:39:52 UTC 2023
+Tue Oct 2400:39:53 UTC 2023
+...</code></pre></div></div>
+<div class="paragraph"><p>On ne peut pas faire plus "user-friendly" ?</p></div></div></section><section id="nommage_des_containers_4"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+793906a4c2d2        centos              "/bin/bash"         3 hours ago         Up 3 hours                      festive_poitras</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls</code></pre></div></div></div></section><section id="nommage_des_containers_5"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+793906a4c2d2        centos              "/bin/bash"         3 hours ago         Up 3 hours                      festive_poitras</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls</code></pre></div></div></div></section><section id="nommage_des_containers_6"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+793906a4c2d2        centos              "/bin/bash"         3 hours ago         Up 3 hours                      festive_poitras</code></pre></div></div>
+<div class="paragraph"><p>Une première alternative !</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls</code></pre></div></div></div></section><section id="nommage_des_containers_7"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+793906a4c2d2        centos              "/bin/bash"         3 hours ago         Up 3 hours                      festive_poitras</code></pre></div></div>
+<div class="paragraph"><p>Une première alternative !</p></div>
+<div class="paragraph"><p>Par défaut, Docker génère un nom en combinant une humeur et un inventeur !</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls</code></pre></div></div></div></section><section id="nommage_des_containers_8"><h2>Nommage des containers</h2><div class="slide-content"><div class="paragraph"><p>Humour de g33k</p></div>
+<div class="imageblock"><img src="media/1671853138-image16.png" alt="1671853138 image16"></div>
+<div class="paragraph"><p>source : <a href="https://github.com/docker/engine/blob/master/pkg/namesgenerator/names-generator.go" class="bare">https://github.com/docker/engine/blob/master/pkg/namesgenerator/names-generator.go</a></p></div></div></section><section id="nommage_des_containers_9"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach --name my-web httpd</code></pre></div></div></div></section><section id="nommage_des_containers_10"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach --name my-web httpd</code></pre></div></div>
+<div class="paragraph"><p>Nom du container explicite</p></div></div></section><section id="nommage_des_containers_11"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach --name my-web httpd</code></pre></div></div>
+<div class="paragraph"><p>Nom du container explicite</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container logs my-web
+$ docker exec --interactive --tty my-web sh</code></pre></div></div></div></section><section id="renommage_des_containers"><h2>Renommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container rename clark_kent superman</code></pre></div></div>
+<div class="paragraph"><p>attention, spoiler pour les n00bs de DC Comics</p></div></div></section><section id="renommage_des_containers_2"><h2>Renommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container rename clark_kent superman</code></pre></div></div>
+<div class="paragraph"><p>attention, spoiler pour les n00bs de DC Comics</p></div>
+<div class="paragraph"><p>ancien nom</p></div></div></section><section id="renommage_des_containers_3"><h2>Renommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container rename clark_kent superman</code></pre></div></div>
+<div class="paragraph"><p>attention, spoiler pour les n00bs de DC Comics</p></div>
+<div class="paragraph"><p>ancien nom</p></div>
+<div class="paragraph"><p>nouveau nom</p></div></div></section><section id="inspection_des_containers"><h2>Inspection des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect my-web
+[
+    {
+        "Id": "0ac8cdf8d447c6d316a04bd1a7f74cd2677eea3478f11f0be5241c1bb2d4c7da",
+        "Created": "2023-10-24T19:40:11.84788911Z",
+        "Path": "httpd-foreground",
+        "Args": [],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 3275,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2023-10-24T19:40:12.363841649Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+...
+]</code></pre></div></div></div></section><section id="comment_exploiter_le_json"><h2>Comment exploiter le JSON ?</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect my-web | jq .</code></pre></div></div>
+<div class="paragraph"><p>JQ est le meilleur outil pour parser du JSON dans le shell</p></div></div></section><section id="comment_exploiter_le_json_2"><h2>Comment exploiter le JSON ?</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect my-web | jq .</code></pre></div></div>
+<div class="paragraph"><p>JQ est le meilleur outil pour parser du JSON dans le shell</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect --format '{{json .Created }}' my-web</code></pre></div></div>
+<div class="paragraph"><p>les templates de GO peuvent être utilisés directement</p></div></div></section><section id="travaux_pratiques_6"><h2>Travaux pratiques #6</h2><div class="slide-content"><div class="paragraph"><p>Etapes
+. Lancer un container HTTPd
+. Trouver la syntaxe permettant d&#8217;extraire le "CMD" qui a été passé au démarrage du container
+. Trouver une seconde méthode pour faire la même chose</p></div></div></section><section id="trouver_son_container_en_réseau"><h2>Trouver son container en réseau</h2><div class="slide-content"><div class="imageblock"><img src="media/1233103020-image17.jpeg" alt="1233103020 image17"></div></div></section><section id="le_container_en_réseau"><h2>Le Container en réseau</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run --detach nginx
+bd12c4d7110d17ce80...`</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls
+CONTAINERID  IMAGE  COMMAND  CREATED  STATUS   PORTS
+bd12c4d71       nginx   "nginx …"    35 s. ago  Up 33 s.  80/tcp, 443/tcp</code></pre></div></div></div></section><section id="le_container_en_réseau_2"><h2>Le Container en réseau</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run --detach nginx
+bd12c4d7110d17ce80...`</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls
+CONTAINERID  IMAGE  COMMAND  CREATED  STATUS   PORTS
+bd12c4d71       nginx   "nginx …"    35 s. ago  Up 33 s.  80/tcp, 443/tcp</code></pre></div></div>
+<div class="paragraph"><p>Ok, mon container expose un service sur les ports <code>TCP 80</code> et <code>443</code> mais j&#8217;appelle comment mon Nginx ?</p></div></div></section><section id="que_nous_dit_docker_container_inspect"><h2>Que nous dit docker container inspect ?</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">"Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "c0fcec43e3e8…eecd6558ac0870a468a3",
+                    "EndpointID": "0ec8fb237a10e9227359b4…db23edc32",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:02",
+                    "DriverOpts": null
+                }
+            }</code></pre></div></div></div></section><section id="que_nous_dit_docker_container_inspect_2"><h2>Que nous dit docker container inspect ?</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">"Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "c0fcec43e3e8…eecd6558ac0870a468a3",
+                    "EndpointID": "0ec8fb237a10e9227359b4…db23edc32",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:02",
+                    "DriverOpts": null
+                }
+            }</code></pre></div></div></div></section><section id="que_nous_dit_docker_container_inspect_3"><h2>Que nous dit docker container inspect ?</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">"Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "c0fcec43e3e8…eecd6558ac0870a468a3",
+                    "EndpointID": "0ec8fb237a10e9227359b4…db23edc32",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:02",
+                    "DriverOpts": null
+                }
+            }</code></pre></div></div>
+<div class="imageblock"><img src="media/383920810-image18.png" alt="383920810 image18"></div></div></section><section id="que_nous_dit_docker_container_inspect_4"><h2>Que nous dit docker container inspect ?</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">"Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "c0fcec43e3e8…eecd6558ac0870a468a3",
+                    "EndpointID": "0ec8fb237a10e9227359b4…db23edc32",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:02",
+                    "DriverOpts": null
+                }
+            }</code></pre></div></div>
+<div class="imageblock"><img src="media/383920810-image18.png" alt="383920810 image18"></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect –format '--format '{{.NetworkSettings.IPAddress}}' &lt;ContainerID&gt;</code></pre></div></div></div></section><section id="et_voilà"><h2>Et voilà !</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">curl -I --noproxy '*' http://172.17.0.2:80
+HTTP/1.1 200 OK
+....
+`Server: nginx/1.9.6 ...
+`</code></pre></div></div>
+<div class="paragraph"><p>Il est maintenant facile d&#8217;interagir avec notre serveur web !</p></div></div></section><section id="mapping_de_port"><h2>Mapping de Port</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach -p 8000:80 nginx</code></pre></div></div></div></section><section id="mapping_de_port_2"><h2>Mapping de Port</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach -p 8000:80 nginx</code></pre></div></div>
+<div class="paragraph"><p>le port de la machine hôte</p></div></div></section><section id="mapping_de_port_3"><h2>Mapping de Port</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach -p 8000:80 nginx</code></pre></div></div>
+<div class="paragraph"><p>le port de la machine hôte</p></div>
+<div class="paragraph"><p>le port du container</p></div></div></section><section id="mapping_de_port_4"><h2>Mapping de Port</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach -p 8000:80 nginx</code></pre></div></div>
+<div class="paragraph"><p>le port de la machine hôte</p></div>
+<div class="paragraph"><p>le port du container</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">curl -I --noproxy '*' http://172.17.0.2:80
+it works !
+$ curl -I --noproxy '*' http://localhost:8000`
+it works !</code></pre></div></div></div></section><section id="travaux_pratiques_7"><h2>Travaux pratiques #7</h2><div class="slide-content"><div class="paragraph"><p>Étapes:
+* Créer un fichier HTML et le distribuer à partir d&#8217;un container <code>nginx</code>
+* Récupérer un war sur Gitlab et le déployer dans un container <code>wildfly (<a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp07/-/raw/master/sample.war" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp07/-/raw/master/sample.war</a>)</code>
+* Récupérer le code sur <a href="https://spring.io/guides/gs/spring-boot/" class="bare">https://spring.io/guides/gs/spring-boot/</a> et faire tourner l&#8217;appli</p></div></div></section><section id="attends_un_peu"><h2>Attends un peu…</h2><div class="slide-content"><div class="imageblock"><img src="media/1779074283-image19.gif" alt="1779074283 image19"></div>
+<div class="paragraph"><p><em>C&#8217;est comme si  je laissais la grue dans la chambre une fois que j&#8217;avais fini de construire ma maison !</em></p></div></div></section><section id="une_première_solution"><h2>Une première solution</h2><div class="slide-content"><div class="paragraph"><p>Avec un autre exemple</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">include::https://github.com/alexellis/href-counter/blob/master/Dockerfile.build</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">include::https://github.com/alexellis/href-counter/blob/master/Dockerfile</code></pre></div></div>
+<div class="paragraph"><p>Une image pour construire l&#8217;appli</p></div>
+<div class="paragraph"><p>Une image pour faire tourner l&#8217;appli</p></div></div></section><section id="une_première_solution_2"><h2>Une première solution</h2><div class="slide-content"><div class="paragraph"><p>Avec un autre exemple</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">#!/bin/sh
+echo Building alexellis2/href-counter:build
+docker image build --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy \
+    -t alexellis2/href-counter:build . -f Dockerfile.build
+docker container create --name extract alexellis2/href-counter:build
+docker container cp extract:/go/src/github.com/alexellis/href-counter/app ./app
+docker container rm -f extract
+echo Building alexellis2/href-counter:latest
+docker image build --no-cache -t alexellis2/href-counter:latest .
+rm ./app</code></pre></div></div>
+<div class="paragraph"><p>on créé l&#8217;image de construction</p></div>
+<div class="paragraph"><p>on fait un container pour récupérer le build</p></div>
+<div class="paragraph"><p>on créer l&#8217;image d&#8217;exécution</p></div>
+<div class="imageblock"><img src="media/1956754704-image20.jpeg" alt="1956754704 image20"></div></div></section><section id="multistage_build"><h2>Multistage build</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM golang:1.19
+WORKDIR /go/src/github.com/alexellis/href-counter/
+RUN go get -d -v golang.org/x/net/html
+COPY app.go .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+FROM alpine:3.17.1
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
+COPY --from=0 /go/src/github.com/alexellis/href-counter/app .
+CMD ["./app"]</code></pre></div></div></div></section><section id="multistage_build_2"><h2>Multistage build</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM golang:1.19
+WORKDIR /go/src/github.com/alexellis/href-counter/
+RUN go get -d -v golang.org/x/net/html
+COPY app.go .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+FROM alpine:3.17.1
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
+COPY --from=0 /go/src/github.com/alexellis/href-counter/app .
+CMD ["./app"]</code></pre></div></div>
+<div class="paragraph"><p>On copie les fichiers depuis le premier stage</p></div></div></section><section id="les_containers"><h2>LES CONTAINERS</h2><div class="slide-content"><div class="paragraph"><p>Le bilan : achievement unlocked</p></div>
+<div class="paragraph"><p>Vous savez désormais:
+* Maîtriser le cycle de vie des containers
+* Interagir avec les containers existants</p></div>
+<div class="imageblock"><img src="media/1706694417-image21.png" alt="1706694417 image21"></div></div></section><section id="les_containers_2"><h2>LES CONTAINERS</h2><div class="slide-content"><div class="paragraph"><p>Le bilan : achievement unlocked</p></div>
+<div class="paragraph"><p>Vous savez désormais:
+* Maîtriser le cycle de vie des containers
+* Interagir avec les containers existants
+* Nommer les containers
+* Inspecter les containers
+* Appeler les containers
+* Obtenir des containers légers</p></div>
+<div class="imageblock"><img src="media/1706694417-image21.png" alt="1706694417 image21"></div></div></section></section>
 <section id="volumes"><h2>Volumes</h2></section>
 <section id="réseaux"><h2>Réseaux</h2></section>
 <section id="docker_compose"><h2>Docker compose</h2></section>
