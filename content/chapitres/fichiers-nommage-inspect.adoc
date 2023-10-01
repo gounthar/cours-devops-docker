@@ -1,1 +1,1072 @@
 = Fichiers, nommage, inspect...
+
+== nOS fichiers dans les images
+
+
+== Le répertoire de travail
+
+[source,bash]
+----
+docker container run --interactive --tty httpd pwd /usr/local/apache2
+----
+
+
+== Le répertoire de travail
+
+[source,bash]
+----
+docker container run --interactive --tty httpd pwd /usr/local/apache2
+----
+
+Comment paramétrer le répertoire de travail de tous nos containers ?
+
+== WORKDIR
+
+[source,docker]
+----
+FROM alpine:3.18
+WORKDIR /repertoire/travail
+RUN echo hello > ./world.txt
+----
+
+== WORKDIR
+
+[source,docker]
+----
+FROM alpine:3.18
+WORKDIR /repertoire/travail
+RUN echo hello > ./world.txt
+----
+
+[source,bash]
+----
+docker image build --tag mon-img .
+...
+$ docker container run mon-img cat /repertoire/travail/world.txt
+hello
+$ docker container run mon-img pwd
+/repertoire/travail
+$ docker container run --workdir /home mon-img pwd
+/home
+----
+
+== WORKDIR
+
+[source,docker]
+----
+FROM alpine:3.18
+WORKDIR /repertoire/travail
+RUN echo hello > ./world.txt
+----
+
+[source,bash]
+----
+docker image build --tag mon-img .
+...
+$ docker container run mon-img cat /repertoire/travail/world.txt
+hello
+$ docker container run mon-img pwd
+/repertoire/travail
+$ docker container run --workdir /home mon-img pwd
+/home
+----
+
+override du WORKDIR
+
+== Embarquer des fichiers
+
+Cas d'usage.
+
+
+== Embarquer des fichiers
+
+Cas d'usage.
+
+[source,bash]
+----
+ls
+app.js
+----
+
+== Embarquer des fichiers
+
+Cas d'usage.
+
+[source,bash]
+----
+ls
+app.js
+$ docker container run --workdir /customdir node app.js
+<error : app.js not found>
+----
+
+== Embarquer des fichiers
+
+Cas d'usage.
+
+[source,bash]
+----
+ls
+app.js
+$ docker container run --workdir /customdir node app.js
+<error : app.js not found>
+$ docker container run --workdir /customdir --entrypoint ls node
+<0 fichiers présents !>
+----
+
+== Embarquer des fichiers
+
+Cas d'usage.
+
+[source,bash]
+----
+ls
+app.js
+$ docker container run --workdir /customdir node app.js
+<error : app.js not found>
+$ docker container run --workdir /customdir --entrypoint ls node
+<0 fichiers présents !>
+----
+
+Comment fournir des fichiers à mes containers ?
+
+== Embarquer des fichiers
+
+Copie de fichiers.
+
+[source,docker]
+----
+FROM node:20.8.0-alpine3.18
+COPY ./* /app
+----
+
+== Embarquer des fichiers
+
+Copie de fichiers.
+
+[source,docker]
+----
+FROM node:20.8.0-alpine3.18
+COPY ./* /app
+----
+
+[source,bash]
+----
+docker image build --tag mon-node .
+...
+$ docker container run --workdir /app --entrypoint ls mon-node
+app.js
+$ docker container run mon-node node /app.js
+yeeeahhhh !
+----
+
+== Embarquer des fichiers
+
+Le mot clé `ADD`.
+
+[source,docker]
+----
+FROM image
+ADD https://mon-nexus/foo/bar/1.0/package.tar /uncompressed/
+----
+
+== Embarquer des fichiers
+
+Le mot clé `ADD`.
+
+[source,docker]
+----
+FROM image
+ADD https://mon-nexus/foo/bar/1.0/package.tar /uncompressed/
+----
+
+Il permet d'ajouter des fichiers aux images, tout comme `COPY`.
+
+Il est capable de télécharger directement d'une URL
+
+Il est capable de "untar" automatiquement.
+
+On le retrouve dans d'anciens Dockerfile mais il tend à disparaître.
+
+
+== Embarquer des fichiers
+
+Le mot clé `ADD`
+
+source : https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy
+
+image::1108215415-image2.png[]
+
+== Embarquer des fichiers
+
+Le mot clé `ADD`.
+
+source : https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy
+
+image::1108215415-image2.png[]
+
+== Embarquer des fichiers
+
+Oui, mais pas la terre entière !
+
+[source,bash]
+----
+docker image build --tag myjava:1.42 ./
+Sending build context to Docker daemon  172.8MB
+----
+
+== Embarquer des fichiers
+
+Oui, mais pas la terre entière !
+
+[source,bash]
+----
+docker image build --tag myjava:1.42 ./
+Sending build context to Docker daemon  172.8MB
+----
+
+Répertoire contenant le Dockerfile.
+NB : tous les fichiers présents dans ce répertoire seront envoyés au Docker daemon pour construire vos images !
+
+== Embarquer des fichiers
+
+Oui, mais pas la terre entière !
+
+[source,bash]
+----
+docker image build --tag myjava:1.42 ./
+Sending build context to Docker daemon  172.8MB
+----
+
+Répertoire contenant le Dockerfile.
+NB : tous les fichiers présents dans ce répertoire seront envoyés au Docker daemon pour construire vos images !
+
+?!!!
+
+== Embarquer des fichiers
+
+Oui, mais pas la terre entière !
+
+[source,bash]
+----
+docker image build --tag myjava:1.42 ./
+Sending build context to Docker daemon  172.8MB
+----
+
+Répertoire contenant le Dockerfile.
+NB : tous les fichiers présents dans ce répertoire seront envoyés au Docker daemon pour construire vos images !
+
+Si un gros fichier traîne dans le dossier alors qu'il n'est même pas utilisé ni référencé dans le Dockerfile, il sera tout de même envoyé au Docker daemon.
+
+?!!!
+
+== Embarquer des fichiers
+
+Oui, mais pas la terre entière !
+
+__"M'en fous ! j'ai une machine de fou et un réseau de fou ! YOLO !"__
+
+et si la CI fait plusieurs builds par minute ?
+
+Et si un vieux Keystore traîne dans les sources ?
+
+`.git/` ? `.idea/` ? vraiment ?
+
+Attention à l'invalidation de cache d'un step de build à cause de l'ajout d'un fichier inutile !
+
+== `.dockerignore`
+
+[source,.dockerignore]
+----
+# ignore les dossiers .git et .cache
+.git
+.cache
+----
+
+[source,.dockerignore]
+----
+# ignore tous les fichiers *.class dans tous les dossiers
+**/*.class
+----
+
+[source,.dockerignore]
+----
+# ignore les markdown sauf les README*.md (README-secret.md sera tout de même ignoré par contre)
+*.md
+!README*.md
+README-secret.md
+----
+
+== Dockerfile 
+
+Les commandes principales (pour l'instant)
+
+[cols="1,1"]
+|===
+|Commande
+|Usage
+
+|FROM
+|Pour spécifier l'image à partir de laquelle on construit la nouvelle image
+
+|LABEL
+|Pour décrire l'image à partir de clé/valeur
+
+|RUN
+|Pour exécuter une action au moment du build
+
+|ENV
+|Pour insérer une variable d'environnement dans tous les futurs containers de cette image
+
+|ENTRYPOINT
+|Pour définir une commande à lancer au démarrage du container
+
+|CMD
+|Pour définir une commande à lancer au démarrage du container ou pour compléter un ENTRYPOINT existant
+
+|COPY
+|Pour insérer des fichiers dans l'image
+
+|===
+
+== Renommage des images
+
+[source,bash]
+----
+docker tag 0e5574283393 fedora/httpd:version-1.0
+----
+
+== Renommage des images
+
+[source,bash]
+----
+docker tag 0e5574283393 fedora/httpd:version-1.0
+----
+
+ID existant
+
+== Renommage des images
+
+[source,bash]
+----
+docker tag 0e5574283393 fedora/httpd:version-1.0
+----
+
+ID existant
+
+tag à ajouter
+
+== Renommage des images
+
+[source,bash]
+----
+docker tag 0e5574283393 fedora/httpd:version-1.0
+----
+
+[source,bash]
+----
+docker tag httpd fedora/httpd:version-1.0
+----
+
+`httpd:latest` sera taggué en `fedora/httpd:version1.0`
+
+ID existant
+
+tag à ajouter
+
+== LES IMAGES
+
+Le bilan
+
+Vous savez désormais:
+
+* Rédiger un Dockerfile
+* Nommer vos images
+* Créer vos outils
+
+image::349338016-image3.jpeg[]
+
+== LES IMAGES
+
+Le bilan
+
+Vous savez désormais:
+
+* Rédiger un Dockerfile
+* Nommer vos images
+* Créer vos outils
+
+image::349338016-image3.jpeg[]
+image::384835330-image4.gif[]
+
+== Les registries
+
+image::104336496-image5.png[]
+
+== Golden Rule
+
+**La construction d'une image doit être automatisée.**
+
+== Automatique == sécurisé
+
+Le fait de déléguer la construction des images permet d'ajouter toute une chaîne de traitement, de contrôles des images pour s'assurer qu'elle respecte les règles RSSI.
+
+patch management
+
+droits sur le FS
+
+user
+
+[.notes]
+C'est quoi le RSSI ?
+RSSI : définition. Le responsable de la sécurité des systèmes d'information (ou RSSI pour Responsable de la Sécurité des Systèmes d'Information) définit et développe la politique de sécurité de l'information de son entreprise.
+
+== Exemple de mise en place
+
+image::1499039210-image6.png[]
+image::1499039210-image6.png[]
+image::382662575-image7.png[]
+
+**TEST**
+
+**PROD**
+
+**Sources**
+
+== Exemple de mise en place
+
+image::1499039210-image6.png[]
+image::1499039210-image6.png[]
+image::382662575-image7.png[]
+image::1380203359-image8.png[]
+
+**TEST**
+
+**PROD**
+
+**1**
+
+Un automate récupère les sources de l'image, la construit et la pousse sur une registry de test
+
+**Sources**
+
+== Exemple de mise en place
+
+image::1499039210-image6.png[]
+image::1499039210-image6.png[]
+image::382662575-image7.png[]
+image::1380203359-image8.png[]
+
+**TEST**
+
+**PROD**
+
+**1**
+
+Un automate récupère les sources de l'image, la construit et la pousse sur une registry de test
+
+**Sources**
+
+image::1208052068-image9.jpeg[]
+
+== Exemple de mise en place
+
+image::1499039210-image6.png[]
+image::1499039210-image6.png[]
+image::382662575-image7.png[]
+image::1380203359-image8.png[]
+image::1380203359-image8.png[]
+
+**TEST**
+
+**PROD**
+
+**1**
+
+Un automate récupère les sources de l'image, la construit et la pousse sur une registry de test
+
+**2**
+
+Un automate récupère l'image sur la registry de test, effectue les contrôles et si elle est valide, la pousse sur la registry de prod
+
+**Sources**
+
+image::1208052068-image9.jpeg[]
+
+== Exemple de mise en place
+
+image::1499039210-image6.png[]
+image::1499039210-image6.png[]
+image::382662575-image7.png[]
+image::1380203359-image8.png[]
+image::1380203359-image8.png[]
+
+**TEST**
+
+**PROD**
+
+**1**
+
+Un automate récupère les sources de l'image, la construit et la pousse sur une registry de test
+
+**2**
+
+Un automate récupère l'image sur la registry de test, effectue les contrôles et si elle est valide, la pousse sur la registry de prod
+
+**Sources**
+
+image::1208052068-image9.jpeg[]
+image::1208052068-image9.jpeg[]
+
+== Exemple : continuous build
+
+image::107490784-image13.png[]
+
+== Travaux pratiques #5
+
+https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05
+
+image::636764807-image14.png[]
+
+[.notes]
+--
+Solution là: https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05/-/tree/solution?ref_type=heads
+--
+
+== Inspection et nommage des containers
+
+image::1712651753-image15.png[]
+
+== Nommage des containers
+
+[source,bash]
+----
+docker container logs 47d6
+Tue Oct 2400:39:52 UTC 2023
+Tue Oct 2400:39:53 UTC 2023
+...
+----
+
+== Nommage des containers
+
+[source,bash]
+----
+docker container logs 47d6
+Tue Oct 2400:39:52 UTC 2023
+Tue Oct 2400:39:53 UTC 2023
+...
+----
+
+== Nommage des containers
+
+[source,bash]
+----
+docker container logs 47d6
+Tue Oct 2400:39:52 UTC 2023
+Tue Oct 2400:39:53 UTC 2023
+...
+----
+
+On ne peut pas faire plus "user-friendly" ?
+
+== Nommage des containers
+
+[source,bash]
+----
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+793906a4c2d2        centos              "/bin/bash"         3 hours ago         Up 3 hours                      festive_poitras
+----
+
+[source,bash]
+----
+docker container ls
+----
+
+== Nommage des containers
+
+[source,bash]
+----
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+793906a4c2d2        centos              "/bin/bash"         3 hours ago         Up 3 hours                      festive_poitras
+----
+
+[source,bash]
+----
+docker container ls
+----
+
+== Nommage des containers
+
+[source,bash]
+----
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+793906a4c2d2        centos              "/bin/bash"         3 hours ago         Up 3 hours                      festive_poitras
+----
+
+Une première alternative !
+
+[source,bash]
+----
+docker container ls
+----
+
+== Nommage des containers
+
+[source,bash]
+----
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+793906a4c2d2        centos              "/bin/bash"         3 hours ago         Up 3 hours                      festive_poitras
+----
+
+Une première alternative !
+
+Par défaut, Docker génère un nom en combinant une humeur et un inventeur !
+
+[source,bash]
+----
+docker container ls
+----
+
+== Nommage des containers
+
+Humour de g33k
+
+image::1671853138-image16.png[]
+
+source : https://github.com/docker/engine/blob/master/pkg/namesgenerator/names-generator.go
+
+== Nommage des containers
+
+[source,bash]
+----
+docker container run --detach --name my-web httpd
+----
+
+== Nommage des containers
+
+[source,bash]
+----
+docker container run --detach --name my-web httpd
+----
+
+Nom du container explicite
+
+== Nommage des containers
+
+[source,bash]
+----
+docker container run --detach --name my-web httpd
+----
+
+Nom du container explicite
+
+[source,bash]
+----
+docker container logs my-web
+$ docker exec --interactive --tty my-web sh
+----
+
+== Renommage des containers
+
+[source,bash]
+----
+docker container rename clark_kent superman
+----
+
+attention, spoiler pour les n00bs de DC Comics
+
+== Renommage des containers
+
+[source,bash]
+----
+docker container rename clark_kent superman
+----
+
+attention, spoiler pour les n00bs de DC Comics
+
+ancien nom
+
+== Renommage des containers
+
+[source,bash]
+----
+docker container rename clark_kent superman
+----
+
+attention, spoiler pour les n00bs de DC Comics
+
+ancien nom
+
+nouveau nom
+
+== Inspection des containers
+
+[source,bash]
+----
+docker container inspect my-web
+[
+    {
+        "Id": "0ac8cdf8d447c6d316a04bd1a7f74cd2677eea3478f11f0be5241c1bb2d4c7da",
+        "Created": "2023-10-24T19:40:11.84788911Z",
+        "Path": "httpd-foreground",
+        "Args": [],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 3275,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2023-10-24T19:40:12.363841649Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+...
+]
+----
+
+
+== Comment exploiter le JSON ?
+
+[source,bash]
+----
+docker container inspect my-web | jq .
+----
+
+JQ est le meilleur outil pour parser du JSON dans le shell
+
+== Comment exploiter le JSON ?
+
+[source,bash]
+----
+docker container inspect my-web | jq .
+----
+
+JQ est le meilleur outil pour parser du JSON dans le shell
+
+[source,bash]
+----
+docker container inspect --format '{{json .Created }}' my-web
+----
+
+les templates de GO peuvent être utilisés directement
+
+== Travaux pratiques #6
+
+Etapes
+. Lancer un container HTTPd
+. Trouver la syntaxe permettant d'extraire le "CMD" qui a été passé au démarrage du container
+. Trouver une seconde méthode pour faire la même chose
+
+== Trouver son container en réseau
+
+image::1233103020-image17.jpeg[]
+
+== Le Container en réseau
+
+[source,bash]
+----
+$ docker container run --detach nginx
+bd12c4d7110d17ce80...`
+----
+
+[source,bash]
+----
+docker container ls
+CONTAINERID  IMAGE  COMMAND  CREATED  STATUS   PORTS  
+bd12c4d71       nginx   "nginx …"    35 s. ago  Up 33 s.  80/tcp, 443/tcp
+----
+
+== Le Container en réseau
+
+[source,bash]
+----
+$ docker container run --detach nginx
+bd12c4d7110d17ce80...`
+----
+
+[source,bash]
+----
+docker container ls
+CONTAINERID  IMAGE  COMMAND  CREATED  STATUS   PORTS  
+bd12c4d71       nginx   "nginx …"    35 s. ago  Up 33 s.  80/tcp, 443/tcp
+----
+
+Ok, mon container expose un service sur les ports `TCP 80` et `443` mais j'appelle comment mon Nginx ?
+
+== Que nous dit docker container inspect ?
+
+[source,json]
+----
+"Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "c0fcec43e3e8…eecd6558ac0870a468a3",
+                    "EndpointID": "0ec8fb237a10e9227359b4…db23edc32",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:02",
+                    "DriverOpts": null
+                }
+            }
+----
+
+== Que nous dit docker container inspect ?
+
+[source,json]
+----
+"Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "c0fcec43e3e8…eecd6558ac0870a468a3",
+                    "EndpointID": "0ec8fb237a10e9227359b4…db23edc32",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:02",
+                    "DriverOpts": null
+                }
+            }
+----
+
+== Que nous dit docker container inspect ?
+
+[source,json]
+----
+"Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "c0fcec43e3e8…eecd6558ac0870a468a3",
+                    "EndpointID": "0ec8fb237a10e9227359b4…db23edc32",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:02",
+                    "DriverOpts": null
+                }
+            }
+----
+
+image::383920810-image18.png[]
+
+== Que nous dit docker container inspect ?
+
+[source,json]
+----
+"Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "c0fcec43e3e8…eecd6558ac0870a468a3",
+                    "EndpointID": "0ec8fb237a10e9227359b4…db23edc32",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:02",
+                    "DriverOpts": null
+                }
+            }
+----
+
+image::383920810-image18.png[]
+
+[source,bash]
+----
+docker container inspect –format '--format '{{.NetworkSettings.IPAddress}}' <ContainerID>
+----
+
+== Et voilà !
+
+[source,bash]
+----
+curl -I --noproxy '*' http://172.17.0.2:80
+HTTP/1.1 200 OK
+....
+`Server: nginx/1.9.6 ...
+`
+----
+
+Il est maintenant facile d'interagir avec notre serveur web !
+
+== Mapping de Port
+
+[source,bash]
+----
+docker container run --detach -p 8000:80 nginx
+----
+
+== Mapping de Port
+
+[source,bash]
+----
+docker container run --detach -p 8000:80 nginx
+----
+
+le port de la machine hôte
+
+== Mapping de Port
+
+[source,bash]
+----
+docker container run --detach -p 8000:80 nginx
+----
+
+le port de la machine hôte
+
+le port du container
+
+== Mapping de Port
+
+
+[source,bash]
+----
+docker container run --detach -p 8000:80 nginx
+----
+
+le port de la machine hôte
+
+le port du container
+
+[source,bash]
+----
+curl -I --noproxy '*' http://172.17.0.2:80
+it works !
+$ curl -I --noproxy '*' http://localhost:8000`
+it works !
+----
+
+== Travaux pratiques #7
+
+Étapes:
+* Créer un fichier HTML et le distribuer à partir d'un container `nginx`
+* Récupérer un war sur Gitlab et le déployer dans un container `wildfly (https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp07/-/raw/master/sample.war)`
+* Récupérer le code sur https://spring.io/guides/gs/spring-boot/ et faire tourner l'appli
+
+== Attends un peu…
+
+image::1779074283-image19.gif[]
+__C'est comme si  je laissais la grue dans la chambre une fois que j'avais fini de construire ma maison !__
+
+== Une première solution
+
+Avec un autre exemple
+
+[source,docker]
+----
+include::https://github.com/alexellis/href-counter/blob/master/Dockerfile.build
+----
+
+[source,docker]
+----
+include::https://github.com/alexellis/href-counter/blob/master/Dockerfile
+----
+
+Une image pour construire l'appli
+
+Une image pour faire tourner l'appli
+
+== Une première solution
+
+Avec un autre exemple
+
+[source,bash]
+----
+#!/bin/sh
+echo Building alexellis2/href-counter:build
+docker image build --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy \  
+    -t alexellis2/href-counter:build . -f Dockerfile.build
+docker container create --name extract alexellis2/href-counter:build  
+docker container cp extract:/go/src/github.com/alexellis/href-counter/app ./app  
+docker container rm -f extract
+echo Building alexellis2/href-counter:latest
+docker image build --no-cache -t alexellis2/href-counter:latest .
+rm ./app
+----
+
+on créé l'image de construction
+
+on fait un container pour récupérer le build
+
+on créer l'image d'exécution
+
+image::1956754704-image20.jpeg[]
+
+== Multistage build
+
+[source,docker]
+----
+FROM golang:1.19
+WORKDIR /go/src/github.com/alexellis/href-counter/
+RUN go get -d -v golang.org/x/net/html  
+COPY app.go .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+FROM alpine:3.17.1 
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
+COPY --from=0 /go/src/github.com/alexellis/href-counter/app .
+CMD ["./app"] 
+----
+
+== Multistage build
+
+[source,docker]
+----
+FROM golang:1.19
+WORKDIR /go/src/github.com/alexellis/href-counter/
+RUN go get -d -v golang.org/x/net/html  
+COPY app.go .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+FROM alpine:3.17.1 
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
+COPY --from=0 /go/src/github.com/alexellis/href-counter/app .
+CMD ["./app"] 
+----
+
+On copie les fichiers depuis le premier stage
+
+== LES CONTAINERS
+
+Le bilan : achievement unlocked
+
+Vous savez désormais:
+* Maîtriser le cycle de vie des containers
+* Interagir avec les containers existants
+                     
+image::1706694417-image21.png[]
+
+== LES CONTAINERS
+
+Le bilan : achievement unlocked
+
+Vous savez désormais:
+* Maîtriser le cycle de vie des containers
+* Interagir avec les containers existants
+* Nommer les containers
+* Inspecter les containers
+* Appeler les containers
+* Obtenir des containers légers
+
+image::1706694417-image21.png[]
