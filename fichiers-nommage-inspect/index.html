@@ -1282,117 +1282,81 @@ ENTRYPOINT ["curl","-x", "http://prx:3128", "-L", "--connect-timeout", "60"]
 google blahblahblah [...]
 &lt;/html&gt;</code></pre></div></div></div></div></div></section><section id="checkpoint_5"><h2>Checkpoint 🎯</h2><div class="slide-content"><div class="ulist"><ul><li><p>Une image Docker fournit un environnement de système de fichier auto-suffisant (application, dépendances, binaries, etc.) comme modèle de base d&#8217;un conteneur</p></li><li><p>Les images Docker ont une convention de nommage permettant d&#8217;identifier les images très précisément</p></li><li><p>On peut spécifier une recette de fabrication d&#8217;image à l&#8217;aide d&#8217;un <code>Dockerfile</code> et de la commande <code>docker image build</code></p></li></ul></div>
 <div class="paragraph"><p>&#8658; 🤔 et si on utilisait Docker pour nous aider dans l&#8217;intégration continue ?</p></div></div></section></section>
-<section><section id="fichiers_nommage_inspect"><h2>Fichiers, nommage, inspect&#8230;&#8203;</h2></section><section id="nos_fichiers_dans_les_images"><h2>nOS fichiers dans les images</h2></section><section id="le_répertoire_de_travail"><h2>Le répertoire de travail</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --interactive --tty httpd pwd /usr/local/apache2</code></pre></div></div></div></section><section id="le_répertoire_de_travail_2"><h2>Le répertoire de travail</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --interactive --tty httpd pwd /usr/local/apache2</code></pre></div></div>
-<div class="paragraph"><p>Comment paramétrer le répertoire de travail de tous nos containers ?</p></div></div></section><section id="workdir"><h2>WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18
+<section><section id="nos_fichiers_dans_les_images" data-background-image="media/fichiers.png" data-background-size="cover" data-background-position="left"><h2>Nos fichiers dans les images</h2><div class="slide-content"></div></section><section id="le_répertoire_de_travail"><h2>Le répertoire de travail</h2><div class="slide-content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --interactive --tty httpd pwd /usr/local/apache2</code></pre></div></div>
+<div class="paragraph fragment"><p>Comment paramétrer le répertoire de travail de tous nos containers ?</p></div></div></section><section id="workdir" data-auto-animate><h2>WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18
 WORKDIR /repertoire/travail
-RUN echo hello &gt; ./world.txt</code></pre></div></div></div></section><section id="workdir_2"><h2>WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18
+RUN echo hello &gt; ./world.txt</code></pre></div></div></div></section><section id="workdir_2" data-auto-animate><h2>WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18
+WORKDIR /repertoire/travail
+RUN echo hello &gt; ./world.txt</code></pre></div></div>
+<div class="imageblock"><img src="media/fichiers-output5_with_transparency.png" alt="fichiers output5 with transparency"></div></div></section><section id="workdir_3" data-auto-animate><h2>WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18
+WORKDIR /repertoire/travail
+RUN echo hello &gt; ./world.txt</code></pre></div></div>
+<div class="imageblock"><img src="media/fichiers-output6_with_transparency.png" alt="fichiers output6 with transparency"></div>
+<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {5..6}; do convert Diapositive${i}.PNG -crop 9667x3750+1833+3333 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="workdir_4" data-auto-animate><h2>WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18
 WORKDIR /repertoire/travail
 RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-img .
-...
-$ docker container run mon-img cat /repertoire/travail/world.txt
-hello
-$ docker container run mon-img pwd
-/repertoire/travail
-$ docker container run --workdir /home mon-img pwd
-/home</code></pre></div></div></div></section><section id="workdir_3"><h2>WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18
-WORKDIR /repertoire/travail
-RUN echo hello &gt; ./world.txt</code></pre></div></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-img .
-...
-$ docker container run mon-img cat /repertoire/travail/world.txt
-hello
-$ docker container run mon-img pwd
-/repertoire/travail
-$ docker container run --workdir /home mon-img pwd
-/home</code></pre></div></div>
-<div class="paragraph"><p>override du WORKDIR</p></div></div></section><section id="embarquer_des_fichiers"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Cas d&#8217;usage.</p></div></div></section><section id="embarquer_des_fichiers_2"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Cas d&#8217;usage.</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">ls
-app.js</code></pre></div></div></div></section><section id="embarquer_des_fichiers_3"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Cas d&#8217;usage.</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">ls
-app.js
-$ docker container run --workdir /customdir node app.js
-&lt;error : app.js not found&gt;</code></pre></div></div></div></section><section id="embarquer_des_fichiers_4"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Cas d&#8217;usage.</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">ls
-app.js
-$ docker container run --workdir /customdir node app.js
-&lt;error : app.js not found&gt;
-$ docker container run --workdir /customdir --entrypoint ls node
-&lt;0 fichiers présents !&gt;</code></pre></div></div></div></section><section id="embarquer_des_fichiers_5"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Cas d&#8217;usage.</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">ls
-app.js
-$ docker container run --workdir /customdir node app.js
-&lt;error : app.js not found&gt;
-$ docker container run --workdir /customdir --entrypoint ls node
+...</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run mon-img cat /repertoire/travail/world.txt
+hello</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run mon-img pwd
+/repertoire/travail</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run --workdir /home mon-img pwd
+/home</code></pre></div></div></div></section><section id="embarquer_des_fichiers" data-auto-animate><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Cas d&#8217;usage.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">ls
+app.js</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run --workdir /customdir node app.js
+&lt;error : app.js not found&gt;</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run --workdir /customdir --entrypoint ls node
 &lt;0 fichiers présents !&gt;</code></pre></div></div>
-<div class="paragraph"><p>Comment fournir des fichiers à mes containers ?</p></div></div></section><section id="embarquer_des_fichiers_6"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Copie de fichiers.</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM node:20.8.0-alpine3.18
-COPY ./* /app</code></pre></div></div></div></section><section id="embarquer_des_fichiers_7"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Copie de fichiers.</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM node:20.8.0-alpine3.18
+<div class="paragraph fragment"><p>Comment fournir des fichiers à mes containers ?</p></div></div></section><section id="embarquer_des_fichiers_2" data-auto-animate><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Copie de fichiers.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM node:20.8.0-alpine3.18
+WORKDIR /app
 COPY ./* /app</code></pre></div></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-node .
-...
-$ docker container run --workdir /app --entrypoint ls mon-node
-app.js
-$ docker container run mon-node node /app.js
-yeeeahhhh !</code></pre></div></div></div></section><section id="embarquer_des_fichiers_8"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Le mot clé <code>ADD</code>.</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM image
-ADD https://mon-nexus/foo/bar/1.0/package.tar /uncompressed/</code></pre></div></div></div></section><section id="embarquer_des_fichiers_9"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Le mot clé <code>ADD</code>.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-node .
+...</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run --workdir /app --entrypoint ls mon-node
+app.js</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run mon-node app.js
+Hello Mad Javascript World!</code></pre></div></div></div></section><section id="embarquer_des_fichiers_3" data-auto-animate><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Le mot clé <code>ADD</code>.</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM image
 ADD https://mon-nexus/foo/bar/1.0/package.tar /uncompressed/</code></pre></div></div>
-<div class="paragraph"><p>Il permet d&#8217;ajouter des fichiers aux images, tout comme <code>COPY</code>.</p></div>
-<div class="paragraph"><p>Il est capable de télécharger directement d&#8217;une URL</p></div>
-<div class="paragraph"><p>Il est capable de "untar" automatiquement.</p></div>
-<div class="paragraph"><p>On le retrouve dans d&#8217;anciens Dockerfile mais il tend à disparaître.</p></div></div></section><section id="embarquer_des_fichiers_10"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Le mot clé <code>ADD</code></p></div>
-<div class="paragraph"><p>source : <a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy" class="bare">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy</a></p></div>
-<div class="imageblock"><img src="media/1108215415-image2.png" alt="1108215415 image2"></div></div></section><section id="embarquer_des_fichiers_11"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Le mot clé <code>ADD</code>.</p></div>
-<div class="paragraph"><p>source : <a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy" class="bare">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy</a></p></div>
-<div class="imageblock"><img src="media/1108215415-image2.png" alt="1108215415 image2"></div></div></section><section id="embarquer_des_fichiers_12"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Oui, mais pas la terre entière !</p></div>
+<div class="paragraph fragment"><p>Il permet d&#8217;ajouter des fichiers aux images, tout comme <code>COPY</code>.</p></div>
+<div class="paragraph fragment"><p>Il est capable de télécharger directement d&#8217;une URL</p></div>
+<div class="paragraph fragment"><p>Il est capable de "untar" automatiquement.</p></div>
+<div class="paragraph fragment"><p>On le retrouve dans d&#8217;anciens Dockerfile mais il tend à disparaître.</p></div></div></section><section id="embarquer_des_fichiers_4" data-auto-animate><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Le mot clé <code>ADD</code></p></div>
+<div class="paragraph small"><small>source : <a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy" class="bare">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy</a></small></div>
+<div class="imageblock"><img src="media/1108215415-image2.png" alt="1108215415 image2"></div></div></section><section id="embarquer_des_fichiers_5" data-auto-animate><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Le mot clé <code>ADD</code>.</p></div>
+<div class="paragraph small"><small>source : <a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy" class="bare">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy</a></small></div>
+<div class="imageblock"><img src="media/add-stabylo.png" alt="add stabylo"></div></div></section><section id="embarquer_des_fichiers_6" data-auto-animate><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Oui, mais pas la terre entière !</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag myjava:1.42 ./
-Sending build context to Docker daemon  172.8MB</code></pre></div></div></div></section><section id="embarquer_des_fichiers_13"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Oui, mais pas la terre entière !</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag myjava:1.42 ./
-Sending build context to Docker daemon  172.8MB</code></pre></div></div>
-<div class="paragraph"><p>Répertoire contenant le Dockerfile.
-NB : tous les fichiers présents dans ce répertoire seront envoyés au Docker daemon pour construire vos images !</p></div></div></section><section id="embarquer_des_fichiers_14"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Oui, mais pas la terre entière !</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag myjava:1.42 ./
-Sending build context to Docker daemon  172.8MB</code></pre></div></div>
-<div class="paragraph"><p>Répertoire contenant le Dockerfile.
-NB : tous les fichiers présents dans ce répertoire seront envoyés au Docker daemon pour construire vos images !</p></div>
-<div class="paragraph"><p>?!!!</p></div></div></section><section id="embarquer_des_fichiers_15"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Oui, mais pas la terre entière !</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag myjava:1.42 ./
-Sending build context to Docker daemon  172.8MB</code></pre></div></div>
-<div class="paragraph"><p>Répertoire contenant le Dockerfile.
-NB : tous les fichiers présents dans ce répertoire seront envoyés au Docker daemon pour construire vos images !</p></div>
+Sending build context to Docker daemon  172.8MB</code></pre></div></div></div></section><section id="embarquer_des_fichiers_7" data-auto-animate><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Oui, mais pas la terre entière !</p></div>
+<div class="imageblock"><img src="media/fichiers-output19_with_transparency.png" alt="fichiers output19 with transparency"></div></div></section><section id="embarquer_des_fichiers_8" data-auto-animate><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Oui, mais pas la terre entière !</p></div>
+<div class="imageblock"><img src="media/fichiers-output20_with_transparency.png" alt="fichiers output20 with transparency"></div></div></section><section id="embarquer_des_fichiers_9" data-auto-animate><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Oui, mais pas la terre entière !</p></div>
+<div class="imageblock"><img src="media/fichiers-output21_with_transparency.png" alt="fichiers output21 with transparency"></div>
 <div class="paragraph"><p>Si un gros fichier traîne dans le dossier alors qu&#8217;il n&#8217;est même pas utilisé ni référencé dans le Dockerfile, il sera tout de même envoyé au Docker daemon.</p></div>
-<div class="paragraph"><p>?!!!</p></div></div></section><section id="embarquer_des_fichiers_16"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Oui, mais pas la terre entière !</p></div>
-<div class="paragraph"><p><em>"M&#8217;en fous ! j&#8217;ai une machine de fou et un réseau de fou ! YOLO !"</em></p></div>
-<div class="paragraph"><p>et si la CI fait plusieurs builds par minute ?</p></div>
-<div class="paragraph"><p>Et si un vieux Keystore traîne dans les sources ?</p></div>
-<div class="paragraph"><p><code>.git/</code> ? <code>.idea/</code> ? vraiment ?</p></div>
-<div class="paragraph"><p>Attention à l&#8217;invalidation de cache d&#8217;un step de build à cause de l&#8217;ajout d&#8217;un fichier inutile !</p></div></div></section><section id="dockerignore"><h2><code>.dockerignore</code></h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-.dockerignore hljs" data-noescape="true" data-lang=".dockerignore"># ignore les dossiers .git et .cache
+<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {19..21}; do convert Diapositive${i}.PNG -crop 9250x2932+2097+1750 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="embarquer_des_fichiers_10"><h2>Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Oui, mais pas la terre entière !</p></div>
+<div class="paragraph fragment"><p><em>"M&#8217;en fous ! j&#8217;ai une machine de fou et un réseau de fou ! YOLO !"</em></p></div>
+<div class="paragraph fragment"><p>Et si la CI fait plusieurs builds par minute ?</p></div>
+<div class="paragraph fragment"><p>Et si un vieux Keystore traîne dans les sources ?</p></div>
+<div class="paragraph fragment"><p><code>.git/</code> ? <code>.idea/</code> ? vraiment ?</p></div>
+<div class="paragraph fragment"><p>Attention à l&#8217;invalidation de cache d&#8217;un step de build à cause de l&#8217;ajout d&#8217;un fichier inutile !</p></div></div></section><section id="dockerignore"><h2><code>.dockerignore</code></h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-.dockerignore hljs" data-noescape="true" data-lang=".dockerignore"># ignore les dossiers .git et .cache
 .git
 .cache</code></pre></div></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-.dockerignore hljs" data-noescape="true" data-lang=".dockerignore"># ignore tous les fichiers *.class dans tous les dossiers
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-.dockerignore hljs" data-noescape="true" data-lang=".dockerignore"># ignore tous les fichiers *.class dans tous les dossiers
 **/*.class</code></pre></div></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-.dockerignore hljs" data-noescape="true" data-lang=".dockerignore"># ignore les markdown sauf les README*.md (README-secret.md sera tout de même ignoré par contre)
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-.dockerignore hljs" data-noescape="true" data-lang=".dockerignore"># ignore les markdown sauf les README*.md (README-secret.md sera tout de même ignoré par contre)
 *.md
 !README*.md
-README-secret.md</code></pre></div></div></div></section><section id="dockerfile"><h2>Dockerfile</h2><div class="slide-content"><div class="paragraph"><p>Les commandes principales (pour l&#8217;instant)</p></div>
-<table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:50%"><col style="width:50%"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Commande</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Usage</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">FROM</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Pour spécifier l&#8217;image à partir de laquelle on construit la nouvelle image</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">LABEL</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Pour décrire l&#8217;image à partir de clé/valeur</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">RUN</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Pour exécuter une action au moment du build</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">ENV</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Pour insérer une variable d&#8217;environnement dans tous les futurs containers de cette image</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">ENTRYPOINT</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Pour définir une commande à lancer au démarrage du container</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">CMD</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Pour définir une commande à lancer au démarrage du container ou pour compléter un ENTRYPOINT existant</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">COPY</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Pour insérer des fichiers dans l&#8217;image</p></td></tr></table></div></section><section id="renommage_des_images"><h2>Renommage des images</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker tag 0e5574283393 fedora/httpd:version-1.0</code></pre></div></div></div></section><section id="renommage_des_images_2"><h2>Renommage des images</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker tag 0e5574283393 fedora/httpd:version-1.0</code></pre></div></div>
-<div class="paragraph"><p>ID existant</p></div></div></section><section id="renommage_des_images_3"><h2>Renommage des images</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker tag 0e5574283393 fedora/httpd:version-1.0</code></pre></div></div>
-<div class="paragraph"><p>ID existant</p></div>
-<div class="paragraph"><p>tag à ajouter</p></div></div></section><section id="renommage_des_images_4"><h2>Renommage des images</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker tag 0e5574283393 fedora/httpd:version-1.0</code></pre></div></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker tag httpd fedora/httpd:version-1.0</code></pre></div></div>
-<div class="paragraph"><p><code>httpd:latest</code> sera taggué en <code>fedora/httpd:version1.0</code></p></div>
-<div class="paragraph"><p>ID existant</p></div>
-<div class="paragraph"><p>tag à ajouter</p></div></div></section><section id="les_images_2"><h2>LES IMAGES</h2><div class="slide-content"><div class="paragraph"><p>Le bilan</p></div>
+README-secret.md</code></pre></div></div></div></section><section data-background-image="media/docker-commands-table.png" data-background-size="contain" data-background-position="center"></section><section id="renommage_des_images" data-auto-animate><h2>Renommage des images</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output25_with_transparency.png" alt="fichiers output25 with transparency"></div></div></section><section id="renommage_des_images_2" data-auto-animate><h2>Renommage des images</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output26_with_transparency.png" alt="fichiers output26 with transparency"></div></div></section><section id="renommage_des_images_3" data-auto-animate><h2>Renommage des images</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output27_with_transparency.png" alt="fichiers output27 with transparency"></div></div></section><section id="renommage_des_images_4" data-auto-animate><h2>Renommage des images</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output28_with_transparency.png" alt="fichiers output28 with transparency"></div>
+<div class="paragraph fragment"><p><code>httpd:latest</code> sera taggué en <code>fedora/httpd:version1.0</code></p></div>
+<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"> for i in {25..28}; do convert Diapositive${i}.PNG -crop 9000x2684+2097+2083 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="les_images_2" class="columns" data-auto-animate><h2>LES IMAGES</h2><div class="slide-content"><div class="imageblock column"><img src="media/multi-layered-cake-removebg-preview.png" alt="multi layered cake removebg preview"></div>
+<div class="openblock column"><div class="content"><div class="paragraph"><p>Le bilan</p></div>
 <div class="paragraph"><p>Vous savez désormais:</p></div>
-<div class="ulist"><ul><li><p>Rédiger un Dockerfile</p></li><li><p>Nommer vos images</p></li><li><p>Créer vos outils</p></li></ul></div>
-<div class="imageblock"><img src="media/349338016-image3.jpeg" alt="349338016 image3"></div></div></section><section id="les_images_3"><h2>LES IMAGES</h2><div class="slide-content"><div class="paragraph"><p>Le bilan</p></div>
+<div class="ulist"><ul><li><p>Rédiger un Dockerfile</p></li><li><p>Nommer vos images</p></li><li><p>Créer vos outils</p></li></ul></div></div></div></div></section><section id="les_images_3" class="columns" data-auto-animate><h2>LES IMAGES</h2><div class="slide-content"><div class="imageblock column"><img src="media/384835330-image4.gif" alt="384835330 image4"></div>
+<div class="openblock column"><div class="content"><div class="paragraph"><p>Le bilan</p></div>
 <div class="paragraph"><p>Vous savez désormais:</p></div>
-<div class="ulist"><ul><li><p>Rédiger un Dockerfile</p></li><li><p>Nommer vos images</p></li><li><p>Créer vos outils</p></li></ul></div>
-<div class="imageblock"><img src="media/349338016-image3.jpeg" alt="349338016 image3"></div>
-<div class="imageblock"><img src="media/384835330-image4.gif" alt="384835330 image4"></div></div></section><section id="les_registries"><h2>Les registries</h2><div class="slide-content"><div class="imageblock"><img src="media/104336496-image5.png" alt="104336496 image5"></div></div></section><section id="golden_rule"><h2>Golden Rule</h2><div class="slide-content"><div class="paragraph"><p><strong>La construction d&#8217;une image doit être automatisée.</strong></p></div></div></section><section id="automatique_sécurisé"><h2>Automatique == sécurisé</h2><div class="slide-content"><div class="paragraph"><p>Le fait de déléguer la construction des images permet d&#8217;ajouter toute une chaîne de traitement, de contrôles des images pour s&#8217;assurer qu&#8217;elle respecte les règles RSSI.</p></div>
+<div class="ulist"><ul><li><p>Rédiger un Dockerfile</p></li><li><p>Nommer vos images</p></li><li><p>Créer vos outils</p></li></ul></div></div></div></div></section><section id="les_registries"><h2>Les registries</h2><div class="slide-content"><div class="imageblock"><img src="media/104336496-image5.png" alt="104336496 image5"></div></div></section><section id="golden_rule"><h2>Golden Rule</h2><div class="slide-content"><div class="paragraph"><p><strong>La construction d&#8217;une image doit être automatisée.</strong></p></div></div></section><section id="automatique_sécurisé"><h2>Automatique == sécurisé</h2><div class="slide-content"><div class="paragraph"><p>Le fait de déléguer la construction des images permet d&#8217;ajouter toute une chaîne de traitement, de contrôles des images pour s&#8217;assurer qu&#8217;elle respecte les règles RSSI.</p></div>
 <div class="paragraph"><p>patch management</p></div>
 <div class="paragraph"><p>droits sur le FS</p></div>
 <div class="paragraph"><p>user</p></div>
