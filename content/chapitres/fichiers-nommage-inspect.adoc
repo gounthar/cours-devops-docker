@@ -1,165 +1,148 @@
-= Fichiers, nommage, inspect...
+= Nos fichiers dans les images
 
-== nOS fichiers dans les images
-
+image::fichiers.png[background, size=cover, position=left, opacity=0.1]
 
 == Le répertoire de travail
 
+[%step]
 [source,bash]
 ----
 docker container run --interactive --tty httpd pwd /usr/local/apache2
 ----
 
-
-== Le répertoire de travail
-
-[source,bash]
-----
-docker container run --interactive --tty httpd pwd /usr/local/apache2
-----
-
+[%step]
 Comment paramétrer le répertoire de travail de tous nos containers ?
 
+[%auto-animate]
 == WORKDIR
 
 [source,docker]
 ----
-FROM alpine:3.18
-WORKDIR /repertoire/travail
-RUN echo hello > ./world.txt
+include::../code-samples/fichiers/workdir/Dockerfile[]
 ----
 
+[%auto-animate]
 == WORKDIR
 
 [source,docker]
 ----
-FROM alpine:3.18
-WORKDIR /repertoire/travail
-RUN echo hello > ./world.txt
+include::../code-samples/fichiers/workdir/Dockerfile[]
+----
+
+image::fichiers-output5_with_transparency.png[]
+
+[%auto-animate]
+== WORKDIR
+
+[source,docker]
+----
+include::../code-samples/fichiers/workdir/Dockerfile[]
+----
+
+image::fichiers-output6_with_transparency.png[]
+
+[.notes]
+--
+[source,bash]
+----
+for i in {5..6}; do convert Diapositive${i}.PNG -crop 9667x3750+1833+3333 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
+----
+--
+
+[%auto-animate]
+== WORKDIR
+
+[source,docker]
+----
+include::../code-samples/fichiers/workdir/Dockerfile[]
 ----
 
 [source,bash]
 ----
 docker image build --tag mon-img .
 ...
+----
+
+[source,bash]
+----
 $ docker container run mon-img cat /repertoire/travail/world.txt
 hello
+----
+
+[source,bash]
+----
 $ docker container run mon-img pwd
 /repertoire/travail
+----
+
+[source,bash]
+----
 $ docker container run --workdir /home mon-img pwd
 /home
 ----
 
-== WORKDIR
-
-[source,docker]
-----
-FROM alpine:3.18
-WORKDIR /repertoire/travail
-RUN echo hello > ./world.txt
-----
-
-[source,bash]
-----
-docker image build --tag mon-img .
-...
-$ docker container run mon-img cat /repertoire/travail/world.txt
-hello
-$ docker container run mon-img pwd
-/repertoire/travail
-$ docker container run --workdir /home mon-img pwd
-/home
-----
-
-override du WORKDIR
-
+[%auto-animate]
 == Embarquer des fichiers
 
 Cas d'usage.
 
-
-== Embarquer des fichiers
-
-Cas d'usage.
-
+[%step]
 [source,bash]
 ----
 ls
 app.js
 ----
 
-== Embarquer des fichiers
-
-Cas d'usage.
-
+[%step]
 [source,bash]
 ----
-ls
-app.js
 $ docker container run --workdir /customdir node app.js
 <error : app.js not found>
 ----
 
-== Embarquer des fichiers
-
-Cas d'usage.
-
+[%step]
 [source,bash]
 ----
-ls
-app.js
-$ docker container run --workdir /customdir node app.js
-<error : app.js not found>
 $ docker container run --workdir /customdir --entrypoint ls node
 <0 fichiers présents !>
 ----
 
-== Embarquer des fichiers
-
-Cas d'usage.
-
-[source,bash]
-----
-ls
-app.js
-$ docker container run --workdir /customdir node app.js
-<error : app.js not found>
-$ docker container run --workdir /customdir --entrypoint ls node
-<0 fichiers présents !>
-----
-
+[%step]
 Comment fournir des fichiers à mes containers ?
 
+[%auto-animate]
 == Embarquer des fichiers
 
 Copie de fichiers.
 
+[%step]
 [source,docker]
 ----
-FROM node:20.8.0-alpine3.18
-COPY ./* /app
+include::../code-samples/fichiers/copie-fichiers/Dockerfile[]
 ----
 
-== Embarquer des fichiers
-
-Copie de fichiers.
-
-[source,docker]
-----
-FROM node:20.8.0-alpine3.18
-COPY ./* /app
-----
-
+[%step]
 [source,bash]
 ----
 docker image build --tag mon-node .
 ...
+----
+
+[%step]
+[source,bash]
+----
 $ docker container run --workdir /app --entrypoint ls mon-node
 app.js
-$ docker container run mon-node node /app.js
-yeeeahhhh !
 ----
 
+[%step]
+[source,bash]
+----
+$ docker container run mon-node app.js
+Hello Mad Javascript World!
+----
+
+[%auto-animate]
 == Embarquer des fichiers
 
 Le mot clé `ADD`.
@@ -170,41 +153,39 @@ FROM image
 ADD https://mon-nexus/foo/bar/1.0/package.tar /uncompressed/
 ----
 
-== Embarquer des fichiers
-
-Le mot clé `ADD`.
-
-[source,docker]
-----
-FROM image
-ADD https://mon-nexus/foo/bar/1.0/package.tar /uncompressed/
-----
-
+[%step]
 Il permet d'ajouter des fichiers aux images, tout comme `COPY`.
 
+[%step]
 Il est capable de télécharger directement d'une URL
 
+[%step]
 Il est capable de "untar" automatiquement.
 
+[%step]
 On le retrouve dans d'anciens Dockerfile mais il tend à disparaître.
 
-
+[%auto-animate]
 == Embarquer des fichiers
 
 Le mot clé `ADD`
 
+[.small]
 source : https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy
 
 image::1108215415-image2.png[]
 
+[%auto-animate]
 == Embarquer des fichiers
 
 Le mot clé `ADD`.
 
+[.small]
 source : https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy
 
-image::1108215415-image2.png[]
+image::add-stabylo.png[]
 
+[%auto-animate]
 == Embarquer des fichiers
 
 Oui, mais pas la terre entière !
@@ -215,63 +196,54 @@ docker image build --tag myjava:1.42 ./
 Sending build context to Docker daemon  172.8MB
 ----
 
+[%auto-animate]
 == Embarquer des fichiers
 
 Oui, mais pas la terre entière !
 
-[source,bash]
-----
-docker image build --tag myjava:1.42 ./
-Sending build context to Docker daemon  172.8MB
-----
+image::fichiers-output19_with_transparency.png[]
 
-Répertoire contenant le Dockerfile.
-NB : tous les fichiers présents dans ce répertoire seront envoyés au Docker daemon pour construire vos images !
-
+[%auto-animate]
 == Embarquer des fichiers
 
 Oui, mais pas la terre entière !
 
-[source,bash]
-----
-docker image build --tag myjava:1.42 ./
-Sending build context to Docker daemon  172.8MB
-----
+image::fichiers-output20_with_transparency.png[]
 
-Répertoire contenant le Dockerfile.
-NB : tous les fichiers présents dans ce répertoire seront envoyés au Docker daemon pour construire vos images !
-
-?!!!
-
+[%auto-animate]
 == Embarquer des fichiers
 
 Oui, mais pas la terre entière !
 
-[source,bash]
-----
-docker image build --tag myjava:1.42 ./
-Sending build context to Docker daemon  172.8MB
-----
-
-Répertoire contenant le Dockerfile.
-NB : tous les fichiers présents dans ce répertoire seront envoyés au Docker daemon pour construire vos images !
+image::fichiers-output21_with_transparency.png[]
 
 Si un gros fichier traîne dans le dossier alors qu'il n'est même pas utilisé ni référencé dans le Dockerfile, il sera tout de même envoyé au Docker daemon.
 
-?!!!
+[.notes]
+--
+[source,bash]
+----
+for i in {19..21}; do convert Diapositive${i}.PNG -crop 9250x2932+2097+1750 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
+----
+--
 
 == Embarquer des fichiers
 
 Oui, mais pas la terre entière !
 
+[%step]
 __"M'en fous ! j'ai une machine de fou et un réseau de fou ! YOLO !"__
 
-et si la CI fait plusieurs builds par minute ?
+[%step]
+Et si la CI fait plusieurs builds par minute ?
 
+[%step]
 Et si un vieux Keystore traîne dans les sources ?
 
+[%step]
 `.git/` ? `.idea/` ? vraiment ?
 
+[%step]
 Attention à l'invalidation de cache d'un step de build à cause de l'ajout d'un fichier inutile !
 
 == `.dockerignore`
@@ -283,12 +255,14 @@ Attention à l'invalidation de cache d'un step de build à cause de l'ajout d'un
 .cache
 ----
 
+[%step]
 [source,.dockerignore]
 ----
 # ignore tous les fichiers *.class dans tous les dossiers
 **/*.class
 ----
 
+[%step]
 [source,.dockerignore]
 ----
 # ignore les markdown sauf les README*.md (README-secret.md sera tout de même ignoré par contre)
@@ -297,85 +271,50 @@ Attention à l'invalidation de cache d'un step de build à cause de l'ajout d'un
 README-secret.md
 ----
 
-== Dockerfile 
+== !
 
-Les commandes principales (pour l'instant)
+image::docker-commands-table.png[background, size=contain, position=center, opacity=0.1]
 
-[cols="1,1"]
-|===
-|Commande
-|Usage
-
-|FROM
-|Pour spécifier l'image à partir de laquelle on construit la nouvelle image
-
-|LABEL
-|Pour décrire l'image à partir de clé/valeur
-
-|RUN
-|Pour exécuter une action au moment du build
-
-|ENV
-|Pour insérer une variable d'environnement dans tous les futurs containers de cette image
-
-|ENTRYPOINT
-|Pour définir une commande à lancer au démarrage du container
-
-|CMD
-|Pour définir une commande à lancer au démarrage du container ou pour compléter un ENTRYPOINT existant
-
-|COPY
-|Pour insérer des fichiers dans l'image
-
-|===
-
+[%auto-animate]
 == Renommage des images
 
-[source,bash]
-----
-docker tag 0e5574283393 fedora/httpd:version-1.0
-----
+image::fichiers-output25_with_transparency.png[]
 
+[%auto-animate]
 == Renommage des images
 
-[source,bash]
-----
-docker tag 0e5574283393 fedora/httpd:version-1.0
-----
+image::fichiers-output26_with_transparency.png[]
 
-ID existant
-
+[%auto-animate]
 == Renommage des images
 
-[source,bash]
-----
-docker tag 0e5574283393 fedora/httpd:version-1.0
-----
+image::fichiers-output27_with_transparency.png[]
 
-ID existant
-
-tag à ajouter
-
+[%auto-animate]
 == Renommage des images
 
-[source,bash]
-----
-docker tag 0e5574283393 fedora/httpd:version-1.0
-----
+image::fichiers-output28_with_transparency.png[]
 
-[source,bash]
-----
-docker tag httpd fedora/httpd:version-1.0
-----
-
+[%step]
 `httpd:latest` sera taggué en `fedora/httpd:version1.0`
 
-ID existant
+[.notes]
+--
+[source,bash]
+----
+ for i in {25..28}; do convert Diapositive${i}.PNG -crop 9000x2684+2097+2083 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
+----
+--
 
-tag à ajouter
-
+[%auto-animate]
+[.columns]
 == LES IMAGES
 
+[.column]
+image::multi-layered-cake-removebg-preview.png[]
+
+[.column]
+--
 Le bilan
 
 Vous savez désormais:
@@ -383,21 +322,25 @@ Vous savez désormais:
 * Rédiger un Dockerfile
 * Nommer vos images
 * Créer vos outils
+--
 
-image::349338016-image3.jpeg[]
-
+[%auto-animate]
+[.columns]
 == LES IMAGES
 
-Le bilan
-
-Vous savez désormais:
-
-* Rédiger un Dockerfile
-* Nommer vos images
-* Créer vos outils
-
-image::349338016-image3.jpeg[]
+[.column]
 image::384835330-image4.gif[]
+
+[.column]
+--
+Le bilan
+
+Vous savez désormais:
+
+* Rédiger un Dockerfile
+* Nommer vos images
+* Créer vos outils
+--
 
 == Les registries
 
