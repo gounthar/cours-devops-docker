@@ -354,112 +354,51 @@ image::104336496-image5.png[]
 
 Le fait de déléguer la construction des images permet d'ajouter toute une chaîne de traitement, de contrôles des images pour s'assurer qu'elle respecte les règles RSSI.
 
-patch management
-
-droits sur le FS
-
-user
+[%step]
+* patch management
+[%step]
+* droits sur le FS
+[%step]
+* user
 
 [.notes]
+--
 C'est quoi le RSSI ?
 RSSI : définition. Le responsable de la sécurité des systèmes d'information (ou RSSI pour Responsable de la Sécurité des Systèmes d'Information) définit et développe la politique de sécurité de l'information de son entreprise.
+--
 
+[%auto-animate]
 == Exemple de mise en place
 
-image::1499039210-image6.png[]
-image::1499039210-image6.png[]
-image::382662575-image7.png[]
+image::fichiers-output35_with_transparency.png[]
 
-**TEST**
-
-**PROD**
-
-**Sources**
-
+[%auto-animate]
 == Exemple de mise en place
 
-image::1499039210-image6.png[]
-image::1499039210-image6.png[]
-image::382662575-image7.png[]
-image::1380203359-image8.png[]
+image::fichiers-output36_with_transparency.png[]
 
-**TEST**
-
-**PROD**
-
-**1**
-
-Un automate récupère les sources de l'image, la construit et la pousse sur une registry de test
-
-**Sources**
-
+[%auto-animate]
 == Exemple de mise en place
 
-image::1499039210-image6.png[]
-image::1499039210-image6.png[]
-image::382662575-image7.png[]
-image::1380203359-image8.png[]
+image::fichiers-output37_with_transparency.png[]
 
-**TEST**
-
-**PROD**
-
-**1**
-
-Un automate récupère les sources de l'image, la construit et la pousse sur une registry de test
-
-**Sources**
-
-image::1208052068-image9.jpeg[]
-
+[%auto-animate]
 == Exemple de mise en place
 
-image::1499039210-image6.png[]
-image::1499039210-image6.png[]
-image::382662575-image7.png[]
-image::1380203359-image8.png[]
-image::1380203359-image8.png[]
+image::fichiers-output38_with_transparency.png[]
 
-**TEST**
-
-**PROD**
-
-**1**
-
-Un automate récupère les sources de l'image, la construit et la pousse sur une registry de test
-
-**2**
-
-Un automate récupère l'image sur la registry de test, effectue les contrôles et si elle est valide, la pousse sur la registry de prod
-
-**Sources**
-
-image::1208052068-image9.jpeg[]
-
+[%auto-animate]
 == Exemple de mise en place
 
-image::1499039210-image6.png[]
-image::1499039210-image6.png[]
-image::382662575-image7.png[]
-image::1380203359-image8.png[]
-image::1380203359-image8.png[]
+image::fichiers-output39_with_transparency.png[]
 
-**TEST**
-
-**PROD**
-
-**1**
-
-Un automate récupère les sources de l'image, la construit et la pousse sur une registry de test
-
-**2**
-
-Un automate récupère l'image sur la registry de test, effectue les contrôles et si elle est valide, la pousse sur la registry de prod
-
-**Sources**
-
-image::1208052068-image9.jpeg[]
-image::1208052068-image9.jpeg[]
+[.notes]
+--
+[source,bash]
+----
+for i in {35..39}; do convert Diapositive${i}.PNG -crop 8803x3982+2273+2769 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
+----
+--
 
 == Exemple : continuous build
 
@@ -480,95 +419,38 @@ Solution là: https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05/-
 
 image::1712651753-image15.png[]
 
+[%auto-animate]
 == Nommage des containers
 
-[source,bash]
-----
-docker container logs 47d6
-Tue Oct 2400:39:52 UTC 2023
-Tue Oct 2400:39:53 UTC 2023
-...
-----
+image::docker-container-logs.png[]
+[%step]
+Ne peut-on pas trouver plus 'user-friendly'?
 
+[%auto-animate]
 == Nommage des containers
 
-[source,bash]
-----
-docker container logs 47d6
-Tue Oct 2400:39:52 UTC 2023
-Tue Oct 2400:39:53 UTC 2023
-...
-----
+image::fichiers-output47_with_transparency.png[]
 
+[%auto-animate]
 == Nommage des containers
 
-[source,bash]
-----
-docker container logs 47d6
-Tue Oct 2400:39:52 UTC 2023
-Tue Oct 2400:39:53 UTC 2023
-...
-----
+image::fichiers-output48_with_transparency.png[]
 
-On ne peut pas faire plus "user-friendly" ?
-
+[%auto-animate]
 == Nommage des containers
 
+image::fichiers-output49_with_transparency.png[]
+
+[.notes]
+--
 [source,bash]
 ----
-CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-793906a4c2d2        centos              "/bin/bash"         3 hours ago         Up 3 hours                      festive_poitras
+for i in {46..49}; do convert Diapositive${i}.PNG -crop 13243x4424+61+2040 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
 ----
 
-[source,bash]
-----
-docker container ls
-----
+Jean-Claude Poitras est un créateur de mode, un designer multidisciplinaire, un chroniqueur, un conférencier et un artiste né à Montréal au Canada le 18 juin 1949.
 
-== Nommage des containers
-
-[source,bash]
-----
-CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-793906a4c2d2        centos              "/bin/bash"         3 hours ago         Up 3 hours                      festive_poitras
-----
-
-[source,bash]
-----
-docker container ls
-----
-
-== Nommage des containers
-
-[source,bash]
-----
-CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-793906a4c2d2        centos              "/bin/bash"         3 hours ago         Up 3 hours                      festive_poitras
-----
-
-Une première alternative !
-
-[source,bash]
-----
-docker container ls
-----
-
-== Nommage des containers
-
-[source,bash]
-----
-CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-793906a4c2d2        centos              "/bin/bash"         3 hours ago         Up 3 hours                      festive_poitras
-----
-
-Une première alternative !
-
-Par défaut, Docker génère un nom en combinant une humeur et un inventeur !
-
-[source,bash]
-----
-docker container ls
-----
+--
 
 == Nommage des containers
 
@@ -585,65 +467,71 @@ source : https://github.com/docker/engine/blob/master/pkg/namesgenerator/names-g
 docker container run --detach --name my-web httpd
 ----
 
-== Nommage des containers
-
-[source,bash]
-----
-docker container run --detach --name my-web httpd
-----
-
+[%step]
 Nom du container explicite
 
-== Nommage des containers
-
-[source,bash]
-----
-docker container run --detach --name my-web httpd
-----
-
-Nom du container explicite
-
+[%step]
 [source,bash]
 ----
 docker container logs my-web
-$ docker exec --interactive --tty my-web sh
 ----
 
-== Renommage des containers
+[%step]
+[source,bash]
+----
+docker exec --interactive --tty my-web sh
+----
 
+[%auto-animate]
+[.columns]
+== 🦸‍♂️ Renommage des containers
+
+[.column]
+--
+Attention, spoiler pour les n00bs de DC Comics
+
+[%step]
 [source,bash]
 ----
 docker container rename clark_kent superman
 ----
+--
 
-attention, spoiler pour les n00bs de DC Comics
+[.column]
+--
 
-== Renommage des containers
+[%step]
+image::kent_and_superman.jpeg[]
+--
 
+[%auto-animate]
+== 🦸‍♂️ Renommage des containers
+
+image::fichiers-output55_with_transparency.png[]
+
+[%auto-animate]
+== 🦸‍♂️ Renommage des containers
+
+image::fichiers-output56_with_transparency.png[]
+
+[.notes]
+--
 [source,bash]
 ----
-docker container rename clark_kent superman
+ for i in {55..56}; do convert Diapositive${i}.PNG -crop 8883x3982+2104+2080 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
 ----
+--
 
-attention, spoiler pour les n00bs de DC Comics
-
-ancien nom
-
-== Renommage des containers
-
-[source,bash]
-----
-docker container rename clark_kent superman
-----
-
-attention, spoiler pour les n00bs de DC Comics
-
-ancien nom
-
-nouveau nom
-
+[.columns]
 == Inspection des containers
 
+[.column]
+--
+image::inspecting-containers.jpeg[]
+--
+
+[.column]
+--
 [source,bash]
 ----
 docker container inspect my-web
@@ -669,74 +557,208 @@ docker container inspect my-web
 ...
 ]
 ----
-
+--
 
 == Comment exploiter le JSON ?
 
+JQ est le meilleur outil pour parser du JSON dans le shell
+
+[%step]
 [source,bash]
 ----
 docker container inspect my-web | jq .
 ----
 
-JQ est le meilleur outil pour parser du JSON dans le shell
+[%step]
+Les https://pkg.go.dev/text/template[templates de GO] peuvent être utilisés directement
 
-== Comment exploiter le JSON ?
-
-[source,bash]
-----
-docker container inspect my-web | jq .
-----
-
-JQ est le meilleur outil pour parser du JSON dans le shell
-
+[%step]
 [source,bash]
 ----
 docker container inspect --format '{{json .Created }}' my-web
 ----
 
-les templates de GO peuvent être utilisés directement
+== 🎓 Travaux pratiques #6
 
-== Travaux pratiques #6
+Étapes:
+[%step]
+* Lancer un container HTTPd
+[%step]
+* Trouver la syntaxe permettant d'extraire le "CMD" qui a été passé au démarrage du container
+[%step]
+* Trouver une seconde méthode pour faire la même chose
 
-Etapes
-. Lancer un container HTTPd
-. Trouver la syntaxe permettant d'extraire le "CMD" qui a été passé au démarrage du container
-. Trouver une seconde méthode pour faire la même chose
+[.notes]
+--
+On démarre un container nginx avec la commande
+[source,bash]
+----
+# Here we're using the 'docker container run' command to start a new Docker container.
+# The '--detach' option tells Docker to run the container in the background and print the container ID.
+# The '--name' option allows us to give our container a custom name, in this case 'my-web'.
+# Finally, 'nginx' is the name of the Docker image we want to use to create the container.
+# So, to sum up, this command will start a new Docker container in the background, using the 'nginx' image, and name it 'my-web'.
+docker container run --detach --name my-web nginx
+----
+
+Une solution facile est de faire:
+
+[source,bash]
+----
+# In this command, we're using 'docker container inspect' to get detailed information about our 'my-web' container.
+# The '--format' option allows us to specify the output format. Here, we're using the Go template '{{json .Config.Cmd }}' to get the command used to start the container in JSON format.
+# We then pipe this JSON output to 'jq', a powerful command-line JSON processor.
+# The '.' in 'jq .' tells 'jq' to take the input JSON and output it as is, effectively pretty-printing it.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, in a pretty-printed JSON format.
+docker container inspect --format '{{json .Config.Cmd }}' my-web | jq .
+----
+
+Ça nous donne:
+[source,json]
+----
+[
+  "nginx",
+  "-g",
+  "daemon off;"
+]
+----
+
+Qu'on pourrait nettoyer pour avoir `nginx -g daemon off;` avec:
+[source,bash]
+----
+# This command is a symphony in three parts. First, we're using 'docker container inspect' to get detailed information about our 'my-web' container.
+# The '--format' option allows us to specify the output format. Here, we're using the Go template '{{json .Config.Cmd }}' to get the command used to start the container in JSON format.
+# We then pipe this JSON output to 'jq', a powerful command-line JSON processor. The '-r' option tells 'jq' to output raw strings instead of JSON-encoded strings, and '.[]' tells 'jq' to output the elements of the array.
+# But we're not done yet. We then pipe this output to 'tr', which replaces the newlines with spaces, giving us a neat, single-line command.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, as a single line of text.
+docker container inspect --format '{{json .Config.Cmd }}' my-web | jq -r '.[]' | tr '\n' ' '
+----
+qui donne `nginx -g daemon off;`.
+
+Une autre solution serait:
+[source,bash]
+----
+# This command is using 'docker container ls' to list our Docker containers. The '--filter' option allows us to only show containers with the name 'my-web', and '--no-trunc' prevents Docker from truncating the output.
+# We then pipe this output to 'awk', a powerful text processing tool. 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")}' tells 'awk' to find the positions of the 'COMMAND' and 'CREATED' headers in the first line of the output.
+# 'NR>1 {print substr($0, cmd, created-cmd)}' then tells 'awk' to print the substring from the start of the 'COMMAND' field to the start of the 'CREATED' field for the rest of the lines.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, extracted from the output of 'docker container ls'.
+docker container ls --filter "name=my-web" --no-trunc | awk 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")} NR>1 {print substr($0, cmd, created-cmd)}'
+----
+
+qui donnerait `"/docker-entrypoint.sh nginx -g 'daemon off;'"`.
+--
+
+[%auto-animate]
+==  ✅ Solution Travaux Pratiques #6
+
+On démarre un container nginx avec la commande
+[source,bash]
+----
+# Here we're using the 'docker container run' command to start a new Docker container.
+# The '--detach' option tells Docker to run the container in the background and print the container ID.
+# The '--name' option allows us to give our container a custom name, in this case 'my-web'.
+# Finally, 'nginx' is the name of the Docker image we want to use to create the container.
+# So, to sum up, this command will start a new Docker container in the background, using the 'nginx' image, and name it 'my-web'.
+docker container run --detach --name my-web nginx
+----
+
+[%step]
+Une solution facile est de faire:
+
+[%step]
+[source,bash]
+----
+# In this command, we're using 'docker container inspect' to get detailed information about our 'my-web' container.
+# The '--format' option allows us to specify the output format. Here, we're using the Go template '{{json .Config.Cmd }}' to get the command used to start the container in JSON format.
+# We then pipe this JSON output to 'jq', a powerful command-line JSON processor.
+# The '.' in 'jq .' tells 'jq' to take the input JSON and output it as is, effectively pretty-printing it.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, in a pretty-printed JSON format.
+docker container inspect --format '{{json .Config.Cmd }}' my-web | jq .
+----
+
+[%step]
+Ça nous donne:
+[%step]
+[source,json]
+----
+[
+  "nginx",
+  "-g",
+  "daemon off;"
+]
+----
+
+[%auto-animate]
+==  ✅ Solution Travaux Pratiques #6
+
+[source,json]
+----
+[
+  "nginx",
+  "-g",
+  "daemon off;"
+]
+----
+Qu'on pourrait nettoyer pour avoir `nginx -g daemon off;` avec:
+[%step]
+[source,bash]
+----
+# This command is a symphony in three parts. First, we're using 'docker container inspect' to get detailed information about our 'my-web' container.
+# The '--format' option allows us to specify the output format. Here, we're using the Go template '{{json .Config.Cmd }}' to get the command used to start the container in JSON format.
+# We then pipe this JSON output to 'jq', a powerful command-line JSON processor. The '-r' option tells 'jq' to output raw strings instead of JSON-encoded strings, and '.[]' tells 'jq' to output the elements of the array.
+# But we're not done yet. We then pipe this output to 'tr', which replaces the newlines with spaces, giving us a neat, single-line command.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, as a single line of text.
+docker container inspect --format '{{json .Config.Cmd }}' my-web | jq -r '.[]' | tr '\n' ' '
+----
+[%step]
+qui donne `nginx -g daemon off;`.
+
+[%step]
+Une autre solution serait:
+[%step]
+[source,bash]
+----
+# This command is using 'docker container ls' to list our Docker containers. The '--filter' option allows us to only show containers with the name 'my-web', and '--no-trunc' prevents Docker from truncating the output.
+# We then pipe this output to 'awk', a powerful text processing tool. 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")}' tells 'awk' to find the positions of the 'COMMAND' and 'CREATED' headers in the first line of the output.
+# 'NR>1 {print substr($0, cmd, created-cmd)}' then tells 'awk' to print the substring from the start of the 'COMMAND' field to the start of the 'CREATED' field for the rest of the lines.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, extracted from the output of 'docker container ls'.
+docker container ls --filter "name=my-web" --no-trunc | awk 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")} NR>1 {print substr($0, cmd, created-cmd)}'
+----
+
+[%auto-animate]
+==  ✅ Solution Travaux Pratiques #6
+[source,bash]
+----
+# This command is using 'docker container ls' to list our Docker containers. The '--filter' option allows us to only show containers with the name 'my-web', and '--no-trunc' prevents Docker from truncating the output.
+# We then pipe this output to 'awk', a powerful text processing tool. 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")}' tells 'awk' to find the positions of the 'COMMAND' and 'CREATED' headers in the first line of the output.
+# 'NR>1 {print substr($0, cmd, created-cmd)}' then tells 'awk' to print the substring from the start of the 'COMMAND' field to the start of the 'CREATED' field for the rest of the lines.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, extracted from the output of 'docker container ls'.
+docker container ls --filter "name=my-web" --no-trunc | awk 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")} NR>1 {print substr($0, cmd, created-cmd)}'
+----
+
+[%step]
+qui donnerait `"/docker-entrypoint.sh nginx -g 'daemon off;'"`.
 
 == Trouver son container en réseau
 
 image::1233103020-image17.jpeg[]
 
-== Le Container en réseau
+== 🌐 Le Container en réseau
 
 [source,bash]
 ----
-$ docker container run --detach nginx
+docker container run --detach nginx
 bd12c4d7110d17ce80...`
 ----
 
 [source,bash]
 ----
 docker container ls
-CONTAINERID  IMAGE  COMMAND  CREATED  STATUS   PORTS  
+CONTAINERID     IMAGE   COMMAND      CREATED    STATUS    PORTS
 bd12c4d71       nginx   "nginx …"    35 s. ago  Up 33 s.  80/tcp, 443/tcp
 ----
 
-== Le Container en réseau
-
-[source,bash]
-----
-$ docker container run --detach nginx
-bd12c4d7110d17ce80...`
-----
-
-[source,bash]
-----
-docker container ls
-CONTAINERID  IMAGE  COMMAND  CREATED  STATUS   PORTS  
-bd12c4d71       nginx   "nginx …"    35 s. ago  Up 33 s.  80/tcp, 443/tcp
-----
-
+[%step]
 Ok, mon container expose un service sur les ports `TCP 80` et `443` mais j'appelle comment mon Nginx ?
 
 == Que nous dit docker container inspect ?
