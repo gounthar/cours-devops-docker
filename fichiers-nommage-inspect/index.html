@@ -1357,93 +1357,24 @@ README-secret.md</code></pre></div></div></div></section><section data-backgroun
 <div class="openblock column"><div class="content"><div class="paragraph"><p>Le bilan</p></div>
 <div class="paragraph"><p>Vous savez désormais:</p></div>
 <div class="ulist"><ul><li><p>Rédiger un Dockerfile</p></li><li><p>Nommer vos images</p></li><li><p>Créer vos outils</p></li></ul></div></div></div></div></section><section id="les_registries"><h2>Les registries</h2><div class="slide-content"><div class="imageblock"><img src="media/104336496-image5.png" alt="104336496 image5"></div></div></section><section id="golden_rule"><h2>Golden Rule</h2><div class="slide-content"><div class="paragraph"><p><strong>La construction d&#8217;une image doit être automatisée.</strong></p></div></div></section><section id="automatique_sécurisé"><h2>Automatique == sécurisé</h2><div class="slide-content"><div class="paragraph"><p>Le fait de déléguer la construction des images permet d&#8217;ajouter toute une chaîne de traitement, de contrôles des images pour s&#8217;assurer qu&#8217;elle respecte les règles RSSI.</p></div>
-<div class="paragraph"><p>patch management</p></div>
-<div class="paragraph"><p>droits sur le FS</p></div>
-<div class="paragraph"><p>user</p></div>
-<div class="paragraph notes"><p>C&#8217;est quoi le RSSI ?
-RSSI : définition. Le responsable de la sécurité des systèmes d&#8217;information (ou RSSI pour Responsable de la Sécurité des Systèmes d&#8217;Information) définit et développe la politique de sécurité de l&#8217;information de son entreprise.</p></div></div></section><section id="exemple_de_mise_en_place"><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
-<div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
-<div class="imageblock"><img src="media/382662575-image7.png" alt="382662575 image7"></div>
-<div class="paragraph"><p><strong>TEST</strong></p></div>
-<div class="paragraph"><p><strong>PROD</strong></p></div>
-<div class="paragraph"><p><strong>Sources</strong></p></div></div></section><section id="exemple_de_mise_en_place_2"><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
-<div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
-<div class="imageblock"><img src="media/382662575-image7.png" alt="382662575 image7"></div>
-<div class="imageblock"><img src="media/1380203359-image8.png" alt="1380203359 image8"></div>
-<div class="paragraph"><p><strong>TEST</strong></p></div>
-<div class="paragraph"><p><strong>PROD</strong></p></div>
-<div class="paragraph"><p><strong>1</strong></p></div>
-<div class="paragraph"><p>Un automate récupère les sources de l&#8217;image, la construit et la pousse sur une registry de test</p></div>
-<div class="paragraph"><p><strong>Sources</strong></p></div></div></section><section id="exemple_de_mise_en_place_3"><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
-<div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
-<div class="imageblock"><img src="media/382662575-image7.png" alt="382662575 image7"></div>
-<div class="imageblock"><img src="media/1380203359-image8.png" alt="1380203359 image8"></div>
-<div class="paragraph"><p><strong>TEST</strong></p></div>
-<div class="paragraph"><p><strong>PROD</strong></p></div>
-<div class="paragraph"><p><strong>1</strong></p></div>
-<div class="paragraph"><p>Un automate récupère les sources de l&#8217;image, la construit et la pousse sur une registry de test</p></div>
-<div class="paragraph"><p><strong>Sources</strong></p></div>
-<div class="imageblock"><img src="media/1208052068-image9.jpeg" alt="1208052068 image9"></div></div></section><section id="exemple_de_mise_en_place_4"><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
-<div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
-<div class="imageblock"><img src="media/382662575-image7.png" alt="382662575 image7"></div>
-<div class="imageblock"><img src="media/1380203359-image8.png" alt="1380203359 image8"></div>
-<div class="imageblock"><img src="media/1380203359-image8.png" alt="1380203359 image8"></div>
-<div class="paragraph"><p><strong>TEST</strong></p></div>
-<div class="paragraph"><p><strong>PROD</strong></p></div>
-<div class="paragraph"><p><strong>1</strong></p></div>
-<div class="paragraph"><p>Un automate récupère les sources de l&#8217;image, la construit et la pousse sur une registry de test</p></div>
-<div class="paragraph"><p><strong>2</strong></p></div>
-<div class="paragraph"><p>Un automate récupère l&#8217;image sur la registry de test, effectue les contrôles et si elle est valide, la pousse sur la registry de prod</p></div>
-<div class="paragraph"><p><strong>Sources</strong></p></div>
-<div class="imageblock"><img src="media/1208052068-image9.jpeg" alt="1208052068 image9"></div></div></section><section id="exemple_de_mise_en_place_5"><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
-<div class="imageblock"><img src="media/1499039210-image6.png" alt="1499039210 image6"></div>
-<div class="imageblock"><img src="media/382662575-image7.png" alt="382662575 image7"></div>
-<div class="imageblock"><img src="media/1380203359-image8.png" alt="1380203359 image8"></div>
-<div class="imageblock"><img src="media/1380203359-image8.png" alt="1380203359 image8"></div>
-<div class="paragraph"><p><strong>TEST</strong></p></div>
-<div class="paragraph"><p><strong>PROD</strong></p></div>
-<div class="paragraph"><p><strong>1</strong></p></div>
-<div class="paragraph"><p>Un automate récupère les sources de l&#8217;image, la construit et la pousse sur une registry de test</p></div>
-<div class="paragraph"><p><strong>2</strong></p></div>
-<div class="paragraph"><p>Un automate récupère l&#8217;image sur la registry de test, effectue les contrôles et si elle est valide, la pousse sur la registry de prod</p></div>
-<div class="paragraph"><p><strong>Sources</strong></p></div>
-<div class="imageblock"><img src="media/1208052068-image9.jpeg" alt="1208052068 image9"></div>
-<div class="imageblock"><img src="media/1208052068-image9.jpeg" alt="1208052068 image9"></div></div></section><section id="exemple_continuous_build"><h2>Exemple : continuous build</h2><div class="slide-content"><div class="imageblock"><img src="media/107490784-image13.png" alt="107490784 image13"></div></div></section><section id="travaux_pratiques_5"><h2>Travaux pratiques #5</h2><div class="slide-content"><div class="paragraph"><p><a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05</a></p></div>
+<div class="ulist"><ul><li class="fragment"><p>patch management</p></li><li class="fragment"><p>droits sur le FS</p></li><li class="fragment"><p>user</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>C&#8217;est quoi le RSSI ?
+RSSI : définition. Le responsable de la sécurité des systèmes d&#8217;information (ou RSSI pour Responsable de la Sécurité des Systèmes d&#8217;Information) définit et développe la politique de sécurité de l&#8217;information de son entreprise.</p></div></aside></div></section><section id="exemple_de_mise_en_place" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output35_with_transparency.png" alt="fichiers output35 with transparency"></div></div></section><section id="exemple_de_mise_en_place_2" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output36_with_transparency.png" alt="fichiers output36 with transparency"></div></div></section><section id="exemple_de_mise_en_place_3" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output37_with_transparency.png" alt="fichiers output37 with transparency"></div></div></section><section id="exemple_de_mise_en_place_4" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output38_with_transparency.png" alt="fichiers output38 with transparency"></div></div></section><section id="exemple_de_mise_en_place_5" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output39_with_transparency.png" alt="fichiers output39 with transparency"></div>
+<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {35..39}; do convert Diapositive${i}.PNG -crop 8803x3982+2273+2769 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="exemple_continuous_build"><h2>Exemple : continuous build</h2><div class="slide-content"><div class="imageblock"><img src="media/107490784-image13.png" alt="107490784 image13"></div></div></section><section id="travaux_pratiques_5"><h2>Travaux pratiques #5</h2><div class="slide-content"><div class="paragraph"><p><a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05</a></p></div>
 <div class="imageblock"><img src="media/636764807-image14.png" alt="636764807 image14"></div>
-<aside class="notes"><div class="paragraph"><p>Solution là: <a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05/-/tree/solution?ref_type=heads" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05/-/tree/solution?ref_type=heads</a></p></div></aside></div></section><section id="inspection_et_nommage_des_containers"><h2>Inspection et nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/1712651753-image15.png" alt="1712651753 image15"></div></div></section><section id="nommage_des_containers"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container logs 47d6
-Tue Oct 2400:39:52 UTC 2023
-Tue Oct 2400:39:53 UTC 2023
-...</code></pre></div></div></div></section><section id="nommage_des_containers_2"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container logs 47d6
-Tue Oct 2400:39:52 UTC 2023
-Tue Oct 2400:39:53 UTC 2023
-...</code></pre></div></div></div></section><section id="nommage_des_containers_3"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container logs 47d6
-Tue Oct 2400:39:52 UTC 2023
-Tue Oct 2400:39:53 UTC 2023
-...</code></pre></div></div>
-<div class="paragraph"><p>On ne peut pas faire plus "user-friendly" ?</p></div></div></section><section id="nommage_des_containers_4"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-793906a4c2d2        centos              "/bin/bash"         3 hours ago         Up 3 hours                      festive_poitras</code></pre></div></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls</code></pre></div></div></div></section><section id="nommage_des_containers_5"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-793906a4c2d2        centos              "/bin/bash"         3 hours ago         Up 3 hours                      festive_poitras</code></pre></div></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls</code></pre></div></div></div></section><section id="nommage_des_containers_6"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-793906a4c2d2        centos              "/bin/bash"         3 hours ago         Up 3 hours                      festive_poitras</code></pre></div></div>
-<div class="paragraph"><p>Une première alternative !</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls</code></pre></div></div></div></section><section id="nommage_des_containers_7"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-793906a4c2d2        centos              "/bin/bash"         3 hours ago         Up 3 hours                      festive_poitras</code></pre></div></div>
-<div class="paragraph"><p>Une première alternative !</p></div>
-<div class="paragraph"><p>Par défaut, Docker génère un nom en combinant une humeur et un inventeur !</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls</code></pre></div></div></div></section><section id="nommage_des_containers_8"><h2>Nommage des containers</h2><div class="slide-content"><div class="paragraph"><p>Humour de g33k</p></div>
+<aside class="notes"><div class="paragraph"><p>Solution là: <a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05/-/tree/solution?ref_type=heads" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05/-/tree/solution?ref_type=heads</a></p></div></aside></div></section><section id="inspection_et_nommage_des_containers"><h2>Inspection et nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/1712651753-image15.png" alt="1712651753 image15"></div></div></section><section id="nommage_des_containers" data-auto-animate><h2>Nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/docker-container-logs.png" alt="docker container logs"></div>
+<div class="paragraph fragment"><p>Ne peut-on pas trouver plus 'user-friendly'?</p></div></div></section><section id="nommage_des_containers_2" data-auto-animate><h2>Nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output47_with_transparency.png" alt="fichiers output47 with transparency"></div></div></section><section id="nommage_des_containers_3" data-auto-animate><h2>Nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output48_with_transparency.png" alt="fichiers output48 with transparency"></div></div></section><section id="nommage_des_containers_4" data-auto-animate><h2>Nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output49_with_transparency.png" alt="fichiers output49 with transparency"></div>
+<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {46..49}; do convert Diapositive${i}.PNG -crop 13243x4424+61+2040 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div>
+<div class="paragraph"><p>Jean-Claude Poitras est un créateur de mode, un designer multidisciplinaire, un chroniqueur, un conférencier et un artiste né à Montréal au Canada le 18 juin 1949.</p></div></aside></div></section><section id="nommage_des_containers_5"><h2>Nommage des containers</h2><div class="slide-content"><div class="paragraph"><p>Humour de g33k</p></div>
 <div class="imageblock"><img src="media/1671853138-image16.png" alt="1671853138 image16"></div>
-<div class="paragraph"><p>source : <a href="https://github.com/docker/engine/blob/master/pkg/namesgenerator/names-generator.go" class="bare">https://github.com/docker/engine/blob/master/pkg/namesgenerator/names-generator.go</a></p></div></div></section><section id="nommage_des_containers_9"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach --name my-web httpd</code></pre></div></div></div></section><section id="nommage_des_containers_10"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach --name my-web httpd</code></pre></div></div>
-<div class="paragraph"><p>Nom du container explicite</p></div></div></section><section id="nommage_des_containers_11"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach --name my-web httpd</code></pre></div></div>
-<div class="paragraph"><p>Nom du container explicite</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container logs my-web
-$ docker exec --interactive --tty my-web sh</code></pre></div></div></div></section><section id="renommage_des_containers"><h2>Renommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container rename clark_kent superman</code></pre></div></div>
-<div class="paragraph"><p>attention, spoiler pour les n00bs de DC Comics</p></div></div></section><section id="renommage_des_containers_2"><h2>Renommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container rename clark_kent superman</code></pre></div></div>
-<div class="paragraph"><p>attention, spoiler pour les n00bs de DC Comics</p></div>
-<div class="paragraph"><p>ancien nom</p></div></div></section><section id="renommage_des_containers_3"><h2>Renommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container rename clark_kent superman</code></pre></div></div>
-<div class="paragraph"><p>attention, spoiler pour les n00bs de DC Comics</p></div>
-<div class="paragraph"><p>ancien nom</p></div>
-<div class="paragraph"><p>nouveau nom</p></div></div></section><section id="inspection_des_containers"><h2>Inspection des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect my-web
+<div class="paragraph"><p>source : <a href="https://github.com/docker/engine/blob/master/pkg/namesgenerator/names-generator.go" class="bare">https://github.com/docker/engine/blob/master/pkg/namesgenerator/names-generator.go</a></p></div></div></section><section id="nommage_des_containers_6"><h2>Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach --name my-web httpd</code></pre></div></div>
+<div class="paragraph fragment"><p>Nom du container explicite</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container logs my-web</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker exec --interactive --tty my-web sh</code></pre></div></div></div></section><section id="renommage_des_containers" class="columns" data-auto-animate><h2>🦸‍♂️ Renommage des containers</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p>Attention, spoiler pour les n00bs de DC Comics</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container rename clark_kent superman</code></pre></div></div></div></div>
+<div class="openblock column"><div class="content"><div class="imageblock fragment"><img src="media/kent_and_superman.jpeg" alt="kent and superman"></div></div></div></div></section><section id="renommage_des_containers_2" data-auto-animate><h2>🦸‍♂️ Renommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output55_with_transparency.png" alt="fichiers output55 with transparency"></div></div></section><section id="renommage_des_containers_3" data-auto-animate><h2>🦸‍♂️ Renommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output56_with_transparency.png" alt="fichiers output56 with transparency"></div>
+<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"> for i in {55..56}; do convert Diapositive${i}.PNG -crop 8883x3982+2104+2080 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="inspection_des_containers" class="columns"><h2>Inspection des containers</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="imageblock"><img src="media/inspecting-containers.jpeg" alt="inspecting containers"></div></div></div>
+<div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect my-web
 [
     {
         "Id": "0ac8cdf8d447c6d316a04bd1a7f74cd2677eea3478f11f0be5241c1bb2d4c7da",
@@ -1464,23 +1395,93 @@ $ docker exec --interactive --tty my-web sh</code></pre></div></div></div></sect
             "FinishedAt": "0001-01-01T00:00:00Z"
         },
 ...
-]</code></pre></div></div></div></section><section id="comment_exploiter_le_json"><h2>Comment exploiter le JSON ?</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect my-web | jq .</code></pre></div></div>
-<div class="paragraph"><p>JQ est le meilleur outil pour parser du JSON dans le shell</p></div></div></section><section id="comment_exploiter_le_json_2"><h2>Comment exploiter le JSON ?</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect my-web | jq .</code></pre></div></div>
-<div class="paragraph"><p>JQ est le meilleur outil pour parser du JSON dans le shell</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect --format '{{json .Created }}' my-web</code></pre></div></div>
-<div class="paragraph"><p>les templates de GO peuvent être utilisés directement</p></div></div></section><section id="travaux_pratiques_6"><h2>Travaux pratiques #6</h2><div class="slide-content"><div class="paragraph"><p>Etapes
-. Lancer un container HTTPd
-. Trouver la syntaxe permettant d&#8217;extraire le "CMD" qui a été passé au démarrage du container
-. Trouver une seconde méthode pour faire la même chose</p></div></div></section><section id="trouver_son_container_en_réseau"><h2>Trouver son container en réseau</h2><div class="slide-content"><div class="imageblock"><img src="media/1233103020-image17.jpeg" alt="1233103020 image17"></div></div></section><section id="le_container_en_réseau"><h2>Le Container en réseau</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run --detach nginx
+]</code></pre></div></div></div></div></div></section><section id="comment_exploiter_le_json"><h2>Comment exploiter le JSON ?</h2><div class="slide-content"><div class="paragraph"><p>JQ est le meilleur outil pour parser du JSON dans le shell</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect my-web | jq .</code></pre></div></div>
+<div class="paragraph fragment"><p>Les <a href="https://pkg.go.dev/text/template">templates de GO</a> peuvent être utilisés directement</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect --format '{{json .Created }}' my-web</code></pre></div></div></div></section><section id="travaux_pratiques_6"><h2>🎓 Travaux pratiques #6</h2><div class="slide-content"><div class="paragraph"><p>Étapes:</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Lancer un container HTTPd</p></li><li class="fragment"><p>Trouver la syntaxe permettant d&#8217;extraire le "CMD" qui a été passé au démarrage du container</p></li><li class="fragment"><p>Trouver une seconde méthode pour faire la même chose</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>On démarre un container nginx avec la commande</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Here we're using the 'docker container run' command to start a new Docker container.
+# The '--detach' option tells Docker to run the container in the background and print the container ID.
+# The '--name' option allows us to give our container a custom name, in this case 'my-web'.
+# Finally, 'nginx' is the name of the Docker image we want to use to create the container.
+# So, to sum up, this command will start a new Docker container in the background, using the 'nginx' image, and name it 'my-web'.
+docker container run --detach --name my-web nginx</code></pre></div></div>
+<div class="paragraph"><p>Une solution facile est de faire:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># In this command, we're using 'docker container inspect' to get detailed information about our 'my-web' container.
+# The '--format' option allows us to specify the output format. Here, we're using the Go template '{{json .Config.Cmd }}' to get the command used to start the container in JSON format.
+# We then pipe this JSON output to 'jq', a powerful command-line JSON processor.
+# The '.' in 'jq .' tells 'jq' to take the input JSON and output it as is, effectively pretty-printing it.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, in a pretty-printed JSON format.
+docker container inspect --format '{{json .Config.Cmd }}' my-web | jq .</code></pre></div></div>
+<div class="paragraph"><p>Ça nous donne:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">[
+  "nginx",
+  "-g",
+  "daemon off;"
+]</code></pre></div></div>
+<div class="paragraph"><p>Qu&#8217;on pourrait nettoyer pour avoir <code>nginx -g daemon off;</code> avec:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># This command is a symphony in three parts. First, we're using 'docker container inspect' to get detailed information about our 'my-web' container.
+# The '--format' option allows us to specify the output format. Here, we're using the Go template '{{json .Config.Cmd }}' to get the command used to start the container in JSON format.
+# We then pipe this JSON output to 'jq', a powerful command-line JSON processor. The '-r' option tells 'jq' to output raw strings instead of JSON-encoded strings, and '.[]' tells 'jq' to output the elements of the array.
+# But we're not done yet. We then pipe this output to 'tr', which replaces the newlines with spaces, giving us a neat, single-line command.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, as a single line of text.
+docker container inspect --format '{{json .Config.Cmd }}' my-web | jq -r '.[]' | tr '\n' ' '</code></pre></div></div>
+<div class="paragraph"><p>qui donne <code>nginx -g daemon off;</code>.</p></div>
+<div class="paragraph"><p>Une autre solution serait:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># This command is using 'docker container ls' to list our Docker containers. The '--filter' option allows us to only show containers with the name 'my-web', and '--no-trunc' prevents Docker from truncating the output.
+# We then pipe this output to 'awk', a powerful text processing tool. 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")}' tells 'awk' to find the positions of the 'COMMAND' and 'CREATED' headers in the first line of the output.
+# 'NR&gt;1 {print substr($0, cmd, created-cmd)}' then tells 'awk' to print the substring from the start of the 'COMMAND' field to the start of the 'CREATED' field for the rest of the lines.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, extracted from the output of 'docker container ls'.
+docker container ls --filter "name=my-web" --no-trunc | awk 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")} NR&gt;1 {print substr($0, cmd, created-cmd)}'</code></pre></div></div>
+<div class="paragraph"><p>qui donnerait <code>"/docker-entrypoint.sh nginx -g 'daemon off;'"</code>.</p></div></aside></div></section><section id="solution_travaux_pratiques_6" data-auto-animate><h2>✅ Solution Travaux Pratiques #6</h2><div class="slide-content"><div class="paragraph"><p>On démarre un container nginx avec la commande</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Here we're using the 'docker container run' command to start a new Docker container.
+# The '--detach' option tells Docker to run the container in the background and print the container ID.
+# The '--name' option allows us to give our container a custom name, in this case 'my-web'.
+# Finally, 'nginx' is the name of the Docker image we want to use to create the container.
+# So, to sum up, this command will start a new Docker container in the background, using the 'nginx' image, and name it 'my-web'.
+docker container run --detach --name my-web nginx</code></pre></div></div>
+<div class="paragraph fragment"><p>Une solution facile est de faire:</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># In this command, we're using 'docker container inspect' to get detailed information about our 'my-web' container.
+# The '--format' option allows us to specify the output format. Here, we're using the Go template '{{json .Config.Cmd }}' to get the command used to start the container in JSON format.
+# We then pipe this JSON output to 'jq', a powerful command-line JSON processor.
+# The '.' in 'jq .' tells 'jq' to take the input JSON and output it as is, effectively pretty-printing it.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, in a pretty-printed JSON format.
+docker container inspect --format '{{json .Config.Cmd }}' my-web | jq .</code></pre></div></div>
+<div class="paragraph fragment"><p>Ça nous donne:</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">[
+  "nginx",
+  "-g",
+  "daemon off;"
+]</code></pre></div></div></div></section><section id="solution_travaux_pratiques_6_2" data-auto-animate><h2>✅ Solution Travaux Pratiques #6</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">[
+  "nginx",
+  "-g",
+  "daemon off;"
+]</code></pre></div></div>
+<div class="paragraph"><p>Qu&#8217;on pourrait nettoyer pour avoir <code>nginx -g daemon off;</code> avec:</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># This command is a symphony in three parts. First, we're using 'docker container inspect' to get detailed information about our 'my-web' container.
+# The '--format' option allows us to specify the output format. Here, we're using the Go template '{{json .Config.Cmd }}' to get the command used to start the container in JSON format.
+# We then pipe this JSON output to 'jq', a powerful command-line JSON processor. The '-r' option tells 'jq' to output raw strings instead of JSON-encoded strings, and '.[]' tells 'jq' to output the elements of the array.
+# But we're not done yet. We then pipe this output to 'tr', which replaces the newlines with spaces, giving us a neat, single-line command.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, as a single line of text.
+docker container inspect --format '{{json .Config.Cmd }}' my-web | jq -r '.[]' | tr '\n' ' '</code></pre></div></div>
+<div class="paragraph fragment"><p>qui donne <code>nginx -g daemon off;</code>.</p></div>
+<div class="paragraph fragment"><p>Une autre solution serait:</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># This command is using 'docker container ls' to list our Docker containers. The '--filter' option allows us to only show containers with the name 'my-web', and '--no-trunc' prevents Docker from truncating the output.
+# We then pipe this output to 'awk', a powerful text processing tool. 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")}' tells 'awk' to find the positions of the 'COMMAND' and 'CREATED' headers in the first line of the output.
+# 'NR&gt;1 {print substr($0, cmd, created-cmd)}' then tells 'awk' to print the substring from the start of the 'COMMAND' field to the start of the 'CREATED' field for the rest of the lines.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, extracted from the output of 'docker container ls'.
+docker container ls --filter "name=my-web" --no-trunc | awk 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")} NR&gt;1 {print substr($0, cmd, created-cmd)}'</code></pre></div></div></div></section><section id="solution_travaux_pratiques_6_3" data-auto-animate><h2>✅ Solution Travaux Pratiques #6</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># This command is using 'docker container ls' to list our Docker containers. The '--filter' option allows us to only show containers with the name 'my-web', and '--no-trunc' prevents Docker from truncating the output.
+# We then pipe this output to 'awk', a powerful text processing tool. 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")}' tells 'awk' to find the positions of the 'COMMAND' and 'CREATED' headers in the first line of the output.
+# 'NR&gt;1 {print substr($0, cmd, created-cmd)}' then tells 'awk' to print the substring from the start of the 'COMMAND' field to the start of the 'CREATED' field for the rest of the lines.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, extracted from the output of 'docker container ls'.
+docker container ls --filter "name=my-web" --no-trunc | awk 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")} NR&gt;1 {print substr($0, cmd, created-cmd)}'</code></pre></div></div>
+<div class="paragraph fragment"><p>qui donnerait <code>"/docker-entrypoint.sh nginx -g 'daemon off;'"</code>.</p></div></div></section><section id="trouver_son_container_en_réseau"><h2>Trouver son container en réseau</h2><div class="slide-content"><div class="imageblock"><img src="media/1233103020-image17.jpeg" alt="1233103020 image17"></div></div></section><section id="le_container_en_réseau"><h2>🌐 Le Container en réseau</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach nginx
 bd12c4d7110d17ce80...`</code></pre></div></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls
-CONTAINERID  IMAGE  COMMAND  CREATED  STATUS   PORTS
-bd12c4d71       nginx   "nginx …"    35 s. ago  Up 33 s.  80/tcp, 443/tcp</code></pre></div></div></div></section><section id="le_container_en_réseau_2"><h2>Le Container en réseau</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run --detach nginx
-bd12c4d7110d17ce80...`</code></pre></div></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls
-CONTAINERID  IMAGE  COMMAND  CREATED  STATUS   PORTS
+CONTAINERID     IMAGE   COMMAND      CREATED    STATUS    PORTS
 bd12c4d71       nginx   "nginx …"    35 s. ago  Up 33 s.  80/tcp, 443/tcp</code></pre></div></div>
-<div class="paragraph"><p>Ok, mon container expose un service sur les ports <code>TCP 80</code> et <code>443</code> mais j&#8217;appelle comment mon Nginx ?</p></div></div></section><section id="que_nous_dit_docker_container_inspect"><h2>Que nous dit docker container inspect ?</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">"Networks": {
+<div class="paragraph fragment"><p>Ok, mon container expose un service sur les ports <code>TCP 80</code> et <code>443</code> mais j&#8217;appelle comment mon Nginx ?</p></div></div></section><section id="que_nous_dit_docker_container_inspect"><h2>Que nous dit docker container inspect ?</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">"Networks": {
                 "bridge": {
                     "IPAMConfig": null,
                     "Links": null,
