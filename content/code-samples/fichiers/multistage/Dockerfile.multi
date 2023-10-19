@@ -1,0 +1,18 @@
+FROM golang:1.19
+
+WORKDIR /go/src/github.com/alexellis/href-counter/
+
+COPY go.mod .
+COPY go.sum .
+COPY app.go	.
+
+RUN CGO_ENABLED=0 GOOS=linux go build  -ldflags "-s -w" -o app .
+
+FROM alpine:3.17.1
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+COPY --from=0 /go/src/github.com/alexellis/href-counter/app    .
+
+CMD ["./app"]

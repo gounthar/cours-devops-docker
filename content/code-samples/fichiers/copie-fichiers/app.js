@@ -1,0 +1,1 @@
+console.log("Hello Mad Javascript World!");

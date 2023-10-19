@@ -1,1 +1,1193 @@
-= Fichiers, nommage, inspect...
+= 📁 Nos fichiers dans les images
+
+image::fichiers.png[background, size=cover, position=left, opacity=0.1]
+
+== 📂 Le répertoire de travail
+
+[%step]
+[source,bash]
+----
+docker container run --interactive --tty httpd pwd /usr/local/apache2
+----
+
+[%step]
+Comment paramétrer le répertoire de travail de tous nos containers ?
+
+[%auto-animate]
+== 📂 WORKDIR
+
+[source,docker]
+----
+include::../code-samples/fichiers/workdir/Dockerfile[]
+----
+
+[%auto-animate]
+== 📂 WORKDIR
+
+[source,docker]
+----
+include::../code-samples/fichiers/workdir/Dockerfile[]
+----
+
+image::fichiers-output5_with_transparency.png[]
+
+[%auto-animate]
+== 📂 WORKDIR
+
+[source,docker]
+----
+include::../code-samples/fichiers/workdir/Dockerfile[]
+----
+
+image::fichiers-output6_with_transparency.png[]
+
+[.notes]
+--
+[source,bash]
+----
+for i in {5..6}; do convert Diapositive${i}.PNG -crop 9667x3750+1833+3333 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
+----
+--
+
+[%auto-animate]
+== 📂 WORKDIR
+
+[source,docker]
+----
+include::../code-samples/fichiers/workdir/Dockerfile[]
+----
+
+[source,bash]
+----
+docker image build --tag mon-img .
+...
+----
+
+[source,bash]
+----
+$ docker container run mon-img cat /repertoire/travail/world.txt
+hello
+----
+
+[source,bash]
+----
+$ docker container run mon-img pwd
+/repertoire/travail
+----
+
+[source,bash]
+----
+$ docker container run --workdir /home mon-img pwd
+/home
+----
+
+[%auto-animate]
+== 📁 Embarquer des fichiers
+
+Cas d'usage.
+
+[%step]
+[source,bash]
+----
+ls
+app.js
+----
+
+[%step]
+[source,bash]
+----
+$ docker container run --workdir /customdir node app.js
+<error : app.js not found>
+----
+
+[%step]
+[source,bash]
+----
+$ docker container run --workdir /customdir --entrypoint ls node
+<0 fichiers présents !>
+----
+
+[%step]
+Comment fournir des fichiers à mes containers ?
+
+[%auto-animate]
+== 📁 Embarquer des fichiers
+
+Copie de fichiers.
+
+[%step]
+[source,docker]
+----
+include::../code-samples/fichiers/copie-fichiers/Dockerfile[]
+----
+
+[%step]
+[source,bash]
+----
+docker image build --tag mon-node .
+...
+----
+
+[%step]
+[source,bash]
+----
+$ docker container run --workdir /app --entrypoint ls mon-node
+app.js
+----
+
+[%step]
+[source,bash]
+----
+$ docker container run mon-node app.js
+Hello Mad Javascript World!
+----
+
+[%auto-animate]
+== 📁 Embarquer des fichiers
+
+Le mot clé `ADD`.
+
+[source,docker]
+----
+FROM image
+ADD https://mon-nexus/foo/bar/1.0/package.tar /uncompressed/
+----
+
+[%step]
+Il permet d'ajouter des fichiers aux images, tout comme `COPY`.
+
+[%step]
+Il est capable de télécharger directement d'une URL
+
+[%step]
+Il est capable de "untar" automatiquement.
+
+[%step]
+On le retrouve dans d'anciens Dockerfile mais il tend à disparaître.
+
+[%auto-animate]
+== 📁 Embarquer des fichiers
+
+Le mot clé `ADD`
+
+[.small]
+source : https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy
+
+image::1108215415-image2.png[]
+
+[%auto-animate]
+== 📁 Embarquer des fichiers
+
+Le mot clé `ADD`.
+
+[.small]
+source : https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy
+
+image::add-stabylo.png[]
+
+[%auto-animate]
+== 📁 Embarquer des fichiers
+
+Oui, mais pas la terre entière !
+
+[source,bash]
+----
+docker image build --tag myjava:1.42 ./
+Sending build context to Docker daemon  172.8MB
+----
+
+[%auto-animate]
+== 📁 Embarquer des fichiers
+
+Oui, mais pas la terre entière !
+
+image::fichiers-output19_with_transparency.png[]
+
+[%auto-animate]
+== 📁 Embarquer des fichiers
+
+Oui, mais pas la terre entière !
+
+image::fichiers-output20_with_transparency.png[]
+
+[%auto-animate]
+== 📁 Embarquer des fichiers
+
+Oui, mais pas la terre entière !
+
+image::fichiers-output21_with_transparency.png[]
+
+Si un gros fichier traîne dans le dossier alors qu'il n'est même pas utilisé ni référencé dans le Dockerfile, il sera tout de même envoyé au Docker daemon.
+
+[.notes]
+--
+[source,bash]
+----
+for i in {19..21}; do convert Diapositive${i}.PNG -crop 9250x2932+2097+1750 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
+----
+--
+
+== 📁 Embarquer des fichiers
+
+Oui, mais pas la terre entière !
+
+[%step]
+__"M'en fous ! j'ai une machine de fou et un réseau de fou ! YOLO !"__
+
+[%step]
+Et si la CI fait plusieurs builds par minute ?
+
+[%step]
+Et si un vieux Keystore traîne dans les sources ?
+
+[%step]
+`.git/` ? `.idea/` ? vraiment ?
+
+[%step]
+Attention à l'invalidation de cache d'un step de build à cause de l'ajout d'un fichier inutile !
+
+== 🙉 `.dockerignore`
+
+[source,.dockerignore]
+----
+# ignore les dossiers .git et .cache
+.git
+.cache
+----
+
+[%step]
+[source,.dockerignore]
+----
+# ignore tous les fichiers *.class dans tous les dossiers
+**/*.class
+----
+
+[%step]
+[source,.dockerignore]
+----
+# ignore les markdown sauf les README*.md (README-secret.md sera tout de même ignoré par contre)
+*.md
+!README*.md
+README-secret.md
+----
+
+== !
+
+image::docker-commands-table.png[background, size=contain, position=center, opacity=0.1]
+
+[%auto-animate]
+== 📝 Renommage des images
+
+image::fichiers-output25_with_transparency.png[]
+
+[%auto-animate]
+== 📝 Renommage des images
+
+image::fichiers-output26_with_transparency.png[]
+
+[%auto-animate]
+== 📝 Renommage des images
+
+image::fichiers-output27_with_transparency.png[]
+
+[%auto-animate]
+== 📝 Renommage des images
+
+image::fichiers-output28_with_transparency.png[]
+
+[%step]
+`httpd:latest` sera taggué en `fedora/httpd:version1.0`
+
+[.notes]
+--
+[source,bash]
+----
+ for i in {25..28}; do convert Diapositive${i}.PNG -crop 9000x2684+2097+2083 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
+----
+--
+
+[%auto-animate]
+[.columns]
+== 🖼️ LES IMAGES
+
+[.column]
+image::multi-layered-cake-removebg-preview.png[]
+
+[.column]
+--
+Le bilan
+
+Vous savez désormais:
+
+* Rédiger un Dockerfile
+* Nommer vos images
+* Créer vos outils
+--
+
+[%auto-animate]
+[.columns]
+== 🖼️ LES IMAGES
+
+[.column]
+image::384835330-image4.gif[]
+
+[.column]
+--
+Le bilan
+
+Vous savez désormais:
+
+* Rédiger un Dockerfile
+* Nommer vos images
+* Créer vos outils
+--
+
+== 🗂️ Les registries
+
+image::104336496-image5.png[]
+
+== Golden Rule
+
+**La construction d'une image doit être automatisée.**
+
+== 🤖 = 🔒 ? Automatique == sécurisé
+
+Le fait de déléguer la construction des images permet d'ajouter toute une chaîne de traitement, de contrôles des images pour s'assurer qu'elle respecte les règles RSSI.
+
+[%step]
+* patch management
+[%step]
+* droits sur le FS
+[%step]
+* user
+
+[.notes]
+--
+C'est quoi le RSSI ?
+RSSI : définition. Le responsable de la sécurité des systèmes d'information (ou RSSI pour Responsable de la Sécurité des Systèmes d'Information) définit et développe la politique de sécurité de l'information de son entreprise.
+--
+
+[%auto-animate]
+== Exemple de mise en place
+
+image::fichiers-output35_with_transparency.png[]
+
+[%auto-animate]
+== Exemple de mise en place
+
+image::fichiers-output36_with_transparency.png[]
+
+[%auto-animate]
+== Exemple de mise en place
+
+image::fichiers-output37_with_transparency.png[]
+
+[%auto-animate]
+== Exemple de mise en place
+
+image::fichiers-output38_with_transparency.png[]
+
+[%auto-animate]
+== Exemple de mise en place
+
+image::fichiers-output39_with_transparency.png[]
+
+[.notes]
+--
+[source,bash]
+----
+for i in {35..39}; do convert Diapositive${i}.PNG -crop 8803x3982+2273+2769 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
+----
+--
+
+== ➡️ Exemple : continuous build
+
+image::107490784-image13.png[]
+
+== 🎓 Travaux pratiques #5
+
+https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05
+
+image::636764807-image14.png[]
+
+[.notes]
+--
+Solution là: https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05/-/tree/solution?ref_type=heads
+--
+
+== 🔍 Inspection et nommage des containers
+
+image::1712651753-image15.png[]
+
+[%auto-animate]
+== 📛 Nommage des containers
+
+image::docker-container-logs.png[]
+[%step]
+Ne peut-on pas trouver plus 'user-friendly'?
+
+[%auto-animate]
+== 📛 Nommage des containers
+
+image::fichiers-output47_with_transparency.png[]
+
+[%auto-animate]
+== 📛 Nommage des containers
+
+image::fichiers-output48_with_transparency.png[]
+
+[%auto-animate]
+== 📛 Nommage des containers
+
+image::fichiers-output49_with_transparency.png[]
+
+[.notes]
+--
+[source,bash]
+----
+for i in {46..49}; do convert Diapositive${i}.PNG -crop 13243x4424+61+2040 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
+----
+
+Jean-Claude Poitras est un créateur de mode, un designer multidisciplinaire, un chroniqueur, un conférencier et un artiste né à Montréal au Canada le 18 juin 1949.
+
+--
+
+== 📛 Nommage des containers
+
+Humour de g33k
+
+image::1671853138-image16.png[]
+
+source : https://github.com/docker/engine/blob/master/pkg/namesgenerator/names-generator.go
+
+== 📛 Nommage des containers
+
+[source,bash]
+----
+docker container run --detach --name my-web httpd
+----
+
+[%step]
+Nom du container explicite
+
+[%step]
+[source,bash]
+----
+docker container logs my-web
+----
+
+[%step]
+[source,bash]
+----
+docker exec --interactive --tty my-web sh
+----
+
+[%auto-animate]
+[.columns]
+== 🦸‍♂️ Renommage des containers
+
+[.column]
+--
+Attention, spoiler pour les n00bs de DC Comics
+
+[%step]
+[source,bash]
+----
+docker container rename clark_kent superman
+----
+--
+
+[.column]
+--
+
+[%step]
+image::kent_and_superman.jpeg[]
+--
+
+[%auto-animate]
+== 🦸‍♂️ Renommage des containers
+
+image::fichiers-output55_with_transparency.png[]
+
+[%auto-animate]
+== 🦸‍♂️ Renommage des containers
+
+image::fichiers-output56_with_transparency.png[]
+
+[.notes]
+--
+[source,bash]
+----
+ for i in {55..56}; do convert Diapositive${i}.PNG -crop 8883x3982+2104+2080 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
+----
+--
+
+[.columns]
+== 🔍 Inspection des containers
+
+[.column]
+--
+image::inspecting-containers.jpeg[]
+--
+
+[.column]
+--
+[source,bash]
+----
+docker container inspect my-web
+[
+    {
+        "Id": "0ac8cdf8d447c6d316a04bd1a7f74cd2677eea3478f11f0be5241c1bb2d4c7da",
+        "Created": "2023-10-24T19:40:11.84788911Z",
+        "Path": "httpd-foreground",
+        "Args": [],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 3275,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2023-10-24T19:40:12.363841649Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+...
+]
+----
+--
+
+== Comment exploiter le JSON ?
+
+JQ est le meilleur outil pour parser du JSON dans le shell
+
+[%step]
+[source,bash]
+----
+docker container inspect my-web | jq .
+----
+
+[%step]
+Les https://pkg.go.dev/text/template[templates de GO] peuvent être utilisés directement
+
+[%step]
+[source,bash]
+----
+docker container inspect --format '{{json .Created }}' my-web
+----
+
+== 🎓 Travaux pratiques #6
+
+Étapes:
+[%step]
+* Lancer un container HTTPd
+[%step]
+* Trouver la syntaxe permettant d'extraire le "CMD" qui a été passé au démarrage du container
+[%step]
+* Trouver une seconde méthode pour faire la même chose
+
+[.notes]
+--
+On démarre un container nginx avec la commande
+[source,bash]
+----
+# Here we're using the 'docker container run' command to start a new Docker container.
+# The '--detach' option tells Docker to run the container in the background and print the container ID.
+# The '--name' option allows us to give our container a custom name, in this case 'my-web'.
+# Finally, 'nginx' is the name of the Docker image we want to use to create the container.
+# So, to sum up, this command will start a new Docker container in the background, using the 'nginx' image, and name it 'my-web'.
+docker container run --detach --name my-web nginx
+----
+
+Une solution facile est de faire:
+
+[source,bash]
+----
+# In this command, we're using 'docker container inspect' to get detailed information about our 'my-web' container.
+# The '--format' option allows us to specify the output format. Here, we're using the Go template '{{json .Config.Cmd }}' to get the command used to start the container in JSON format.
+# We then pipe this JSON output to 'jq', a powerful command-line JSON processor.
+# The '.' in 'jq .' tells 'jq' to take the input JSON and output it as is, effectively pretty-printing it.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, in a pretty-printed JSON format.
+docker container inspect --format '{{json .Config.Cmd }}' my-web | jq .
+----
+
+Ça nous donne:
+[source,json]
+----
+[
+  "nginx",
+  "-g",
+  "daemon off;"
+]
+----
+
+Qu'on pourrait nettoyer pour avoir `nginx -g daemon off;` avec:
+[source,bash]
+----
+# This command is a symphony in three parts. First, we're using 'docker container inspect' to get detailed information about our 'my-web' container.
+# The '--format' option allows us to specify the output format. Here, we're using the Go template '{{json .Config.Cmd }}' to get the command used to start the container in JSON format.
+# We then pipe this JSON output to 'jq', a powerful command-line JSON processor. The '-r' option tells 'jq' to output raw strings instead of JSON-encoded strings, and '.[]' tells 'jq' to output the elements of the array.
+# But we're not done yet. We then pipe this output to 'tr', which replaces the newlines with spaces, giving us a neat, single-line command.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, as a single line of text.
+docker container inspect --format '{{json .Config.Cmd }}' my-web | jq -r '.[]' | tr '\n' ' '
+----
+qui donne `nginx -g daemon off;`.
+
+Une autre solution serait:
+[source,bash]
+----
+# This command is using 'docker container ls' to list our Docker containers. The '--filter' option allows us to only show containers with the name 'my-web', and '--no-trunc' prevents Docker from truncating the output.
+# We then pipe this output to 'awk', a powerful text processing tool. 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")}' tells 'awk' to find the positions of the 'COMMAND' and 'CREATED' headers in the first line of the output.
+# 'NR>1 {print substr($0, cmd, created-cmd)}' then tells 'awk' to print the substring from the start of the 'COMMAND' field to the start of the 'CREATED' field for the rest of the lines.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, extracted from the output of 'docker container ls'.
+docker container ls --filter "name=my-web" --no-trunc | awk 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")} NR>1 {print substr($0, cmd, created-cmd)}'
+----
+
+qui donnerait `"/docker-entrypoint.sh nginx -g 'daemon off;'"`.
+--
+
+[%auto-animate]
+==  ✅ Solution Travaux Pratiques #6
+
+On démarre un container nginx avec la commande
+[source,bash]
+----
+# Here we're using the 'docker container run' command to start a new Docker container.
+# The '--detach' option tells Docker to run the container in the background and print the container ID.
+# The '--name' option allows us to give our container a custom name, in this case 'my-web'.
+# Finally, 'nginx' is the name of the Docker image we want to use to create the container.
+# So, to sum up, this command will start a new Docker container in the background, using the 'nginx' image, and name it 'my-web'.
+docker container run --detach --name my-web nginx
+----
+
+[%step]
+Une solution facile est de faire:
+
+[%step]
+[source,bash]
+----
+# In this command, we're using 'docker container inspect' to get detailed information about our 'my-web' container.
+# The '--format' option allows us to specify the output format. Here, we're using the Go template '{{json .Config.Cmd }}' to get the command used to start the container in JSON format.
+# We then pipe this JSON output to 'jq', a powerful command-line JSON processor.
+# The '.' in 'jq .' tells 'jq' to take the input JSON and output it as is, effectively pretty-printing it.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, in a pretty-printed JSON format.
+docker container inspect --format '{{json .Config.Cmd }}' my-web | jq .
+----
+
+[%step]
+Ça nous donne:
+[%step]
+[source,json]
+----
+[
+  "nginx",
+  "-g",
+  "daemon off;"
+]
+----
+
+[%auto-animate]
+==  ✅ Solution Travaux Pratiques #6
+
+[source,json]
+----
+[
+  "nginx",
+  "-g",
+  "daemon off;"
+]
+----
+Qu'on pourrait nettoyer pour avoir `nginx -g daemon off;` avec:
+[%step]
+[source,bash]
+----
+# This command is a symphony in three parts. First, we're using 'docker container inspect' to get detailed information about our 'my-web' container.
+# The '--format' option allows us to specify the output format. Here, we're using the Go template '{{json .Config.Cmd }}' to get the command used to start the container in JSON format.
+# We then pipe this JSON output to 'jq', a powerful command-line JSON processor. The '-r' option tells 'jq' to output raw strings instead of JSON-encoded strings, and '.[]' tells 'jq' to output the elements of the array.
+# But we're not done yet. We then pipe this output to 'tr', which replaces the newlines with spaces, giving us a neat, single-line command.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, as a single line of text.
+docker container inspect --format '{{json .Config.Cmd }}' my-web | jq -r '.[]' | tr '\n' ' '
+----
+[%step]
+qui donne `nginx -g daemon off;`.
+
+[%step]
+Une autre solution serait:
+[%step]
+[source,bash]
+----
+# This command is using 'docker container ls' to list our Docker containers. The '--filter' option allows us to only show containers with the name 'my-web', and '--no-trunc' prevents Docker from truncating the output.
+# We then pipe this output to 'awk', a powerful text processing tool. 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")}' tells 'awk' to find the positions of the 'COMMAND' and 'CREATED' headers in the first line of the output.
+# 'NR>1 {print substr($0, cmd, created-cmd)}' then tells 'awk' to print the substring from the start of the 'COMMAND' field to the start of the 'CREATED' field for the rest of the lines.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, extracted from the output of 'docker container ls'.
+docker container ls --filter "name=my-web" --no-trunc | awk 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")} NR>1 {print substr($0, cmd, created-cmd)}'
+----
+
+[%auto-animate]
+==  ✅ Solution Travaux Pratiques #6
+[source,bash]
+----
+# This command is using 'docker container ls' to list our Docker containers. The '--filter' option allows us to only show containers with the name 'my-web', and '--no-trunc' prevents Docker from truncating the output.
+# We then pipe this output to 'awk', a powerful text processing tool. 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")}' tells 'awk' to find the positions of the 'COMMAND' and 'CREATED' headers in the first line of the output.
+# 'NR>1 {print substr($0, cmd, created-cmd)}' then tells 'awk' to print the substring from the start of the 'COMMAND' field to the start of the 'CREATED' field for the rest of the lines.
+# So, to sum up, this command will give us the command used to start the 'my-web' container, extracted from the output of 'docker container ls'.
+docker container ls --filter "name=my-web" --no-trunc | awk 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")} NR>1 {print substr($0, cmd, created-cmd)}'
+----
+
+[%step]
+qui donnerait `"/docker-entrypoint.sh nginx -g 'daemon off;'"`.
+
+== 🌐 Trouver son container en réseau
+
+image::1233103020-image17.jpeg[]
+
+== 🌐 Le Container en réseau
+
+[source,bash]
+----
+docker container run --detach nginx
+bd12c4d7110d17ce80...`
+----
+
+[source,bash]
+----
+docker container ls
+CONTAINERID     IMAGE   COMMAND      CREATED    STATUS    PORTS
+bd12c4d71       nginx   "nginx …"    35 s. ago  Up 33 s.  80/tcp, 443/tcp
+----
+
+[%step]
+Ok, mon container expose un service sur les ports `TCP 80` et `443` mais j'appelle comment mon Nginx ?
+
+[%auto-animate]
+== 🔍 Que nous dit docker container inspect ?
+
+[source,json]
+----
+"Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "c0fcec43e3e8…eecd6558ac0870a468a3",
+                    "EndpointID": "0ec8fb237a10e9227359b4…db23edc32",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:02",
+                    "DriverOpts": null
+                }
+            }
+----
+
+[%auto-animate]
+== 🔍 Que nous dit docker container inspect ?
+
+image::fichiers-output66_with_transparency.png[height=500]
+
+[%auto-animate]
+== 🔍 Que nous dit docker container inspect ?
+
+image::fichiers-output67_with_transparency.png[height=500]
+
+[%step]
+[source,bash]
+----
+docker container inspect –format '--format '{{.NetworkSettings.IPAddress}}' <ContainerID>
+----
+
+[.notes]
+--
+[source,bash]
+----
+for i in {66..67}; do convert Diapositive${i}.PNG -crop 9519x5022+1833+1472 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
+----
+--
+
+== Et voilà !
+
+[source,bash]
+----
+curl -I --noproxy '*' http://172.17.0.2:80
+HTTP/1.1 200 OK
+....
+`Server: nginx/1.25 ...
+`
+----
+
+Il est maintenant facile d'interagir avec notre serveur web !
+
+[%auto-animate]
+== 🗺️ Mapping de Port
+
+image::fichiers-output71_with_transparency.png[]
+
+[%auto-animate]
+== 🗺️ Mapping de Port
+
+image::fichiers-output72_with_transparency.png[]
+
+[%auto-animate]
+== 🗺️ Mapping de Port
+
+image::fichiers-output73_with_transparency.png[]
+
+[%step]
+[source,bash]
+----
+curl -I --noproxy '*' http://172.17.0.2:80
+----
+
+[%auto-animate]
+== 🗺️ Mapping de Port
+
+[source,bash]
+----
+curl -I --noproxy '*' http://172.17.0.2:80
+HTTP/1.1 200 OK
+Server: nginx/1.25.2
+Date: Wed, 18 Oct 2023 11:54:49 GMT
+Content-Type: text/html
+Content-Length: 284237
+Last-Modified: Tue, 10 Oct 2023 12:12:13 GMT
+Connection: keep-alive
+ETag: "65253f9d-4564d"
+Accept-Ranges: bytes
+----
+
+[%step]
+[source,bash]
+----
+$ curl -I --noproxy '*' http://localhost:8000`
+HTTP/1.1 200 OK
+Server: nginx/1.25.2
+Date: Wed, 18 Oct 2023 11:57:25 GMT
+Content-Type: text/html
+Content-Length: 284237
+Last-Modified: Tue, 10 Oct 2023 12:12:13 GMT
+Connection: keep-alive
+ETag: "65253f9d-4564d"
+Accept-Ranges: bytes
+----
+
+[.notes]
+--
+[source,bash]
+----
+for i in {71..73}; do convert Diapositive${i}.PNG -crop 10146x4801+2250+1833 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
+----
+--
+
+== 🎓 Travaux pratiques #7
+
+Étapes:
+[%step]
+* Créer un fichier HTML et le distribuer à partir d'un container `nginx`
+[%step]
+* Récupérer un war sur Gitlab et le déployer dans un container `wildfly (https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp07/-/raw/master/sample.war)`
+[%step]
+* Récupérer le code sur https://spring.io/guides/gs/spring-boot/ et faire tourner l'appli (sous répertoire `complete`)
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #7
+
+[source,html]
+----
+include::../code-samples/fichiers/reseau/index.html[]
+----
+
+[%step]
+[source,bash]
+----
+docker run --name my-nginx -v /fully/qualified/path/on/my/computer/:/usr/share/nginx/html:ro -d -p 8000:80 nginx
+----
+
+[%step]
+[source,bash]
+----
+curl --noproxy '*' http://localhost:8000
+<html><head></head><body><header>
+<title>http://info.cern.ch</title>
+</header>
+
+<h1>http://info.cern.ch - home of the first website</h1>
+<p>From here you can:</p>
+<ul>
+<li><a href="http://info.cern.ch/hypertext/WWW/TheProject.html">Browse the first website</a></li>
+<li><a href="http://line-mode.cern.ch/www/hypertext/WWW/TheProject.html">Browse the first website using the line-mode browser simulator</a></li>
+<li><a href="http://home.web.cern.ch/topics/birth-web">Learn about the birth of the web</a></li>
+<li><a href="http://home.web.cern.ch/about">Learn about CERN, the physics laboratory where the web was born</a></li>
+</ul>
+</body></html>
+----
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #7
+
+[source,bash]
+----
+wget https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp07/-/raw/master/sample.war
+----
+
+[%step]
+[source,bash]
+----
+# Used to run a Docker container with the name "wildfly-container" using the "jboss/wildfly" image. The container is
+# configured to expose ports 8080 and 9990 on the host machine, which will be mapped to the corresponding ports inside
+# the container. Additionally, a volume is mounted to the container, linking the
+# "/fully/qualified/path/on/my/computer/sample.war" file to "/opt/jboss/wildfly/standalone/deployments/sample.war"
+# path within the container. This allows the WildFly server running inside the container to access and deploy the
+# "sample.war" file. The "-d" flag is used to run the container in detached mode, meaning it will run in the
+# background.
+docker run -d -p 8080:8080 -p 9990:9990 --name wildfly-container -v /fully/qualified/path/on/my/computer/sample.war:/opt/jboss/wildfly/standalone/deployments/sample.war jboss/wildfly
+----
+
+[%step]
+Visitez avec votre navigateur `http://localhost:8080/sample/`.
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #7
+
+[source,bash]
+----
+git clone https://github.com/spring-guides/gs-spring-boot.git
+----
+C'est un début...
+
+[%step]
+[source,bash]
+----
+cd gs-spring-boot/complete
+----
+
+[%step]
+[source,bash]
+----
+mvn package
+----
+
+[%step]
+[source,bash]
+----
+java -jar target/spring-boot-complete-0.0.1-SNAPSHOT.jar
+----
+[%step]
+Ok, il y a de l'idée...
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #7
+
+Assemblons tout ça dans un `Dockerfile`.
+
+[source,docker]
+----
+include::../code-samples/fichiers/reseau/Dockerfile.ugly[]
+----
+
+[%step]
+Spoiler alert: le nom de fichier donne une indication...
+
+[%step]
+[source,bash]
+----
+docker build -t spring-boot-app --file Dockerfile.ugly .
+----
+
+[%step]
+Et logiquement...
+
+[%step]
+[source,bash]
+----
+docker run -d -p 8080:8080 --name spring-boot-container spring-boot-app
+----
+
+== ⏳ Attends un peu…
+
+image::1779074283-image19.gif[]
+
+__Ça fonctionne, mais c'est comme si  je laissais la grue dans la chambre une fois que j'avais fini de construire ma maison !__
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #7
+
+On essaye un `Dockerfile` moins BTP?
+
+[%step]
+[source,docker]
+----
+include::../code-samples/fichiers/reseau/Dockerfile[]
+----
+
+[%step]
+Le multistage, c'est la classe à Arras.
+On en reparle après.
+
+== 🧩 Une première solution
+
+Avec un autre exemple...
+Une image pour construire l'appli:
+
+[%step]
+[source,docker]
+----
+include::../code-samples/fichiers/reseau/tp7/Dockerfile.build[]
+----
+
+[%step]
+Une image pour faire tourner l'appli
+
+[%step]
+[source,docker]
+----
+include::../code-samples/fichiers/reseau/tp7/Dockerfile[]
+----
+
+[.notes]
+--
+
+De base, j'avais plutôt
+
+[%step]
+[source,docker]
+----
+include::https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile.build[]
+----
+
+[%step]
+Une image pour faire tourner l'appli
+
+[%step]
+[source,docker]
+----
+include::https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile[]
+----
+
+À bosser pour pouvoir rester à jour
+--
+
+[%auto-animate]
+== 🧩 Une première solution
+
+Avec un autre exemple
+
+[source,bash]
+----
+#!/bin/sh
+echo Building alexellis2/href-counter:build
+
+docker image build --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy \
+    -t alexellis2/href-counter:build . -f Dockerfile.build
+docker container create --name extract alexellis2/href-counter:build
+docker container cp extract:/go/src/github.com/alexellis/href-counter/app ./app
+docker container rm -f extract
+
+echo Building alexellis2/href-counter:latest
+docker image build --no-cache -t alexellis2/href-counter:latest .
+rm ./app
+----
+
+[%auto-animate]
+== 🧩 Une première solution
+
+Avec un autre exemple
+
+image::fichiers-output81_with_transparency.png[height=500]
+
+[%auto-animate]
+== 🧩 Une première solution
+
+Avec un autre exemple
+
+image::fichiers-output82_with_transparency.png[height=500]
+
+[%auto-animate]
+== 🧩 Une première solution
+
+Avec un autre exemple
+
+image::fichiers-output83_with_transparency.png[height=500]
+
+[%auto-animate]
+[.columns]
+== 🧩 Une première solution
+
+[.column]
+--
+Avec un autre exemple
+
+image::fichiers-output83_with_transparency.png[]
+--
+
+[.column]
+--
+image::1956754704-image20.jpeg[]
+--
+
+[.notes]
+--
+[source,bash]
+----
+for i in {81..84}; do convert Diapositive${i}.PNG -crop 8940x4930+2182+1700 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
+----
+
+--
+
+[%auto-animate]
+== 🪜 Multistage build
+
+[source,docker]
+----
+include::../code-samples/fichiers/multistage/Dockerfile.multi[]
+----
+
+[.notes]
+--
+
+J'aurais préféré:
+[source,docker]
+----
+include::https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile.multi[]
+----
+
+--
+
+[%auto-animate]
+== 🪜 Multistage build
+
+[source,docker]
+----
+include::../code-samples/fichiers/multistage/Dockerfile.multi[]
+
+----
+
+On copie les fichiers depuis le premier stage
+
+[.columns]
+== 📦 LES CONTAINERS
+
+[.column]
+--
+Le bilan : achievement unlocked
+
+Vous savez désormais:
+
+[%step]
+- Maîtriser le cycle de vie des containers
+- Interagir avec les containers existants
+- Nommer les containers
+- Inspecter les containers
+- Appeler les containers
+- Obtenir des containers légers
+
+--
+
+[.column]
+--
+image::1706694417-image21.png[]
+--
