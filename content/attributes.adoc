@@ -6,6 +6,7 @@
 :iconfont-remote!:
 :sectids:
 :allow-uri-read:
+:safe-mode-level: safe
 :linkattrs:
 :idprefix:
 :imagesdir: media/
