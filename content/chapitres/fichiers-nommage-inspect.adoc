@@ -1,8 +1,8 @@
-= Nos fichiers dans les images
+= 📁 Nos fichiers dans les images
 
 image::fichiers.png[background, size=cover, position=left, opacity=0.1]
 
-== Le répertoire de travail
+== 📂 Le répertoire de travail
 
 [%step]
 [source,bash]
@@ -14,7 +14,7 @@ docker container run --interactive --tty httpd pwd /usr/local/apache2
 Comment paramétrer le répertoire de travail de tous nos containers ?
 
 [%auto-animate]
-== WORKDIR
+== 📂 WORKDIR
 
 [source,docker]
 ----
@@ -22,7 +22,7 @@ include::../code-samples/fichiers/workdir/Dockerfile[]
 ----
 
 [%auto-animate]
-== WORKDIR
+== 📂 WORKDIR
 
 [source,docker]
 ----
@@ -32,7 +32,7 @@ include::../code-samples/fichiers/workdir/Dockerfile[]
 image::fichiers-output5_with_transparency.png[]
 
 [%auto-animate]
-== WORKDIR
+== 📂 WORKDIR
 
 [source,docker]
 ----
@@ -50,7 +50,7 @@ for i in {5..6}; do convert Diapositive${i}.PNG -crop 9667x3750+1833+3333 -trans
 --
 
 [%auto-animate]
-== WORKDIR
+== 📂 WORKDIR
 
 [source,docker]
 ----
@@ -82,7 +82,7 @@ $ docker container run --workdir /home mon-img pwd
 ----
 
 [%auto-animate]
-== Embarquer des fichiers
+== 📁 Embarquer des fichiers
 
 Cas d'usage.
 
@@ -111,7 +111,7 @@ $ docker container run --workdir /customdir --entrypoint ls node
 Comment fournir des fichiers à mes containers ?
 
 [%auto-animate]
-== Embarquer des fichiers
+== 📁 Embarquer des fichiers
 
 Copie de fichiers.
 
@@ -143,7 +143,7 @@ Hello Mad Javascript World!
 ----
 
 [%auto-animate]
-== Embarquer des fichiers
+== 📁 Embarquer des fichiers
 
 Le mot clé `ADD`.
 
@@ -166,7 +166,7 @@ Il est capable de "untar" automatiquement.
 On le retrouve dans d'anciens Dockerfile mais il tend à disparaître.
 
 [%auto-animate]
-== Embarquer des fichiers
+== 📁 Embarquer des fichiers
 
 Le mot clé `ADD`
 
@@ -176,7 +176,7 @@ source : https://docs.docker.com/develop/develop-images/dockerfile_best-practice
 image::1108215415-image2.png[]
 
 [%auto-animate]
-== Embarquer des fichiers
+== 📁 Embarquer des fichiers
 
 Le mot clé `ADD`.
 
@@ -186,7 +186,7 @@ source : https://docs.docker.com/develop/develop-images/dockerfile_best-practice
 image::add-stabylo.png[]
 
 [%auto-animate]
-== Embarquer des fichiers
+== 📁 Embarquer des fichiers
 
 Oui, mais pas la terre entière !
 
@@ -197,21 +197,21 @@ Sending build context to Docker daemon  172.8MB
 ----
 
 [%auto-animate]
-== Embarquer des fichiers
+== 📁 Embarquer des fichiers
 
 Oui, mais pas la terre entière !
 
 image::fichiers-output19_with_transparency.png[]
 
 [%auto-animate]
-== Embarquer des fichiers
+== 📁 Embarquer des fichiers
 
 Oui, mais pas la terre entière !
 
 image::fichiers-output20_with_transparency.png[]
 
 [%auto-animate]
-== Embarquer des fichiers
+== 📁 Embarquer des fichiers
 
 Oui, mais pas la terre entière !
 
@@ -227,7 +227,7 @@ for i in {19..21}; do convert Diapositive${i}.PNG -crop 9250x2932+2097+1750 -tra
 ----
 --
 
-== Embarquer des fichiers
+== 📁 Embarquer des fichiers
 
 Oui, mais pas la terre entière !
 
@@ -246,7 +246,7 @@ Et si un vieux Keystore traîne dans les sources ?
 [%step]
 Attention à l'invalidation de cache d'un step de build à cause de l'ajout d'un fichier inutile !
 
-== `.dockerignore`
+== 🙉 `.dockerignore`
 
 [source,.dockerignore]
 ----
@@ -276,22 +276,22 @@ README-secret.md
 image::docker-commands-table.png[background, size=contain, position=center, opacity=0.1]
 
 [%auto-animate]
-== Renommage des images
+== 📝 Renommage des images
 
 image::fichiers-output25_with_transparency.png[]
 
 [%auto-animate]
-== Renommage des images
+== 📝 Renommage des images
 
 image::fichiers-output26_with_transparency.png[]
 
 [%auto-animate]
-== Renommage des images
+== 📝 Renommage des images
 
 image::fichiers-output27_with_transparency.png[]
 
 [%auto-animate]
-== Renommage des images
+== 📝 Renommage des images
 
 image::fichiers-output28_with_transparency.png[]
 
@@ -308,7 +308,7 @@ image::fichiers-output28_with_transparency.png[]
 
 [%auto-animate]
 [.columns]
-== LES IMAGES
+== 🖼️ LES IMAGES
 
 [.column]
 image::multi-layered-cake-removebg-preview.png[]
@@ -326,7 +326,7 @@ Vous savez désormais:
 
 [%auto-animate]
 [.columns]
-== LES IMAGES
+== 🖼️ LES IMAGES
 
 [.column]
 image::384835330-image4.gif[]
@@ -342,7 +342,7 @@ Vous savez désormais:
 * Créer vos outils
 --
 
-== Les registries
+== 🗂️ Les registries
 
 image::104336496-image5.png[]
 
@@ -350,7 +350,7 @@ image::104336496-image5.png[]
 
 **La construction d'une image doit être automatisée.**
 
-== Automatique == sécurisé
+== 🤖 = 🔒 ? Automatique == sécurisé
 
 Le fait de déléguer la construction des images permet d'ajouter toute une chaîne de traitement, de contrôles des images pour s'assurer qu'elle respecte les règles RSSI.
 
@@ -400,11 +400,11 @@ for i in {35..39}; do convert Diapositive${i}.PNG -crop 8803x3982+2273+2769 -tra
 ----
 --
 
-== Exemple : continuous build
+== ➡️ Exemple : continuous build
 
 image::107490784-image13.png[]
 
-== Travaux pratiques #5
+== 🎓 Travaux pratiques #5
 
 https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05
 
@@ -415,29 +415,29 @@ image::636764807-image14.png[]
 Solution là: https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05/-/tree/solution?ref_type=heads
 --
 
-== Inspection et nommage des containers
+== 🔍 Inspection et nommage des containers
 
 image::1712651753-image15.png[]
 
 [%auto-animate]
-== Nommage des containers
+== 📛 Nommage des containers
 
 image::docker-container-logs.png[]
 [%step]
 Ne peut-on pas trouver plus 'user-friendly'?
 
 [%auto-animate]
-== Nommage des containers
+== 📛 Nommage des containers
 
 image::fichiers-output47_with_transparency.png[]
 
 [%auto-animate]
-== Nommage des containers
+== 📛 Nommage des containers
 
 image::fichiers-output48_with_transparency.png[]
 
 [%auto-animate]
-== Nommage des containers
+== 📛 Nommage des containers
 
 image::fichiers-output49_with_transparency.png[]
 
@@ -452,7 +452,7 @@ Jean-Claude Poitras est un créateur de mode, un designer multidisciplinaire, un
 
 --
 
-== Nommage des containers
+== 📛 Nommage des containers
 
 Humour de g33k
 
@@ -460,7 +460,7 @@ image::1671853138-image16.png[]
 
 source : https://github.com/docker/engine/blob/master/pkg/namesgenerator/names-generator.go
 
-== Nommage des containers
+== 📛 Nommage des containers
 
 [source,bash]
 ----
@@ -523,7 +523,7 @@ image::fichiers-output56_with_transparency.png[]
 --
 
 [.columns]
-== Inspection des containers
+== 🔍 Inspection des containers
 
 [.column]
 --
@@ -739,7 +739,7 @@ docker container ls --filter "name=my-web" --no-trunc | awk 'NR==1 {cmd=index($0
 [%step]
 qui donnerait `"/docker-entrypoint.sh nginx -g 'daemon off;'"`.
 
-== Trouver son container en réseau
+== 🌐 Trouver son container en réseau
 
 image::1233103020-image17.jpeg[]
 
@@ -761,7 +761,8 @@ bd12c4d71       nginx   "nginx …"    35 s. ago  Up 33 s.  80/tcp, 443/tcp
 [%step]
 Ok, mon container expose un service sur les ports `TCP 80` et `443` mais j'appelle comment mon Nginx ?
 
-== Que nous dit docker container inspect ?
+[%auto-animate]
+== 🔍 Que nous dit docker container inspect ?
 
 [source,json]
 ----
@@ -784,83 +785,29 @@ Ok, mon container expose un service sur les ports `TCP 80` et `443` mais j'appel
             }
 ----
 
-== Que nous dit docker container inspect ?
+[%auto-animate]
+== 🔍 Que nous dit docker container inspect ?
 
-[source,json]
-----
-"Networks": {
-                "bridge": {
-                    "IPAMConfig": null,
-                    "Links": null,
-                    "Aliases": null,
-                    "NetworkID": "c0fcec43e3e8…eecd6558ac0870a468a3",
-                    "EndpointID": "0ec8fb237a10e9227359b4…db23edc32",
-                    "Gateway": "172.17.0.1",
-                    "IPAddress": "172.17.0.2",
-                    "IPPrefixLen": 16,
-                    "IPv6Gateway": "",
-                    "GlobalIPv6Address": "",
-                    "GlobalIPv6PrefixLen": 0,
-                    "MacAddress": "02:42:ac:11:00:02",
-                    "DriverOpts": null
-                }
-            }
-----
+image::fichiers-output66_with_transparency.png[height=500]
 
-== Que nous dit docker container inspect ?
+[%auto-animate]
+== 🔍 Que nous dit docker container inspect ?
 
-[source,json]
-----
-"Networks": {
-                "bridge": {
-                    "IPAMConfig": null,
-                    "Links": null,
-                    "Aliases": null,
-                    "NetworkID": "c0fcec43e3e8…eecd6558ac0870a468a3",
-                    "EndpointID": "0ec8fb237a10e9227359b4…db23edc32",
-                    "Gateway": "172.17.0.1",
-                    "IPAddress": "172.17.0.2",
-                    "IPPrefixLen": 16,
-                    "IPv6Gateway": "",
-                    "GlobalIPv6Address": "",
-                    "GlobalIPv6PrefixLen": 0,
-                    "MacAddress": "02:42:ac:11:00:02",
-                    "DriverOpts": null
-                }
-            }
-----
+image::fichiers-output67_with_transparency.png[height=500]
 
-image::383920810-image18.png[]
-
-== Que nous dit docker container inspect ?
-
-[source,json]
-----
-"Networks": {
-                "bridge": {
-                    "IPAMConfig": null,
-                    "Links": null,
-                    "Aliases": null,
-                    "NetworkID": "c0fcec43e3e8…eecd6558ac0870a468a3",
-                    "EndpointID": "0ec8fb237a10e9227359b4…db23edc32",
-                    "Gateway": "172.17.0.1",
-                    "IPAddress": "172.17.0.2",
-                    "IPPrefixLen": 16,
-                    "IPv6Gateway": "",
-                    "GlobalIPv6Address": "",
-                    "GlobalIPv6PrefixLen": 0,
-                    "MacAddress": "02:42:ac:11:00:02",
-                    "DriverOpts": null
-                }
-            }
-----
-
-image::383920810-image18.png[]
-
+[%step]
 [source,bash]
 ----
 docker container inspect –format '--format '{{.NetworkSettings.IPAddress}}' <ContainerID>
 ----
+
+[.notes]
+--
+[source,bash]
+----
+for i in {66..67}; do convert Diapositive${i}.PNG -crop 9519x5022+1833+1472 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
+----
+--
 
 == Et voilà !
 
@@ -869,90 +816,263 @@ docker container inspect –format '--format '{{.NetworkSettings.IPAddress}}' <C
 curl -I --noproxy '*' http://172.17.0.2:80
 HTTP/1.1 200 OK
 ....
-`Server: nginx/1.9.6 ...
+`Server: nginx/1.25 ...
 `
 ----
 
 Il est maintenant facile d'interagir avec notre serveur web !
 
-== Mapping de Port
+[%auto-animate]
+== 🗺️ Mapping de Port
 
+image::fichiers-output71_with_transparency.png[]
+
+[%auto-animate]
+== 🗺️ Mapping de Port
+
+image::fichiers-output72_with_transparency.png[]
+
+[%auto-animate]
+== 🗺️ Mapping de Port
+
+image::fichiers-output73_with_transparency.png[]
+
+[%step]
 [source,bash]
 ----
-docker container run --detach -p 8000:80 nginx
+curl -I --noproxy '*' http://172.17.0.2:80
 ----
 
-== Mapping de Port
-
-[source,bash]
-----
-docker container run --detach -p 8000:80 nginx
-----
-
-le port de la machine hôte
-
-== Mapping de Port
-
-[source,bash]
-----
-docker container run --detach -p 8000:80 nginx
-----
-
-le port de la machine hôte
-
-le port du container
-
-== Mapping de Port
-
-
-[source,bash]
-----
-docker container run --detach -p 8000:80 nginx
-----
-
-le port de la machine hôte
-
-le port du container
+[%auto-animate]
+== 🗺️ Mapping de Port
 
 [source,bash]
 ----
 curl -I --noproxy '*' http://172.17.0.2:80
-it works !
-$ curl -I --noproxy '*' http://localhost:8000`
-it works !
+HTTP/1.1 200 OK
+Server: nginx/1.25.2
+Date: Wed, 18 Oct 2023 11:54:49 GMT
+Content-Type: text/html
+Content-Length: 284237
+Last-Modified: Tue, 10 Oct 2023 12:12:13 GMT
+Connection: keep-alive
+ETag: "65253f9d-4564d"
+Accept-Ranges: bytes
 ----
 
-== Travaux pratiques #7
+[%step]
+[source,bash]
+----
+$ curl -I --noproxy '*' http://localhost:8000`
+HTTP/1.1 200 OK
+Server: nginx/1.25.2
+Date: Wed, 18 Oct 2023 11:57:25 GMT
+Content-Type: text/html
+Content-Length: 284237
+Last-Modified: Tue, 10 Oct 2023 12:12:13 GMT
+Connection: keep-alive
+ETag: "65253f9d-4564d"
+Accept-Ranges: bytes
+----
+
+[.notes]
+--
+[source,bash]
+----
+for i in {71..73}; do convert Diapositive${i}.PNG -crop 10146x4801+2250+1833 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
+----
+--
+
+== 🎓 Travaux pratiques #7
 
 Étapes:
+[%step]
 * Créer un fichier HTML et le distribuer à partir d'un container `nginx`
+[%step]
 * Récupérer un war sur Gitlab et le déployer dans un container `wildfly (https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp07/-/raw/master/sample.war)`
-* Récupérer le code sur https://spring.io/guides/gs/spring-boot/ et faire tourner l'appli
+[%step]
+* Récupérer le code sur https://spring.io/guides/gs/spring-boot/ et faire tourner l'appli (sous répertoire `complete`)
 
-== Attends un peu…
+[%auto-animate]
+== ✅ Solution travaux pratiques #7
+
+[source,html]
+----
+include::../code-samples/fichiers/reseau/index.html[]
+----
+
+[%step]
+[source,bash]
+----
+docker run --name my-nginx -v /fully/qualified/path/on/my/computer/:/usr/share/nginx/html:ro -d -p 8000:80 nginx
+----
+
+[%step]
+[source,bash]
+----
+curl --noproxy '*' http://localhost:8000
+<html><head></head><body><header>
+<title>http://info.cern.ch</title>
+</header>
+
+<h1>http://info.cern.ch - home of the first website</h1>
+<p>From here you can:</p>
+<ul>
+<li><a href="http://info.cern.ch/hypertext/WWW/TheProject.html">Browse the first website</a></li>
+<li><a href="http://line-mode.cern.ch/www/hypertext/WWW/TheProject.html">Browse the first website using the line-mode browser simulator</a></li>
+<li><a href="http://home.web.cern.ch/topics/birth-web">Learn about the birth of the web</a></li>
+<li><a href="http://home.web.cern.ch/about">Learn about CERN, the physics laboratory where the web was born</a></li>
+</ul>
+</body></html>
+----
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #7
+
+[source,bash]
+----
+wget https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp07/-/raw/master/sample.war
+----
+
+[%step]
+[source,bash]
+----
+# Used to run a Docker container with the name "wildfly-container" using the "jboss/wildfly" image. The container is
+# configured to expose ports 8080 and 9990 on the host machine, which will be mapped to the corresponding ports inside
+# the container. Additionally, a volume is mounted to the container, linking the
+# "/fully/qualified/path/on/my/computer/sample.war" file to "/opt/jboss/wildfly/standalone/deployments/sample.war"
+# path within the container. This allows the WildFly server running inside the container to access and deploy the
+# "sample.war" file. The "-d" flag is used to run the container in detached mode, meaning it will run in the
+# background.
+docker run -d -p 8080:8080 -p 9990:9990 --name wildfly-container -v /fully/qualified/path/on/my/computer/sample.war:/opt/jboss/wildfly/standalone/deployments/sample.war jboss/wildfly
+----
+
+[%step]
+Visitez avec votre navigateur `http://localhost:8080/sample/`.
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #7
+
+[source,bash]
+----
+git clone https://github.com/spring-guides/gs-spring-boot.git
+----
+C'est un début...
+
+[%step]
+[source,bash]
+----
+cd gs-spring-boot/complete
+----
+
+[%step]
+[source,bash]
+----
+mvn package
+----
+
+[%step]
+[source,bash]
+----
+java -jar target/spring-boot-complete-0.0.1-SNAPSHOT.jar
+----
+[%step]
+Ok, il y a de l'idée...
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #7
+
+Assemblons tout ça dans un `Dockerfile`.
+
+[source,docker]
+----
+include::../code-samples/fichiers/reseau/Dockerfile.ugly[]
+----
+
+[%step]
+Spoiler alert: le nom de fichier donne une indication...
+
+[%step]
+[source,bash]
+----
+docker build -t spring-boot-app --file Dockerfile.ugly .
+----
+
+[%step]
+Et logiquement...
+
+[%step]
+[source,bash]
+----
+docker run -d -p 8080:8080 --name spring-boot-container spring-boot-app
+----
+
+== ⏳ Attends un peu…
 
 image::1779074283-image19.gif[]
-__C'est comme si  je laissais la grue dans la chambre une fois que j'avais fini de construire ma maison !__
 
-== Une première solution
+__Ça fonctionne, mais c'est comme si  je laissais la grue dans la chambre une fois que j'avais fini de construire ma maison !__
 
-Avec un autre exemple
+[%auto-animate]
+== ✅ Solution travaux pratiques #7
 
+On essaye un `Dockerfile` moins BTP?
+
+[%step]
 [source,docker]
 ----
-include::https://github.com/alexellis/href-counter/blob/master/Dockerfile.build
+include::../code-samples/fichiers/reseau/Dockerfile[]
 ----
 
+[%step]
+Le multistage, c'est la classe à Arras.
+On en reparle après.
+
+== 🧩 Une première solution
+
+Avec un autre exemple...
+Une image pour construire l'appli:
+
+[%step]
 [source,docker]
 ----
-include::https://github.com/alexellis/href-counter/blob/master/Dockerfile
+include::../code-samples/fichiers/reseau/tp7/Dockerfile.build[]
 ----
 
-Une image pour construire l'appli
-
+[%step]
 Une image pour faire tourner l'appli
 
-== Une première solution
+[%step]
+[source,docker]
+----
+include::../code-samples/fichiers/reseau/tp7/Dockerfile[]
+----
+
+[.notes]
+--
+
+De base, j'avais plutôt
+
+[%step]
+[source,docker]
+----
+include::https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile.build[]
+----
+
+[%step]
+Une image pour faire tourner l'appli
+
+[%step]
+[source,docker]
+----
+include::https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile[]
+----
+
+À bosser pour pouvoir rester à jour
+--
+
+[%auto-animate]
+== 🧩 Une première solution
 
 Avec un autre exemple
 
@@ -960,78 +1080,114 @@ Avec un autre exemple
 ----
 #!/bin/sh
 echo Building alexellis2/href-counter:build
-docker image build --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy \  
+
+docker image build --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy \
     -t alexellis2/href-counter:build . -f Dockerfile.build
-docker container create --name extract alexellis2/href-counter:build  
-docker container cp extract:/go/src/github.com/alexellis/href-counter/app ./app  
+docker container create --name extract alexellis2/href-counter:build
+docker container cp extract:/go/src/github.com/alexellis/href-counter/app ./app
 docker container rm -f extract
+
 echo Building alexellis2/href-counter:latest
 docker image build --no-cache -t alexellis2/href-counter:latest .
 rm ./app
 ----
 
-on créé l'image de construction
+[%auto-animate]
+== 🧩 Une première solution
 
-on fait un container pour récupérer le build
+Avec un autre exemple
 
-on créer l'image d'exécution
+image::fichiers-output81_with_transparency.png[height=500]
 
+[%auto-animate]
+== 🧩 Une première solution
+
+Avec un autre exemple
+
+image::fichiers-output82_with_transparency.png[height=500]
+
+[%auto-animate]
+== 🧩 Une première solution
+
+Avec un autre exemple
+
+image::fichiers-output83_with_transparency.png[height=500]
+
+[%auto-animate]
+[.columns]
+== 🧩 Une première solution
+
+[.column]
+--
+Avec un autre exemple
+
+image::fichiers-output83_with_transparency.png[]
+--
+
+[.column]
+--
 image::1956754704-image20.jpeg[]
+--
 
-== Multistage build
+[.notes]
+--
+[source,bash]
+----
+for i in {81..84}; do convert Diapositive${i}.PNG -crop 8940x4930+2182+1700 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
+----
+
+--
+
+[%auto-animate]
+== 🪜 Multistage build
 
 [source,docker]
 ----
-FROM golang:1.19
-WORKDIR /go/src/github.com/alexellis/href-counter/
-RUN go get -d -v golang.org/x/net/html  
-COPY app.go .
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
-FROM alpine:3.17.1 
-RUN apk --no-cache add ca-certificates
-WORKDIR /root/
-COPY --from=0 /go/src/github.com/alexellis/href-counter/app .
-CMD ["./app"] 
+include::../code-samples/fichiers/multistage/Dockerfile.multi[]
 ----
 
-== Multistage build
+[.notes]
+--
+
+J'aurais préféré:
+[source,docker]
+----
+include::https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile.multi[]
+----
+
+--
+
+[%auto-animate]
+== 🪜 Multistage build
 
 [source,docker]
 ----
-FROM golang:1.19
-WORKDIR /go/src/github.com/alexellis/href-counter/
-RUN go get -d -v golang.org/x/net/html  
-COPY app.go .
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
-FROM alpine:3.17.1 
-RUN apk --no-cache add ca-certificates
-WORKDIR /root/
-COPY --from=0 /go/src/github.com/alexellis/href-counter/app .
-CMD ["./app"] 
+include::../code-samples/fichiers/multistage/Dockerfile.multi[]
+
 ----
 
 On copie les fichiers depuis le premier stage
 
-== LES CONTAINERS
+[.columns]
+== 📦 LES CONTAINERS
 
+[.column]
+--
 Le bilan : achievement unlocked
 
 Vous savez désormais:
-* Maîtriser le cycle de vie des containers
-* Interagir avec les containers existants
-                     
+
+[%step]
+- Maîtriser le cycle de vie des containers
+- Interagir avec les containers existants
+- Nommer les containers
+- Inspecter les containers
+- Appeler les containers
+- Obtenir des containers légers
+
+--
+
+[.column]
+--
 image::1706694417-image21.png[]
-
-== LES CONTAINERS
-
-Le bilan : achievement unlocked
-
-Vous savez désormais:
-* Maîtriser le cycle de vie des containers
-* Interagir avec les containers existants
-* Nommer les containers
-* Inspecter les containers
-* Appeler les containers
-* Obtenir des containers légers
-
-image::1706694417-image21.png[]
+--
