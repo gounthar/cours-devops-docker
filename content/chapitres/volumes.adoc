@@ -1,1 +1,506 @@
-= Volumes
+
+== Les volumes
+
+Docker 101
+
+
+....
+1
+....
+
+image::Images/1300236655-image2.jpeg[]
+
+== 3 types de gestion de données
+
+Docker 101
+
+
+....
+2
+....
+
+
+== 3 types de gestion de données
+
+Docker 101
+
+
+....
+2
+....
+
+
+== 3 types de gestion de données
+
+Docker 101
+
+
+....
+4
+....
+
+image::Images/1329201553-image3.png[]
+
+== Mapping de FileSystem
+
+Docker 101
+
+
+....
+5
+....
+
+image::Images/293990221-image4.png[]
+
+== Mapping de FileSystem
+
+**__"Créer une image avec les sources de mon applications web juste pour distribuer des ressources statiques via Apache ! Merci Docker !"__**
+
+Un étudiant excédé
+
+Docker 101
+
+
+....
+6
+....
+
+image::Images/1105931517-image5.png[]
+
+== Mapping de FileSystem
+
+Docker 101
+
+
+....
+7
+....
+
+image::Images/1771886276-image6.png[]
+Source : https://hub.docker.com/_/nginx
+
+
+== Mapping de FileSystem
+
+Docker 101
+
+
+....
+7
+....
+
+image::Images/1771886276-image6.png[]
+Source : https://hub.docker.com/_/nginx
+
+image::Images/383920810-image7.png[]
+
+== Mapping de FileSystem
+
+Docker 101
+
+
+....
+8
+....
+
+
+....
+-v /some/content:/usr/share/nginx/html:ro
+....
+
+
+....
+-v ~/.bash_history:/.bash_history
+....
+
+
+....
+Le chemin dans la machine hôte doit être un chemin absolu !
+....
+
+
+....
+Partage de fichier
+....
+
+
+....
+Partage de dossier
+....
+
+
+== Les volumes
+
+Docker 101
+
+
+....
+9
+....
+
+image::Images/726805516-image8.png[]
+
+== Les volumes
+
+Il est possible de créer des "espaces mémoire" que l'on peut mettre à disposition des containers
+
+Docker 101
+
+
+....
+10
+....
+
+
+....
+$ docker volume create --name my-data
+$ docker run -v my-data:/data busybox ls /data
+....
+
+
+== Les volumes
+
+Il est possible de créer des "espaces mémoire" que l'on peut mettre à disposition des containers
+
+Docker 101
+
+
+....
+10
+....
+
+
+....
+$ docker volume create --name my-data
+$ docker run -v my-data:/data busybox ls /data
+....
+
+
+== Les volumes
+
+Il est possible de créer des "espaces mémoire" que l'on peut mettre à disposition des containers
+
+Docker 101
+
+
+....
+10
+....
+
+
+....
+$ docker volume create --name my-data
+$ docker run -v my-data:/data busybox ls /data
+....
+
+
+....
+Ce n'est plus un chemin absolu, mais juste le nom du volume
+....
+
+
+== Les volumes
+
+Docker 101
+
+
+....
+11
+....
+
+
+== Les volumes
+
+Docker 101
+
+
+....
+11
+....
+
+
+== Les volumes
+
+Docker 101
+
+
+....
+11
+....
+
+
+== Les volumes
+
+Docker 101
+
+
+....
+11
+....
+
+
+== Les volumes "anonymes"
+
+Docker 101
+
+
+....
+12
+....
+
+
+....
+FROM alpine:3.18
+WORKDIR /repertoire/travail
+VOLUME ["/data"]
+RUN echo hello > ./world.txt
+....
+
+
+....
+Dockerfile
+....
+
+
+== Les volumes "anonymes"
+
+Docker 101
+
+
+....
+12
+....
+
+
+....
+FROM alpine:3.18
+WORKDIR /repertoire/travail
+VOLUME ["/data"]
+RUN echo hello > ./world.txt
+....
+
+
+....
+Dockerfile
+....
+
+
+....
+Création d'un volume anonyme mappé sur le répertoire /data des containers basés sur cette image
+....
+
+
+== FileSystem en RAM
+
+Docker 101
+
+
+....
+13
+....
+
+
+....
+$ docker container run 
+-d 
+--read-only 
+--tmpfs /run/httpd 
+--tmpfs /tmp 
+httpd
+....
+
+
+....
+Les données sont perdues à l'arrêt du container.
+....
+
+
+== FileSystem en RAM
+
+Docker 101
+
+
+....
+13
+....
+
+
+....
+$ docker container run 
+-d 
+--read-only 
+--tmpfs /run/httpd 
+--tmpfs /tmp 
+httpd
+....
+
+
+....
+Le container ne peut pas écrire sur le FS
+....
+
+
+....
+Les données sont perdues à l'arrêt du container.
+....
+
+
+== FileSystem en RAM
+
+Docker 101
+
+
+....
+13
+....
+
+
+....
+$ docker container run 
+-d 
+--read-only 
+--tmpfs /run/httpd 
+--tmpfs /tmp 
+httpd
+....
+
+
+....
+Le container ne peut pas écrire sur le FS
+....
+
+
+....
+Sauf là et là
+....
+
+
+....
+Les données sont perdues à l'arrêt du container.
+....
+
+
+== Bilan de compétences
+
+Docker 101
+
+
+....
+14
+....
+
+
+== Bilan de compétences
+
+Création d'images
+
+Création des containers
+
+* cycle de vie
+
+* nommage
+
+* débug
+
+* réseau
+
+* volumes
+
+Docker 101
+
+
+....
+15
+....
+
+
+== Bilan de compétences
+
+Création d'images
+
+Création des containers
+
+* cycle de vie
+
+* nommage
+
+* débug
+
+* réseau
+
+* volumes
+
+Docker 101
+
+
+....
+15
+....
+
+image::Images/1541909532-image9.png[]
+image::Images/1541909532-image9.png[]
+image::Images/1541909532-image9.png[]
+image::Images/1541909532-image9.png[]
+image::Images/1541909532-image9.png[]
+image::Images/1541909532-image9.png[]
+image::Images/1541909532-image9.png[]
+
+== Travaux pratiques #8
+
+Docker 101
+
+
+....
+16
+....
+
+Lancer un container `nginx `et lui faire distribuer une page web externe au container.
+
+image::Images/1763880002-image10.png[]
+
+== Travaux pratiques #9
+
+Docker 101
+
+
+....
+17
+....
+
+
+....
+Etapes
+....
+
+Créer un volume nommé "data"
+
+Démarrer un container attaché à ce volume
+
+Lancer un processus qui écrit un fichier dans le volume
+
+Démarrer un second container attaché à ce volume
+
+Lire les données du volume depuis le second container
+
+Supprimer le volume
+
+
+== Travaux pratiques #10
+
+Docker 101
+
+
+....
+18
+....
+
+écrire un Dockerfile qui:
+
+ajoute des fichiers dans un dossier
+
+déclare ce dossier comme volume anonyme
+
+ajoute d'autres fichiers dans ce dossier
+
+**Que verra-ton dans ce dossier au sein de nos containers ?**
+
