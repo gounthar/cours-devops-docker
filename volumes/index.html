@@ -1696,8 +1696,124 @@ CMD ["./app"]</code></pre></div></div>
 <div class="paragraph"><p>On copie les fichiers depuis le premier stage</p></div></div></section><section id="les_containers" class="columns"><h2>📦 LES CONTAINERS</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p>Le bilan : achievement unlocked</p></div>
 <div class="paragraph"><p>Vous savez désormais:</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Maîtriser le cycle de vie des containers</p></li><li class="fragment"><p>Interagir avec les containers existants</p></li><li class="fragment"><p>Nommer les containers</p></li><li class="fragment"><p>Inspecter les containers</p></li><li class="fragment"><p>Appeler les containers</p></li><li class="fragment"><p>Obtenir des containers légers</p></li></ul></div></div></div>
-<div class="openblock column"><div class="content"><div class="imageblock"><img src="media/1706694417-image21.png" alt="1706694417 image21"></div></div></div></div></section></section>
-<section id="volumes"><h2>Volumes</h2></section>
+<div class="openblock column"><div class="content"><div class="imageblock"><img src="media/1706694417-image21.png" alt="1706694417 image21"></div></div></div></div></section><section id="les_volumes"><h2>Les volumes</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>1</pre></div></div>
+<div class="imageblock"><img src="media/Images/1300236655-image2.jpeg" alt="1300236655 image2"></div></div></section><section id="3_types_de_gestion_de_données"><h2>3 types de gestion de données</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>2</pre></div></div></div></section><section id="3_types_de_gestion_de_données_2"><h2>3 types de gestion de données</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>2</pre></div></div></div></section><section id="3_types_de_gestion_de_données_3"><h2>3 types de gestion de données</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>4</pre></div></div>
+<div class="imageblock"><img src="media/Images/1329201553-image3.png" alt="1329201553 image3"></div></div></section><section id="mapping_de_filesystem"><h2>Mapping de FileSystem</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>5</pre></div></div>
+<div class="imageblock"><img src="media/Images/293990221-image4.png" alt="293990221 image4"></div></div></section><section id="mapping_de_filesystem_2"><h2>Mapping de FileSystem</h2><div class="slide-content"><div class="paragraph"><p><strong><em>"Créer une image avec les sources de mon applications web juste pour distribuer des ressources statiques via Apache ! Merci Docker !"</em></strong></p></div>
+<div class="paragraph"><p>Un étudiant excédé</p></div>
+<div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>6</pre></div></div>
+<div class="imageblock"><img src="media/Images/1105931517-image5.png" alt="1105931517 image5"></div></div></section><section id="mapping_de_filesystem_3"><h2>Mapping de FileSystem</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>7</pre></div></div>
+<div class="imageblock"><img src="media/Images/1771886276-image6.png" alt="1771886276 image6"></div>
+<div class="paragraph"><p>Source : <a href="https://hub.docker.com/_/nginx" class="bare">https://hub.docker.com/_/nginx</a></p></div></div></section><section id="mapping_de_filesystem_4"><h2>Mapping de FileSystem</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>7</pre></div></div>
+<div class="imageblock"><img src="media/Images/1771886276-image6.png" alt="1771886276 image6"></div>
+<div class="paragraph"><p>Source : <a href="https://hub.docker.com/_/nginx" class="bare">https://hub.docker.com/_/nginx</a></p></div>
+<div class="imageblock"><img src="media/Images/383920810-image7.png" alt="383920810 image7"></div></div></section><section id="mapping_de_filesystem_5"><h2>Mapping de FileSystem</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>8</pre></div></div>
+<div class="literalblock"><div class="content"><pre>-v /some/content:/usr/share/nginx/html:ro</pre></div></div>
+<div class="literalblock"><div class="content"><pre>-v ~/.bash_history:/.bash_history</pre></div></div>
+<div class="literalblock"><div class="content"><pre>Le chemin dans la machine hôte doit être un chemin absolu !</pre></div></div>
+<div class="literalblock"><div class="content"><pre>Partage de fichier</pre></div></div>
+<div class="literalblock"><div class="content"><pre>Partage de dossier</pre></div></div></div></section><section id="les_volumes_2"><h2>Les volumes</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>9</pre></div></div>
+<div class="imageblock"><img src="media/Images/726805516-image8.png" alt="726805516 image8"></div></div></section><section id="les_volumes_3"><h2>Les volumes</h2><div class="slide-content"><div class="paragraph"><p>Il est possible de créer des "espaces mémoire" que l&#8217;on peut mettre à disposition des containers</p></div>
+<div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>10</pre></div></div>
+<div class="literalblock"><div class="content"><pre>$ docker volume create --name my-data
+$ docker run -v my-data:/data busybox ls /data</pre></div></div></div></section><section id="les_volumes_4"><h2>Les volumes</h2><div class="slide-content"><div class="paragraph"><p>Il est possible de créer des "espaces mémoire" que l&#8217;on peut mettre à disposition des containers</p></div>
+<div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>10</pre></div></div>
+<div class="literalblock"><div class="content"><pre>$ docker volume create --name my-data
+$ docker run -v my-data:/data busybox ls /data</pre></div></div></div></section><section id="les_volumes_5"><h2>Les volumes</h2><div class="slide-content"><div class="paragraph"><p>Il est possible de créer des "espaces mémoire" que l&#8217;on peut mettre à disposition des containers</p></div>
+<div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>10</pre></div></div>
+<div class="literalblock"><div class="content"><pre>$ docker volume create --name my-data
+$ docker run -v my-data:/data busybox ls /data</pre></div></div>
+<div class="literalblock"><div class="content"><pre>Ce n'est plus un chemin absolu, mais juste le nom du volume</pre></div></div></div></section><section id="les_volumes_6"><h2>Les volumes</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>11</pre></div></div></div></section><section id="les_volumes_7"><h2>Les volumes</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>11</pre></div></div></div></section><section id="les_volumes_8"><h2>Les volumes</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>11</pre></div></div></div></section><section id="les_volumes_9"><h2>Les volumes</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>11</pre></div></div></div></section><section id="les_volumes_anonymes"><h2>Les volumes "anonymes"</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>12</pre></div></div>
+<div class="literalblock"><div class="content"><pre>FROM alpine:3.18
+WORKDIR /repertoire/travail
+VOLUME ["/data"]
+RUN echo hello &gt; ./world.txt</pre></div></div>
+<div class="literalblock"><div class="content"><pre>Dockerfile</pre></div></div></div></section><section id="les_volumes_anonymes_2"><h2>Les volumes "anonymes"</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>12</pre></div></div>
+<div class="literalblock"><div class="content"><pre>FROM alpine:3.18
+WORKDIR /repertoire/travail
+VOLUME ["/data"]
+RUN echo hello &gt; ./world.txt</pre></div></div>
+<div class="literalblock"><div class="content"><pre>Dockerfile</pre></div></div>
+<div class="literalblock"><div class="content"><pre>Création d'un volume anonyme mappé sur le répertoire /data des containers basés sur cette image</pre></div></div></div></section><section id="filesystem_en_ram"><h2>FileSystem en RAM</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>13</pre></div></div>
+<div class="literalblock"><div class="content"><pre>$ docker container run
+-d
+--read-only
+--tmpfs /run/httpd
+--tmpfs /tmp
+httpd</pre></div></div>
+<div class="literalblock"><div class="content"><pre>Les données sont perdues à l'arrêt du container.</pre></div></div></div></section><section id="filesystem_en_ram_2"><h2>FileSystem en RAM</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>13</pre></div></div>
+<div class="literalblock"><div class="content"><pre>$ docker container run
+-d
+--read-only
+--tmpfs /run/httpd
+--tmpfs /tmp
+httpd</pre></div></div>
+<div class="literalblock"><div class="content"><pre>Le container ne peut pas écrire sur le FS</pre></div></div>
+<div class="literalblock"><div class="content"><pre>Les données sont perdues à l'arrêt du container.</pre></div></div></div></section><section id="filesystem_en_ram_3"><h2>FileSystem en RAM</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>13</pre></div></div>
+<div class="literalblock"><div class="content"><pre>$ docker container run
+-d
+--read-only
+--tmpfs /run/httpd
+--tmpfs /tmp
+httpd</pre></div></div>
+<div class="literalblock"><div class="content"><pre>Le container ne peut pas écrire sur le FS</pre></div></div>
+<div class="literalblock"><div class="content"><pre>Sauf là et là</pre></div></div>
+<div class="literalblock"><div class="content"><pre>Les données sont perdues à l'arrêt du container.</pre></div></div></div></section><section id="bilan_de_compétences"><h2>Bilan de compétences</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>14</pre></div></div></div></section><section id="bilan_de_compétences_2"><h2>Bilan de compétences</h2><div class="slide-content"><div class="paragraph"><p>Création d&#8217;images</p></div>
+<div class="paragraph"><p>Création des containers</p></div>
+<div class="ulist"><ul><li><p>cycle de vie</p></li><li><p>nommage</p></li><li><p>débug</p></li><li><p>réseau</p></li><li><p>volumes</p></li></ul></div>
+<div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>15</pre></div></div></div></section><section id="bilan_de_compétences_3"><h2>Bilan de compétences</h2><div class="slide-content"><div class="paragraph"><p>Création d&#8217;images</p></div>
+<div class="paragraph"><p>Création des containers</p></div>
+<div class="ulist"><ul><li><p>cycle de vie</p></li><li><p>nommage</p></li><li><p>débug</p></li><li><p>réseau</p></li><li><p>volumes</p></li></ul></div>
+<div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>15</pre></div></div>
+<div class="imageblock"><img src="media/Images/1541909532-image9.png" alt="1541909532 image9"></div>
+<div class="imageblock"><img src="media/Images/1541909532-image9.png" alt="1541909532 image9"></div>
+<div class="imageblock"><img src="media/Images/1541909532-image9.png" alt="1541909532 image9"></div>
+<div class="imageblock"><img src="media/Images/1541909532-image9.png" alt="1541909532 image9"></div>
+<div class="imageblock"><img src="media/Images/1541909532-image9.png" alt="1541909532 image9"></div>
+<div class="imageblock"><img src="media/Images/1541909532-image9.png" alt="1541909532 image9"></div>
+<div class="imageblock"><img src="media/Images/1541909532-image9.png" alt="1541909532 image9"></div></div></section><section id="travaux_pratiques_8"><h2>Travaux pratiques #8</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>16</pre></div></div>
+<div class="paragraph"><p>Lancer un container `nginx `et lui faire distribuer une page web externe au container.</p></div>
+<div class="imageblock"><img src="media/Images/1763880002-image10.png" alt="1763880002 image10"></div></div></section><section id="travaux_pratiques_9"><h2>Travaux pratiques #9</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>17</pre></div></div>
+<div class="literalblock"><div class="content"><pre>Etapes</pre></div></div>
+<div class="paragraph"><p>Créer un volume nommé "data"</p></div>
+<div class="paragraph"><p>Démarrer un container attaché à ce volume</p></div>
+<div class="paragraph"><p>Lancer un processus qui écrit un fichier dans le volume</p></div>
+<div class="paragraph"><p>Démarrer un second container attaché à ce volume</p></div>
+<div class="paragraph"><p>Lire les données du volume depuis le second container</p></div>
+<div class="paragraph"><p>Supprimer le volume</p></div></div></section><section id="travaux_pratiques_10"><h2>Travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Docker 101</p></div>
+<div class="literalblock"><div class="content"><pre>18</pre></div></div>
+<div class="paragraph"><p>écrire un Dockerfile qui:</p></div>
+<div class="paragraph"><p>ajoute des fichiers dans un dossier</p></div>
+<div class="paragraph"><p>déclare ce dossier comme volume anonyme</p></div>
+<div class="paragraph"><p>ajoute d&#8217;autres fichiers dans ce dossier</p></div>
+<div class="paragraph"><p><strong>Que verra-ton dans ce dossier au sein de nos containers ?</strong></p></div></div></section></section>
 <section id="réseaux"><h2>Réseaux</h2></section>
 <section id="docker_compose"><h2>Docker compose</h2></section>
 <section><section id="bibliographie" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Bibliographie</h2></section><section id="ligne_de_commande_2"><h2>Ligne de commande</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://tldp.org" class="bare">https://tldp.org</a></p></li><li><p><a href="https://en.wikipedia.org/wiki/POSIX" class="bare">https://en.wikipedia.org/wiki/POSIX</a></p></li><li><p><a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop" class="bare">https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop</a></p></li><li><p><a href="https://linuxhandbook.com/linux-directory-structure/" class="bare">https://linuxhandbook.com/linux-directory-structure/</a></p></li></ul></div></div></section><section id="git_vcs"><h2>Git / VCS</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://docs.github.com" class="bare">https://docs.github.com</a></p></li><li><p><a href="https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control" class="bare">https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control</a></p></li><li><p><a href="http://martinfowler.com/bliki/VersionControlTools.html" class="bare">http://martinfowler.com/bliki/VersionControlTools.html</a></p></li><li><p><a href="http://martinfowler.com/bliki/FeatureBranch.html" class="bare">http://martinfowler.com/bliki/FeatureBranch.html</a></p></li><li><p><a href="https://about.gitlab.com/2014/09/29/gitlab-flow/" class="bare">https://about.gitlab.com/2014/09/29/gitlab-flow/</a></p></li><li><p><a href="https://www.atlassian.com/git/tutorials/comparing-workflows" class="bare">https://www.atlassian.com/git/tutorials/comparing-workflows</a></p></li><li><p><a href="http://nvie.com/posts/a-successful-git-branching-model/" class="bare">http://nvie.com/posts/a-successful-git-branching-model/</a></p></li></ul></div></div></section><section id="intégration_continue"><h2>Intégration Continue</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="http://martinfowler.com/articles/continuousIntegration.html" class="bare">http://martinfowler.com/articles/continuousIntegration.html</a></p></li><li><p><a href="http://martinfowler.com/bliki/ContinuousDelivery.html" class="bare">http://martinfowler.com/bliki/ContinuousDelivery.html</a></p></li><li><p><a href="https://jaxenter.com/implementing-continuous-delivery-117916.html" class="bare">https://jaxenter.com/implementing-continuous-delivery-117916.html</a></p></li><li><p><a href="https://technologyconversations.com/2014/04/29/continuous-delivery-introduction-to-concepts-and-tools/" class="bare">https://technologyconversations.com/2014/04/29/continuous-delivery-introduction-to-concepts-and-tools/</a></p></li><li><p><a href="http://blog.arungupta.me/continuous-integration-delivery-deployment-maturity-model" class="bare">http://blog.arungupta.me/continuous-integration-delivery-deployment-maturity-model</a></p></li><li><p><a href="http://blog.crisp.se/2013/02/05/yassalsundman/continuous-delivery-vs-continuous-deployment" class="bare">http://blog.crisp.se/2013/02/05/yassalsundman/continuous-delivery-vs-continuous-deployment</a></p></li></ul></div></div></section><section id="docker_2"><h2>Docker</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://gounthar.github.io/cours/cnam-docker-2018" class="bare">https://gounthar.github.io/cours/cnam-docker-2018</a></p></li><li><p><a href="https://kodekloud.com/blog/docker-for-beginners/" class="bare">https://kodekloud.com/blog/docker-for-beginners/</a></p></li><li><p><a href="https://www.slideshare.net/dotCloud/why-docker" class="bare">https://www.slideshare.net/dotCloud/why-docker</a></p></li><li><p><a href="https://docs.docker.com/engine/reference/builder/" class="bare">https://docs.docker.com/engine/reference/builder/</a></p></li><li><p><a href="https://www.r-bloggers.com/2021/05/best-practices-for-r-with-docker/" class="bare">https://www.r-bloggers.com/2021/05/best-practices-for-r-with-docker/</a></p></li><li><p><a href="https://github.com/wagoodman/dive" class="bare">https://github.com/wagoodman/dive</a></p></li><li><p><a href="https://docs.docker.com/engine/tutorials/networkingcontainers/" class="bare">https://docs.docker.com/engine/tutorials/networkingcontainers/</a></p></li><li><p><a href="https://towardsdatascience.com/docker-networking-919461b7f498" class="bare">https://towardsdatascience.com/docker-networking-919461b7f498</a></p></li></ul></div></div></section></section>
