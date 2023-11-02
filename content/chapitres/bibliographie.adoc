@@ -29,7 +29,8 @@
 
 == Docker
 
-* https://gounthar.github.io/cours/cnam-docker-2018
+* https://labs.play-with-docker.com/
+* https://dduportal.github.io/cours/cnam-docker-2018
 * https://kodekloud.com/blog/docker-for-beginners/
 * https://www.slideshare.net/dotCloud/why-docker
 * https://docs.docker.com/engine/reference/builder/
@@ -37,3 +38,8 @@
 * https://github.com/wagoodman/dive
 * https://docs.docker.com/engine/tutorials/networkingcontainers/
 * https://towardsdatascience.com/docker-networking-919461b7f498
+* https://blog.stephane-robert.info/post/docker-buildkit-partie-1/
+
+== DevOps
+
+* https://blog.stephane-robert.info/docs/glossaire/introduction/
