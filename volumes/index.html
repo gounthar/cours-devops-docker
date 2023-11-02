@@ -1810,7 +1810,18 @@ RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="ulist"><ul><li class="fragment"><p>Ajoute des fichiers dans un dossier</p></li><li class="fragment"><p>Déclare ce dossier comme volume anonyme</p></li><li class="fragment"><p>Ajoute d&#8217;autres fichiers dans ce dossier</p></li></ul></div>
 <div class="paragraph fragment"><p><strong>Que verra-ton dans ce dossier au sein de nos containers ?</strong></p></div></div></section><section id="solution_travaux_pratiques_10" data-auto-animate><h2>✅ Solution travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Tout d&#8217;abord, créez un répertoire pour votre projet et placez-vous dedans.</p></div>
 <div class="paragraph fragment"><p>Créez un Dockerfile avec le contenu suivant :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">Unresolved directive in chapitres/volumes.adoc - include::../code-samples/volumes/tp10/Dockerfile[]</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18
+
+# Ajoutez des fichiers dans un dossier
+RUN mkdir /mon-dossier
+RUN echo "Contenu du fichier 1" &gt; /mon-dossier/fichier1.txt
+RUN echo "Contenu du fichier 2" &gt; /mon-dossier/fichier2.txt
+
+# Déclarez ce dossier comme un volume anonyme
+VOLUME ["/mon-dossier"]
+
+# Ajoutez d'autres fichiers dans ce dossier
+RUN echo "Nouveau contenu du fichier 3" &gt; /mon-dossier/fichier3.txt</code></pre></div></div>
 <div class="paragraph fragment"><p>Ensuite, vous pouvez créer une image Docker à partir de ce Dockerfile en exécutant la commande suivante dans le même répertoire que le Dockerfile :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t mon-image .</code></pre></div></div></div></section><section id="solution_travaux_pratiques_10_2" data-auto-animate><h2>✅ Solution travaux pratiques #10</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t mon-image .</code></pre></div></div>
 <div class="paragraph"><p>Assurez-vous que "mon-image" est le nom que vous souhaitez donner à votre image Docker.
