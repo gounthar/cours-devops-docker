@@ -5,7 +5,7 @@ image::1300236655-image2.jpeg[]
 [%auto-animate]
 == 🔴🔵🟢 3 types de gestion de données
 
-image::3_typesègestions_données.png[height=600]
+image::3_types_gestions_donnees.png[height=600]
 
 [.notes]
 --
