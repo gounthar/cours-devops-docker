@@ -1,506 +1,546 @@
+= Les volumes
 
-== Les volumes
+image::1300236655-image2.jpeg[]
 
-Docker 101
+[%auto-animate]
+== 🔴🔵🟢 3 types de gestion de données
 
+image::3_typesègestions_données.png[height=600]
 
-....
-1
-....
+[.notes]
+--
+Vue d'ensemble des trois types de gestion des données couramment utilisés dans Docker :
 
-image::Images/1300236655-image2.jpeg[]
+1. Mapping de Système de Fichiers (Filesystem Mapping) :
+**Description** : Le mappage de système de fichiers consiste à partager un répertoire de votre système hôte avec un conteneur Docker.
+Cela permet au conteneur d'accéder et de modifier des fichiers dans ce répertoire.
+**Utilisation** : Utile pour partager des fichiers ou des données de configuration avec un conteneur.
+Les données sont stockées sur le système hôte, mais sont accessibles depuis le conteneur.
+**Exemple** : `docker container run -v /chemin/du/systeme/hote:/chemin/dans/le/conteneur`
 
-== 3 types de gestion de données
+2. Volumes :
+**Description** : Les volumes sont un mécanisme de stockage persistant qui permet de stocker des données en dehors du système de fichiers du conteneur.
+Ils sont gérés par Docker et offrent une plus grande flexibilité que le simple mappage de système de fichiers.
+**Utilisation** : Idéaux pour stocker des données qui doivent survivre à l'arrêt ou à la suppression d'un conteneur.
+Les volumes sont indépendants du cycle de vie du conteneur.
+**Exemple** : `docker run -v nom_du_volume:/chemin/dans/le/conteneur`
 
-Docker 101
+3. Système de Fichiers RAM (RAM Filesystem) :
+**Description** : Il s'agit d'un système de fichiers temporaire stocké en mémoire RAM.
+Les données sont stockées de manière éphémère, ce qui signifie qu'elles sont perdues lorsque le conteneur est arrêté.
+**Utilisation** : Utile lorsque des données temporaires doivent être stockées en mémoire pour des performances élevées.
+Les données n'existent que tant que le conteneur est en cours d'exécution.
+**Exemple** : `docker run --tmpfs /chemin/dans/le/conteneur`
 
+En résumé, ces trois méthodes de gestion des données en Docker offrent des avantages différents en fonction des besoins spécifiques d'un conteneur. Le mappage de système de fichiers est utile pour partager des fichiers depuis le système hôte, les volumes sont idéaux pour la persistance des données, tandis que les systèmes de fichiers RAM sont parfaits pour des données temporaires à haute performance.
+--
 
-....
-2
-....
+[.columns]
+[%auto-animate]
+== 🔴🔵🟢 3 types de gestion de données
 
+[.column.is-one-third]
+--
+image::mapping_fs.png[]
+--
 
-== 3 types de gestion de données
+[.column]
+--
 
-Docker 101
+Partage d'un répertoire de votre système hôte avec un conteneur Docker.
 
+[%step]
+- Utile pour partager des fichiers ou des données de configuration avec un conteneur.
+[%step]
+- Données stockées sur le système hôte, mais accessibles depuis le conteneur.
 
-....
-2
-....
+[%step]
+[source,bash]
+----
+docker container run -v /chemin/du/systeme/hote:/chemin/dans/le/conteneur
+----
+--
 
+[.notes]
+--
+1. Mapping de Système de Fichiers (Filesystem Mapping) :
+**Description** : Le mappage de système de fichiers consiste à partager un répertoire de votre système hôte avec un conteneur Docker.
+Cela permet au conteneur d'accéder et de modifier des fichiers dans ce répertoire.
+**Utilisation** : Utile pour partager des fichiers ou des données de configuration avec un conteneur.
+Les données sont stockées sur le système hôte, mais sont accessibles depuis le conteneur.
+**Exemple** : `docker container run -v /chemin/du/systeme/hote:/chemin/dans/le/conteneur`
+--
 
-== 3 types de gestion de données
+[.columns]
+[%auto-animate]
+== 🔴🔵🟢 3 types de gestion de données
 
-Docker 101
+[.column.is-one-third]
+--
+image::volumes.png[]
+--
 
+[.column]
+--
+Stockage persistant => données en dehors du système de fichiers du conteneur.
 
-....
-4
-....
+[%step]
+- Utile pour stocker des données qui doivent survivre à l'arrêt ou à la suppression d'un conteneur.
+[%step]
+- Volumes indépendants du cycle de vie du conteneur.
 
-image::Images/1329201553-image3.png[]
+[%step]
+[source,bash]
+----
+docker container run -v nom_du_volume:/chemin/dans/le/conteneur
+----
+--
 
-== Mapping de FileSystem
+[.notes]
+--
+Volumes :
+**Description** : Les volumes sont un mécanisme de stockage persistant qui permet de stocker des données en dehors du système de fichiers du conteneur.
+Ils sont gérés par Docker et offrent une plus grande flexibilité que le simple mappage de système de fichiers.
+**Utilisation** : Idéaux pour stocker des données qui doivent survivre à l'arrêt ou à la suppression d'un conteneur.
+Les volumes sont indépendants du cycle de vie du conteneur.
+**Exemple** : `docker container run -v nom_du_volume:/chemin/dans/le/conteneur`
+--
 
-Docker 101
+[.columns]
+[%auto-animate]
+== 🔴🔵🟢 3 types de gestion de données
 
+[.column.is-one-third]
+--
+image::fs_ram.png[]
+--
 
-....
-5
-....
+[.column]
+--
 
-image::Images/293990221-image4.png[]
+Système de fichiers temporaire stocké en RAM.
 
-== Mapping de FileSystem
+[%step]
+- Utile lorsque des données temporaires doivent être stockées en mémoire pour des performances élevées.
+[%step]
+- Les données n'existent que tant que le conteneur est en cours d'exécution.
 
-**__"Créer une image avec les sources de mon applications web juste pour distribuer des ressources statiques via Apache ! Merci Docker !"__**
+[%step]
+[source,bash]
+----
+docker container run --tmpfs /chemin/dans/le/conteneur
+----
+--
+
+[.notes]
+--
+Système de Fichiers RAM (RAM Filesystem) :
+**Description** : Il s'agit d'un système de fichiers temporaire stocké en mémoire RAM.
+Les données sont stockées de manière éphémère, ce qui signifie qu'elles sont perdues lorsque le conteneur est arrêté.
+**Utilisation** : Utile lorsque des données temporaires doivent être stockées en mémoire pour des performances élevées.
+Les données n'existent que tant que le conteneur est en cours d'exécution.
+**Exemple** : `docker container run --tmpfs /chemin/dans/le/conteneur`
+
+En résumé, ces trois méthodes de gestion des données en Docker offrent des avantages différents en fonction des besoins spécifiques d'un conteneur. Le mappage de système de fichiers est utile pour partager des fichiers depuis le système hôte, les volumes sont idéaux pour la persistance des données, tandis que les systèmes de fichiers RAM sont parfaits pour des données temporaires à haute performance.
+--
+
+[%auto-animate]
+== 🔴🔵🟢 3 types de gestion de données
+
+image::1329201553-image3.png[]
+
+== 🗺️📂 Mapping de FileSystem
+
+image::293990221-image4.png[height=600]
+
+== 🗺️📂 Mapping de FileSystem
+
+**__"Créer une image avec les sources de mon application web juste pour distribuer des ressources statiques via Apache ! Merci Docker !"__**
 
 Un étudiant excédé
 
-Docker 101
+image::1105931517-image5.png[]
 
+== 🗺️📂 Mapping de FileSystem
 
-....
-6
-....
-
-image::Images/1105931517-image5.png[]
-
-== Mapping de FileSystem
-
-Docker 101
-
-
-....
-7
-....
-
-image::Images/1771886276-image6.png[]
+image::1771886276-image6.png[width=1000]
+[.small]
 Source : https://hub.docker.com/_/nginx
+[%step]
+image::383920810-image7.png[]
 
+== 🗺️📂 Mapping de FileSystem
 
-== Mapping de FileSystem
-
-Docker 101
-
-
-....
-7
-....
-
-image::Images/1771886276-image6.png[]
-Source : https://hub.docker.com/_/nginx
-
-image::Images/383920810-image7.png[]
-
-== Mapping de FileSystem
-
-Docker 101
-
-
-....
-8
-....
-
-
-....
--v /some/content:/usr/share/nginx/html:ro
-....
-
-
-....
--v ~/.bash_history:/.bash_history
-....
-
-
-....
-Le chemin dans la machine hôte doit être un chemin absolu !
-....
-
-
-....
-Partage de fichier
-....
-
-
-....
 Partage de dossier
-....
-
-
-== Les volumes
-
-Docker 101
-
-
-....
-9
-....
-
-image::Images/726805516-image8.png[]
-
-== Les volumes
-
-Il est possible de créer des "espaces mémoire" que l'on peut mettre à disposition des containers
-
-Docker 101
-
-
-....
-10
-....
-
-
-....
-$ docker volume create --name my-data
-$ docker run -v my-data:/data busybox ls /data
-....
-
-
-== Les volumes
-
-Il est possible de créer des "espaces mémoire" que l'on peut mettre à disposition des containers
-
-Docker 101
-
-
-....
-10
-....
-
-
-....
-$ docker volume create --name my-data
-$ docker run -v my-data:/data busybox ls /data
-....
-
-
-== Les volumes
-
-Il est possible de créer des "espaces mémoire" que l'on peut mettre à disposition des containers
-
-Docker 101
-
-
-....
-10
-....
-
-
-....
-$ docker volume create --name my-data
-$ docker run -v my-data:/data busybox ls /data
-....
-
-
-....
-Ce n'est plus un chemin absolu, mais juste le nom du volume
-....
-
-
-== Les volumes
-
-Docker 101
-
-
-....
-11
-....
-
-
-== Les volumes
-
-Docker 101
-
-
-....
-11
-....
-
-
-== Les volumes
-
-Docker 101
-
-
-....
-11
-....
-
-
-== Les volumes
-
-Docker 101
-
-
-....
-11
-....
-
-
-== Les volumes "anonymes"
-
-Docker 101
-
-
-....
-12
-....
-
-
-....
-FROM alpine:3.18
-WORKDIR /repertoire/travail
-VOLUME ["/data"]
-RUN echo hello > ./world.txt
-....
-
-
-....
-Dockerfile
-....
-
-
-== Les volumes "anonymes"
-
-Docker 101
-
-
-....
-12
-....
-
-
-....
-FROM alpine:3.18
-WORKDIR /repertoire/travail
-VOLUME ["/data"]
-RUN echo hello > ./world.txt
-....
-
-
-....
-Dockerfile
-....
-
-
-....
+[%step]
+image::partage_dossier.png[]
+
+[%step]
+Partage de fichier
+[%step]
+image::partage_fichier.png[]
+
+
+[%step]
+CAUTION: Le chemin dans la machine hôte doit être un chemin absolu !
+[%step]
+WARNING: L'exemple ci-dessus ne peut donc pas fonctionner
+
+== 📦📁 Les volumes
+
+image::726805516-image8.png[height=600]
+
+== 📦📁 Les volumes
+
+Il est possible de créer des "espaces mémoire" que l'on peut mettre à disposition des containers.
+
+[%step]
+[source,bash]
+----
+docker volume create --name my-data
+----
+[%step]
+[source,bash]
+----
+docker run -v my-data:/data busybox ls /data
+----
+
+[%step]
+CAUTION: *my_data* n'est plus un chemin absolu, mais juste le nom du volume
+
+== 📦📁 Les volumes
+
+Lister tous les volumes
+
+[source,bash]
+----
+docker volume ls
+----
+
+[%step]
+Supprimer un volume
+[%step]
+[source,bash]
+----
+docker volume rm my-data
+----
+[%step]
+Inspecter un volume
+[%step]
+[source,bash]
+----
+docker volume inspect my-data
+----
+
+== 📦📁🕶️ Les volumes "anonymes"
+
+[source,docker]
+----
+include::../code-samples/volumes/anonymes/Dockerfile[]
+----
+
+[%step]
 Création d'un volume anonyme mappé sur le répertoire /data des containers basés sur cette image
-....
 
-
-== FileSystem en RAM
-
-Docker 101
-
-
-....
-13
-....
-
-
-....
-$ docker container run 
--d 
---read-only 
---tmpfs /run/httpd 
---tmpfs /tmp 
-httpd
-....
-
-
-....
-Les données sont perdues à l'arrêt du container.
-....
-
-
-== FileSystem en RAM
-
-Docker 101
-
-
-....
-13
-....
-
-
-....
-$ docker container run 
--d 
---read-only 
---tmpfs /run/httpd 
---tmpfs /tmp 
-httpd
-....
-
-
-....
-Le container ne peut pas écrire sur le FS
-....
-
-
-....
-Les données sont perdues à l'arrêt du container.
-....
-
-
-== FileSystem en RAM
-
-Docker 101
-
-
-....
-13
-....
-
-
-....
-$ docker container run 
--d 
---read-only 
---tmpfs /run/httpd 
---tmpfs /tmp 
-httpd
-....
-
-
-....
-Le container ne peut pas écrire sur le FS
-....
-
-
-....
-Sauf là et là
-....
-
-
-....
-Les données sont perdues à l'arrêt du container.
-....
-
-
-== Bilan de compétences
-
-Docker 101
-
-
-....
-14
-....
-
-
-== Bilan de compétences
-
-Création d'images
-
-Création des containers
-
-* cycle de vie
-
-* nommage
-
-* débug
-
-* réseau
-
-* volumes
-
-Docker 101
-
-
-....
-15
-....
-
-
-== Bilan de compétences
-
-Création d'images
-
-Création des containers
-
-* cycle de vie
-
-* nommage
-
-* débug
-
-* réseau
-
-* volumes
-
-Docker 101
-
-
-....
-15
-....
-
-image::Images/1541909532-image9.png[]
-image::Images/1541909532-image9.png[]
-image::Images/1541909532-image9.png[]
-image::Images/1541909532-image9.png[]
-image::Images/1541909532-image9.png[]
-image::Images/1541909532-image9.png[]
-image::Images/1541909532-image9.png[]
-
-== Travaux pratiques #8
-
-Docker 101
-
-
-....
-16
-....
+[%auto-animate]
+== 💾🧠 FileSystem en RAM
+
+[source,bash]
+----
+docker container run
+  -d
+  --read-only
+  --tmpfs /run/httpd
+  --tmpfs /tmp
+  httpd
+----
+
+[%step]
+CAUTION: Les données sont perdues à l'arrêt du container.
+
+[%auto-animate]
+== 💾🧠 FileSystem en RAM
+
+image::volumes-output21_with_transparency.png[]
+
+CAUTION: Les données sont perdues à l'arrêt du container.
+
+[.notes]
+--
+[source,bash]
+----
+for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -transparent white -resize x1080 volumes-output${i}_with_transparency.png; done
+----
+--
+
+[%auto-animate]
+== 💾🧠 FileSystem en RAM
+
+image::volumes-output22_with_transparency.png[]
+
+CAUTION: Les données sont perdues à l'arrêt du container.
+
+[.notes]
+--
+[source,bash]
+----
+for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -transparent white -resize x1080 volumes-output${i}_with_transparency.png; done
+----
+--
+
+[%auto-animate]
+== 📊📝 Bilan de compétences
+
+* Création d'images
+* Création des containers
+** cycle de vie
+** nommage
+** débug
+** réseau
+** volumes
+
+[%auto-animate]
+== 📊📝 Bilan de compétences
+
+* Création d'images ✅
+* Création des containers ✅
+** cycle de vie ✅
+** nommage ✅
+** débug ✅
+** réseau  ✅
+** volumes ✅
+
+== 🎓 Travaux pratiques #8
 
 Lancer un container `nginx `et lui faire distribuer une page web externe au container.
 
-image::Images/1763880002-image10.png[]
+image::1763880002-image10.png[]
 
-== Travaux pratiques #9
+[%auto-animate]
+== ✅ Solution travaux pratiques #8
 
-Docker 101
+[.title]
+En utilisant un montage de répertoire (Bind Mount) :
 
+[%step]
+Utilisez un montage de répertoire pour mapper un répertoire de l'hôte vers le conteneur Nginx.
+[%step]
+Placez vos fichiers HTML dans un répertoire sur votre machine hôte, puis mappez ce répertoire vers le conteneur Nginx.
 
-....
-17
-....
+[%step]
+[source,bash]
+----
+docker container run -d -p 80:80 --name mon-nginx -v /chemin/vers/la/page/web/sur/lhote:/usr/share/nginx/html nginx
+----
+[%step]
+Remplacez `/chemin/vers/la/page/web/sur/lhote` par le chemin réel vers le répertoire contenant vos fichiers de la page web sur l'hôte.
 
+[%auto-animate]
+== ✅ Solution travaux pratiques #8
+[.title]
+En utilisant un volume nommé (Named Volume) :
 
-....
-Etapes
-....
+[%step]
+Créez un volume nommé et copiez vos fichiers de la page web dedans.
 
-Créer un volume nommé "data"
+[%step]
+Montez ce volume nommé dans le conteneur Nginx.
 
-Démarrer un container attaché à ce volume
+[%step]
+Tout d'abord, créez un volume nommé :
+[%step]
+[source,bash]
+----
+docker volume create mon-nginx-html
+----
+[%step]
+Copiez vos fichiers de la page web dans ce volume :
 
-Lancer un processus qui écrit un fichier dans le volume
+[%step]
+[source,bash]
+----
+docker container run --rm \
+  --volume mon-nginx-html:/cible \   # Montez le volume nommé "mon-nginx-html" dans le conteneur sous le répertoire "/cible".
+  --workdir /cible \                # Définissez le répertoire de travail à "/cible" dans le conteneur.
+  busybox cp -r /chemin/vers/la/page/web/sur/lhote .   # Copiez récursivement le contenu depuis "/chemin/vers/la/page/web/sur/lhote" dans le répertoire actuel du conteneur.
+----
+[%step]
+Maintenant, lancez le conteneur Nginx et montez le volume nommé :
 
-Démarrer un second container attaché à ce volume
+[%step]
+[source,bash]
+----
+docker container run -d -p 80:80 --name mon-nginx -v mon-nginx-html:/usr/share/nginx/html nginx
+----
 
-Lire les données du volume depuis le second container
+== 🎓 Travaux pratiques #9
+[.title]
+Étapes:
+[%step]
+* Créer un volume nommé "data"
+* Démarrer un container attaché à ce volume
+* Lancer un processus qui écrit un fichier dans le volume
+* Démarrer un second container attaché à ce volume
+* Lire les données du volume depuis le second container
+* Supprimer le volume
 
-Supprimer le volume
+== ✅ Solution travaux pratiques #9
 
+Créer un volume nommé "data" :
+[%step]
+[source,bash]
+----
+docker volume create data
+----
+[%step]
+Démarrer un premier conteneur attaché à ce volume :
+[%step]
+[source,bash]
+----
+docker container run -it --name premier-container -v data:/donnees busybox
+----
+[%step]
+Dans le premier conteneur, lancez un processus qui écrit un fichier dans le volume (par exemple, un fichier texte) :
+[%step]
+[source,bash]
+----
+echo "Données du premier conteneur" > /donnees/mon-fichier.txt
+----
+[%step]
+Quittez le premier conteneur.
+[%step]
+Démarrer un second conteneur attaché au même volume :
+[%step]
+[source,bash]
+----
+docker container run -it --name second-container -v data:/donnees busybox
+----
 
-== Travaux pratiques #10
+== ✅ Solution travaux pratiques #9
 
-Docker 101
+Démarrer un second conteneur attaché au même volume :
+[source,bash]
+----
+docker container run -it --name second-container -v data:/donnees busybox
+----
+Dans le second conteneur, lisez les données du volume (le fichier texte) :
+[%step]
+[source,bash]
+----
+cat /donnees/mon-fichier.txt
+----
+[%step]
+Vous devriez voir le contenu du fichier affiché à l'écran.
+[%step]
+Quittez le second conteneur.
+[%step]
+Vous pouvez maintenant supprimer le volume "data" car vous n'en avez plus besoin :
+[%step]
+[source,bash]
+----
+docker volume rm data
+----
 
+== 🎓  Travaux pratiques #10
+Écrire un Dockerfile qui:
+[%step]
+* Ajoute des fichiers dans un dossier
+* Déclare ce dossier comme volume anonyme
+* Ajoute d'autres fichiers dans ce dossier
 
-....
-18
-....
-
-écrire un Dockerfile qui:
-
-ajoute des fichiers dans un dossier
-
-déclare ce dossier comme volume anonyme
-
-ajoute d'autres fichiers dans ce dossier
-
+[%step]
 **Que verra-ton dans ce dossier au sein de nos containers ?**
 
+[%auto-animate]
+== ✅ Solution travaux pratiques #10
+
+Tout d'abord, créez un répertoire pour votre projet et placez-vous dedans.
+[%step]
+Créez un Dockerfile avec le contenu suivant :
+
+[%step]
+[source,dockerfile]
+----
+include::../code-samples/volumes/tp10/Dockerfile[]
+----
+
+[%step]
+Ensuite, vous pouvez créer une image Docker à partir de ce Dockerfile en exécutant la commande suivante dans le même répertoire que le Dockerfile :
+
+[%step]
+[source,bash]
+----
+docker image build -t mon-image .
+----
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #10
+
+[source,bash]
+----
+docker image build -t mon-image .
+----
+Assurez-vous que "mon-image" est le nom que vous souhaitez donner à votre image Docker.
+Après avoir créé l'image, vous pouvez exécuter un conteneur basé sur cette image :
+
+[%step]
+[source,bash]
+----
+docker container run -it mon-image
+----
+
+[%step]
+Lorsque vous êtes dans le conteneur, accédez au dossier /mon-dossier :
+
+[%step]
+[source,bash]
+----
+cd /mon-dossier
+----
+[%step]
+Vous verrez les fichiers "fichier1.txt", "fichier2.txt" et "fichier3.txt" dans ce dossier.
+
+[%step]
+[source,bash]
+----
+ls
+----
+[%step]
+[source,bash]
+----
+fichier1.txt  fichier2.txt  fichier3.txt
+----
+[%step]
+[source,bash]
+----
+cat *
+----
+[%step]
+[source,bash]
+----
+Contenu du fichier 1
+Contenu du fichier 2
+Nouveau contenu du fichier 3
+----
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #10
+[source,bash]
+----
+cat *
+----
+[source,bash]
+----
+Contenu du fichier 1
+Contenu du fichier 2
+Nouveau contenu du fichier 3
+----
+
+[%step]
+Vous devriez voir la liste des fichiers et leurs contenus.
+
+[%step]
+Cela montre que les fichiers que vous avez ajoutés dans le dossier, même après avoir déclaré ce dossier comme un volume anonyme, restent accessibles dans le conteneur.
+
+[%step]
+C'est ainsi que vous pouvez ajouter des fichiers dans un dossier, le déclarer comme un volume anonyme, puis ajouter d'autres fichiers dans ce dossier tout en y ayant accès à l'intérieur du conteneur.

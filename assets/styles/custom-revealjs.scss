@@ -45,6 +45,19 @@
 .reveal .controls section[data-state="dark-background"]{
   color: #ffffff; }
 
+
+.reveal section[data-state="intellij-background"] p,
+.reveal section[data-state="intellij-background"] ul,
+.reveal section[data-state="intellij-background"] li,
+.reveal section[data-state="intellij-background"] small {
+  color: #ffffff; }
+.reveal section[data-state="intellij-background"] h1,
+.reveal section[data-state="intellij-background"] h2,
+.reveal section[data-state="intellij-background"] div.title p {
+  color: #ffffff; }
+.reveal .controls section[data-state="intellij-background"]{
+  color: #ffffff; }
+
 section.dark.background {
   color: #F0F1EB;
 }
@@ -63,6 +76,22 @@ section.container.background h2 {
 section.container.background p {
   color: #FFFFFF;
   background-color: #A89993; /* Background color */
+  display: inline-block; /* Make the background close to the text */
+}
+
+section.intellij.background {
+  color: #FFFFFF;
+}
+
+section.intellij.background h2 {
+  color: #FFFFFF;
+  background-color: #2b2d30; /* Background color */
+  display: inline-block; /* Make the background close to the text */
+}
+
+section.intellij.background p {
+  color: #FFFFFF;
+  background-color: #2b2d30; /* Background color */
   display: inline-block; /* Make the background close to the text */
 }
 

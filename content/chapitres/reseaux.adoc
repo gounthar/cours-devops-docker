@@ -1,1 +1,530 @@
-= Réseaux
+= Réseaux et Docker
+
+[.title]
+Interagir avec le Docker ENGINE
+
+image::2375.png[]
+
+[%auto-animate]
+== 🤝 Interagir avec le Docker Engine
+
+image::reseaux-output2_with_transparency.png[height=600]
+
+[%auto-animate]
+== 🤝 Interagir avec le Docker Engine
+
+image::reseaux-output3_with_transparency.png[height=600]
+
+[%auto-animate]
+== 🤝 Interagir avec le Docker Engine
+
+image::reseaux-output4_with_transparency.png[height=600]
+
+[%auto-animate]
+== 🤝 Interagir avec le Docker Engine
+
+image::reseaux-output5_with_transparency.png[height=600]
+
+[.notes]
+--
+La communication d'un navigateur avec le moteur Docker sur le port 2375 peut se faire via l'API Docker exposée sur ce port. Voici comment cela fonctionne :
+
+Exposer l'API Docker sur le port 2375 : Tout d'abord, pour permettre la communication du navigateur avec le moteur Docker, vous devez vous assurer que l'API Docker est exposée sur le port 2375. Vous pouvez spécifier cela lors de la configuration du moteur Docker. Par exemple, en utilisant l'option -H :
+
+[source,bash]
+----
+dockerd -H tcp://0.0.0.0:2375
+----
+Cela signifie que le moteur Docker écoutera les requêtes sur le port 2375.
+
+Utilisation de l'API Docker : Une fois que l'API Docker est exposée, vous pouvez effectuer des opérations Docker en utilisant des requêtes HTTP. Le navigateur peut envoyer des requêtes HTTP directement à l'adresse IP du serveur Docker et au port 2375.
+
+Par exemple, pour lister les conteneurs en cours d'exécution, vous pouvez utiliser une requête HTTP GET :
+
+[source,httprequest]
+----
+GET http://adresse_ip_du_serveur_docker:2375/containers/json
+----
+Le serveur Docker répondra avec les détails des conteneurs en cours d'exécution au format JSON.
+
+Sécurité : Il est important de noter que l'exposition de l'API Docker sur un port non sécurisé peut présenter des risques de sécurité, car n'importe qui avec accès au port 2375 peut potentiellement contrôler le moteur Docker. Pour des raisons de sécurité, il est recommandé de limiter l'accès à l'API Docker en utilisant des mécanismes d'authentification, d'autorisation et de chiffrement.
+
+Outils tiers : En pratique, les navigateurs ne sont pas souvent utilisés pour interagir directement avec l'API Docker. Au lieu de cela, des outils tiers, des bibliothèques ou des clients Docker sont souvent utilisés pour simplifier les opérations Docker et fournir une couche de sécurité supplémentaire.
+--
+
+[%auto-animate]
+== 🤝 Interagir avec le Docker Engine
+
+image::reseaux-output6_with_transparency.png[height=600]
+
+[.notes]
+--
+[source,bash]
+----
+for i in {2..6}; do convert Diapositive${i}.PNG -crop 9004x5341+1968+1654 -transparent white -resize x1080 reseaux-output${i}_with_transparency.png; done
+----
+
+--
+
+[.intellij.background]
+== Ex : intégration IntelliJ
+
+image::intellij-docker.png[background, size=cover, position=left, opacity=0.1]
+
+
+== Les réseaux de containers
+
+image::1435904594-image8.png[]
+
+[%auto-animate]
+== 🗺️🔀 Mapping de Port : Rappel
+
+[source,bash]
+----
+docker container run –d -p 8000:80 nginx
+----
+
+[%auto-animate]
+== 🗺️🔀 Mapping de Port : Rappel
+
+image::reseaux-output11_with_transparency.png[]
+
+[%auto-animate]
+== 🗺️🔀 Mapping de Port : Rappel
+
+image::reseaux-output12_with_transparency.png[]
+
+[%step]
+[source,bash]
+----
+curl -I --noproxy '*' http://172.17.0.2:80
+It works!
+----
+
+[%step]
+[source,bash]
+----
+curl -I --noproxy '*' http://localhost:8000
+It works too!
+----
+
+[.notes]
+--
+[source,bash]
+----
+for i in {11..12}; do convert Diapositive${i}.PNG -crop 8833x2599+2250+1833 -transparent white -resize x1080 reseaux-output${i}_with_transparency.png; done
+----
+--
+
+[%auto-animate]
+== 🌐 Les réseaux
+
+[source,bash]
+----
+docker network ls
+----
+
+[%step]
+[source,bash]
+----
+NETWORK ID     NAME                                                             DRIVER    SCOPE
+11b7af7b16e4   bridge                                                           bridge    local
+1112832d205b   cours-devops-docker_default                                      bridge    local
+7ab15cc28199   docker_volumes-backup-extension-desktop-extension_default        bridge    local
+34caf4674478   host                                                             host      local
+2a179c7be3b3   none                                                             null      local
+0c577a792771   portainer_portainer-docker-extension-desktop-extension_default   bridge    local
+----
+
+[%step]
+image::les_réseaux.png[]
+
+[.notes]
+--
+Dans le contexte de la commande "docker network ls", la colonne "DRIVER" (pilote) fait référence au pilote réseau utilisé pour créer le réseau Docker. Voici quelques explications concernant les valeurs possibles de cette colonne :
+
+1. **Local (bridge)** : Un réseau avec une portée "local" est généralement un réseau de pont (bridge).
+Il n'est accessible qu'à l'intérieur de l'hôte Docker où il a été créé.
+Les conteneurs connectés au même réseau local peuvent communiquer entre eux, mais ce réseau est isolé des autres hôtes Docker ou réseaux externes.
+2. **Host (hôte)** : Un réseau avec une portée "host" n'offre aucune isolation réseau, ce qui signifie qu'il est accessible depuis l'hôte où Docker est en cours d'exécution.
+Les conteneurs sur ce réseau partagent la pile réseau de l'hôte et peuvent accéder directement aux ressources de l'hôte.
+3. **Null (null)** : Un réseau avec une portée "null" est un type de réseau qui ne fournit aucune connectivité.
+C'est essentiellement un réseau sans portée, et il est utilisé pour les conteneurs qui n'ont pas besoin d'un accès réseau.
+
+D'autres pilotes de réseau peuvent également être disponibles, en fonction de la configuration de Docker et des plugins installés.
+Chaque pilote offre des fonctionnalités et des options de configuration spécifiques pour répondre aux besoins de divers cas d'utilisation.
+
+La colonne "DRIVER" vous permet de comprendre quel pilote réseau est associé à chaque réseau Docker et comment il fonctionne.
+Elle joue un rôle essentiel dans la définition de la manière dont les conteneurs communiquent entre eux et avec le réseau externe.
+--
+
+
+[%auto-animate]
+== 🌐 Les réseaux
+
+[source,bash]
+----
+docker network ls
+----
+
+[source,bash]
+----
+NETWORK ID     NAME                                                             DRIVER    SCOPE
+11b7af7b16e4   bridge                                                           bridge    local
+1112832d205b   cours-devops-docker_default                                      bridge    local
+7ab15cc28199   docker_volumes-backup-extension-desktop-extension_default        bridge    local
+34caf4674478   host                                                             host      local
+2a179c7be3b3   none                                                             null      local
+0c577a792771   portainer_portainer-docker-extension-desktop-extension_default   bridge    local
+----
+
+image::les_réseaux.png[]
+
+[.notes]
+--
+Le terme "SCOPE" dans le contexte de "docker network ls" se réfère au domaine de validité du réseau Docker. Voici une explication en français :
+
+1. **Local** : Lorsque vous voyez "local" dans la colonne "SCOPE", cela signifie que le réseau Docker a une portée locale.
+Les réseaux ayant une portée locale sont accessibles uniquement sur l'hôte où ils ont été créés.
+Les conteneurs sur cet hôte peuvent se connecter au réseau, mais ils ne peuvent pas le faire depuis d'autres hôtes.
+2. **Global** : En revanche, si vous voyez "global" dans la colonne "SCOPE", cela signifie que le réseau Docker a une portée globale.
+Cela permet aux conteneurs de se connecter à ce réseau depuis d'autres hôtes de votre environnement Docker.
+
+Ainsi, la valeur "SCOPE" vous indique si un réseau Docker est limité à un seul hôte (portée locale) ou s'il est accessible depuis d'autres hôtes (portée globale).
+La portée détermine la manière dont les conteneurs peuvent communiquer avec ce réseau, en fonction de la configuration de Docker.
+--
+
+== 🔍🌐 Les réseaux : inspection
+
+[source,bash]
+----
+docker network inspect bridge
+----
+
+[%step]
+[source,bash]
+----
+[
+    {
+        "Name": "bridge",
+        "Id": "11b7af7b16e4cf9fe42733aa1b6900ed876407e3b55e692c9dfe03505e2af19f",
+        "Created": "2023-10-31T15:08:44.054140179Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.17.0.0/16",
+                    "Gateway": "172.17.0.1"
+                }
+            ]
+        },
+        ...
+----
+
+[.notes]
+--
+Lorsque vous exécutez la commande "docker network inspect bridge," vous obtenez des informations sur le réseau "bridge" dans Docker.
+
+Voici ce que chaque élément signifie :
+
+1. **Name (Nom)** : C'est le nom du réseau, dans ce cas, "bridge." Docker attribue un nom par défaut à ce réseau, qui est utilisé par les conteneurs pour communiquer entre eux.
+2. **Id (Identifiant)** : C'est un identifiant unique attribué au réseau Docker, utilisé en interne par Docker pour le gérer. Il est généré automatiquement.
+3. **Created (Créé)** : Cette date indique quand le réseau a été créé. Cela peut être utile pour suivre l'historique des opérations Docker.
+4. **Scope (Portée)** : Dans cet exemple, la portée est "local," ce qui signifie que le réseau "bridge" est uniquement accessible localement sur l'hôte Docker. Les conteneurs sur cet hôte peuvent se connecter au réseau "bridge," mais les conteneurs sur d'autres hôtes Docker ne le peuvent pas.
+5. **Driver (Pilote)** : Le pilote du réseau "bridge" est "bridge." C'est le pilote par défaut utilisé pour connecter les conteneurs sur un même hôte.
+6. **EnableIPv6 (Activer IPv6)** : Dans cet exemple, la valeur est "false," ce qui signifie que l'IPv6 n'est pas activé sur ce réseau. Docker prend en charge à la fois l'IPv4 et l'IPv6.
+7. **IPAM (IP Address Management - Gestion des adresses IP)** : C'est la section qui gère les adresses IP pour le réseau. Dans cet exemple, le pilote est "default," ce qui signifie que Docker utilise ses paramètres par défaut pour gérer les adresses IP.
+8. **Subnet (Sous-réseau)** : C'est l'intervalle d'adresses IP utilisé par les conteneurs connectés à ce réseau. Dans cet exemple, le sous-réseau est "172.17.0.0/16," ce qui signifie que les adresses IP de ce réseau sont comprises entre 172.17.0.1 et 172.17.255.254.
+9. **Gateway (Passerelle)** : Il s'agit de l'adresse IP de la passerelle utilisée par les conteneurs pour accéder à d'autres réseaux ou à Internet. Dans ce cas, la passerelle est "172.17.0.1."
+
+Ces informations fournissent un aperçu de la configuration du réseau "bridge" dans Docker.
+--
+
+== 🌐✨ Les réseaux : création
+
+[source,bash]
+----
+docker network create mon-reseau
+----
+
+[%step]
+[source,bash]
+----
+docker network ls
+----
+
+[%step]
+[source,bash]
+----
+NETWORK ID     NAME                                                             DRIVER    SCOPE
+11b7af7b16e4   bridge                                                           bridge    local
+1112832d205b   cours-devops-docker_default                                      bridge    local
+7ab15cc28199   docker_volumes-backup-extension-desktop-extension_default        bridge    local
+34caf4674478   host                                                             host      local
+46953dc9b3d5   mon-reseau                                                       bridge    local
+2a179c7be3b3   none                                                             null      local
+0c577a792771   portainer_portainer-docker-extension-desktop-extension_default   bridge    local
+----
+
+[.notes]
+--
+Lorsque vous exécutez la commande "docker network create mon-reseau," vous créez un nouveau réseau Docker avec le nom "mon-reseau." Voici ce que chaque élément signifie :
+
+1. **NETWORK ID (Identifiant du réseau)** : C'est un identifiant unique attribué au réseau que Docker utilise en interne pour le gérer. Il est généré automatiquement.
+2. **NAME (Nom)** : Il s'agit du nom que vous avez choisi pour votre réseau, dans ce cas, "mon-reseau."
+3. **DRIVER (Pilote)** : Le pilote de ce réseau est "bridge." Le pilote "bridge" est utilisé pour connecter des conteneurs sur le même hôte.
+4. **SCOPE (Portée)** : Dans cet exemple, la portée est "local," ce qui signifie que le réseau "mon-reseau" est uniquement accessible localement sur l'hôte Docker. Les conteneurs sur cet hôte peuvent se connecter à "mon-reseau," mais les conteneurs sur d'autres hôtes Docker ne le peuvent pas.
+
+Ensuite, lorsque vous exécutez "docker network ls," vous obtenez une liste de tous les réseaux Docker existants, y compris celui que vous venez de créer ("mon-reseau").
+Vous pouvez voir les détails de ce réseau dans le tableau, y compris son identifiant, son nom, son pilote, et sa portée.
+
+En résumé, avec ces commandes, vous avez créé un nouveau réseau Docker nommé "mon-reseau" qui peut être utilisé pour connecter des conteneurs sur le même hôte.
+--
+
+== 🐳🔗 Attacher un container à un réseau particulier
+
+[source,bash]
+----
+docker run –d --net=mon-reseau --name=app img
+----
+
+[%step]
+Il est opportun de nommer un container quand on l'attache à un réseau.
+
+[%step]
+Docker fournit un DNS interne dans les réseaux custom. Les containers d'un même réseau peuvent se "voir" et "s'appeler" par leur noms.
+
+[%auto-animate]
+== 🖥️🔍 MicroDNS
+
+[source,bash]
+----
+docker network create mynet
+----
+
+[%step]
+[source,bash]
+----
+docker container run -d --name web --net mynet nginx
+----
+
+[%step]
+[source,bash]
+----
+docker container run --net mynet alpine ping web
+----
+
+[%step]
+[source,bash]
+----
+PING web (172.21.0.2): 56 data bytes
+64 bytes from 172.21.0.2: seq=0 ttl=64 time=0.442 ms
+64 bytes from 172.21.0.2: seq=1 ttl=64 time=0.105 ms
+64 bytes from 172.21.0.2: seq=2 ttl=64 time=0.099 ms
+64 bytes from 172.21.0.2: seq=3 ttl=64 time=0.150 ms
+64 bytes from 172.21.0.2: seq=4 ttl=64 time=0.114 ms
+64 bytes from 172.21.0.2: seq=5 ttl=64 time=0.098 ms
+64 bytes from 172.21.0.2: seq=6 ttl=64 time=0.099 ms
+64 bytes from 172.21.0.2: seq=7 ttl=64 time=0.100 ms
+64 bytes from 172.21.0.2: seq=8 ttl=64 time=0.114 ms
+64 bytes from 172.21.0.2: seq=9 ttl=64 time=0.097 ms
+^C
+--- web ping statistics ---
+10 packets transmitted, 10 packets received, 0% packet loss
+round-trip min/avg/max = 0.097/0.141/0.442 ms
+----
+
+[%auto-animate]
+== 🖥️🔍 MicroDNS
+
+image::appeler_son_voisin.png[height=600]
+
+== 📶🔌 Se connecter à un réseau
+
+[source,bash]
+----
+docker network connect mynet myapp
+----
+
+[%step]
+Cette commande permet d'attacher un container à un réseau après sa création.
+
+
+== 🎓 Travaux pratiques #11
+
+Étapes:
+
+[%step]
+* Lister et inspecter les réseaux existants
+* Lancer un container `nginx `nommé "web1"
+* A quel réseau est-il attaché ?
+* Créer un réseau de type bridge et l'inspecter
+* Lancer un container `nginx` nommé "web2" et l'attacher au réseau créé
+* L'inspection confirme-t-elle l'attachement ?
+* Lancer un bash dans le container "web1"
+* Est-ce que "web1" peut voir "web2" ?
+* Corriger pour que ce soit le cas
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #11
+
+Étape 1 : Lister et inspecter les réseaux existants
+
+[source,bash]
+----
+# Liste tous les réseaux Docker existants
+docker network ls
+
+# Inspecte un réseau spécifique (par exemple, le réseau bridge, d'autres réseaux peuvent être inspectés)
+docker network inspect bridge
+----
+
+[%step]
+Étape 2 : Lancer un container "nginx" nommé "web1"
+[%step]
+[source,bash]
+----
+# Lance un conteneur "nginx" nommé "web1"
+docker container run --name web1 -d nginx
+----
+
+[%step]
+Étape 3 : Vérifier le réseau auquel "web1" est attaché
+[%step]
+[source,bash]
+----
+# Récupère l'identifiant de réseau complet pour le container "web1"
+network_id=$(docker container inspect -f '{{.NetworkSettings.Networks.bridge.NetworkID}}' web1)
+
+# Raccourcit l'identifiant du réseau aux premiers 12 caractères
+shortened_network_id=$(echo $network_id | cut -c 1-12)
+
+# Liste tous les réseaux docker, en filtrant par l'identifiant du réseau
+docker network ls --format "table {{.ID}}\t{{.Name}}" | awk -v network_id="$shortened_network_id" '$1 == network_id {print $2}'
+----
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #11
+
+Étape 3 : Vérifier le réseau auquel "web1" est attaché
+[source,bash]
+----
+# Récupère l'identifiant de réseau complet pour le container "web1"
+network_id=$(docker container inspect -f '{{.NetworkSettings.Networks.bridge.NetworkID}}' web1)
+
+# Raccourcit l'identifiant du réseau aux premiers 12 caractères
+shortened_network_id=$(echo $network_id | cut -c 1-12)
+
+# Liste tous les réseaux docker, en filtrant par l'identifiant du réseau
+docker network ls --format "table {{.ID}}\t{{.Name}}" | awk -v network_id="$shortened_network_id" '$1 == network_id {print $2}'
+----
+[source,bash]
+----
+bridge
+----
+
+[%step]
+Étape 4 : Créer un réseau de type bridge et l'inspecter
+[%step]
+[source,bash]
+----
+# Crée un réseau Docker de type bridge nommé "mon-reseau"
+docker network create mon-reseau
+
+# Inspecte le réseau "mon-reseau"
+docker network inspect mon-reseau
+----
+
+[%step]
+Étape 5 : Lancer un container "nginx" nommé "web2" et l'attacher au réseau créé
+[%step]
+[source,bash]
+----
+# Lance un conteneur "nginx" nommé "web2" et l'attache au réseau "mon-reseau"
+docker container run --name web2 -d --network mon-reseau nginx
+----
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #11
+
+Étape 5 : Lancer un container "nginx" nommé "web2" et l'attacher au réseau créé
+[source,bash]
+----
+# Lance un conteneur "nginx" nommé "web2" et l'attache au réseau "mon-reseau"
+docker container run --name web2 -d --network mon-reseau nginx
+----
+
+Étape 6 : Vérifier l'attachement du container "web2" au réseau
+[%step]
+[source,bash]
+----
+# Inspecte le conteneur "web2" pour vérifier le réseau auquel il est attaché
+docker container inspect web2 | grep NetworkMode
+----
+
+[%step]
+Étape 7 : Lancer un bash dans le container "web1"
+[%step]
+[source,bash]
+----
+# Lance un shell interactif dans le conteneur "web1"
+docker container exec -it web1 bash
+----
+
+[%step]
+Étape 8 : Vérifier si "web1" peut voir "web2"
+[%step]
+[source,bash]
+----
+# À l'intérieur du conteneur "web1," essayez de faire une requête HTTP vers "web2"
+curl web2
+----
+[%step]
+[source,bash]
+----
+curl: (6) Could not resolve host: web2
+----
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #11
+
+Étape 9 : Corriger pour permettre la communication entre "web1" et "web2"
+[%step]
+[source,bash]
+----
+# Sortez du shell du conteneur "web1" en tapant "exit"
+
+# Attachez "web1" au même réseau "mon-reseau"
+docker network connect mon-reseau web1
+----
+[%step]
+Après avoir suivi ces étapes, les conteneurs "web1" et "web2" devraient être attachés au même réseau "mon-reseau" et être capables de communiquer entre eux.
+
+[%step]
+[source,bash]
+----
+# Lance un shell interactif dans le conteneur "web1"
+docker container exec -it web1 bash
+----
+
+[%step]
+[source,bash]
+----
+# À l'intérieur du conteneur "web1," essayez de faire une requête HTTP vers "web2"
+curl web2
+----
+
+[%step]
+[source,html]
+----
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+[...]
+----
