@@ -7,6 +7,7 @@
 * https://en.wikipedia.org/wiki/POSIX
 * https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop
 * https://linuxhandbook.com/linux-directory-structure/
+* https://blog.stephane-robert.info/docs/admin-serveurs/linux/script-shell/
 
 == Git / VCS
 
@@ -17,6 +18,7 @@
 * https://about.gitlab.com/2014/09/29/gitlab-flow/
 * https://www.atlassian.com/git/tutorials/comparing-workflows
 * http://nvie.com/posts/a-successful-git-branching-model/
+* https://blog.stephane-robert.info/docs/developper/version/git/introduction/
 
 == Intégration Continue
 
