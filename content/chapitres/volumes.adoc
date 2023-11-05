@@ -5,7 +5,7 @@ image::1300236655-image2.jpeg[]
 [%auto-animate]
 == 🔴🔵🟢 3 types de gestion de données
 
-image::3_typesègestions_données.png[height=600]
+image::3_types_gestions_donnees.png[height=600]
 
 [.notes]
 --
@@ -306,8 +306,8 @@ for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -tra
 * Création des containers ✅
 ** cycle de vie ✅
 ** nommage ✅
-** débug
-** réseau
+** débug ✅
+** réseau  ✅
 ** volumes ✅
 
 == 🎓 Travaux pratiques #8
