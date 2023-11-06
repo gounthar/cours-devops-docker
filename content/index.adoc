@@ -37,7 +37,6 @@ include::./chapitres/welcome.adoc[leveloffset=1]
 // Introduction
 include::./chapitres/intro.adoc[leveloffset=1]
 
-
 // Cas d'usage
 include::./chapitres/cas-d-usage.adoc[leveloffset=1]
 
