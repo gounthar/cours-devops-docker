@@ -1,2 +1,3 @@
-FROM ubuntu:22.04
-RUN apt-get update && apt-get install --yes --no-install-recommends git
+FROM alpine:3.18.4
+
+RUN apk update && apk add --no-cache git

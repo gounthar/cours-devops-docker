@@ -1,4 +1,4 @@
-FROM alpine:3.18
+FROM alpine:3.18.4
 LABEL maintainer="Tony Stark"
 
 RUN apk update
