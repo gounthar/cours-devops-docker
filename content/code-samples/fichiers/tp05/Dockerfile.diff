@@ -1,0 +1,14 @@
+diff --git a/src/Dockerfile b/src/Dockerfile
+index c92c67cd48121705628f67a2af14b2a65e54cdfd..77919a581fffde7c57f43c8b7cbee2a8d84b628b 100644
+--- a/src/Dockerfile
++++ b/src/Dockerfile
+@@ -9,6 +9,10 @@ COPY start.sh /bin/start.sh
+ EXPOSE 4321
+ # This line opens port 4321 on the container. It's like installing a door in your house.
+
++RUN adduser --disabled-password --gecos "" --home /home/www www
++USER www
++WORKDIR /home/www
++
+ ENTRYPOINT ["/bin/start.sh"]
+ # This line sets the command that will be run when the container starts. It's like setting the alarm clock in your house.

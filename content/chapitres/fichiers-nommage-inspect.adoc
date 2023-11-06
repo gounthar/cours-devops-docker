@@ -16,7 +16,7 @@ Comment paramétrer le répertoire de travail de tous nos containers ?
 [%auto-animate]
 == 📂 WORKDIR
 
-[source,docker]
+[source,dockerfile]
 ----
 include::../code-samples/fichiers/workdir/Dockerfile[]
 ----
@@ -24,7 +24,7 @@ include::../code-samples/fichiers/workdir/Dockerfile[]
 [%auto-animate]
 == 📂 WORKDIR
 
-[source,docker]
+[source,dockerfile]
 ----
 include::../code-samples/fichiers/workdir/Dockerfile[]
 ----
@@ -34,7 +34,7 @@ image::fichiers-output5_with_transparency.png[]
 [%auto-animate]
 == 📂 WORKDIR
 
-[source,docker]
+[source,dockerfile]
 ----
 include::../code-samples/fichiers/workdir/Dockerfile[]
 ----
@@ -52,7 +52,7 @@ for i in {5..6}; do convert Diapositive${i}.PNG -crop 9667x3750+1833+3333 -trans
 [%auto-animate]
 == 📂 WORKDIR
 
-[source,docker]
+[source,dockerfile]
 ----
 include::../code-samples/fichiers/workdir/Dockerfile[]
 ----
@@ -116,7 +116,7 @@ Comment fournir des fichiers à mes containers ?
 Copie de fichiers.
 
 [%step]
-[source,docker]
+[source,dockerfile]
 ----
 include::../code-samples/fichiers/copie-fichiers/Dockerfile[]
 ----
@@ -147,7 +147,7 @@ Hello Mad Javascript World!
 
 Le mot clé `ADD`.
 
-[source,docker]
+[source,dockerfile]
 ----
 FROM image
 ADD https://mon-nexus/foo/bar/1.0/package.tar /uncompressed/
@@ -412,9 +412,44 @@ image::636764807-image14.png[]
 
 [.notes]
 --
-Solution là: https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05/-/tree/solution?ref_type=heads
+Solution là: https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp-05-solution
 --
 
+[%auto-animate]
+== ✅ Solution Travaux pratiques #5
+
+[source,diff]
+----
+include::../code-samples/fichiers/tp05/Dockerfile.diff[]
+----
+
+[.notes]
+--
+L'option `--gecos` dans la commande adduser est utilisée pour définir le champ GECOS (General Electric Comprehensive Operating System) de l'entrée de l'utilisateur dans le fichier `/etc/passwd`.
+Le champ GECOS contient traditionnellement des informations supplémentaires sur l'utilisateur, telles que le nom complet de l'utilisateur, l'emplacement du bureau et le numéro de téléphone, bien que cela ne soit souvent pas utilisé dans les systèmes modernes.
+
+Dans les Dockerfiles et les configurations système, il est courant de définir le champ GECOS sur une chaîne vide ou une valeur de substitution comme "" pour indiquer que les informations ne sont pas nécessaires.
+L'option --gecos "" définit effectivement le champ GECOS comme une chaîne vide, ce qui signifie qu'aucune information supplémentaire sur l'utilisateur n'est fournie.
+
+Pour les conteneurs Docker et les utilisateurs système créés à des fins spécifiques (comme l'exécution de services ou d'applications dans des conteneurs), il n'est souvent pas nécessaire de remplir le champ GECOS avec des informations détaillées, et l'utilisation de --gecos "" est une pratique courante pour maintenir une base d'utilisateurs propre et minimale dans le conteneur ou le système.
+Cela contribue à maintenir une base d'utilisateurs propre et minimale dans le conteneur ou le système.
+--
+
+[%auto-animate]
+== ✅ Solution Travaux pratiques #5
+
+[source,diff]
+----
+include::../code-samples/fichiers/tp05/start.sh.diff[]
+----
+
+[%auto-animate]
+== ✅ Solution Travaux pratiques #5
+
+[source,diff]
+----
+include::../code-samples/fichiers/tp05/.gitlab-ci.yml.diff[]
+----
 == 🔍 Inspection et nommage des containers
 
 image::1712651753-image15.png[]
@@ -984,7 +1019,7 @@ Ok, il y a de l'idée...
 
 Assemblons tout ça dans un `Dockerfile`.
 
-[source,docker]
+[source,dockerfile]
 ----
 include::../code-samples/fichiers/reseau/Dockerfile.ugly[]
 ----
@@ -1019,7 +1054,7 @@ __Ça fonctionne, mais c'est comme si  je laissais la grue dans la chambre une f
 On essaye un `Dockerfile` moins BTP?
 
 [%step]
-[source,docker]
+[source,dockerfile]
 ----
 include::../code-samples/fichiers/reseau/Dockerfile[]
 ----
@@ -1034,7 +1069,7 @@ Avec un autre exemple...
 Une image pour construire l'appli:
 
 [%step]
-[source,docker]
+[source,dockerfile]
 ----
 include::../code-samples/fichiers/reseau/tp7/Dockerfile.build[]
 ----
@@ -1043,7 +1078,7 @@ include::../code-samples/fichiers/reseau/tp7/Dockerfile.build[]
 Une image pour faire tourner l'appli
 
 [%step]
-[source,docker]
+[source,dockerfile]
 ----
 include::../code-samples/fichiers/reseau/tp7/Dockerfile[]
 ----
@@ -1054,7 +1089,7 @@ include::../code-samples/fichiers/reseau/tp7/Dockerfile[]
 De base, j'avais plutôt
 
 [%step]
-[source,docker]
+[source,dockerfile]
 ----
 include::https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile.build[]
 ----
@@ -1063,7 +1098,7 @@ include::https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerf
 Une image pour faire tourner l'appli
 
 [%step]
-[source,docker]
+[source,dockerfile]
 ----
 include::https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile[]
 ----
@@ -1141,7 +1176,7 @@ for i in {81..84}; do convert Diapositive${i}.PNG -crop 8940x4930+2182+1700 -tra
 [%auto-animate]
 == 🪜 Multistage build
 
-[source,docker]
+[source,dockerfile]
 ----
 include::../code-samples/fichiers/multistage/Dockerfile.multi[]
 ----
@@ -1150,7 +1185,7 @@ include::../code-samples/fichiers/multistage/Dockerfile.multi[]
 --
 
 J'aurais préféré:
-[source,docker]
+[source,dockerfile]
 ----
 include::https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile.multi[]
 ----
@@ -1160,7 +1195,7 @@ include::https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerf
 [%auto-animate]
 == 🪜 Multistage build
 
-[source,docker]
+[source,dockerfile]
 ----
 include::../code-samples/fichiers/multistage/Dockerfile.multi[]
 

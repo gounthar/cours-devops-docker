@@ -234,7 +234,7 @@ docker volume inspect my-data
 
 == 📦📁🕶️ Les volumes "anonymes"
 
-[source,docker]
+[source,dockerfile]
 ----
 include::../code-samples/volumes/anonymes/Dockerfile[]
 ----

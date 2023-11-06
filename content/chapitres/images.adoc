@@ -259,7 +259,7 @@ image::images-output56_with_transparency.png[]
 
 [.column]
 --
-[source,Docker]
+[source,dockerfile]
 ----
 include::../code-samples/images/defi/Dockerfile[]
 ----

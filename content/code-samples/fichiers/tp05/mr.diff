@@ -1,0 +1,75 @@
+diff --git a/.gitlab-ci.yml b/.gitlab-ci.yml
+new file mode 100644
+index 0000000000000000000000000000000000000000..f4b8d944ca369b876a256979b99760ec8eced27c
+--- /dev/null
++++ b/.gitlab-ci.yml
+@@ -0,0 +1,32 @@
++stages:
++  - "validator.sh"
++  - "docker scout"
++
++variables:
++  PROXY: "http://cache-etu.univ-artois.fr:3128"
++  IMAGE: "devops-docker-tp05:latest"
++
++validator-job:
++  image: cache-ili.univ-artois.fr/proxy_cache/library/docker
++  stage: "validator.sh"
++  before_script:
++    - export HTTP_PROXY="$PROXY"
++    - export HTTPS_PROXY="$PROXY"
++    - apk add -U bash
++  script:
++    - errors=$(./validator.sh)
++    - echo "$errors"
++    - exit $([ -z "$errors" ] && echo 0 || echo 1)
++  tags:
++    - docker2
++
++# No login needed, using docker desktop with wsl
++scout-job:
++  stage: "docker scout"
++  script:
++    - cd ./src
++    - docker build . -t "$IMAGE"
++    - docker scout cves --format only-packages --only-vuln-packages "$IMAGE"
++    - docker rmi "$IMAGE"
++  tags:
++    - myshell
+diff --git a/src/Dockerfile b/src/Dockerfile
+index c92c67cd48121705628f67a2af14b2a65e54cdfd..77919a581fffde7c57f43c8b7cbee2a8d84b628b 100644
+--- a/src/Dockerfile
++++ b/src/Dockerfile
+@@ -9,6 +9,10 @@ COPY start.sh /bin/start.sh
+ EXPOSE 4321
+ # This line opens port 4321 on the container. It's like installing a door in your house.
+
++RUN adduser --disabled-password --gecos "" --home /home/www www
++USER www
++WORKDIR /home/www
++
+ ENTRYPOINT ["/bin/start.sh"]
+ # This line sets the command that will be run when the container starts. It's like setting the alarm clock in your house.
+
+diff --git a/src/start.sh b/src/start.sh
+index 44006d6cd8414706a5fcf564dbfd1e9c38d4bc0b..a6ed60fdf88759d4962685e7ceb6cdbc21867448 100755
+--- a/src/start.sh
++++ b/src/start.sh
+@@ -4,7 +4,7 @@
+ set -eux
+ # These are shell options. 'e' exits on error, 'u' treats unset variables as an error, and 'x' prints each command to the terminal. It's like the script's personal assistant, making sure everything runs smoothly.
+
+-touch /home/www/started.time
++touch /tmp/started.time
+ # This creates a file named 'started.time' in the '/home/www' directory. It's like the script's way of marking its territory.
+
+ if [ $? -ne 0 ]; then
+@@ -12,7 +12,7 @@ if [ $? -ne 0 ]; then
+ fi
+ # This checks the exit status of the last command. If it's not zero, which means there was an error, it exits the script. It's like the script's way of saying, "If I can't do it right, I won't do it at all."
+
+-date > /home/www/started.time
++date > /tmp/started.time
+ # This writes the current date and time to the 'started.time' file. It's like the script's way of keeping a diary.
+
+ exec "$@"
