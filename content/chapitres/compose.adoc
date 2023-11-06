@@ -1,1 +1,8 @@
 = Docker compose
+
+
+
+[source,docker]
+----
+include::https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile.build[]
+----

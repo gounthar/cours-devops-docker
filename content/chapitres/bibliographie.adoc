@@ -8,6 +8,7 @@
 * https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop
 * https://linuxhandbook.com/linux-directory-structure/
 * https://blog.stephane-robert.info/docs/admin-serveurs/linux/script-shell/
+* https://linuxopsys.com/topics/bash-script-examples
 
 == Git / VCS
 
@@ -41,6 +42,7 @@
 * https://docs.docker.com/engine/tutorials/networkingcontainers/
 * https://towardsdatascience.com/docker-networking-919461b7f498
 * https://blog.stephane-robert.info/post/docker-buildkit-partie-1/
+* https://dev.to/montells/docker-args-1ael
 
 == DevOps
 
