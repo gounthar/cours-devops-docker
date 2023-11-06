@@ -1604,7 +1604,7 @@ WORKDIR /app/gs-spring-boot/complete
 RUN mvn package
 
 # Use a lightweight Java image for running the application
-FROM eclipse-temurin:21_35-jre-alpine
+FROM eclipse-temurin:21.0.1_12-jre-alpine
 WORKDIR /app
 
 # Copy the built JAR file from the previous build stage
@@ -1615,7 +1615,7 @@ CMD ["java", "-jar", "spring-boot-complete-0.0.1-SNAPSHOT.jar"]</code></pre></di
 <div class="paragraph fragment"><p>Le multistage, c&#8217;est la classe à Arras.
 On en reparle après.</p></div></div></section><section id="une_première_solution"><h2>🧩 Une première solution</h2><div class="slide-content"><div class="paragraph"><p>Avec un autre exemple&#8230;&#8203;
 Une image pour construire l&#8217;appli:</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM golang:1.19
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM golang:1.21
 
 WORKDIR /go/src/github.com/alexellis/href-counter/
 
