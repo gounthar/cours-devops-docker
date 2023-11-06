@@ -1078,12 +1078,12 @@ docker container run --rm docker-git:latest git --version</code></pre></div></di
 <div class="paragraph fragment"><p><strong>📖🍳 RECETTE</strong></p></div>
 <div class="ulist"><ul><li class="fragment"><p>On part d&#8217;une image Alpine</p></li><li class="fragment"><p>On installe un JRE</p></li></ul></div></div></section><section data-background-image="media/images-output52_with_transparency.png" data-background-size="contain" data-auto-animate></section><section data-background-image="media/images-output53_with_transparency.png" data-background-size="contain" data-auto-animate></section><section data-background-image="media/images-output54_with_transparency.png" data-background-size="contain" data-auto-animate></section><section data-background-image="media/images-output56_with_transparency.png" data-background-size="contain" data-auto-animate><div class="slide-content">
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {52..56}; do convert Diapositive${i}.PNG -crop 9580x5224+1879+1795 -transparent white -resize x1080 images-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="fabriquer_son_image_3" class="columns" data-auto-animate><h2>🐋 📖🍳 Fabriquer son image</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="imageblock"><img src="media/images-output56_with_transparency.png" alt="images output56 with transparency"></div></div></div>
-<div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-Docker hljs" data-noescape="true" data-lang="Docker">FROM alpine:3.18.4
+<div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18.4
 LABEL maintainer="Tony Stark"
 
 RUN apk update
 
-RUN apk add openjdk17-jre-headless</code></pre></div></div></div></div>
+RUN apk add --no-cache openjdk17-jre-headless</code></pre></div></div></div></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {52..56}; do convert Diapositive${i}.PNG -crop 9580x5224+1879+1795 -transparent white -resize x1080 images-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="cuistot_au_boulot" data-auto-animate><h2>🐋 📖🍳 Cuistot, au boulot!</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output57_with_transparency.png" alt="images output57 with transparency"></div></div></section><section id="cuistot_au_boulot_2" data-auto-animate><h2>🐋 📖🍳 Cuistot, au boulot!</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output58_with_transparency.png" alt="images output58 with transparency"></div></div></section><section id="cuistot_au_boulot_3" data-auto-animate><h2>🐋 📖🍳 Cuistot, au boulot!</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output59_with_transparency.png" alt="images output59 with transparency"></div></div></section><section id="cuistot_au_boulot_4" class="columns" data-auto-animate><h2>🐋 📖🍳 Cuistot, au boulot!</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="imageblock"><img src="media/images-output59_with_transparency.png" alt="images output59 with transparency"></div></div></div>
 <div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t myjava:1.42 .</code></pre></div></div></div></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t myjava:1.42 .</code></pre></div></div></aside></div></section><section id="étapes_de_construction" data-auto-animate><h2>🪜 Étapes de construction</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output60_with_transparency.png" alt="images output60 with transparency"></div></div></section><section id="étapes_de_construction_2" data-auto-animate><h2>🪜 Étapes de construction</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output61_with_transparency.png" alt="images output61 with transparency"></div></div></section><section id="étapes_de_construction_3" data-auto-animate><h2>🪜 Étapes de construction</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output62_with_transparency.png" alt="images output62 with transparency"></div>
@@ -1285,16 +1285,16 @@ google blahblahblah [...]
 &lt;/html&gt;</code></pre></div></div></div></div></div></section><section id="checkpoint_5"><h2>Checkpoint 🎯</h2><div class="slide-content"><div class="ulist"><ul><li><p>Une image Docker fournit un environnement de système de fichier auto-suffisant (application, dépendances, binaries, etc.) comme modèle de base d&#8217;un conteneur</p></li><li><p>Les images Docker ont une convention de nommage permettant d&#8217;identifier les images très précisément</p></li><li><p>On peut spécifier une recette de fabrication d&#8217;image à l&#8217;aide d&#8217;un <code>Dockerfile</code> et de la commande <code>docker image build</code></p></li></ul></div>
 <div class="paragraph"><p>&#8658; 🤔 et si on utilisait Docker pour nous aider dans l&#8217;intégration continue ?</p></div></div></section></section>
 <section><section id="nos_fichiers_dans_les_images" data-background-image="media/fichiers.png" data-background-size="cover" data-background-position="left"><h2>📁 Nos fichiers dans les images</h2><div class="slide-content"></div></section><section id="le_répertoire_de_travail"><h2>📂 Le répertoire de travail</h2><div class="slide-content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --interactive --tty httpd pwd /usr/local/apache2</code></pre></div></div>
-<div class="paragraph fragment"><p>Comment paramétrer le répertoire de travail de tous nos containers ?</p></div></div></section><section id="workdir" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18
+<div class="paragraph fragment"><p>Comment paramétrer le répertoire de travail de tous nos containers ?</p></div></div></section><section id="workdir" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18
 WORKDIR /repertoire/travail
-RUN echo hello &gt; ./world.txt</code></pre></div></div></div></section><section id="workdir_2" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18
+RUN echo hello &gt; ./world.txt</code></pre></div></div></div></section><section id="workdir_2" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18
 WORKDIR /repertoire/travail
 RUN echo hello &gt; ./world.txt</code></pre></div></div>
-<div class="imageblock"><img src="media/fichiers-output5_with_transparency.png" alt="fichiers output5 with transparency"></div></div></section><section id="workdir_3" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18
+<div class="imageblock"><img src="media/fichiers-output5_with_transparency.png" alt="fichiers output5 with transparency"></div></div></section><section id="workdir_3" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18
 WORKDIR /repertoire/travail
 RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="imageblock"><img src="media/fichiers-output6_with_transparency.png" alt="fichiers output6 with transparency"></div>
-<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {5..6}; do convert Diapositive${i}.PNG -crop 9667x3750+1833+3333 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="workdir_4" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18
+<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {5..6}; do convert Diapositive${i}.PNG -crop 9667x3750+1833+3333 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="workdir_4" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18
 WORKDIR /repertoire/travail
 RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-img .
@@ -1312,7 +1312,7 @@ app.js</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run --workdir /customdir --entrypoint ls node
 &lt;0 fichiers présents !&gt;</code></pre></div></div>
 <div class="paragraph fragment"><p>Comment fournir des fichiers à mes containers ?</p></div></div></section><section id="embarquer_des_fichiers_2" data-auto-animate><h2>📁 Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Copie de fichiers.</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM node:21.1.0-alpine3.18
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM node:21.1.0-alpine3.18
 WORKDIR /app
 COPY ./* /app</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-node .
@@ -1321,7 +1321,7 @@ COPY ./* /app</code></pre></div></div>
 app.js</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run mon-node app.js
 Hello Mad Javascript World!</code></pre></div></div></div></section><section id="embarquer_des_fichiers_3" data-auto-animate><h2>📁 Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Le mot clé <code>ADD</code>.</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM image
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM image
 ADD https://mon-nexus/foo/bar/1.0/package.tar /uncompressed/</code></pre></div></div>
 <div class="paragraph fragment"><p>Il permet d&#8217;ajouter des fichiers aux images, tout comme <code>COPY</code>.</p></div>
 <div class="paragraph fragment"><p>Il est capable de télécharger directement d&#8217;une URL</p></div>
@@ -1364,7 +1364,102 @@ README-secret.md</code></pre></div></div></div></section><section data-backgroun
 RSSI : définition. Le responsable de la sécurité des systèmes d&#8217;information (ou RSSI pour Responsable de la Sécurité des Systèmes d&#8217;Information) définit et développe la politique de sécurité de l&#8217;information de son entreprise.</p></div></aside></div></section><section id="exemple_de_mise_en_place" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output35_with_transparency.png" alt="fichiers output35 with transparency"></div></div></section><section id="exemple_de_mise_en_place_2" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output36_with_transparency.png" alt="fichiers output36 with transparency"></div></div></section><section id="exemple_de_mise_en_place_3" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output37_with_transparency.png" alt="fichiers output37 with transparency"></div></div></section><section id="exemple_de_mise_en_place_4" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output38_with_transparency.png" alt="fichiers output38 with transparency"></div></div></section><section id="exemple_de_mise_en_place_5" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output39_with_transparency.png" alt="fichiers output39 with transparency"></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {35..39}; do convert Diapositive${i}.PNG -crop 8803x3982+2273+2769 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="exemple_continuous_build"><h2>➡️ Exemple : continuous build</h2><div class="slide-content"><div class="imageblock"><img src="media/107490784-image13.png" alt="107490784 image13"></div></div></section><section id="travaux_pratiques_5"><h2>🎓 Travaux pratiques #5</h2><div class="slide-content"><div class="paragraph"><p><a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05</a></p></div>
 <div class="imageblock"><img src="media/636764807-image14.png" alt="636764807 image14"></div>
-<aside class="notes"><div class="paragraph"><p>Solution là: <a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05/-/tree/solution?ref_type=heads" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05/-/tree/solution?ref_type=heads</a></p></div></aside></div></section><section id="inspection_et_nommage_des_containers"><h2>🔍 Inspection et nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/1712651753-image15.png" alt="1712651753 image15"></div></div></section><section id="nommage_des_containers" data-auto-animate><h2>📛 Nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/docker-container-logs.png" alt="docker container logs"></div>
+<aside class="notes"><div class="paragraph"><p>Solution là: <a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp-05-solution" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp-05-solution</a></p></div></aside></div></section><section id="solution_travaux_pratiques_5" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-diff hljs" data-noescape="true" data-lang="diff">diff --git a/src/Dockerfile b/src/Dockerfile
+index c92c67cd48121705628f67a2af14b2a65e54cdfd..77919a581fffde7c57f43c8b7cbee2a8d84b628b 100644
+--- a/src/Dockerfile
++++ b/src/Dockerfile
+@@ -9,6 +9,10 @@ COPY start.sh /bin/start.sh
+ EXPOSE 4321
+ # This line opens port 4321 on the container. It's like installing a door in your house.
+
++RUN adduser --disabled-password --gecos "" --home /home/www www
++USER www
++WORKDIR /home/www
++
+ ENTRYPOINT ["/bin/start.sh"]
+ # This line sets the command that will be run when the container starts. It's like setting the alarm clock in your house.</code></pre></div></div>
+<aside class="notes"><div class="paragraph"><p>L&#8217;option <code>--gecos</code> dans la commande adduser est utilisée pour définir le champ GECOS (General Electric Comprehensive Operating System) de l&#8217;entrée de l&#8217;utilisateur dans le fichier <code>/etc/passwd</code>.
+Le champ GECOS contient traditionnellement des informations supplémentaires sur l&#8217;utilisateur, telles que le nom complet de l&#8217;utilisateur, l&#8217;emplacement du bureau et le numéro de téléphone, bien que cela ne soit souvent pas utilisé dans les systèmes modernes.</p></div>
+<div class="paragraph"><p>Dans les Dockerfiles et les configurations système, il est courant de définir le champ GECOS sur une chaîne vide ou une valeur de substitution comme "" pour indiquer que les informations ne sont pas nécessaires.
+L&#8217;option --gecos "" définit effectivement le champ GECOS comme une chaîne vide, ce qui signifie qu&#8217;aucune information supplémentaire sur l&#8217;utilisateur n&#8217;est fournie.</p></div>
+<div class="paragraph"><p>Pour les conteneurs Docker et les utilisateurs système créés à des fins spécifiques (comme l&#8217;exécution de services ou d&#8217;applications dans des conteneurs), il n&#8217;est souvent pas nécessaire de remplir le champ GECOS avec des informations détaillées, et l&#8217;utilisation de --gecos "" est une pratique courante pour maintenir une base d&#8217;utilisateurs propre et minimale dans le conteneur ou le système.
+Cela contribue à maintenir une base d&#8217;utilisateurs propre et minimale dans le conteneur ou le système.</p></div></aside></div></section><section id="solution_travaux_pratiques_5_2" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-diff hljs" data-noescape="true" data-lang="diff">diff --git a/src/start.sh b/src/start.sh
+index 44006d6cd8414706a5fcf564dbfd1e9c38d4bc0b..a6ed60fdf88759d4962685e7ceb6cdbc21867448 100755
+--- a/src/start.sh
++++ b/src/start.sh
+@@ -4,7 +4,7 @@
+ set -eux
+ # These are shell options. 'e' exits on error, 'u' treats unset variables as an error, and 'x' prints each command to the terminal. It's like the script's personal assistant, making sure everything runs smoothly.
+
+-touch /home/www/started.time
++touch /tmp/started.time
+ # This creates a file named 'started.time' in the '/home/www' directory. It's like the script's way of marking its territory.
+
+ if [ $? -ne 0 ]; then
+@@ -12,7 +12,7 @@ if [ $? -ne 0 ]; then
+ fi
+ # This checks the exit status of the last command. If it's not zero, which means there was an error, it exits the script. It's like the script's way of saying, "If I can't do it right, I won't do it at all."
+
+-date &gt; /home/www/started.time
++date &gt; /tmp/started.time
+ # This writes the current date and time to the 'started.time' file. It's like the script's way of keeping a diary.
+
+ exec "$@"</code></pre></div></div></div></section><section id="solution_travaux_pratiques_5_3" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">stages:
+  - "validator.sh"
+  - "docker scout"
+
+variables:
+  PROXY: "http://cache-etu.univ-artois.fr:3128"
+  IMAGE: "devops-docker-tp05:latest"
+
+validator-job:
+  image: cache-ili.univ-artois.fr/proxy_cache/library/docker
+  stage: "validator.sh"
+  before_script:
+    - export HTTP_PROXY="$PROXY"
+    - export HTTPS_PROXY="$PROXY"
+    - apk add -U bash
+  script:
+    - errors=$(./validator.sh)
+    - echo "$errors"
+    - exit $([ -z "$errors" ] &amp;&amp; echo 0 || echo 1)
+  tags:
+    - docker2
+
+# No login needed, using docker desktop with wsl
+scout-job:
+  stage: "docker scout"
+  script:
+    - cd ./src
+    - docker build . -t "$IMAGE"
+    - docker scout cves --format only-packages --only-vuln-packages "$IMAGE"
+    - docker rmi "$IMAGE"
+  tags:
+    - myshell</code></pre></div></div></div></section><section id="solution_travaux_pratiques_5_4" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">stages:
+  - run_script
+  - docker_scan
+
+run_script:
+  stage: run_script
+  script:
+    - chmod +x validator.sh src/start.sh &amp;&amp; ./validator.sh # Makes the scripts executable and runs validator.sh
+    - |
+        if [ $? -eq 0 ]; then
+          echo "Script exited successfully."
+        else
+          echo "Script exited with an error."
+          exit 1  # Mark the job as a failure
+        fi
+
+docker_scan:
+  stage: docker_scan
+  script:
+    - IMG=$(echo img$$)
+    - docker image build --tag $IMG ./src &gt; /dev/null
+    - echo "Will scan $IMG"
+    - echo $DOCKER_TOKEN | docker login -u $DOCKER_USERNAME --password-stdin
+    - docker scout cves --format only-packages --only-vuln-packages $IMG # Runs docker scout to scan the image
+    - docker scout recommendations $IMG # View base image update recommendations</code></pre></div></div></div></section><section id="inspection_et_nommage_des_containers"><h2>🔍 Inspection et nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/1712651753-image15.png" alt="1712651753 image15"></div></div></section><section id="nommage_des_containers" data-auto-animate><h2>📛 Nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/docker-container-logs.png" alt="docker container logs"></div>
 <div class="paragraph fragment"><p>Ne peut-on pas trouver plus 'user-friendly'?</p></div></div></section><section id="nommage_des_containers_2" data-auto-animate><h2>📛 Nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output47_with_transparency.png" alt="fichiers output47 with transparency"></div></div></section><section id="nommage_des_containers_3" data-auto-animate><h2>📛 Nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output48_with_transparency.png" alt="fichiers output48 with transparency"></div></div></section><section id="nommage_des_containers_4" data-auto-animate><h2>📛 Nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output49_with_transparency.png" alt="fichiers output49 with transparency"></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {46..49}; do convert Diapositive${i}.PNG -crop 13243x4424+61+2040 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div>
 <div class="paragraph"><p>Jean-Claude Poitras est un créateur de mode, un designer multidisciplinaire, un chroniqueur, un conférencier et un artiste né à Montréal au Canada le 18 juin 1949.</p></div></aside></div></section><section id="nommage_des_containers_5"><h2>📛 Nommage des containers</h2><div class="slide-content"><div class="paragraph"><p>Humour de g33k</p></div>
@@ -1570,7 +1665,7 @@ docker run -d -p 8080:8080 -p 9990:9990 --name wildfly-container -v /fully/quali
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">mvn package</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">java -jar target/spring-boot-complete-0.0.1-SNAPSHOT.jar</code></pre></div></div>
 <div class="paragraph fragment"><p>Ok, il y a de l&#8217;idée&#8230;&#8203;</p></div></div></section><section id="solution_travaux_pratiques_7_4" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="paragraph"><p>Assemblons tout ça dans un <code>Dockerfile</code>.</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker"># Use a Maven image for building the application
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Use a Maven image for building the application
 FROM maven:3.9.4-eclipse-temurin-21-alpine
 WORKDIR /app
 
@@ -1592,7 +1687,7 @@ CMD ["java", "-jar", "spring-boot-complete-0.0.1-SNAPSHOT.jar"]</code></pre></di
 <div class="paragraph fragment"><p>Et logiquement&#8230;&#8203;</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker run -d -p 8080:8080 --name spring-boot-container spring-boot-app</code></pre></div></div></div></section><section id="attends_un_peu"><h2>⏳ Attends un peu…</h2><div class="slide-content"><div class="imageblock"><img src="media/1779074283-image19.gif" alt="1779074283 image19"></div>
 <div class="paragraph"><p><em>Ça fonctionne, mais c&#8217;est comme si  je laissais la grue dans la chambre une fois que j&#8217;avais fini de construire ma maison !</em></p></div></div></section><section id="solution_travaux_pratiques_7_5" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="paragraph"><p>On essaye un <code>Dockerfile</code> moins BTP?</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker"># Use a Maven image for building the application
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Use a Maven image for building the application
 FROM maven:3.9.4-eclipse-temurin-21-alpine AS build
 WORKDIR /app
 
@@ -1617,7 +1712,7 @@ CMD ["java", "-jar", "spring-boot-complete-0.0.1-SNAPSHOT.jar"]</code></pre></di
 <div class="paragraph fragment"><p>Le multistage, c&#8217;est la classe à Arras.
 On en reparle après.</p></div></div></section><section id="une_première_solution"><h2>🧩 Une première solution</h2><div class="slide-content"><div class="paragraph"><p>Avec un autre exemple&#8230;&#8203;
 Une image pour construire l&#8217;appli:</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM golang:1.21
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM golang:1.21
 
 WORKDIR /go/src/github.com/alexellis/href-counter/
 
@@ -1628,7 +1723,7 @@ COPY app.go	.
 
 RUN CGO_ENABLED=0 GOOS=linux go build  -ldflags "-s -w" -o app .</code></pre></div></div>
 <div class="paragraph fragment"><p>Une image pour faire tourner l&#8217;appli</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18.4
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18.4
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
@@ -1637,9 +1732,9 @@ COPY app    .
 
 CMD ["./app"]</code></pre></div></div>
 <aside class="notes"><div class="paragraph"><p>De base, j&#8217;avais plutôt</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">link:https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile.build[]</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">link:https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile.build[]</code></pre></div></div>
 <div class="paragraph fragment"><p>Une image pour faire tourner l&#8217;appli</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">link:https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile[]</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">link:https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile[]</code></pre></div></div>
 <div class="paragraph"><p>À bosser pour pouvoir rester à jour</p></div></aside></div></section><section id="une_première_solution_2" data-auto-animate><h2>🧩 Une première solution</h2><div class="slide-content"><div class="paragraph"><p>Avec un autre exemple</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">#!/bin/sh
 echo Building alexellis2/href-counter:build
@@ -1658,7 +1753,7 @@ rm ./app</code></pre></div></div></div></section><section id="une_première_solu
 <div class="imageblock"><img src="media/fichiers-output83_with_transparency.png" alt="fichiers output83 with transparency" height="500"></div></div></section><section id="une_première_solution_6" class="columns" data-auto-animate><h2>🧩 Une première solution</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p>Avec un autre exemple</p></div>
 <div class="imageblock"><img src="media/fichiers-output83_with_transparency.png" alt="fichiers output83 with transparency"></div></div></div>
 <div class="openblock column"><div class="content"><div class="imageblock"><img src="media/1956754704-image20.jpeg" alt="1956754704 image20"></div></div></div>
-<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {81..84}; do convert Diapositive${i}.PNG -crop 8940x4930+2182+1700 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="multistage_build" data-auto-animate><h2>🪜 Multistage build</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM golang:1.19
+<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {81..84}; do convert Diapositive${i}.PNG -crop 8940x4930+2182+1700 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="multistage_build" data-auto-animate><h2>🪜 Multistage build</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM golang:1.19
 
 WORKDIR /go/src/github.com/alexellis/href-counter/
 
@@ -1677,7 +1772,7 @@ COPY --from=0 /go/src/github.com/alexellis/href-counter/app    .
 
 CMD ["./app"]</code></pre></div></div>
 <aside class="notes"><div class="paragraph"><p>J&#8217;aurais préféré:</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">link:https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile.multi[]</code></pre></div></div></aside></div></section><section id="multistage_build_2" data-auto-animate><h2>🪜 Multistage build</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM golang:1.19
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">link:https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile.multi[]</code></pre></div></div></aside></div></section><section id="multistage_build_2" data-auto-animate><h2>🪜 Multistage build</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM golang:1.19
 
 WORKDIR /go/src/github.com/alexellis/href-counter/
 
@@ -1762,7 +1857,7 @@ Les données n&#8217;existent que tant que le conteneur est en cours d&#8217;ex�
 <div class="paragraph fragment"><p>Supprimer un volume</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume rm my-data</code></pre></div></div>
 <div class="paragraph fragment"><p>Inspecter un volume</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume inspect my-data</code></pre></div></div></div></section><section id="les_volumes_anonymes"><h2>📦📁🕶️ Les volumes "anonymes"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume inspect my-data</code></pre></div></div></div></section><section id="les_volumes_anonymes"><h2>📦📁🕶️ Les volumes "anonymes"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18
 WORKDIR /repertoire/travail
 VOLUME ["/data"]
 RUN echo hello &gt; ./world.txt</code></pre></div></div>
@@ -2255,6 +2350,17 @@ Reveal.addEventListener('resize', function () {
 <script src="highlightjs/highlight.min.js"></script>
 <script src="highlightjs/languages/groovy.min.js"></script>
 <script src="highlightjs/languages/dockerfile.min.js"></script>
+<script src="highlightjs/languages/yaml.min.js"></script>
+<script src="highlightjs/languages/json.min.js"></script>
+<script src="highlightjs/languages/bash.min.js"></script>
+<script src="highlightjs/languages/java.min.js"></script>
+<script src="highlightjs/languages/javascript.min.js"></script>
+<script src="highlightjs/languages/xml.min.js"></script>
+<script src="highlightjs/languages/sql.min.js"></script>
+<script src="highlightjs/languages/properties.min.js"></script>
+<script src="highlightjs/languages/markdown.min.js"></script>
+<script src="highlightjs/languages/plaintext.min.js"></script>
+<script src="highlightjs/languages/diff.min.js"></script>
 
 <script>
 
