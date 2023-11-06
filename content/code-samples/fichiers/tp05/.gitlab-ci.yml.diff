@@ -1,38 +1,32 @@
-diff --git a/.gitlab-ci.yml b/.gitlab-ci.yml
-new file mode 100644
-index 0000000000000000000000000000000000000000..f4b8d944ca369b876a256979b99760ec8eced27c
---- /dev/null
-+++ b/.gitlab-ci.yml
-@@ -0,0 +1,32 @@
-+stages:
-+  - "validator.sh"
-+  - "docker scout"
-+
-+variables:
-+  PROXY: "http://cache-etu.univ-artois.fr:3128"
-+  IMAGE: "devops-docker-tp05:latest"
-+
-+validator-job:
-+  image: cache-ili.univ-artois.fr/proxy_cache/library/docker
-+  stage: "validator.sh"
-+  before_script:
-+    - export HTTP_PROXY="$PROXY"
-+    - export HTTPS_PROXY="$PROXY"
-+    - apk add -U bash
-+  script:
-+    - errors=$(./validator.sh)
-+    - echo "$errors"
-+    - exit $([ -z "$errors" ] && echo 0 || echo 1)
-+  tags:
-+    - docker2
-+
-+# No login needed, using docker desktop with wsl
-+scout-job:
-+  stage: "docker scout"
-+  script:
-+    - cd ./src
-+    - docker build . -t "$IMAGE"
-+    - docker scout cves --format only-packages --only-vuln-packages "$IMAGE"
-+    - docker rmi "$IMAGE"
-+  tags:
-+    - myshell
+stages:
+  - "validator.sh"
+  - "docker scout"
+
+variables:
+  PROXY: "http://cache-etu.univ-artois.fr:3128"
+  IMAGE: "devops-docker-tp05:latest"
+
+validator-job:
+  image: cache-ili.univ-artois.fr/proxy_cache/library/docker
+  stage: "validator.sh"
+  before_script:
+    - export HTTP_PROXY="$PROXY"
+    - export HTTPS_PROXY="$PROXY"
+    - apk add -U bash
+  script:
+    - errors=$(./validator.sh)
+    - echo "$errors"
+    - exit $([ -z "$errors" ] && echo 0 || echo 1)
+  tags:
+    - docker2
+
+# No login needed, using docker desktop with wsl
+scout-job:
+  stage: "docker scout"
+  script:
+    - cd ./src
+    - docker build . -t "$IMAGE"
+    - docker scout cves --format only-packages --only-vuln-packages "$IMAGE"
+    - docker rmi "$IMAGE"
+  tags:
+    - myshell

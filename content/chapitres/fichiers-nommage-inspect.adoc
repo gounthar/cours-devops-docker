@@ -446,10 +446,19 @@ include::../code-samples/fichiers/tp05/start.sh.diff[]
 [%auto-animate]
 == ✅ Solution Travaux pratiques #5
 
-[source,diff]
+[source,yaml]
 ----
 include::../code-samples/fichiers/tp05/.gitlab-ci.yml.diff[]
 ----
+
+[%auto-animate]
+== ✅ Solution Travaux pratiques #5
+
+[source,yaml]
+----
+include::../code-samples/fichiers/tp05/.gitlab-ci.yml.mine[]
+----
+
 == 🔍 Inspection et nommage des containers
 
 image::1712651753-image15.png[]
