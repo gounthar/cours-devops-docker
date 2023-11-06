@@ -5,3 +5,63 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+  - package-ecosystem: docker
+    directory: "./content/code-samples/fichiers/reseau"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./content/code-samples/fichiers/reseau/tp7"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./content/code-samples/fichiers/copie-fichiers"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./content/code-samples/fichiers/workdir"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./content/code-samples/volumes/tp10"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./content/code-samples/volumes/anonymes"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./content/code-samples/images/cmd-vs-entrypoint/my-curl/parametrable"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./content/code-samples/images/cmd-vs-entrypoint/my-curl"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./content/code-samples/images/cmd-vs-entrypoint"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./content/code-samples/images/première-image"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./content/code-samples/images/defi"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
