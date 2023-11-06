@@ -418,6 +418,12 @@ Solution là: https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp-05-
 [%auto-animate]
 == ✅ Solution Travaux pratiques #5
 
+[quote,Karen Lamb]
+La procrastination est l'art de garder espoir que vous aurez le temps de tout faire demain, même si vous ne faites rien aujourd'hui.
+
+[%auto-animate]
+== ✅ Solution Travaux pratiques #5
+
 [source,diff]
 ----
 include::../code-samples/fichiers/tp05/Dockerfile.diff[]
