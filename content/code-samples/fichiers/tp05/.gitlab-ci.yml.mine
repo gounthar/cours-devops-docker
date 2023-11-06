@@ -1,0 +1,25 @@
+stages:
+  - run_script
+  - docker_scan
+
+run_script:
+  stage: run_script
+  script:
+    - chmod +x validator.sh src/start.sh && ./validator.sh # Makes the scripts executable and runs validator.sh
+    - |
+        if [ $? -eq 0 ]; then
+          echo "Script exited successfully."
+        else
+          echo "Script exited with an error."
+          exit 1  # Mark the job as a failure
+        fi
+
+docker_scan:
+  stage: docker_scan
+  script:
+    - IMG=$(echo img$$)
+    - docker image build --tag $IMG ./src > /dev/null
+    - echo "Will scan $IMG"
+    - echo $DOCKER_TOKEN | docker login -u $DOCKER_USERNAME --password-stdin
+    - docker scout cves --format only-packages --only-vuln-packages $IMG # Runs docker scout to scan the image
+    - docker scout recommendations $IMG # View base image update recommendations

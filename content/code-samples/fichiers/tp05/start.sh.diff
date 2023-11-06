@@ -1,0 +1,22 @@
+diff --git a/src/start.sh b/src/start.sh
+index 44006d6cd8414706a5fcf564dbfd1e9c38d4bc0b..a6ed60fdf88759d4962685e7ceb6cdbc21867448 100755
+--- a/src/start.sh
++++ b/src/start.sh
+@@ -4,7 +4,7 @@
+ set -eux
+ # These are shell options. 'e' exits on error, 'u' treats unset variables as an error, and 'x' prints each command to the terminal. It's like the script's personal assistant, making sure everything runs smoothly.
+
+-touch /home/www/started.time
++touch /tmp/started.time
+ # This creates a file named 'started.time' in the '/home/www' directory. It's like the script's way of marking its territory.
+
+ if [ $? -ne 0 ]; then
+@@ -12,7 +12,7 @@ if [ $? -ne 0 ]; then
+ fi
+ # This checks the exit status of the last command. If it's not zero, which means there was an error, it exits the script. It's like the script's way of saying, "If I can't do it right, I won't do it at all."
+
+-date > /home/www/started.time
++date > /tmp/started.time
+ # This writes the current date and time to the 'started.time' file. It's like the script's way of keeping a diary.
+
+ exec "$@"
