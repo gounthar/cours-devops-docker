@@ -418,6 +418,12 @@ Solution là: https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp-05-
 [%auto-animate]
 == ✅ Solution Travaux pratiques #5
 
+[quote,Karen Lamb]
+La procrastination est l'art de garder espoir que vous aurez le temps de tout faire demain, même si vous ne faites rien aujourd'hui.
+
+[%auto-animate]
+== ✅ Solution Travaux pratiques #5
+
 [source,diff]
 ----
 include::../code-samples/fichiers/tp05/Dockerfile.diff[]
@@ -433,6 +439,24 @@ L'option --gecos "" définit effectivement le champ GECOS comme une chaîne vide
 
 Pour les conteneurs Docker et les utilisateurs système créés à des fins spécifiques (comme l'exécution de services ou d'applications dans des conteneurs), il n'est souvent pas nécessaire de remplir le champ GECOS avec des informations détaillées, et l'utilisation de --gecos "" est une pratique courante pour maintenir une base d'utilisateurs propre et minimale dans le conteneur ou le système.
 Cela contribue à maintenir une base d'utilisateurs propre et minimale dans le conteneur ou le système.
+
+L'utilisation de l'UID (User ID) 1001 pour un utilisateur créé dans un conteneur Docker est une pratique courante, mais elle n'est pas nécessairement fixe.
+Cela dépend des besoins spécifiques de votre application et de la manière dont vous gérez les utilisateurs dans vos conteneurs. Voici quelques raisons courantes d'utiliser l'UID 1001 :
+
+Éviter les conflits : L'UID 1001 est souvent choisi pour éviter les conflits avec les utilisateurs système existants.
+Dans de nombreuses distributions Linux, les utilisateurs système ont des UIDs inférieurs à 1000.
+En utilisant l'UID 1001, vous minimisez le risque de conflits avec ces utilisateurs.
+
+Sécurité : Dans un environnement de conteneur, il est courant de limiter les privilèges des utilisateurs.
+En utilisant un UID non réservé, vous réduisez le risque que l'utilisateur puisse accéder à des ressources système critiques.
+
+Personnalisation : Vous pouvez choisir un UID personnalisé en fonction de vos besoins.
+Dans certains cas, l'UID 1001 est simplement choisi par convention. Si vous avez des exigences spécifiques en matière de numéros d'UID, vous pouvez les personnaliser en conséquence.
+
+Isolation : En attribuant des UIDs spécifiques aux utilisateurs de vos conteneurs, vous pouvez mieux isoler ces utilisateurs des autres utilisateurs système ou des autres conteneurs.
+
+Il est important de noter que le choix de l'UID dépend de la manière dont vous configurez vos conteneurs et de vos exigences en matière de sécurité et d'isolation.
+L'UID 1001 est courant, mais il n'est pas la seule option, et vous pouvez choisir un UID qui convient le mieux à votre cas d'utilisation particulier.
 --
 
 [%auto-animate]
