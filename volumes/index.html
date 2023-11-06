@@ -1312,7 +1312,7 @@ app.js</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run --workdir /customdir --entrypoint ls node
 &lt;0 fichiers présents !&gt;</code></pre></div></div>
 <div class="paragraph fragment"><p>Comment fournir des fichiers à mes containers ?</p></div></div></section><section id="embarquer_des_fichiers_2" data-auto-animate><h2>📁 Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Copie de fichiers.</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM node:20.8.0-alpine3.18
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM node:21.1.0-alpine3.18
 WORKDIR /app
 COPY ./* /app</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-node .
@@ -1606,7 +1606,7 @@ WORKDIR /app/gs-spring-boot/complete
 RUN mvn package
 
 # Use a lightweight Java image for running the application
-FROM eclipse-temurin:21_35-jre-alpine
+FROM eclipse-temurin:21.0.1_12-jre-alpine
 WORKDIR /app
 
 # Copy the built JAR file from the previous build stage
@@ -1617,7 +1617,7 @@ CMD ["java", "-jar", "spring-boot-complete-0.0.1-SNAPSHOT.jar"]</code></pre></di
 <div class="paragraph fragment"><p>Le multistage, c&#8217;est la classe à Arras.
 On en reparle après.</p></div></div></section><section id="une_première_solution"><h2>🧩 Une première solution</h2><div class="slide-content"><div class="paragraph"><p>Avec un autre exemple&#8230;&#8203;
 Une image pour construire l&#8217;appli:</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM golang:1.19
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM golang:1.21
 
 WORKDIR /go/src/github.com/alexellis/href-counter/
 
@@ -1628,7 +1628,7 @@ COPY app.go	.
 
 RUN CGO_ENABLED=0 GOOS=linux go build  -ldflags "-s -w" -o app .</code></pre></div></div>
 <div class="paragraph fragment"><p>Une image pour faire tourner l&#8217;appli</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.17.1
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18.4
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
@@ -1762,7 +1762,10 @@ Les données n&#8217;existent que tant que le conteneur est en cours d&#8217;ex�
 <div class="paragraph fragment"><p>Supprimer un volume</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume rm my-data</code></pre></div></div>
 <div class="paragraph fragment"><p>Inspecter un volume</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume inspect my-data</code></pre></div></div></div></section><section id="les_volumes_anonymes"><h2>📦📁🕶️ Les volumes "anonymes"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">Unresolved directive in chapitres/volumes.adoc - include::../code-samples/volumes/anonymes/Dockerfile[]</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume inspect my-data</code></pre></div></div></div></section><section id="les_volumes_anonymes"><h2>📦📁🕶️ Les volumes "anonymes"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-docker hljs" data-noescape="true" data-lang="docker">FROM alpine:3.18
+WORKDIR /repertoire/travail
+VOLUME ["/data"]
+RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="paragraph fragment"><p>Création d&#8217;un volume anonyme mappé sur le répertoire /data des containers basés sur cette image</p></div></div></section><section id="filesystem_en_ram" data-auto-animate><h2>💾🧠 FileSystem en RAM</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run
   -d
   --read-only
@@ -1809,7 +1812,18 @@ Les données n&#8217;existent que tant que le conteneur est en cours d&#8217;ex�
 <div class="ulist"><ul><li class="fragment"><p>Ajoute des fichiers dans un dossier</p></li><li class="fragment"><p>Déclare ce dossier comme volume anonyme</p></li><li class="fragment"><p>Ajoute d&#8217;autres fichiers dans ce dossier</p></li></ul></div>
 <div class="paragraph fragment"><p><strong>Que verra-ton dans ce dossier au sein de nos containers ?</strong></p></div></div></section><section id="solution_travaux_pratiques_10" data-auto-animate><h2>✅ Solution travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Tout d&#8217;abord, créez un répertoire pour votre projet et placez-vous dedans.</p></div>
 <div class="paragraph fragment"><p>Créez un Dockerfile avec le contenu suivant :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">Unresolved directive in chapitres/volumes.adoc - include::../code-samples/volumes/tp10/Dockerfile[]</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18
+
+# Ajoutez des fichiers dans un dossier
+RUN mkdir /mon-dossier
+RUN echo "Contenu du fichier 1" &gt; /mon-dossier/fichier1.txt
+RUN echo "Contenu du fichier 2" &gt; /mon-dossier/fichier2.txt
+
+# Déclarez ce dossier comme un volume anonyme
+VOLUME ["/mon-dossier"]
+
+# Ajoutez d'autres fichiers dans ce dossier
+RUN echo "Nouveau contenu du fichier 3" &gt; /mon-dossier/fichier3.txt</code></pre></div></div>
 <div class="paragraph fragment"><p>Ensuite, vous pouvez créer une image Docker à partir de ce Dockerfile en exécutant la commande suivante dans le même répertoire que le Dockerfile :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t mon-image .</code></pre></div></div></div></section><section id="solution_travaux_pratiques_10_2" data-auto-animate><h2>✅ Solution travaux pratiques #10</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t mon-image .</code></pre></div></div>
 <div class="paragraph"><p>Assurez-vous que "mon-image" est le nom que vous souhaitez donner à votre image Docker.
