@@ -174,8 +174,7 @@ docker container run --rm --tty --interactive ubuntu:22.04 git --version
 +
 [source,Dockerfile]
 ----
-FROM ubuntu:22.04
-RUN apt-get update && apt-get install --yes --no-install-recommends git
+include::../code-samples/images/première-image/git/Dockerfile[]
 ----
 
 * Fabriquez votre image avec la commande `docker image build --tag=docker-git chemin/vers/docker-git/`
@@ -188,8 +187,7 @@ RUN apt-get update && apt-get install --yes --no-install-recommends git
 [source,bash]
 ----
 cat <<EOF >Dockerfile
-FROM ubuntu:22.04
-RUN apt-get update && apt-get install --yes --no-install-recommends git
+include::../code-samples/images/première-image/git/Dockerfile[]
 EOF
 
 docker image build --tag=docker-git ./
