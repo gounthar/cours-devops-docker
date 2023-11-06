@@ -187,8 +187,7 @@ include::../code-samples/images/première-image/git/Dockerfile[]
 [source,bash]
 ----
 cat <<EOF >Dockerfile
-FROM ubuntu:22.04
-RUN apt-get update && apt-get install --yes --no-install-recommends git
+include::../code-samples/images/première-image/git/Dockerfile[]
 EOF
 
 docker image build --tag=docker-git ./
