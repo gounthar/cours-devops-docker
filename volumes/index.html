@@ -1083,7 +1083,7 @@ LABEL maintainer="Tony Stark"
 
 RUN apk update
 
-RUN apk add openjdk17-jre-headless</code></pre></div></div></div></div>
+RUN apk add --no-cache openjdk17-jre-headless</code></pre></div></div></div></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {52..56}; do convert Diapositive${i}.PNG -crop 9580x5224+1879+1795 -transparent white -resize x1080 images-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="cuistot_au_boulot" data-auto-animate><h2>🐋 📖🍳 Cuistot, au boulot!</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output57_with_transparency.png" alt="images output57 with transparency"></div></div></section><section id="cuistot_au_boulot_2" data-auto-animate><h2>🐋 📖🍳 Cuistot, au boulot!</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output58_with_transparency.png" alt="images output58 with transparency"></div></div></section><section id="cuistot_au_boulot_3" data-auto-animate><h2>🐋 📖🍳 Cuistot, au boulot!</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output59_with_transparency.png" alt="images output59 with transparency"></div></div></section><section id="cuistot_au_boulot_4" class="columns" data-auto-animate><h2>🐋 📖🍳 Cuistot, au boulot!</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="imageblock"><img src="media/images-output59_with_transparency.png" alt="images output59 with transparency"></div></div></div>
 <div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t myjava:1.42 .</code></pre></div></div></div></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t myjava:1.42 .</code></pre></div></div></aside></div></section><section id="étapes_de_construction" data-auto-animate><h2>🪜 Étapes de construction</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output60_with_transparency.png" alt="images output60 with transparency"></div></div></section><section id="étapes_de_construction_2" data-auto-animate><h2>🪜 Étapes de construction</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output61_with_transparency.png" alt="images output61 with transparency"></div></div></section><section id="étapes_de_construction_3" data-auto-animate><h2>🪜 Étapes de construction</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output62_with_transparency.png" alt="images output62 with transparency"></div>
@@ -1383,7 +1383,19 @@ Le champ GECOS contient traditionnellement des informations supplémentaires sur
 <div class="paragraph"><p>Dans les Dockerfiles et les configurations système, il est courant de définir le champ GECOS sur une chaîne vide ou une valeur de substitution comme "" pour indiquer que les informations ne sont pas nécessaires.
 L&#8217;option --gecos "" définit effectivement le champ GECOS comme une chaîne vide, ce qui signifie qu&#8217;aucune information supplémentaire sur l&#8217;utilisateur n&#8217;est fournie.</p></div>
 <div class="paragraph"><p>Pour les conteneurs Docker et les utilisateurs système créés à des fins spécifiques (comme l&#8217;exécution de services ou d&#8217;applications dans des conteneurs), il n&#8217;est souvent pas nécessaire de remplir le champ GECOS avec des informations détaillées, et l&#8217;utilisation de --gecos "" est une pratique courante pour maintenir une base d&#8217;utilisateurs propre et minimale dans le conteneur ou le système.
-Cela contribue à maintenir une base d&#8217;utilisateurs propre et minimale dans le conteneur ou le système.</p></div></aside></div></section><section id="solution_travaux_pratiques_5_2" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-diff hljs" data-noescape="true" data-lang="diff">diff --git a/src/start.sh b/src/start.sh
+Cela contribue à maintenir une base d&#8217;utilisateurs propre et minimale dans le conteneur ou le système.</p></div>
+<div class="paragraph"><p>L&#8217;utilisation de l&#8217;UID (User ID) 1001 pour un utilisateur créé dans un conteneur Docker est une pratique courante, mais elle n&#8217;est pas nécessairement fixe.
+Cela dépend des besoins spécifiques de votre application et de la manière dont vous gérez les utilisateurs dans vos conteneurs. Voici quelques raisons courantes d&#8217;utiliser l&#8217;UID 1001 :</p></div>
+<div class="paragraph"><p>Éviter les conflits : L&#8217;UID 1001 est souvent choisi pour éviter les conflits avec les utilisateurs système existants.
+Dans de nombreuses distributions Linux, les utilisateurs système ont des UIDs inférieurs à 1000.
+En utilisant l&#8217;UID 1001, vous minimisez le risque de conflits avec ces utilisateurs.</p></div>
+<div class="paragraph"><p>Sécurité : Dans un environnement de conteneur, il est courant de limiter les privilèges des utilisateurs.
+En utilisant un UID non réservé, vous réduisez le risque que l&#8217;utilisateur puisse accéder à des ressources système critiques.</p></div>
+<div class="paragraph"><p>Personnalisation : Vous pouvez choisir un UID personnalisé en fonction de vos besoins.
+Dans certains cas, l&#8217;UID 1001 est simplement choisi par convention. Si vous avez des exigences spécifiques en matière de numéros d&#8217;UID, vous pouvez les personnaliser en conséquence.</p></div>
+<div class="paragraph"><p>Isolation : En attribuant des UIDs spécifiques aux utilisateurs de vos conteneurs, vous pouvez mieux isoler ces utilisateurs des autres utilisateurs système ou des autres conteneurs.</p></div>
+<div class="paragraph"><p>Il est important de noter que le choix de l&#8217;UID dépend de la manière dont vous configurez vos conteneurs et de vos exigences en matière de sécurité et d&#8217;isolation.
+L&#8217;UID 1001 est courant, mais il n&#8217;est pas la seule option, et vous pouvez choisir un UID qui convient le mieux à votre cas d&#8217;utilisation particulier.</p></div></aside></div></section><section id="solution_travaux_pratiques_5_2" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-diff hljs" data-noescape="true" data-lang="diff">diff --git a/src/start.sh b/src/start.sh
 index 44006d6cd8414706a5fcf564dbfd1e9c38d4bc0b..a6ed60fdf88759d4962685e7ceb6cdbc21867448 100755
 --- a/src/start.sh
 +++ b/src/start.sh
@@ -1404,44 +1416,62 @@ index 44006d6cd8414706a5fcf564dbfd1e9c38d4bc0b..a6ed60fdf88759d4962685e7ceb6cdbc
 +date &gt; /tmp/started.time
  # This writes the current date and time to the 'started.time' file. It's like the script's way of keeping a diary.
 
- exec "$@"</code></pre></div></div></div></section><section id="solution_travaux_pratiques_5_3" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-diff hljs" data-noescape="true" data-lang="diff">diff --git a/.gitlab-ci.yml b/.gitlab-ci.yml
-new file mode 100644
-index 0000000000000000000000000000000000000000..f4b8d944ca369b876a256979b99760ec8eced27c
---- /dev/null
-+++ b/.gitlab-ci.yml
-@@ -0,0 +1,32 @@
-+stages:
-+  - "validator.sh"
-+  - "docker scout"
-+
-+variables:
-+  PROXY: "http://cache-etu.univ-artois.fr:3128"
-+  IMAGE: "devops-docker-tp05:latest"
-+
-+validator-job:
-+  image: cache-ili.univ-artois.fr/proxy_cache/library/docker
-+  stage: "validator.sh"
-+  before_script:
-+    - export HTTP_PROXY="$PROXY"
-+    - export HTTPS_PROXY="$PROXY"
-+    - apk add -U bash
-+  script:
-+    - errors=$(./validator.sh)
-+    - echo "$errors"
-+    - exit $([ -z "$errors" ] &amp;&amp; echo 0 || echo 1)
-+  tags:
-+    - docker2
-+
-+# No login needed, using docker desktop with wsl
-+scout-job:
-+  stage: "docker scout"
-+  script:
-+    - cd ./src
-+    - docker build . -t "$IMAGE"
-+    - docker scout cves --format only-packages --only-vuln-packages "$IMAGE"
-+    - docker rmi "$IMAGE"
-+  tags:
-+    - myshell</code></pre></div></div></div></section><section id="inspection_et_nommage_des_containers"><h2>🔍 Inspection et nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/1712651753-image15.png" alt="1712651753 image15"></div></div></section><section id="nommage_des_containers" data-auto-animate><h2>📛 Nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/docker-container-logs.png" alt="docker container logs"></div>
+ exec "$@"</code></pre></div></div></div></section><section id="solution_travaux_pratiques_5_3" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">stages:
+  - "validator.sh"
+  - "docker scout"
+
+variables:
+  PROXY: "http://cache-etu.univ-artois.fr:3128"
+  IMAGE: "devops-docker-tp05:latest"
+
+validator-job:
+  image: cache-ili.univ-artois.fr/proxy_cache/library/docker
+  stage: "validator.sh"
+  before_script:
+    - export HTTP_PROXY="$PROXY"
+    - export HTTPS_PROXY="$PROXY"
+    - apk add -U bash
+  script:
+    - errors=$(./validator.sh)
+    - echo "$errors"
+    - exit $([ -z "$errors" ] &amp;&amp; echo 0 || echo 1)
+  tags:
+    - docker2
+
+# No login needed, using docker desktop with wsl
+scout-job:
+  stage: "docker scout"
+  script:
+    - cd ./src
+    - docker build . -t "$IMAGE"
+    - docker scout cves --format only-packages --only-vuln-packages "$IMAGE"
+    - docker rmi "$IMAGE"
+  tags:
+    - myshell</code></pre></div></div></div></section><section id="solution_travaux_pratiques_5_4" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">stages:
+  - run_script
+  - docker_scan
+
+run_script:
+  stage: run_script
+  script:
+    - chmod +x validator.sh src/start.sh &amp;&amp; ./validator.sh # Makes the scripts executable and runs validator.sh
+    - |
+        if [ $? -eq 0 ]; then
+          echo "Script exited successfully."
+        else
+          echo "Script exited with an error."
+          exit 1  # Mark the job as a failure
+        fi
+
+docker_scan:
+  stage: docker_scan
+  script:
+    - IMG=$(echo img$$)
+    - docker image build --tag $IMG ./src &gt; /dev/null
+    - echo "Will scan $IMG"
+    - echo $DOCKER_TOKEN | docker login -u $DOCKER_USERNAME --password-stdin
+    - docker scout cves --format only-packages --only-vuln-packages $IMG # Runs docker scout to scan the image
+    - docker scout recommendations $IMG # View base image update recommendations</code></pre></div></div></div></section><section id="inspection_et_nommage_des_containers"><h2>🔍 Inspection et nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/1712651753-image15.png" alt="1712651753 image15"></div></div></section><section id="nommage_des_containers" data-auto-animate><h2>📛 Nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/docker-container-logs.png" alt="docker container logs"></div>
 <div class="paragraph fragment"><p>Ne peut-on pas trouver plus 'user-friendly'?</p></div></div></section><section id="nommage_des_containers_2" data-auto-animate><h2>📛 Nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output47_with_transparency.png" alt="fichiers output47 with transparency"></div></div></section><section id="nommage_des_containers_3" data-auto-animate><h2>📛 Nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output48_with_transparency.png" alt="fichiers output48 with transparency"></div></div></section><section id="nommage_des_containers_4" data-auto-animate><h2>📛 Nommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output49_with_transparency.png" alt="fichiers output49 with transparency"></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {46..49}; do convert Diapositive${i}.PNG -crop 13243x4424+61+2040 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div>
 <div class="paragraph"><p>Jean-Claude Poitras est un créateur de mode, un designer multidisciplinaire, un chroniqueur, un conférencier et un artiste né à Montréal au Canada le 18 juin 1949.</p></div></aside></div></section><section id="nommage_des_containers_5"><h2>📛 Nommage des containers</h2><div class="slide-content"><div class="paragraph"><p>Humour de g33k</p></div>
@@ -1839,7 +1869,10 @@ Les données n&#8217;existent que tant que le conteneur est en cours d&#8217;ex�
 <div class="paragraph fragment"><p>Supprimer un volume</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume rm my-data</code></pre></div></div>
 <div class="paragraph fragment"><p>Inspecter un volume</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume inspect my-data</code></pre></div></div></div></section><section id="les_volumes_anonymes"><h2>📦📁🕶️ Les volumes "anonymes"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">Unresolved directive in chapitres/volumes.adoc - include::../code-samples/volumes/anonymes/Dockerfile[]</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume inspect my-data</code></pre></div></div></div></section><section id="les_volumes_anonymes"><h2>📦📁🕶️ Les volumes "anonymes"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18
+WORKDIR /repertoire/travail
+VOLUME ["/data"]
+RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="paragraph fragment"><p>Création d&#8217;un volume anonyme mappé sur le répertoire /data des containers basés sur cette image</p></div></div></section><section id="filesystem_en_ram" data-auto-animate><h2>💾🧠 FileSystem en RAM</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run
   -d
   --read-only
@@ -1886,7 +1919,18 @@ Les données n&#8217;existent que tant que le conteneur est en cours d&#8217;ex�
 <div class="ulist"><ul><li class="fragment"><p>Ajoute des fichiers dans un dossier</p></li><li class="fragment"><p>Déclare ce dossier comme volume anonyme</p></li><li class="fragment"><p>Ajoute d&#8217;autres fichiers dans ce dossier</p></li></ul></div>
 <div class="paragraph fragment"><p><strong>Que verra-ton dans ce dossier au sein de nos containers ?</strong></p></div></div></section><section id="solution_travaux_pratiques_10" data-auto-animate><h2>✅ Solution travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Tout d&#8217;abord, créez un répertoire pour votre projet et placez-vous dedans.</p></div>
 <div class="paragraph fragment"><p>Créez un Dockerfile avec le contenu suivant :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">Unresolved directive in chapitres/volumes.adoc - include::../code-samples/volumes/tp10/Dockerfile[]</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18
+
+# Ajoutez des fichiers dans un dossier
+RUN mkdir /mon-dossier
+RUN echo "Contenu du fichier 1" &gt; /mon-dossier/fichier1.txt
+RUN echo "Contenu du fichier 2" &gt; /mon-dossier/fichier2.txt
+
+# Déclarez ce dossier comme un volume anonyme
+VOLUME ["/mon-dossier"]
+
+# Ajoutez d'autres fichiers dans ce dossier
+RUN echo "Nouveau contenu du fichier 3" &gt; /mon-dossier/fichier3.txt</code></pre></div></div>
 <div class="paragraph fragment"><p>Ensuite, vous pouvez créer une image Docker à partir de ce Dockerfile en exécutant la commande suivante dans le même répertoire que le Dockerfile :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t mon-image .</code></pre></div></div></div></section><section id="solution_travaux_pratiques_10_2" data-auto-animate><h2>✅ Solution travaux pratiques #10</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t mon-image .</code></pre></div></div>
 <div class="paragraph"><p>Assurez-vous que "mon-image" est le nom que vous souhaitez donner à votre image Docker.
