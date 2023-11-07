@@ -421,6 +421,38 @@ Solution là: https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp-05-
 [quote,Karen Lamb]
 La procrastination est l'art de garder espoir que vous aurez le temps de tout faire demain, même si vous ne faites rien aujourd'hui.
 
+[.notes]
+--
+Je ne suis pas là pour vous pourrir la vie, mais pour vous préparer à la vie professionnelle.
+Ce TP, c'était un simple exercice pour mettre en pratique le cours, mais il y a de vraies leçons à en tirer.
+
+* Très instructif pour moi.
+** Votre relation au travail.
+** Votre relation à l'enseignement.
+** Votre relation à l'enseignant.
+** Votre relation aux délais.
+*** 5 minutes de travail si on a suivi le cours
+*** 15 minutes de travail si on fait le premier bonus
+*** 30 minutes de travail si on fait le second bonus
+*** 1h de travail si on n'a pas suivi le cours, et qu'il faut se retaper les fondamentaux
+* Relation au travail.
+** L'IT est une industrie dure où il ne fait pas bon vieillir.
+** Entretien d'embauche au quotidien.
+** La procrastination est un luxe que vous ne pouvez pas vous permettre.
+*** Vous devez être capable d'ordonner vos priorités.
+*** Vous devez être capable de vous auto-discipliner.
+*** Vous devez être capable de vous auto-former.
+*** Vous devez être capable de vous auto-motiver.
+* Aspect technique.
+** Cycle en V et méthodes agiles.
+** Micro-management != micro-review
+*** Fini ou pas, on committe régulièrement et on crée une MR en draft au plus tôt.
+*** On n'a pas honte de ce qu'on produit, vous n'êtes pas votre code!
+* Suis là pour transmettre un savoir, mais pas que
+** Je transmets également la voix de l'industrie
+** 5 cours, c'est peu pour transmettre autre chose qu'un savoir technique
+--
+
 [%auto-animate]
 == ✅ Solution Travaux pratiques #5
 
