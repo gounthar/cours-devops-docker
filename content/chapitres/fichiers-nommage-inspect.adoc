@@ -839,6 +839,22 @@ docker container ls --filter "name=my-web" --no-trunc | awk 'NR==1 {cmd=index($0
 [%step]
 qui donnerait `"/docker-entrypoint.sh nginx -g 'daemon off;'"`.
 
+[.notes]
+--
+Dans le contexte de l'utilisation de la commande docker inspect ou docker ps, l'une des principales différences entre ENTRYPOINT et CMD réside dans leur rôle et leur impact sur la visibilité des informations.
+
+1. **ENTRYPOINT** :
+Lorsque vous utilisez docker inspect ou docker ps pour examiner un conteneur qui utilise ENTRYPOINT, vous verrez que ENTRYPOINT apparaît en tant que commande principale du conteneur. Cela signifie que l'entrée principale de l'application, généralement un exécutable ou un script, est affichée.
+Les options et les arguments passés en ligne de commande lors du lancement du conteneur sont ajoutés après l'entrée principale, comme des arguments à cette commande.
+Si un ENTRYPOINT est défini, la commande spécifiée en utilisant docker run est ignorée.
+2. **CMD** :
+Lorsque vous utilisez docker inspect ou docker ps pour examiner un conteneur qui utilise CMD, vous verrez que la commande CMD est répertoriée sous forme d'argument pour /bin/sh -c, ce qui signifie qu'elle est exécutée par le shell par défaut du conteneur.
+Les options et les arguments passés en ligne de commande lors du lancement du conteneur remplacent la commande CMD.
+Vous pouvez également ajouter des arguments supplémentaires à la commande CMD en utilisant docker run.
+
+En résumé, ENTRYPOINT est généralement utilisé pour spécifier la commande principale de l'application dans le conteneur, et les arguments fournis lors du lancement du conteneur sont traités comme des arguments pour cette commande. En revanche, CMD est utilisé pour spécifier une commande par défaut qui peut être écrasée en passant d'autres commandes lors du lancement du conteneur. L'utilisation de l'un ou de l'autre dépend des besoins spécifiques de votre application et de la manière dont vous souhaitez gérer la personnalisation des commandes dans vos conteneurs.
+--
+
 == 🌐 Trouver son container en réseau
 
 image::1233103020-image17.jpeg[]
