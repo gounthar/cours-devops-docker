@@ -331,7 +331,6 @@ Placez vos fichiers HTML dans un répertoire sur votre machine hôte, puis mappe
 [%step]
 [source,bash]
 ----
-docker container run -d -p 80:80 --name mon-nginx -v /chemin/vers/la/page/web/sur/lhote:/usr/share/nginx/html nginx
 ----
 [%step]
 Remplacez `/chemin/vers/la/page/web/sur/lhote` par le chemin réel vers le répertoire contenant vos fichiers de la page web sur l'hôte.
