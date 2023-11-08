@@ -335,45 +335,6 @@ docker container run -d -p 80:80 --name mon-nginx -v /chemin/vers/la/page/web/su
 [%step]
 Remplacez `/chemin/vers/la/page/web/sur/lhote` par le chemin réel vers le répertoire contenant vos fichiers de la page web sur l'hôte.
 
-[%auto-animate]
-== ✅ Solution travaux pratiques #8
-[.title]
-En utilisant un volume nommé (Named Volume) :
-
-[%step]
-Créez un volume nommé et copiez vos fichiers de la page web dedans.
-
-[%step]
-Montez ce volume nommé dans le conteneur Nginx.
-
-[%step]
-Tout d'abord, créez un volume nommé :
-[%step]
-[source,bash]
-----
-docker volume create mon-nginx-html
-----
-[%step]
-Copiez vos fichiers de la page web dans ce volume :
-
-[%step]
-[source,bash]
-----
-docker container run --rm \
-  --volume mon-nginx-html:/cible \   # Montez le volume nommé "mon-nginx-html" dans le conteneur sous le répertoire "/cible".
-  --volume /chemin/vers/la/page/web/sur/lhote:/html \ # Montez le répertoire où se trouve le fichier html
-  --workdir /cible \                # Définissez le répertoire de travail à "/cible" dans le conteneur.
-  busybox cp -r /html .   # Copiez récursivement le contenu depuis "/chemin/vers/la/page/web/sur/lhote" dans le répertoire actuel du conteneur.
-----
-[%step]
-Maintenant, lancez le conteneur Nginx et montez le volume nommé :
-
-[%step]
-[source,bash]
-----
-docker container run -d -p 80:80 --name mon-nginx -v mon-nginx-html:/usr/share/nginx/html nginx
-----
-
 == 🎓 Travaux pratiques #9
 [.title]
 Étapes:
@@ -384,63 +345,6 @@ docker container run -d -p 80:80 --name mon-nginx -v mon-nginx-html:/usr/share/n
 * Démarrer un second container attaché à ce volume
 * Lire les données du volume depuis le second container
 * Supprimer le volume
-
-== ✅ Solution travaux pratiques #9
-
-Créer un volume nommé "data" :
-[%step]
-[source,bash]
-----
-docker volume create data
-----
-[%step]
-Démarrer un premier conteneur attaché à ce volume :
-[%step]
-[source,bash]
-----
-docker container run -it --name premier-container -v data:/donnees busybox
-----
-[%step]
-Dans le premier conteneur, lancez un processus qui écrit un fichier dans le volume (par exemple, un fichier texte) :
-[%step]
-[source,bash]
-----
-echo "Données du premier conteneur" > /donnees/mon-fichier.txt
-----
-[%step]
-Quittez le premier conteneur.
-[%step]
-Démarrer un second conteneur attaché au même volume :
-[%step]
-[source,bash]
-----
-docker container run -it --name second-container -v data:/donnees busybox
-----
-
-== ✅ Solution travaux pratiques #9
-
-Démarrer un second conteneur attaché au même volume :
-[source,bash]
-----
-docker container run -it --name second-container -v data:/donnees busybox
-----
-Dans le second conteneur, lisez les données du volume (le fichier texte) :
-[%step]
-[source,bash]
-----
-cat /donnees/mon-fichier.txt
-----
-[%step]
-Vous devriez voir le contenu du fichier affiché à l'écran.
-[%step]
-Quittez le second conteneur.
-[%step]
-Vous pouvez maintenant supprimer le volume "data" car vous n'en avez plus besoin :
-[%step]
-[source,bash]
-----
-docker volume rm data
-----
 
 == 🎓  Travaux pratiques #10
 Écrire un Dockerfile qui:
