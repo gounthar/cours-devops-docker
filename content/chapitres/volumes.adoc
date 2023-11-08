@@ -335,6 +335,38 @@ docker container run -d -p 80:80 --name mon-nginx -v /chemin/vers/la/page/web/su
 [%step]
 Remplacez `/chemin/vers/la/page/web/sur/lhote` par le chemin réel vers le répertoire contenant vos fichiers de la page web sur l'hôte.
 
+[%auto-animate]
+== ✅ Solution travaux pratiques #8
+[.title]
+En utilisant un volume nommé (Named Volume) :
+
+[%step]
+Créez un volume nommé et copiez vos fichiers de la page web dedans.
+
+[%step]
+Montez ce volume nommé dans le conteneur Nginx.
+
+[%step]
+Tout d'abord, créez un volume nommé :
+[%step]
+[source,bash]
+----
+----
+[%step]
+Copiez vos fichiers de la page web dans ce volume :
+
+[%step]
+[source,bash]
+----
+----
+[%step]
+Maintenant, lancez le conteneur Nginx et montez le volume nommé :
+
+[%step]
+[source,bash]
+----
+----
+
 == 🎓 Travaux pratiques #9
 [.title]
 Étapes:
@@ -345,6 +377,57 @@ Remplacez `/chemin/vers/la/page/web/sur/lhote` par le chemin réel vers le répe
 * Démarrer un second container attaché à ce volume
 * Lire les données du volume depuis le second container
 * Supprimer le volume
+
+== ✅ Solution travaux pratiques #9
+
+Créer un volume nommé "data" :
+[%step]
+[source,bash]
+----
+----
+[%step]
+Démarrer un premier conteneur attaché à ce volume :
+[%step]
+[source,bash]
+----
+----
+[%step]
+Dans le premier conteneur, lancez un processus qui écrit un fichier dans le volume (par exemple, un fichier texte) :
+[%step]
+[source,bash]
+----
+----
+[%step]
+Quittez le premier conteneur.
+[%step]
+Démarrer un second conteneur attaché au même volume :
+[%step]
+[source,bash]
+----
+----
+
+== ✅ Solution travaux pratiques #9
+
+Démarrer un second conteneur attaché au même volume :
+[source,bash]
+----
+----
+
+Dans le second conteneur, lisez les données du volume (le fichier texte) :
+[%step]
+[source,bash]
+----
+----
+[%step]
+Vous devriez voir le contenu du fichier affiché à l'écran.
+[%step]
+Quittez le second conteneur.
+[%step]
+Vous pouvez maintenant supprimer le volume "data" car vous n'en avez plus besoin :
+[%step]
+[source,bash]
+----
+----
 
 == 🎓  Travaux pratiques #10
 Écrire un Dockerfile qui:
