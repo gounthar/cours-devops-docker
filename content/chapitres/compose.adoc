@@ -26,7 +26,7 @@ image::351794078-image3.gif[]
 [%step]
 - Et tout lancer indépendamment ?
 - Et tout monitorer un par un ?
-- Peut mieux faire nan ?
+- Peut mieux faire, non ?
 
 [%autoanimate]
 == 🐋🐙 docker compose.yml

@@ -310,11 +310,19 @@ for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -tra
 ** réseau  ✅
 ** volumes ✅
 
+[%auto-animate]
 == 🎓 Travaux pratiques #8
 
 Lancer un container `nginx `et lui faire distribuer une page web externe au container.
 
 image::1763880002-image10.png[]
+
+[%auto-animate]
+== 🎓 Travaux pratiques #8
+
+image::ras-le-bol.png[height=600]
+
+[%auto-animate]
 
 [%auto-animate]
 == ✅ Solution travaux pratiques #8
