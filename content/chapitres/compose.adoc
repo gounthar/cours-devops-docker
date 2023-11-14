@@ -31,14 +31,14 @@ image::351794078-image3.gif[]
 [%autoanimate]
 == 🐋🐙 docker compose.yml
 
-[source,dockerfile]
+[source,yaml]
 ----
 services:
 ----
 [%autoanimate]
 == 🐋🐙 docker compose.yml
 
-[source,dockerfile]
+[source,yaml]
 ----
 services:
   apache:
@@ -59,7 +59,7 @@ services:
 [%autoanimate]
 == 🐋🐙 docker compose.yml
 
-[source,dockerfile]
+[source,yaml]
 ----
 services:
   apache:
@@ -79,7 +79,7 @@ services:
 [%autoanimate]
 == 🐋🐙 docker compose.yml
 
-[source,dockerfile]
+[source,yaml]
 ----
 services:
   apache:
@@ -100,7 +100,7 @@ services:
 [%autoanimate]
 == 🐋🐙 docker compose.yml
 
-[source,dockerfile]
+[source,yaml]
 ----
 services:
   apache:
@@ -121,7 +121,7 @@ services:
 [%autoanimate]
 == 🐋🐙 docker compose.yml
 
-[source,dockerfile]
+[source,yaml]
 ----
 services:
   apache:
@@ -142,7 +142,7 @@ services:
 [%autoanimate]
 == 🐋🐙 docker compose.yml
 
-[source,dockerfile]
+[source,yaml]
 ----
 services:
   apache:
@@ -163,7 +163,7 @@ services:
 [%autoanimate]
 == 🐋🐙 docker compose.yml
 
-[source,dockerfile]
+[source,yaml]
 ----
 services:
   apache:
@@ -184,7 +184,7 @@ services:
 [%autoanimate]
 == 🐋🐙 docker compose.yml
 
-[source,dockerfile]
+[source,yaml]
 ----
 services:
   apache:
@@ -206,7 +206,7 @@ services:
 [%autoanimate]
 == 🐋🐙 docker compose.yml
 
-[source,dockerfile]
+[source,yaml]
 ----
 services:
   apache:
@@ -228,7 +228,7 @@ services:
 
 ----
 
-[%autoanimate]
+[%auto-animate]
 == 🤔➡️ Et après ?
 
 [source,bash]
@@ -241,9 +241,539 @@ docker compose restart
 docker compose down
 ----
 
+[%auto-animate]
 == 🏁🔢 Ordre de démarrage
 
-pour attendre qu'un container réponde sur le réseau avant de démarrer... Voir exemple de myfirstandroid et travail ashutosh
+L'ordre de démarrage fait référence à la séquence dans laquelle les services définis dans un fichier Docker Compose sont lancés.
+
+[%auto-animate]
+== 🏁🔢 Ordre de démarrage
+
+[.title]
+Pourquoi est-ce important ?
+[%step]
+Certains services peuvent dépendre d'autres services pour fonctionner correctement.
+[%step]
+Par exemple, une application web peut avoir besoin qu'une base de données soit opérationnelle avant de pouvoir démarrer.
+
+[%auto-animate]
+== 🏁🔢 Ordre de démarrage
+
+[.title]
+Comment Docker Compose gère-t-il l'ordre de démarrage ?
+[%step]
+Par défaut, Docker Compose démarre les services dans l'ordre dans lequel ils sont définis dans le fichier Docker Compose.
+[%step]
+Cependant, cela ne garantit pas que les services dépendants seront prêts à être utilisés lorsque les services qui en dépendent seront lancés.
+
+[%auto-animate]
+== 🏁🔢 Ordre de démarrage
+
+[.title]
+Comment gérer les dépendances entre services ?
+[%step]
+Docker Compose offre deux directives pour gérer les dépendances entre services : `depends_on` et `healthcheck`.
+
+[%step]
+- `depends_on` : Cette directive peut être utilisée pour indiquer qu'un service dépend d'un autre service.
+Cependant, cela ne garantit pas que le service dépendant sera prêt à être utilisé lorsque le service qui en dépend sera lancé.
+- `healthcheck` : Cette directive peut être utilisée pour vérifier l'état de santé d'un service.
+En combinaison avec `depends_on`, elle peut aider à s'assurer qu'un service est prêt à être utilisé avant de lancer les services qui en dépendent.
+
+[%auto-animate]
+== 🏁🔢 Ordre de démarrage
+
+[.title]
+Exemple
+Voici un exemple de fichier Docker Compose qui utilise `depends_on` et `healthcheck` pour gérer l'ordre de démarrage des services :
+
+[%step]
+[source,yaml]
+----
+version: '3'
+services:
+  web:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+----
+
+[%step]
+Dans cet exemple, le service web dépend du service db.
+Le service db est vérifié toutes les 30 secondes pour s'assurer qu'il est prêt à être utilisé.
+Le service web ne sera lancé que lorsque le service db sera en bonne santé.
+
+[%auto-animate]
+== 🏁🔢 Ordre de démarrage❓🤔 Conditions.
+
+WARNING: Rappel:
+La directive `depends_on` dans un fichier Docker Compose est utilisée pour indiquer qu'un service dépend d'un autre service.
+Cela signifie que le service dépendant ne sera pas démarré tant que les services dont il dépend n'auront pas été démarrés.
+
+[%auto-animate]
+== 🏁🔢 Ordre de démarrage❓🤔 Autres conditions.
+
+En plus de la condition service_healthy, il existe d'autres conditions que vous pouvez utiliser avec `depends_on`:
+[%step]
+`service_started` : Cette condition signifie que le service dépendant ne sera pas démarré tant que le service dont il dépend n'aura pas été démarré.
+[%step]
+`service_completed_successfully`: Cette condition indique qu'un service dépendant ne doit pas démarrer avant qu'un autre service ait terminé avec succès. Cela peut être utile dans des scénarios où un service doit effectuer une tâche unique qui doit être terminée avant que d'autres services puissent débuter.
+[%step]
+Cependant, cela ne garantit pas que le service dont il dépend est prêt à être utilisé.
+
+[%auto-animate]
+== 🏁🔢 Ordre de démarrage❓🤔 Autre condition.
+
+Voici un exemple de comment vous pourriez utiliser `service_started` dans un fichier Docker Compose :
+[%step]
+[source,yaml]
+----
+version: '3'
+services:
+  web:
+    build: .
+    depends_on:
+      db:
+        condition: service_started
+  db:
+    image: postgres
+----
+
+[%step]
+Dans cet exemple, le service `web` ne sera démarré que lorsque le service `db` aura été démarré.
+
+[%auto-animate]
+== 🏁🔢 Ordre de démarrage & 🩺✅ healthcheck
+
+WARNING: Rappel
+`healthcheck` est une instruction dans un `Dockerfile` qui permet de vérifier l'état de santé d'un service.
+Il peut être utilisé pour déterminer si un service est prêt à être utilisé ou non.
+[%step]
+Voici un exemple de `healthcheck` dans un `Dockerfile` :
+[%step]
+[source,dockerfile]
+----
+FROM postgres
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD pg_isready -U postgres || exit 1
+----
+[%step]
+Dans cet exemple, `pg_isready -U postgres` est la commande utilisée pour vérifier l'état de santé du service.
+Si cette commande réussit, le service est considéré comme sain.
+Sinon, il est considéré comme malsain.
+
+[%auto-animate]
+== 🏁🔢 Ordre de démarrage & 🩺✅ healthcheck
+WARNING: Rappel
+`depends_on` est une directive dans un fichier Docker Compose qui indique qu'un service dépend d'un autre service.
+Il peut être utilisé pour contrôler l'ordre de démarrage des services.
+[%step]
+Voici un exemple de depends_on dans un fichier Docker Compose :
+[%step]
+[source,yaml]
+----
+version: '3'
+services:
+  web:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres
+----
+[%step]
+Dans cet exemple, le service `web` dépend du service `db`.
+Le service web ne sera démarré que lorsque le service db sera en bonne santé.
+
+[%auto-animate]
+== 🏁🔢 🩺✅ Comment healthcheck et depends_on travaillent ensemble ?
+[.title]
+En combinant `healthcheck` et `depends_on`, vous pouvez contrôler l'ordre de démarrage des services en fonction de leur état de santé.
+Par exemple, vous pouvez vous assurer qu'un service de base de données est prêt à être utilisé avant de démarrer une application web qui en dépend.
+
+[%auto-animate]
+== 🏁🔢 Ordre de démarrage 📊📝 Pour résumer
+
+L'ordre de démarrage fait référence à la séquence dans laquelle les services définis dans un fichier Docker Compose sont lancés.
+Par défaut, Docker Compose démarre les services dans l'ordre dans lequel ils sont définis dans le fichier Docker Compose.
+
+[%step]
+Docker Compose offre deux directives pour gérer les dépendances entre services : `depends_on` et `healthcheck`.
+
+[%auto-animate]
+== 🏁🔢 Ordre de démarrage 📊📝 Pour résumer
+
+- `depends_on` : Cette directive peut être utilisée pour indiquer qu'un service dépend d'un autre service. Elle peut être utilisée avec deux conditions : `service_started` et `service_healthy`.
+- `service_started` : Cette condition signifie que le service dépendant ne sera pas démarré tant que le service dont il dépend n'aura pas été démarré. Cependant, cela ne garantit pas que le service dont il dépend est prêt à être utilisé.
+- `service_healthy` : Cette condition est utilisée avec la directive healthcheck dans un Dockerfile pour vérifier l'état de santé d'un service. Si la commande healthcheck réussit, Docker considère le service comme sain. Sinon, il est considéré comme malsain.
+
+[%auto-animate]
+== 🏁🔢 Ordre de démarrage 📊📝 Pour résumer
+[.title]
+Exemple
+Voici un exemple de fichier Docker Compose qui utilise depends_on et healthcheck pour gérer l'ordre de démarrage des services :
+[%step]
+[source,yaml]
+----
+version: '3'
+services:
+  web:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+----
+
+[%auto-animate]
+== 🏁🔢 Étude de cas 📚🔍
+
+Un exemple de fichier docker-compose.yml utilisé dans Jenkins:
+
+https://raw.githubusercontent.com/ash-sxn/GSoC-2023-docker-based-quickstart/main/docker-compose.yaml
+
+[source,yaml]
+----
+sidekick_service:
+    # Configuration for the sidekick service
+    image: ${DOCKERHUB_USERNAME}/jenkinsci-tutorials:sidekick_
+    stdin_open: true
+    tty: true
+    entrypoint: sh -c "/usr/local/bin/keygen.sh /ssh-dir"  # Runs the keygen.sh script and specifies the output directory
+    volumes:
+      - agent-ssh-dir:/ssh-dir  # Mounts the agent-ssh-dir volume to the /ssh-dir path inside the container
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+----
+[%step]
+Les options `stdin_open: true` et `tty: true` sont utilisées pour garder l'entrée standard du conteneur ouverte et pour allouer un pseudo-TTY au conteneur, respectivement.
+C'est généralement fait lorsque vous voulez interagir avec le service en cours d'exécution.
+
+[%auto-animate]
+== 🏁🔢 Étude de cas 📚🔍
+
+[source,yaml]
+----
+sidekick_service:
+    # Configuration for the sidekick service
+    image: ${DOCKERHUB_USERNAME}/jenkinsci-tutorials:sidekick_
+    stdin_open: true
+    tty: true
+    entrypoint: sh -c "/usr/local/bin/keygen.sh /ssh-dir"  # Runs the keygen.sh script and specifies the output directory
+    volumes:
+      - agent-ssh-dir:/ssh-dir  # Mounts the agent-ssh-dir volume to the /ssh-dir path inside the container
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+----
+
+-  La directive `entrypoint` est utilisée pour spécifier la commande qui sera exécutée lorsque le conteneur démarre.
+- Dans ce cas, elle exécute une commande shell qui exécute un script nommé `keygen.sh` situé à `/usr/local/bin/keygen.sh`.
+- Le script reçoit un argument `/ssh-dir`, qui est le répertoire où le script effectuera ses opérations.
+
+[%auto-animate]
+== 🏁🔢 Étude de cas 📚🔍
+
+[source,yaml]
+----
+sidekick_service:
+    # Configuration for the sidekick service
+    image: ${DOCKERHUB_USERNAME}/jenkinsci-tutorials:sidekick_
+    stdin_open: true
+    tty: true
+    entrypoint: sh -c "/usr/local/bin/keygen.sh /ssh-dir"  # Runs the keygen.sh script and specifies the output directory
+    volumes:
+      - agent-ssh-dir:/ssh-dir  # Mounts the agent-ssh-dir volume to the /ssh-dir path inside the container
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+----
+[%step]
+* La directive volumes est utilisée pour monter un volume nommé `agent-ssh-dir` sur le chemin `/ssh-dir` à l'intérieur du conteneur.
+* Cela permet de conserver les données entre les redémarrages du conteneur et peut également être utilisé pour partager des données entre les conteneurs.
+
+[%auto-animate]
+== 🏁🔢 Étude de cas 📚🔍
+
+[source,yaml]
+----
+sidekick_service:
+    # Configuration for the sidekick service
+    image: ${DOCKERHUB_USERNAME}/jenkinsci-tutorials:sidekick_
+    stdin_open: true
+    tty: true
+    entrypoint: sh -c "/usr/local/bin/keygen.sh /ssh-dir"  # Runs the keygen.sh script and specifies the output directory
+    volumes:
+      - agent-ssh-dir:/ssh-dir  # Mounts the agent-ssh-dir volume to the /ssh-dir path inside the container
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+----
+[%step]
+* Enfin, un healthcheck est défini pour le service. Il s'agit d'une commande que Docker exécutera à l'intérieur du conteneur pour vérifier sa santé.
+* Dans ce cas, la commande vérifie si un fichier nommé `conductor_ok` existe dans le répertoire `/ssh-dir`.
+* Si le fichier existe, la commande réussit et Docker considère le service comme sain.
+* Si le fichier n'existe pas, la commande échoue et Docker considère le service comme malsain.
+* Docker exécutera cette vérification de santé toutes les 5 secondes (`interval: 5s`), et si elle ne répond pas dans les 10 secondes (`timeout: 10s`), Docker la considérera comme un échec. Docker réessaiera une vérification de santé échouée 5 fois (`retries: 5`) avant de considérer le service comme malsain.
+
+[%auto-animate]
+[.columns]
+== 🏁🔢 Étude de cas 📚🔍
+
+[.column.is-two-thirds]
+--
+[source,yaml]
+----
+services:
+  sidekick_service: [...]
+
+  jenkins_controller: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  default_agent: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+      jenkins_controller:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Checks if the authorized_keys file exists in the /home/jenkins/.ssh path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Mounts the agent-ssh-dir volume to the /home/jenkins/.ssh path inside the container as read-only
+----
+--
+
+[.column]
+--
+* Service jenkins_controller
+[%step]
+** Ce service dépend du `sidekick_service`.
+** Il ne démarrera que lorsque le `sidekick_service` aura terminé avec succès.
+** C'est ce que signifie la condition `service_completed_successfully`.
+--
+
+
+[%auto-animate]
+[.columns]
+== 🏁🔢 Étude de cas 📚🔍
+
+[.column.is-two-thirds]
+--
+[source,yaml]
+----
+services:
+  sidekick_service: [...]
+
+  jenkins_controller: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  default_agent: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+      jenkins_controller:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Checks if the authorized_keys file exists in the /home/jenkins/.ssh path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Mounts the agent-ssh-dir volume to the /home/jenkins/.ssh path inside the container as read-only
+----
+--
+
+[.column]
+--
+Un `healthcheck` est également défini pour ce service.
+[%step]
+* Docker vérifie si un fichier nommé `conductor_ok` existe dans le chemin `/ssh-dir`.
+* Si le fichier existe, Docker considère le service comme sain.
+* Sinon, il est considéré comme malsain.
+--
+
+
+[%auto-animate]
+[.columns]
+== 🏁🔢 Étude de cas 📚🔍
+
+[.column.is-two-thirds]
+--
+[source,yaml]
+----
+services:
+  sidekick_service: [...]
+
+  jenkins_controller: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  default_agent: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+      jenkins_controller:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Checks if the authorized_keys file exists in the /home/jenkins/.ssh path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Mounts the agent-ssh-dir volume to the /home/jenkins/.ssh path inside the container as read-only
+----
+--
+
+[.column]
+--
+Service `default_agent`
+[%step]
+* Ce service dépend également du `sidekick_service` et du `jenkins_controller`.
+* Il ne démarrera que lorsque le `sidekick_service` aura terminé avec succès et que le `jenkins_controller` aura démarré.
+* C'est ce que signifient les conditions `service_completed_successfully` et `service_started`.
+--
+
+[%auto-animate]
+[.columns]
+== 🏁🔢 Étude de cas 📚🔍
+
+[.column.is-two-thirds]
+--
+[source,yaml]
+----
+services:
+  sidekick_service: [...]
+
+  jenkins_controller: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  default_agent: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+      jenkins_controller:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Checks if the authorized_keys file exists in the /home/jenkins/.ssh path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Mounts the agent-ssh-dir volume to the /home/jenkins/.ssh path inside the container as read-only
+----
+--
+
+[.column]
+--
+Un `healthcheck` est également défini pour ce service.
+[%step]
+* Docker vérifie si un fichier nommé `authorized_keys` existe dans le chemin `/home/jenkins/.ssh`.
+* Si le fichier existe, Docker considère le service comme sain.
+* Sinon, il est considéré comme malsain.
+--
+
+[%auto-animate]
+[.columns]
+== 🏁🔢 Étude de cas 📚🔍
+
+[.column.is-two-thirds]
+--
+[source,yaml]
+----
+services:
+  sidekick_service: [...]
+
+  jenkins_controller: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  default_agent: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+      jenkins_controller:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Checks if the authorized_keys file exists in the /home/jenkins/.ssh path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Mounts the agent-ssh-dir volume to the /home/jenkins/.ssh path inside the container as read-only
+----
+--
+
+[.column]
+--
+Enfin, un volume nommé `agent-ssh-dir` est monté sur le chemin `/home/jenkins/.ssh` à l'intérieur du conteneur en lecture seule.
+--
+
+[%auto-animate]
+== 🏁🔢 Étude de cas 📚🔍
+
+À étudier au calme chez vous:
+
+https://raw.githubusercontent.com/gounthar/MyFirstAndroidAppBuiltByJenkins/stf/jenkins/docker-compose.yml
 
 image::47642838-image4.png[]
 
@@ -255,7 +785,10 @@ https://github.com/vishnubob/wait-for-it
 
 == Transformer son application en docker compose
 
-https://github.com/jwilder/dockerize
+Deux approches différentes et complémentaires :
+[%step]
+* https://www.composerize.com/
+* https://github.com/jwilder/dockerize
 
 == Travaux pratiques #12
 
