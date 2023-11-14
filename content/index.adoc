@@ -67,6 +67,9 @@ include::./chapitres/reseaux.adoc[leveloffset=1]
 // Docker compose
 include::./chapitres/compose.adoc[leveloffset=1]
 
+// Docker compose
+include::./chapitres/bonus.adoc[leveloffset=1]
+
 // Bibliographie
 include::./chapitres/bibliographie.adoc[leveloffset=1]
 

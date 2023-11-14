@@ -1,1 +1,332 @@
 = Bonus
+
+
+== Les petits plus
+
+image::902050214-image2.png[]
+image::902050214-image2.png[]
+image::902050214-image2.png[]
+image::902050214-image2.png[]
+image::902050214-image2.png[]
+image::902050214-image2.png[]
+
+[%auto-animate]
+== "Il en remet une couche"
+
+[source,bash]
+----
+docker history nginx
+IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
+f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daemon…   0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  STOPSIGNAL SIGTERM           0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  EXPOSE 80                    0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  ENTRYPOINT ["/docker-entr…   0B
+<missing>           4 weeks ago         /bin/sh -c #(nop) COPY file:0fd5fca330dcd6a7…   1.04kB
+<missing>           4 weeks ago         /bin/sh -c #(nop) COPY file:1d0a4127e78a26c1…   1.96kB
+<missing>           4 weeks ago         /bin/sh -c #(nop) COPY file:e7e183879c35719c…   1.2kB
+<missing>           4 weeks ago         /bin/sh -c set -x     && addgroup --system -…   63.6MB
+<missing>           4 weeks ago         /bin/sh -c #(nop)  ENV PKG_RELEASE=1~buster     0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  ENV NJS_VERSION=0.4.4        0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  ENV NGINX_VERSION=1.19.3     0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  LABEL maintainer=NGINX Do…   0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  CMD ["bash"]                 0B
+<missing>           4 weeks ago         /bin/sh -c #(nop) ADD file:0dc53e7886c35bc21…   69.2MB
+----
+
+[%auto-animate]
+== "Il en remet une couche"
+
+[source,bash]
+----
+docker history nginx
+IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
+f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daemon…   0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  STOPSIGNAL SIGTERM           0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  EXPOSE 80                    0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  ENTRYPOINT ["/docker-entr…   0B
+<missing>           4 weeks ago         /bin/sh -c #(nop) COPY file:0fd5fca330dcd6a7…   1.04kB
+<missing>           4 weeks ago         /bin/sh -c #(nop) COPY file:1d0a4127e78a26c1…   1.96kB
+<missing>           4 weeks ago         /bin/sh -c #(nop) COPY file:e7e183879c35719c…   1.2kB
+<missing>           4 weeks ago         /bin/sh -c set -x     && addgroup --system -…   63.6MB
+<missing>           4 weeks ago         /bin/sh -c #(nop)  ENV PKG_RELEASE=1~buster     0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  ENV NJS_VERSION=0.4.4        0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  ENV NGINX_VERSION=1.19.3     0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  LABEL maintainer=NGINX Do…   0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  CMD ["bash"]                 0B
+<missing>           4 weeks ago         /bin/sh -c #(nop) ADD file:0dc53e7886c35bc21…   69.2MB
+----
+
+Il est préférable de limiter le nombre de couches pour limiter la bande passante.
+
+[%auto-animate]
+== "Il en remet une couche"
+
+[source,bash]
+----
+RUN apk add \
+     patch \
+     tar \
+     mercurial \
+     git \
+     ruby \
+     ruby-devel \
+     rubygem-bundler \
+     make \
+     gcc-c++ \
+     zlib-devel \
+     libxml2-devel \
+     docker \
+     nodejs \
+     npm \
+     sssd \
+ && mkdir -p /var/lib/docker-builder \
+ && mkdir -p /etc/docker-builder
+----
+
+== Ne pas charger inutilement !
+
+[source,bash]
+----
+ && apk remove make gcc maven ... \
+ && rm -f previously-downloaded.tar.gz \
+ && apk clean all \
+ && rm -rf /tmp/*
+----
+[%step]
+Il est utile, pour des raisons d'espace, de nettoyer le filesystem de ses futurs containers, en donnant les bonnes instructions dans le Dockerfile.
+
+== Documentez !
+
+Les mots clés `EXPOSE` et `LABEL` peuvent fournir de précieuses informations aux utilisateurs de vos images !
+
+(les ports exposés par défaut, les auteurs de l'image, la version d'un middleware embarqué, …)
+
+== Préparez-vous au read-only
+
+Il est possible de lister toutes les modifications qui ont été apportées au filesystem d'un container.
+
+[source,bash]
+----
+docker diff 29f1c4
+C /run
+A /run/nginx.pid
+C /var
+C /var/lib
+C /var/lib/nginx
+C /var/lib/nginx/tmp
+A /var/lib/nginx/tmp/client_body
+A /var/lib/nginx/tmp/fastcgi
+A /var/lib/nginx/tmp/proxy
+A /var/lib/nginx/tmp/scgi
+A /var/lib/nginx/tmp/uwsgi
+C /var/log
+C /var/log/nginx
+A /var/log/nginx/access.log
+A /var/log/nginx/error.log
+----
+[%step]
+Une bonne piste pour savoir quels volumes déclarer !
+
+== HealthCheck
+
+Savoir que mon PID 1 est toujours en cours d'exécution n'est peut-être pas la meilleure piste pour savoir si mon conteneur est en bonne santé !
+
+[source,bash]
+----
+FROM ghost:3
+RUN apt update && apt install curl -y \
+        && rm -rf /var/lib/apt/lists/*
+
+HEALTHCHECK --interval=1m --timeout=30s --retries=3 CMD curl --fail http://localhost:2368 || exit 1
+----
+
+source : https://www.grottedubarbu.fr/docker-healthcheck/
+
+== Debugging
+
+image::1939424428-image3.gif[]
+
+== Une tonne d'outils !
+
+Les logs
+
+* des containers
+
+* du démon Docker
+
+[source,bash]
+----
+docker container exec
+docker inspect
+docker cp
+docker history
+docker stats
+----
+
+== Debugging : Les logs
+
+rappel : `docker container logs` permet de lister les logs des conteneurs.
+
+[%step]
+[source,bash]
+----
+docker container logs 47d6
+Fri Nov 20 00:39:52 UTC 2023
+Fri Nov 20 00:39:53 UTC 2023
+----
+
+== Concentrateur de logs
+
+Par défaut, les logs des conteneurs sont stockés dans des fichiers json. Mais comment faire pour les envoyer vers un concentrateur ?
+
+[%step]
+----
+docker container run -d
+--log-driver=gelf
+--log-opt gelf-address=udp://localhost:12201
+-p 88:80
+nginx
+----
+[%step]
+on spécifie un driver
+[%step]
+on configure le driver
+
+== Travaux pratiques #13
+
+Étapes
+
+Lancer une stack ELK grâce aux fichiers fournis dans le repo https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp13
+
+Alimenter en logs avec la commande `docker run --log-driver=gelf --log-opt gelf-address=udp://localhost:12201 alpine bash -c 'seq 1 100'`
+
+Créer un index "timestamp" sur Kibana puis aller à l'écran "discover"
+
+Lancer un conteneur nginx et concentrez ses logs dans ELK
+
+== Debugging : docker exec
+
+rappel : `docker container exec `permet de lancer une commande dans un container
+
+[source,bash]
+----
+docker exec <containerID> echo "hello"
+----
+
+
+[source,bash]
+----
+docker exec –it <containerID> bash
+----
+
+== Debugging : docker inspect
+
+rappel : `docker inspect `permet de lister toutes les caractéristiques d'une image ou d'un container.
+
+On peut filtrer le retour de la commande avec `jq` ou l'option `--format`.
+
+
+== Debugging : docker cp
+
+Cette commande permet d'échanger des fichiers entre un conteneur et la machine hôte.
+
+[source,bash]
+----
+docker cp --help
+Usage:  docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-
+        docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH
+Copy files/folders between a container and the local filesystem
+Options:
+  -a, --archive       Archive mode (copy all uid/gid information)
+  -L, --follow-link   Always follow symbol link in SRC_PATH
+----
+
+== Debugging : docker history
+
+Cette commande permet d'afficher la concaténation de tous les Dockerfiles qui ont abouti à cette image.
+
+[source,bash]
+----
+docker history nginx
+IMAGE               CREATED             CREATED BY                                      SIZE                f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daemon…   0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  STOPSIGNAL SIGTERM           0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  EXPOSE 80                    0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  ENTRYPOINT ["/docker-entr…   0B
+<missing>           4 weeks ago         /bin/sh -c #(nop) COPY file:0fd5fca330dcd6a7…   1.04kB
+<missing>           4 weeks ago         /bin/sh -c #(nop) COPY file:1d0a4127e78a26c1…   1.96kB
+<missing>           4 weeks ago         /bin/sh -c #(nop) COPY file:e7e183879c35719c…   1.2kB
+<missing>           4 weeks ago         /bin/sh -c set -x     && addgroup --system -…   63.6MB
+<missing>           4 weeks ago         /bin/sh -c #(nop)  ENV PKG_RELEASE=1~buster     0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  ENV NJS_VERSION=0.4.4        0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  ENV NGINX_VERSION=1.19.3     0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  LABEL maintainer=NGINX Do…   0B
+<missing>           4 weeks ago         /bin/sh -c #(nop)  CMD ["bash"]                 0B
+<missing>           4 weeks ago         /bin/sh -c #(nop) ADD file:0dc53e7886c35bc21…   69.2MB
+----
+
+== Debugging : docker stats
+
+Cette commande permet d'avoir les stats en temps réel d'un conteneur.
+
+[source,bash]
+----
+docker stats 42f128
+CONTAINER           CPU %     MEM USAGE/LIMIT     MEM %     NET I/O
+42f128              0.00%     1.454 MB/4.145 GB   0.04%     648 B/648 B
+----
+
+== Travaux pratiques #14
+
+Notre collègue Michel débute en Docker, il met à disposition des images Docker pour notre entreprise.
+
+Michel a eu la chance de gagner au Loto et il a quitté son bureau du jour au lendemain alors qu'il était sur le point de nous délivrer une image Nginx.
+
+Nous n'avons que le binaire de son image à cette adresse.
+
+https://owncloud.univ-artois.fr/index.php/s/9s8XBLXvRwBJsrm
+
+On sait que `docker load `est la solution pour commencer
+
+A l'aide !
+
+[%auto-animate]
+== Conseils pour l'eval'
+
+image::final answer.png[]
+
+[%auto-animate]
+== Conseils pour l'eval'
+
+image::dont panic.png[]
+
+== Vous devez avoir les compétences suivantes:
+
+Savoir lancer un container avec toutes les options
+
+* `-v, -p, -w, -e, --rm, etc.`
+
+Écrire un Dockerfile optimisé pour "dockeriser" une application
+
+* pas trop gourmand, facile à modifier, paramétrable.
+
+Étudier une image ou un conteneur pour tout débug éventuel.
+
+Savoir s'outiller pour avoir des images qui servent d'environnement d'exécution à votre CI.
+
+Monter un écosystème applicatif complexe via docker-compose.
+
+== Que revoir ?
+
+Les TPs sont vos meilleurs amis.
+
+La documentation officielle de Docker
+
+https://docs.docker.com/engine/reference/run/
+
+https://docs.docker.com/engine/reference/builder/
+
+https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
+
+== one more thing
+
+image::415439355-image7.png[]
