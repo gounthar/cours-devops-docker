@@ -319,11 +319,6 @@ Trouver deux façons différentes de rendre disponible la page web au container.
 image::1763880002-image10.png[]
 
 [%auto-animate]
-== 🎓 Travaux pratiques #8
-
-image::ras-le-bol.png[height=600]
-
-[%auto-animate]
 
 [%auto-animate]
 == ✅ Solution travaux pratiques #8
