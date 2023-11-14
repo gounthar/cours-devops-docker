@@ -1312,7 +1312,7 @@ app.js</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run --workdir /customdir --entrypoint ls node
 &lt;0 fichiers présents !&gt;</code></pre></div></div>
 <div class="paragraph fragment"><p>Comment fournir des fichiers à mes containers ?</p></div></div></section><section id="embarquer_des_fichiers_2" data-auto-animate><h2>📁 Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Copie de fichiers.</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM node:21.1.0-alpine3.18
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM node:20.8.0-alpine3.18
 WORKDIR /app
 COPY ./* /app</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-node .
@@ -1364,10 +1364,7 @@ README-secret.md</code></pre></div></div></div></section><section data-backgroun
 RSSI : définition. Le responsable de la sécurité des systèmes d&#8217;information (ou RSSI pour Responsable de la Sécurité des Systèmes d&#8217;Information) définit et développe la politique de sécurité de l&#8217;information de son entreprise.</p></div></aside></div></section><section id="exemple_de_mise_en_place" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output35_with_transparency.png" alt="fichiers output35 with transparency"></div></div></section><section id="exemple_de_mise_en_place_2" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output36_with_transparency.png" alt="fichiers output36 with transparency"></div></div></section><section id="exemple_de_mise_en_place_3" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output37_with_transparency.png" alt="fichiers output37 with transparency"></div></div></section><section id="exemple_de_mise_en_place_4" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output38_with_transparency.png" alt="fichiers output38 with transparency"></div></div></section><section id="exemple_de_mise_en_place_5" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output39_with_transparency.png" alt="fichiers output39 with transparency"></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {35..39}; do convert Diapositive${i}.PNG -crop 8803x3982+2273+2769 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="exemple_continuous_build"><h2>➡️ Exemple : continuous build</h2><div class="slide-content"><div class="imageblock"><img src="media/107490784-image13.png" alt="107490784 image13"></div></div></section><section id="travaux_pratiques_5"><h2>🎓 Travaux pratiques #5</h2><div class="slide-content"><div class="paragraph"><p><a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05</a></p></div>
 <div class="imageblock"><img src="media/636764807-image14.png" alt="636764807 image14"></div>
-<aside class="notes"><div class="paragraph"><p>Solution là: <a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp-05-solution" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp-05-solution</a></p></div></aside></div></section><section id="solution_travaux_pratiques_5" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="quoteblock"><blockquote>La procrastination est l&#8217;art de garder espoir que vous aurez le temps de tout faire demain, même si vous ne faites rien aujourd&#8217;hui.</blockquote><div class="attribution">&#8212; Karen Lamb</div></div>
-<aside class="notes"><div class="paragraph"><p>Je ne suis pas là pour vous pourrir la vie, mais pour vous préparer à la vie professionnelle.
-Ce TP, c&#8217;était un simple exercice pour mettre en pratique le cours, mais il y a de vraies leçons à en tirer.</p></div>
-<div class="ulist"><ul><li><p>Très instructif pour moi.</p><div class="ulist"><ul><li><p>Votre relation au travail.</p></li><li><p>Votre relation à l&#8217;enseignement.</p></li><li><p>Votre relation à l&#8217;enseignant.</p></li><li><p>Votre relation aux délais.</p><div class="ulist"><ul><li><p>5 minutes de travail si on a suivi le cours</p></li><li><p>15 minutes de travail si on fait le premier bonus</p></li><li><p>30 minutes de travail si on fait le second bonus</p></li><li><p>1h de travail si on n&#8217;a pas suivi le cours, et qu&#8217;il faut se retaper les fondamentaux</p></li></ul></div></li></ul></div></li><li><p>Relation au travail.</p><div class="ulist"><ul><li><p>L&#8217;IT est une industrie dure où il ne fait pas bon vieillir.</p></li><li><p>Entretien d&#8217;embauche au quotidien.</p></li><li><p>La procrastination est un luxe que vous ne pouvez pas vous permettre.</p><div class="ulist"><ul><li><p>Vous devez être capable d&#8217;ordonner vos priorités.</p></li><li><p>Vous devez être capable de vous auto-discipliner.</p></li><li><p>Vous devez être capable de vous auto-former.</p></li><li><p>Vous devez être capable de vous auto-motiver.</p></li></ul></div></li></ul></div></li><li><p>Aspect technique.</p><div class="ulist"><ul><li><p>Cycle en V et méthodes agiles.</p></li><li><p>Micro-management != micro-review</p><div class="ulist"><ul><li><p>Fini ou pas, on committe régulièrement et on crée une MR en draft au plus tôt.</p></li><li><p>On n&#8217;a pas honte de ce qu&#8217;on produit, vous n&#8217;êtes pas votre code!</p></li></ul></div></li></ul></div></li><li><p>Suis là pour transmettre un savoir, mais pas que</p><div class="ulist"><ul><li><p>Je transmets également la voix de l&#8217;industrie</p></li><li><p>5 cours, c&#8217;est peu pour transmettre autre chose qu&#8217;un savoir technique</p></li></ul></div></li></ul></div></aside></div></section><section id="solution_travaux_pratiques_5_2" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-diff hljs" data-noescape="true" data-lang="diff">diff --git a/src/Dockerfile b/src/Dockerfile
+<aside class="notes"><div class="paragraph"><p>Solution là: <a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp-05-solution" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp-05-solution</a></p></div></aside></div></section><section id="solution_travaux_pratiques_5" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-diff hljs" data-noescape="true" data-lang="diff">diff --git a/src/Dockerfile b/src/Dockerfile
 index c92c67cd48121705628f67a2af14b2a65e54cdfd..77919a581fffde7c57f43c8b7cbee2a8d84b628b 100644
 --- a/src/Dockerfile
 +++ b/src/Dockerfile
@@ -1398,7 +1395,7 @@ En utilisant un UID non réservé, vous réduisez le risque que l&#8217;utilisat
 Dans certains cas, l&#8217;UID 1001 est simplement choisi par convention. Si vous avez des exigences spécifiques en matière de numéros d&#8217;UID, vous pouvez les personnaliser en conséquence.</p></div>
 <div class="paragraph"><p>Isolation : En attribuant des UIDs spécifiques aux utilisateurs de vos conteneurs, vous pouvez mieux isoler ces utilisateurs des autres utilisateurs système ou des autres conteneurs.</p></div>
 <div class="paragraph"><p>Il est important de noter que le choix de l&#8217;UID dépend de la manière dont vous configurez vos conteneurs et de vos exigences en matière de sécurité et d&#8217;isolation.
-L&#8217;UID 1001 est courant, mais il n&#8217;est pas la seule option, et vous pouvez choisir un UID qui convient le mieux à votre cas d&#8217;utilisation particulier.</p></div></aside></div></section><section id="solution_travaux_pratiques_5_3" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-diff hljs" data-noescape="true" data-lang="diff">diff --git a/src/start.sh b/src/start.sh
+L&#8217;UID 1001 est courant, mais il n&#8217;est pas la seule option, et vous pouvez choisir un UID qui convient le mieux à votre cas d&#8217;utilisation particulier.</p></div></aside></div></section><section id="solution_travaux_pratiques_5_2" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-diff hljs" data-noescape="true" data-lang="diff">diff --git a/src/start.sh b/src/start.sh
 index 44006d6cd8414706a5fcf564dbfd1e9c38d4bc0b..a6ed60fdf88759d4962685e7ceb6cdbc21867448 100755
 --- a/src/start.sh
 +++ b/src/start.sh
@@ -1419,7 +1416,7 @@ index 44006d6cd8414706a5fcf564dbfd1e9c38d4bc0b..a6ed60fdf88759d4962685e7ceb6cdbc
 +date &gt; /tmp/started.time
  # This writes the current date and time to the 'started.time' file. It's like the script's way of keeping a diary.
 
- exec "$@"</code></pre></div></div></div></section><section id="solution_travaux_pratiques_5_4" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">stages:
+ exec "$@"</code></pre></div></div></div></section><section id="solution_travaux_pratiques_5_3" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">stages:
   - "validator.sh"
   - "docker scout"
 
@@ -1450,7 +1447,7 @@ scout-job:
     - docker scout cves --format only-packages --only-vuln-packages "$IMAGE"
     - docker rmi "$IMAGE"
   tags:
-    - myshell</code></pre></div></div></div></section><section id="solution_travaux_pratiques_5_5" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">stages:
+    - myshell</code></pre></div></div></div></section><section id="solution_travaux_pratiques_5_4" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">stages:
   - run_script
   - docker_scan
 
@@ -1725,7 +1722,7 @@ WORKDIR /app/gs-spring-boot/complete
 RUN mvn package
 
 # Use a lightweight Java image for running the application
-FROM eclipse-temurin:21.0.1_12-jre-alpine
+FROM eclipse-temurin:21_35-jre-alpine
 WORKDIR /app
 
 # Copy the built JAR file from the previous build stage
@@ -1736,7 +1733,7 @@ CMD ["java", "-jar", "spring-boot-complete-0.0.1-SNAPSHOT.jar"]</code></pre></di
 <div class="paragraph fragment"><p>Le multistage, c&#8217;est la classe à Arras.
 On en reparle après.</p></div></div></section><section id="une_première_solution"><h2>🧩 Une première solution</h2><div class="slide-content"><div class="paragraph"><p>Avec un autre exemple&#8230;&#8203;
 Une image pour construire l&#8217;appli:</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM golang:1.21
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM golang:1.19
 
 WORKDIR /go/src/github.com/alexellis/href-counter/
 
@@ -1747,7 +1744,7 @@ COPY app.go	.
 
 RUN CGO_ENABLED=0 GOOS=linux go build  -ldflags "-s -w" -o app .</code></pre></div></div>
 <div class="paragraph fragment"><p>Une image pour faire tourner l&#8217;appli</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18.4
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.17.1
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
@@ -1895,9 +1892,9 @@ RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="admonitionblock caution"><table><tr><td class="icon"><i class="fa fa-fire" title="Caution"></i></td><td class="content">Les données sont perdues à l&#8217;arrêt du container.</td></tr></table></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -transparent white -resize x1080 volumes-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="filesystem_en_ram_3" data-auto-animate><h2>💾🧠 FileSystem en RAM</h2><div class="slide-content"><div class="imageblock"><img src="media/volumes-output22_with_transparency.png" alt="volumes output22 with transparency"></div>
 <div class="admonitionblock caution"><table><tr><td class="icon"><i class="fa fa-fire" title="Caution"></i></td><td class="content">Les données sont perdues à l&#8217;arrêt du container.</td></tr></table></div>
-<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -transparent white -resize x1080 volumes-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="bilan_de_compétences" data-auto-animate><h2>📊📝 Bilan de compétences</h2><div class="slide-content"><div class="ulist"><ul><li><p>Création d&#8217;images</p></li><li><p>Création des containers</p><div class="ulist"><ul><li><p>cycle de vie</p></li><li><p>nommage</p></li><li><p>débug</p></li><li><p>réseau</p></li><li><p>volumes</p></li></ul></div></li></ul></div></div></section><section id="bilan_de_compétences_2" data-auto-animate><h2>📊📝 Bilan de compétences</h2><div class="slide-content"><div class="ulist"><ul><li><p>Création d&#8217;images ✅</p></li><li><p>Création des containers ✅</p><div class="ulist"><ul><li><p>cycle de vie ✅</p></li><li><p>nommage ✅</p></li><li><p>débug ✅</p></li><li><p>réseau  ✅</p></li><li><p>volumes ✅</p></li></ul></div></li></ul></div></div></section><section id="travaux_pratiques_8"><h2>🎓 Travaux pratiques #8</h2><div class="slide-content"><div class="paragraph"><p>Lancer un container `nginx `et lui faire distribuer une page web externe au container.
+<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -transparent white -resize x1080 volumes-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="bilan_de_compétences" data-auto-animate><h2>📊📝 Bilan de compétences</h2><div class="slide-content"><div class="ulist"><ul><li><p>Création d&#8217;images</p></li><li><p>Création des containers</p><div class="ulist"><ul><li><p>cycle de vie</p></li><li><p>nommage</p></li><li><p>débug</p></li><li><p>réseau</p></li><li><p>volumes</p></li></ul></div></li></ul></div></div></section><section id="bilan_de_compétences_2" data-auto-animate><h2>📊📝 Bilan de compétences</h2><div class="slide-content"><div class="ulist"><ul><li><p>Création d&#8217;images ✅</p></li><li><p>Création des containers ✅</p><div class="ulist"><ul><li><p>cycle de vie ✅</p></li><li><p>nommage ✅</p></li><li><p>débug ✅</p></li><li><p>réseau  ✅</p></li><li><p>volumes ✅</p></li></ul></div></li></ul></div></div></section><section id="travaux_pratiques_8" data-auto-animate><h2>🎓 Travaux pratiques #8</h2><div class="slide-content"><div class="paragraph"><p>Lancer un container `nginx `et lui faire distribuer une page web externe au container.
 Trouver deux façons différentes de rendre disponible la page web au container.</p></div>
-<div class="imageblock"><img src="media/1763880002-image10.png" alt="1763880002 image10"></div></div></section><section id="solution_travaux_pratiques_8" data-auto-animate><h2>✅ Solution travaux pratiques #8</h2><div class="slide-content"><div class="paragraph title"><p>En utilisant un montage de répertoire (Bind Mount) :</p></div>
+<div class="imageblock"><img src="media/1763880002-image10.png" alt="1763880002 image10"></div></div></section><section id="travaux_pratiques_8_2" data-auto-animate><h2>🎓 Travaux pratiques #8</h2><div class="slide-content"><div class="imageblock"><img src="media/ras-le-bol.png" alt="ras le bol" height="600"></div></div></section><section id="solution_travaux_pratiques_8" data-auto-animate><h2>✅ Solution travaux pratiques #8</h2><div class="slide-content"><div class="paragraph title"><p>En utilisant un montage de répertoire (Bind Mount) :</p></div>
 <div class="paragraph fragment"><p>Utilisez un montage de répertoire pour mapper un répertoire de l&#8217;hôte vers le conteneur Nginx.</p></div>
 <div class="paragraph fragment"><p>Placez vos fichiers HTML dans un répertoire sur votre machine hôte, puis mappez ce répertoire vers le conteneur Nginx.</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
@@ -1907,7 +1904,11 @@ Trouver deux façons différentes de rendre disponible la page web au container.
 <div class="paragraph fragment"><p>Tout d&#8217;abord, créez un volume nommé :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
 <div class="paragraph fragment"><p>Copiez vos fichiers de la page web dans ce volume :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm \
+  --volume mon-nginx-html:/cible \   # Montez le volume nommé "mon-nginx-html" dans le conteneur sous le répertoire "/cible".
+  --volume /chemin/vers/la/page/web/sur/lhote:/html \ # Montez le répertoire où se trouve le fichier html
+  --workdir /cible \                # Définissez le répertoire de travail à "/cible" dans le conteneur.
+  busybox cp -r /html .   # Copiez récursivement le contenu depuis "/chemin/vers/la/page/web/sur/lhote" dans le répertoire actuel du conteneur.</code></pre></div></div>
 <div class="paragraph fragment"><p>Maintenant, lancez le conteneur Nginx et montez le volume nommé :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div></div></section><section id="travaux_pratiques_9"><h2>🎓 Travaux pratiques #9</h2><div class="slide-content"><div class="paragraph title"><p>Étapes:</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Créer un volume nommé "data"</p></li><li class="fragment"><p>Démarrer un container attaché à ce volume</p></li><li class="fragment"><p>Lancer un processus qui écrit un fichier dans le volume</p></li><li class="fragment"><p>Démarrer un second container attaché à ce volume</p></li><li class="fragment"><p>Lire les données du volume depuis le second container</p></li><li class="fragment"><p>Supprimer le volume</p></li></ul></div></div></section><section id="solution_travaux_pratiques_9"><h2>✅ Solution travaux pratiques #9</h2><div class="slide-content"><div class="paragraph"><p>Créer un volume nommé "data" :</p></div>
@@ -2131,7 +2132,144 @@ curl web2</code></pre></div></div>
 &lt;title&gt;Welcome to nginx!&lt;/title&gt;
 &lt;style&gt;
 [...]</code></pre></div></div></div></section></section>
-<section id="docker_compose"><h2>Docker compose</h2></section>
+<section><section id="docker_compose"><h2>🐋🐙 Docker compose</h2><div class="slide-content"><div class="imageblock"><img src="media/2073552164-image2.png" alt="2073552164 image2" height="550px"></div></div></section><section id="un_cas_de_la_vraie_vie"><h2>🌐🏡 Un cas de la vraie vie</h2><div class="slide-content"><div class="paragraph"><p>Une application riche repose souvent sur plusieurs éléments techniques à coordonner ensemble.</p></div>
+<div class="paragraph"><p>(Apache, Tomcat, Node, MongoDB, ElasticSearch, Logstash, etc.)</p></div>
+<div class="paragraph"><p>Comment automatiser ces déploiements ?</p></div></div></section><section id="on_pourrait_tout_scripter"><h2>📜💻 On pourrait tout scripter…</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">#!/bin/sh
+docker network create my-net
+docker container run –d --net=my-net –p 3306:3306 mysql
+docker container run –d --net=my-net –v /docs:/docs --name col1 httpd:2.4.58-bookworm
+docker container run –d --net=my-net –v /docs:/docs --name col2 httpd:2.4.58-bookworm</code></pre></div></div></div></section><section id="tout_scripter"><h2>📜💻 Tout scripter</h2><div class="slide-content"><div class="imageblock"><img src="media/351794078-image3.gif" alt="351794078 image3"></div>
+<div class="ulist"><ul><li class="fragment"><p>Et tout lancer indépendamment ?</p></li><li class="fragment"><p>Et tout monitorer un par un ?</p></li><li class="fragment"><p>Peut mieux faire, non ?</p></li></ul></div></div></section><section id="docker_compose_yml"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:</code></pre></div></div></div></section><section id="docker_compose_yml_2"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+  apache:
+
+
+
+
+
+
+
+  middle:
+
+
+
+  db:</code></pre></div></div></div></section><section id="docker_compose_yml_3"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+  apache:
+    image: "my-httpd:2.4"
+
+
+
+
+
+
+  middle:
+
+
+
+  db:</code></pre></div></div></div></section><section id="docker_compose_yml_4"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+  apache:
+    image: "my-httpd:2.4"
+    ports:
+      - "80:80"
+
+
+
+
+  middle:
+
+
+
+  db:</code></pre></div></div></div></section><section id="docker_compose_yml_5"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+  apache:
+    image: "my-httpd:2.4"
+    ports:
+      - "80:80"
+    environment:
+      - MIDDLE_HOST_1=middle
+
+
+  middle:
+
+
+
+  db:</code></pre></div></div></div></section><section id="docker_compose_yml_6"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+  apache:
+    image: "my-httpd:2.4"
+    ports:
+      - "80:80"
+    environment:
+      - MIDDLE_HOST_1=middle
+    volumes:
+      - ./etc/httpd/workers.properties:/etc/httpd/conf/workers.properties
+  middle:
+
+
+
+  db:</code></pre></div></div></div></section><section id="docker_compose_yml_7"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+  apache:
+    image: "my-httpd:2.4"
+    ports:
+      - "80:80"
+    environment:
+      - MIDDLE_HOST_1=middle
+    volumes:
+      - ./etc/httpd/workers.properties:/etc/httpd/conf/workers.properties
+  middle:
+    build: .
+
+
+  db:</code></pre></div></div></div></section><section id="docker_compose_yml_8"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+  apache:
+    image: "my-httpd:2.4"
+    ports:
+      - "80:80"
+    environment:
+      - MIDDLE_HOST_1=middle
+    volumes:
+      - ./etc/httpd/workers.properties:/etc/httpd/conf/workers.properties
+  middle:
+    build: .
+    environment:
+      - DB_HOST=db
+  db:</code></pre></div></div></div></section><section id="docker_compose_yml_9"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+  apache:
+    image: "my-httpd:2.4"
+    ports:
+      - "80:80"
+    environment:
+      - MIDDLE_HOST_1=middle
+    volumes:
+      - ./etc/httpd/workers.properties:/etc/httpd/conf/workers.properties
+  middle:
+    build: .
+    environment:
+      - DB_HOST=db
+  db:
+    image: "mysql:5.6"</code></pre></div></div></div></section><section id="docker_compose_yml_10"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+  apache:
+    image: "my-httpd:2.4"
+    ports:
+      - "80:80"
+    environment:
+      - MIDDLE_HOST_1=middle
+    volumes:
+      - ./etc/httpd/workers.properties:/etc/httpd/conf/workers.properties
+  middle:
+    build: .
+    environment:
+      - DB_HOST=db
+  db:
+    image: "mysql:5.6"
+    ports:
+      - "3306:3306"</code></pre></div></div></div></section><section id="et_après_2"><h2>🤔➡️ Et après ?</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose up -d
+docker compose build
+docker compose logs
+docker compose stop
+docker compose restart
+docker compose down</code></pre></div></div></div></section><section id="ordre_de_démarrage"><h2>🏁🔢 Ordre de démarrage</h2><div class="slide-content"><div class="paragraph"><p>pour attendre qu&#8217;un container réponde sur le réseau avant de démarrer&#8230;&#8203; Voir exemple de myfirstandroid et travail ashutosh</p></div>
+<div class="imageblock"><img src="media/47642838-image4.png" alt="47642838 image4"></div>
+<aside class="notes"><div class="paragraph"><p>Dans le temps, on recommandait de faire un script qui attendait que le service soit démarré avant de continuer.
+<a href="https://github.com/vishnubob/wait-for-it" class="bare">https://github.com/vishnubob/wait-for-it</a></p></div></aside></div></section><section id="transformer_son_application_en_docker_compose"><h2>Transformer son application en docker compose</h2><div class="slide-content"><div class="paragraph"><p><a href="https://github.com/jwilder/dockerize" class="bare">https://github.com/jwilder/dockerize</a></p></div></div></section><section id="travaux_pratiques_12"><h2>Travaux pratiques #12</h2><div class="slide-content"><div class="imageblock"><img src="media/497269344-image5.png" alt="497269344 image5"></div>
+<div class="paragraph"><p><a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git</a></p></div></div></section></section>
 <section><section id="bibliographie" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Bibliographie</h2></section><section id="ligne_de_commande_2"><h2>Ligne de commande</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://tldp.org" class="bare">https://tldp.org</a></p></li><li><p><a href="https://en.wikipedia.org/wiki/POSIX" class="bare">https://en.wikipedia.org/wiki/POSIX</a></p></li><li><p><a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop" class="bare">https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop</a></p></li><li><p><a href="https://linuxhandbook.com/linux-directory-structure/" class="bare">https://linuxhandbook.com/linux-directory-structure/</a></p></li><li><p><a href="https://blog.stephane-robert.info/docs/admin-serveurs/linux/script-shell/" class="bare">https://blog.stephane-robert.info/docs/admin-serveurs/linux/script-shell/</a></p></li><li><p><a href="https://linuxopsys.com/topics/bash-script-examples" class="bare">https://linuxopsys.com/topics/bash-script-examples</a></p></li></ul></div></div></section><section id="git_vcs"><h2>Git / VCS</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://docs.github.com" class="bare">https://docs.github.com</a></p></li><li><p><a href="https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control" class="bare">https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control</a></p></li><li><p><a href="http://martinfowler.com/bliki/VersionControlTools.html" class="bare">http://martinfowler.com/bliki/VersionControlTools.html</a></p></li><li><p><a href="http://martinfowler.com/bliki/FeatureBranch.html" class="bare">http://martinfowler.com/bliki/FeatureBranch.html</a></p></li><li><p><a href="https://about.gitlab.com/2014/09/29/gitlab-flow/" class="bare">https://about.gitlab.com/2014/09/29/gitlab-flow/</a></p></li><li><p><a href="https://www.atlassian.com/git/tutorials/comparing-workflows" class="bare">https://www.atlassian.com/git/tutorials/comparing-workflows</a></p></li><li><p><a href="http://nvie.com/posts/a-successful-git-branching-model/" class="bare">http://nvie.com/posts/a-successful-git-branching-model/</a></p></li><li><p><a href="https://blog.stephane-robert.info/docs/developper/version/git/introduction/" class="bare">https://blog.stephane-robert.info/docs/developper/version/git/introduction/</a></p></li></ul></div></div></section><section id="intégration_continue"><h2>Intégration Continue</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="http://martinfowler.com/articles/continuousIntegration.html" class="bare">http://martinfowler.com/articles/continuousIntegration.html</a></p></li><li><p><a href="http://martinfowler.com/bliki/ContinuousDelivery.html" class="bare">http://martinfowler.com/bliki/ContinuousDelivery.html</a></p></li><li><p><a href="https://jaxenter.com/implementing-continuous-delivery-117916.html" class="bare">https://jaxenter.com/implementing-continuous-delivery-117916.html</a></p></li><li><p><a href="https://technologyconversations.com/2014/04/29/continuous-delivery-introduction-to-concepts-and-tools/" class="bare">https://technologyconversations.com/2014/04/29/continuous-delivery-introduction-to-concepts-and-tools/</a></p></li><li><p><a href="http://blog.arungupta.me/continuous-integration-delivery-deployment-maturity-model" class="bare">http://blog.arungupta.me/continuous-integration-delivery-deployment-maturity-model</a></p></li><li><p><a href="http://blog.crisp.se/2013/02/05/yassalsundman/continuous-delivery-vs-continuous-deployment" class="bare">http://blog.crisp.se/2013/02/05/yassalsundman/continuous-delivery-vs-continuous-deployment</a></p></li></ul></div></div></section><section id="docker_2"><h2>Docker</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://labs.play-with-docker.com/" class="bare">https://labs.play-with-docker.com/</a></p></li><li><p><a href="https://dduportal.github.io/cours/cnam-docker-2018" class="bare">https://dduportal.github.io/cours/cnam-docker-2018</a></p></li><li><p><a href="https://kodekloud.com/blog/docker-for-beginners/" class="bare">https://kodekloud.com/blog/docker-for-beginners/</a></p></li><li><p><a href="https://www.slideshare.net/dotCloud/why-docker" class="bare">https://www.slideshare.net/dotCloud/why-docker</a></p></li><li><p><a href="https://docs.docker.com/engine/reference/builder/" class="bare">https://docs.docker.com/engine/reference/builder/</a></p></li><li><p><a href="https://www.r-bloggers.com/2021/05/best-practices-for-r-with-docker/" class="bare">https://www.r-bloggers.com/2021/05/best-practices-for-r-with-docker/</a></p></li><li><p><a href="https://github.com/wagoodman/dive" class="bare">https://github.com/wagoodman/dive</a></p></li><li><p><a href="https://docs.docker.com/engine/tutorials/networkingcontainers/" class="bare">https://docs.docker.com/engine/tutorials/networkingcontainers/</a></p></li><li><p><a href="https://towardsdatascience.com/docker-networking-919461b7f498" class="bare">https://towardsdatascience.com/docker-networking-919461b7f498</a></p></li><li><p><a href="https://blog.stephane-robert.info/post/docker-buildkit-partie-1/" class="bare">https://blog.stephane-robert.info/post/docker-buildkit-partie-1/</a></p></li><li><p><a href="https://dev.to/montells/docker-args-1ael" class="bare">https://dev.to/montells/docker-args-1ael</a></p></li></ul></div></div></section><section id="devops"><h2>DevOps</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://blog.stephane-robert.info/docs/glossaire/introduction/" class="bare">https://blog.stephane-robert.info/docs/glossaire/introduction/</a></p></li></ul></div></div></section></section>
 <section id="merci" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Merci !</h2><div class="slide-content"><div class="paragraph"><p><span class="icon"><i class="fa fa-envelope"></i></span> <a href="mailto:gounthar@gmail.com">gounthar@gmail.com</a></p></div>
 <div class="paragraph small"><small><a href="https://gounthar.github.io/gounthar/cours-devops-docker/main">Slides: https://gounthar.github.io/gounthar/cours-devops-docker/main</a></small></div>
