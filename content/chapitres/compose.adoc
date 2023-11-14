@@ -1,2 +1,265 @@
-= Docker compose
+= 🐋🐙 Docker compose
+
+image::2073552164-image2.png[height=550px]
+
+== 🌐🏡 Un cas de la vraie vie
+
+Une application riche repose souvent sur plusieurs éléments techniques à coordonner ensemble.
+
+(Apache, Tomcat, Node, MongoDB, ElasticSearch, Logstash, etc.)
+
+Comment automatiser ces déploiements ?
+
+[%autoanimate]
+== 📜💻 On pourrait tout scripter…
+
+[source,bash]
+----
+include::../code-samples/compose/script.sh[]
+----
+
+[%autoanimate]
+== 📜💻 Tout scripter
+
+image::351794078-image3.gif[]
+
+[%step]
+- Et tout lancer indépendamment ?
+- Et tout monitorer un par un ?
+- Peut mieux faire, non ?
+
+[%autoanimate]
+== 🐋🐙 docker compose.yml
+
+[source,dockerfile]
+----
+services:
+----
+[%autoanimate]
+== 🐋🐙 docker compose.yml
+
+[source,dockerfile]
+----
+services:
+  apache:
+
+          
+               
+                
+                            
+            
+                                                                         
+  middle:
+            
+                
+                  
+  db:
+----
+
+[%autoanimate]
+== 🐋🐙 docker compose.yml
+
+[source,dockerfile]
+----
+services:
+  apache:
+    image: "my-httpd:2.4"
+          
+               
+                
+                            
+            
+                                                                         
+  middle:
+            
+                
+                  
+  db:
+----
+[%autoanimate]
+== 🐋🐙 docker compose.yml
+
+[source,dockerfile]
+----
+services:
+  apache:
+    image: "my-httpd:2.4"
+    ports:
+      - "80:80"
+                
+                            
+            
+                                                                         
+  middle:
+            
+                
+                  
+  db:
+----
+
+[%autoanimate]
+== 🐋🐙 docker compose.yml
+
+[source,dockerfile]
+----
+services:
+  apache:
+    image: "my-httpd:2.4"
+    ports:
+      - "80:80"
+    environment:
+      - MIDDLE_HOST_1=middle
+            
+                                                                         
+  middle:
+            
+                
+                  
+  db:
+----
+
+[%autoanimate]
+== 🐋🐙 docker compose.yml
+
+[source,dockerfile]
+----
+services:
+  apache:
+    image: "my-httpd:2.4"
+    ports:
+      - "80:80"
+    environment:
+      - MIDDLE_HOST_1=middle
+    volumes:
+      - ./etc/httpd/workers.properties:/etc/httpd/conf/workers.properties
+  middle:
+            
+                
+                  
+  db:
+
+----
+[%autoanimate]
+== 🐋🐙 docker compose.yml
+
+[source,dockerfile]
+----
+services:
+  apache:
+    image: "my-httpd:2.4"
+    ports:
+      - "80:80"
+    environment:
+      - MIDDLE_HOST_1=middle
+    volumes:
+      - ./etc/httpd/workers.properties:/etc/httpd/conf/workers.properties
+  middle:
+    build: .
+                
+                  
+  db:
+----
+
+[%autoanimate]
+== 🐋🐙 docker compose.yml
+
+[source,dockerfile]
+----
+services:
+  apache:
+    image: "my-httpd:2.4"
+    ports:
+      - "80:80"
+    environment:
+      - MIDDLE_HOST_1=middle
+    volumes:
+      - ./etc/httpd/workers.properties:/etc/httpd/conf/workers.properties
+  middle:
+    build: .
+    environment:
+      - DB_HOST=db
+  db:
+----
+
+[%autoanimate]
+== 🐋🐙 docker compose.yml
+
+[source,dockerfile]
+----
+services:
+  apache:
+    image: "my-httpd:2.4"
+    ports:
+      - "80:80"
+    environment:
+      - MIDDLE_HOST_1=middle
+    volumes:
+      - ./etc/httpd/workers.properties:/etc/httpd/conf/workers.properties
+  middle:
+    build: .
+    environment:
+      - DB_HOST=db
+  db:
+    image: "mysql:5.6"
+----
+
+[%autoanimate]
+== 🐋🐙 docker compose.yml
+
+[source,dockerfile]
+----
+services:
+  apache:
+    image: "my-httpd:2.4"
+    ports:
+      - "80:80"
+    environment:
+      - MIDDLE_HOST_1=middle
+    volumes:
+      - ./etc/httpd/workers.properties:/etc/httpd/conf/workers.properties
+  middle:
+    build: .
+    environment:
+      - DB_HOST=db
+  db:
+    image: "mysql:5.6"
+    ports:
+      - "3306:3306"
+
+----
+
+[%autoanimate]
+== 🤔➡️ Et après ?
+
+[source,bash]
+----
+docker compose up -d
+docker compose build
+docker compose logs
+docker compose stop
+docker compose restart
+docker compose down
+----
+
+== 🏁🔢 Ordre de démarrage
+
+pour attendre qu'un container réponde sur le réseau avant de démarrer... Voir exemple de myfirstandroid et travail ashutosh
+
+image::47642838-image4.png[]
+
+[.notes]
+--
+Dans le temps, on recommandait de faire un script qui attendait que le service soit démarré avant de continuer.
+https://github.com/vishnubob/wait-for-it
+--
+
+== Transformer son application en docker compose
+
+https://github.com/jwilder/dockerize
+
+== Travaux pratiques #12
+
+image::497269344-image5.png[]
+
+https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git
 
