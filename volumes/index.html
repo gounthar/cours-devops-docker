@@ -2541,6 +2541,151 @@ C&#8217;est généralement fait lorsque vous voulez interagir avec le service en
 <a href="https://github.com/vishnubob/wait-for-it" class="bare">https://github.com/vishnubob/wait-for-it</a></p></div></aside></div></section><section id="transformer_son_application_en_docker_compose"><h2>Transformer son application en docker compose</h2><div class="slide-content"><div class="paragraph"><p>Deux approches différentes et complémentaires :</p></div>
 <div class="ulist"><ul><li class="fragment"><p><a href="https://www.composerize.com/" class="bare">https://www.composerize.com/</a></p></li><li class="fragment"><p><a href="https://github.com/jwilder/dockerize" class="bare">https://github.com/jwilder/dockerize</a></p></li></ul></div></div></section><section id="travaux_pratiques_12"><h2>Travaux pratiques #12</h2><div class="slide-content"><div class="imageblock"><img src="media/497269344-image5.png" alt="497269344 image5"></div>
 <div class="paragraph"><p><a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git</a></p></div></div></section></section>
+<section><section id="bonus"><h2>Bonus</h2></section><section id="les_petits_plus"><h2>Les petits plus</h2><div class="slide-content"><div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
+<div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
+<div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
+<div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
+<div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
+<div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div></div></section><section id="il_en_remet_une_couche" data-auto-animate><h2>"Il en remet une couche"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker history nginx
+IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
+f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daemon…   0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  STOPSIGNAL SIGTERM           0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  EXPOSE 80                    0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENTRYPOINT ["/docker-entr…   0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:0fd5fca330dcd6a7…   1.04kB
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:1d0a4127e78a26c1…   1.96kB
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:e7e183879c35719c…   1.2kB
+&lt;missing&gt;           4 weeks ago         /bin/sh -c set -x     &amp;&amp; addgroup --system -…   63.6MB
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV PKG_RELEASE=1~buster     0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV NJS_VERSION=0.4.4        0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV NGINX_VERSION=1.19.3     0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  LABEL maintainer=NGINX Do…   0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  CMD ["bash"]                 0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) ADD file:0dc53e7886c35bc21…   69.2MB</code></pre></div></div></div></section><section id="il_en_remet_une_couche_2" data-auto-animate><h2>"Il en remet une couche"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker history nginx
+IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
+f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daemon…   0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  STOPSIGNAL SIGTERM           0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  EXPOSE 80                    0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENTRYPOINT ["/docker-entr…   0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:0fd5fca330dcd6a7…   1.04kB
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:1d0a4127e78a26c1…   1.96kB
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:e7e183879c35719c…   1.2kB
+&lt;missing&gt;           4 weeks ago         /bin/sh -c set -x     &amp;&amp; addgroup --system -…   63.6MB
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV PKG_RELEASE=1~buster     0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV NJS_VERSION=0.4.4        0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV NGINX_VERSION=1.19.3     0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  LABEL maintainer=NGINX Do…   0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  CMD ["bash"]                 0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) ADD file:0dc53e7886c35bc21…   69.2MB</code></pre></div></div>
+<div class="paragraph"><p>Il est préférable de limiter le nombre de couches pour limiter la bande passante.</p></div></div></section><section id="il_en_remet_une_couche_3" data-auto-animate><h2>"Il en remet une couche"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">RUN apk add \
+     patch \
+     tar \
+     mercurial \
+     git \
+     ruby \
+     ruby-devel \
+     rubygem-bundler \
+     make \
+     gcc-c++ \
+     zlib-devel \
+     libxml2-devel \
+     docker \
+     nodejs \
+     npm \
+     sssd \
+ &amp;&amp; mkdir -p /var/lib/docker-builder \
+ &amp;&amp; mkdir -p /etc/docker-builder</code></pre></div></div></div></section><section id="ne_pas_charger_inutilement"><h2>Ne pas charger inutilement !</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"> &amp;&amp; apk remove make gcc maven ... \
+ &amp;&amp; rm -f previously-downloaded.tar.gz \
+ &amp;&amp; apk clean all \
+ &amp;&amp; rm -rf /tmp/*</code></pre></div></div>
+<div class="paragraph fragment"><p>Il est utile, pour des raisons d&#8217;espace, de nettoyer le filesystem de ses futurs containers, en donnant les bonnes instructions dans le Dockerfile.</p></div></div></section><section id="documentez"><h2>Documentez !</h2><div class="slide-content"><div class="paragraph"><p>Les mots clés <code>EXPOSE</code> et <code>LABEL</code> peuvent fournir de précieuses informations aux utilisateurs de vos images !</p></div>
+<div class="paragraph"><p>(les ports exposés par défaut, les auteurs de l&#8217;image, la version d&#8217;un middleware embarqué, …)</p></div></div></section><section id="préparez_vous_au_read_only"><h2>Préparez-vous au read-only</h2><div class="slide-content"><div class="paragraph"><p>Il est possible de lister toutes les modifications qui ont été apportées au filesystem d&#8217;un container.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker diff 29f1c4
+C /run
+A /run/nginx.pid
+C /var
+C /var/lib
+C /var/lib/nginx
+C /var/lib/nginx/tmp
+A /var/lib/nginx/tmp/client_body
+A /var/lib/nginx/tmp/fastcgi
+A /var/lib/nginx/tmp/proxy
+A /var/lib/nginx/tmp/scgi
+A /var/lib/nginx/tmp/uwsgi
+C /var/log
+C /var/log/nginx
+A /var/log/nginx/access.log
+A /var/log/nginx/error.log</code></pre></div></div>
+<div class="paragraph fragment"><p>Une bonne piste pour savoir quels volumes déclarer !</p></div></div></section><section id="healthcheck"><h2>HealthCheck</h2><div class="slide-content"><div class="paragraph"><p>Savoir que mon PID 1 est toujours en cours d&#8217;exécution n&#8217;est peut-être pas la meilleure piste pour savoir si mon conteneur est en bonne santé !</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">FROM ghost:3
+RUN apt update &amp;&amp; apt install curl -y \
+        &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+HEALTHCHECK --interval=1m --timeout=30s --retries=3 CMD curl --fail http://localhost:2368 || exit 1</code></pre></div></div>
+<div class="paragraph"><p>source : <a href="https://www.grottedubarbu.fr/docker-healthcheck/" class="bare">https://www.grottedubarbu.fr/docker-healthcheck/</a></p></div></div></section><section id="debugging"><h2>Debugging</h2><div class="slide-content"><div class="imageblock"><img src="media/1939424428-image3.gif" alt="1939424428 image3"></div></div></section><section id="une_tonne_doutils"><h2>Une tonne d&#8217;outils !</h2><div class="slide-content"><div class="paragraph"><p>Les logs</p></div>
+<div class="ulist"><ul><li><p>des containers</p></li><li><p>du démon Docker</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container exec
+docker inspect
+docker cp
+docker history
+docker stats</code></pre></div></div></div></section><section id="debugging_les_logs"><h2>Debugging : Les logs</h2><div class="slide-content"><div class="paragraph"><p>rappel : <code>docker container logs</code> permet de lister les logs des conteneurs.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container logs 47d6
+Fri Nov 20 00:39:52 UTC 2023
+Fri Nov 20 00:39:53 UTC 2023</code></pre></div></div></div></section><section id="concentrateur_de_logs"><h2>Concentrateur de logs</h2><div class="slide-content"><div class="paragraph"><p>Par défaut, les logs des conteneurs sont stockés dans des fichiers json. Mais comment faire pour les envoyer vers un concentrateur ?</p></div>
+<div class="listingblock fragment"><div class="content"><pre>docker container run -d
+--log-driver=gelf
+--log-opt gelf-address=udp://localhost:12201
+-p 88:80
+nginx</pre></div></div>
+<div class="paragraph fragment"><p>on spécifie un driver</p></div>
+<div class="paragraph fragment"><p>on configure le driver</p></div></div></section><section id="travaux_pratiques_13"><h2>Travaux pratiques #13</h2><div class="slide-content"><div class="paragraph"><p>Étapes</p></div>
+<div class="paragraph"><p>Lancer une stack ELK grâce aux fichiers fournis dans le repo <a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp13" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp13</a></p></div>
+<div class="paragraph"><p>Alimenter en logs avec la commande <code>docker run --log-driver=gelf --log-opt gelf-address=udp://localhost:12201 alpine bash -c 'seq 1 100'</code></p></div>
+<div class="paragraph"><p>Créer un index "timestamp" sur Kibana puis aller à l&#8217;écran "discover"</p></div>
+<div class="paragraph"><p>Lancer un conteneur nginx et concentrez ses logs dans ELK</p></div></div></section><section id="debugging_docker_exec"><h2>Debugging : docker exec</h2><div class="slide-content"><div class="paragraph"><p>rappel : `docker container exec `permet de lancer une commande dans un container</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker exec &lt;containerID&gt; echo "hello"</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker exec –it &lt;containerID&gt; bash</code></pre></div></div></div></section><section id="debugging_docker_inspect"><h2>Debugging : docker inspect</h2><div class="slide-content"><div class="paragraph"><p>rappel : `docker inspect `permet de lister toutes les caractéristiques d&#8217;une image ou d&#8217;un container.</p></div>
+<div class="paragraph"><p>On peut filtrer le retour de la commande avec <code>jq</code> ou l&#8217;option <code>--format</code>.</p></div></div></section><section id="debugging_docker_cp"><h2>Debugging : docker cp</h2><div class="slide-content"><div class="paragraph"><p>Cette commande permet d&#8217;échanger des fichiers entre un conteneur et la machine hôte.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker cp --help
+Usage:  docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-
+        docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH
+Copy files/folders between a container and the local filesystem
+Options:
+  -a, --archive       Archive mode (copy all uid/gid information)
+  -L, --follow-link   Always follow symbol link in SRC_PATH</code></pre></div></div></div></section><section id="debugging_docker_history"><h2>Debugging : docker history</h2><div class="slide-content"><div class="paragraph"><p>Cette commande permet d&#8217;afficher la concaténation de tous les Dockerfiles qui ont abouti à cette image.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker history nginx
+IMAGE               CREATED             CREATED BY                                      SIZE                f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daemon…   0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  STOPSIGNAL SIGTERM           0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  EXPOSE 80                    0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENTRYPOINT ["/docker-entr…   0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:0fd5fca330dcd6a7…   1.04kB
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:1d0a4127e78a26c1…   1.96kB
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:e7e183879c35719c…   1.2kB
+&lt;missing&gt;           4 weeks ago         /bin/sh -c set -x     &amp;&amp; addgroup --system -…   63.6MB
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV PKG_RELEASE=1~buster     0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV NJS_VERSION=0.4.4        0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV NGINX_VERSION=1.19.3     0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  LABEL maintainer=NGINX Do…   0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  CMD ["bash"]                 0B
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) ADD file:0dc53e7886c35bc21…   69.2MB</code></pre></div></div></div></section><section id="debugging_docker_stats"><h2>Debugging : docker stats</h2><div class="slide-content"><div class="paragraph"><p>Cette commande permet d&#8217;avoir les stats en temps réel d&#8217;un conteneur.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker stats 42f128
+CONTAINER           CPU %     MEM USAGE/LIMIT     MEM %     NET I/O
+42f128              0.00%     1.454 MB/4.145 GB   0.04%     648 B/648 B</code></pre></div></div></div></section><section id="travaux_pratiques_14"><h2>Travaux pratiques #14</h2><div class="slide-content"><div class="paragraph"><p>Notre collègue Michel débute en Docker, il met à disposition des images Docker pour notre entreprise.</p></div>
+<div class="paragraph"><p>Michel a eu la chance de gagner au Loto et il a quitté son bureau du jour au lendemain alors qu&#8217;il était sur le point de nous délivrer une image Nginx.</p></div>
+<div class="paragraph"><p>Nous n&#8217;avons que le binaire de son image à cette adresse.</p></div>
+<div class="paragraph"><p><a href="https://owncloud.univ-artois.fr/index.php/s/9s8XBLXvRwBJsrm" class="bare">https://owncloud.univ-artois.fr/index.php/s/9s8XBLXvRwBJsrm</a></p></div>
+<div class="paragraph"><p>On sait que `docker load `est la solution pour commencer</p></div>
+<div class="paragraph"><p>A l&#8217;aide !</p></div></div></section><section id="conseils_pour_leval" data-auto-animate><h2>Conseils pour l&#8217;eval'</h2><div class="slide-content"><div class="imageblock"><img src="media/final%20answer.png" alt="final answer"></div></div></section><section id="conseils_pour_leval_2" data-auto-animate><h2>Conseils pour l&#8217;eval'</h2><div class="slide-content"><div class="imageblock"><img src="media/dont%20panic.png" alt="dont panic"></div></div></section><section id="vous_devez_avoir_les_compétences_suivantes"><h2>Vous devez avoir les compétences suivantes:</h2><div class="slide-content"><div class="paragraph"><p>Savoir lancer un container avec toutes les options</p></div>
+<div class="ulist"><ul><li><p><code>-v, -p, -w, -e, --rm, etc.</code></p></li></ul></div>
+<div class="paragraph"><p>Écrire un Dockerfile optimisé pour "dockeriser" une application</p></div>
+<div class="ulist"><ul><li><p>pas trop gourmand, facile à modifier, paramétrable.</p></li></ul></div>
+<div class="paragraph"><p>Étudier une image ou un conteneur pour tout débug éventuel.</p></div>
+<div class="paragraph"><p>Savoir s&#8217;outiller pour avoir des images qui servent d&#8217;environnement d&#8217;exécution à votre CI.</p></div>
+<div class="paragraph"><p>Monter un écosystème applicatif complexe via docker-compose.</p></div></div></section><section id="que_revoir"><h2>Que revoir ?</h2><div class="slide-content"><div class="paragraph"><p>Les TPs sont vos meilleurs amis.</p></div>
+<div class="paragraph"><p>La documentation officielle de Docker</p></div>
+<div class="paragraph"><p><a href="https://docs.docker.com/engine/reference/run/" class="bare">https://docs.docker.com/engine/reference/run/</a></p></div>
+<div class="paragraph"><p><a href="https://docs.docker.com/engine/reference/builder/" class="bare">https://docs.docker.com/engine/reference/builder/</a></p></div>
+<div class="paragraph"><p><a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/" class="bare">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/</a></p></div></div></section><section id="one_more_thing"><h2>one more thing</h2><div class="slide-content"><div class="imageblock"><img src="media/415439355-image7.png" alt="415439355 image7"></div></div></section></section>
 <section><section id="bibliographie" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Bibliographie</h2></section><section id="ligne_de_commande_2"><h2>Ligne de commande</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://tldp.org" class="bare">https://tldp.org</a></p></li><li><p><a href="https://en.wikipedia.org/wiki/POSIX" class="bare">https://en.wikipedia.org/wiki/POSIX</a></p></li><li><p><a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop" class="bare">https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop</a></p></li><li><p><a href="https://linuxhandbook.com/linux-directory-structure/" class="bare">https://linuxhandbook.com/linux-directory-structure/</a></p></li><li><p><a href="https://blog.stephane-robert.info/docs/admin-serveurs/linux/script-shell/" class="bare">https://blog.stephane-robert.info/docs/admin-serveurs/linux/script-shell/</a></p></li><li><p><a href="https://linuxopsys.com/topics/bash-script-examples" class="bare">https://linuxopsys.com/topics/bash-script-examples</a></p></li></ul></div></div></section><section id="git_vcs"><h2>Git / VCS</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://docs.github.com" class="bare">https://docs.github.com</a></p></li><li><p><a href="https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control" class="bare">https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control</a></p></li><li><p><a href="http://martinfowler.com/bliki/VersionControlTools.html" class="bare">http://martinfowler.com/bliki/VersionControlTools.html</a></p></li><li><p><a href="http://martinfowler.com/bliki/FeatureBranch.html" class="bare">http://martinfowler.com/bliki/FeatureBranch.html</a></p></li><li><p><a href="https://about.gitlab.com/2014/09/29/gitlab-flow/" class="bare">https://about.gitlab.com/2014/09/29/gitlab-flow/</a></p></li><li><p><a href="https://www.atlassian.com/git/tutorials/comparing-workflows" class="bare">https://www.atlassian.com/git/tutorials/comparing-workflows</a></p></li><li><p><a href="http://nvie.com/posts/a-successful-git-branching-model/" class="bare">http://nvie.com/posts/a-successful-git-branching-model/</a></p></li><li><p><a href="https://blog.stephane-robert.info/docs/developper/version/git/introduction/" class="bare">https://blog.stephane-robert.info/docs/developper/version/git/introduction/</a></p></li></ul></div></div></section><section id="intégration_continue"><h2>Intégration Continue</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="http://martinfowler.com/articles/continuousIntegration.html" class="bare">http://martinfowler.com/articles/continuousIntegration.html</a></p></li><li><p><a href="http://martinfowler.com/bliki/ContinuousDelivery.html" class="bare">http://martinfowler.com/bliki/ContinuousDelivery.html</a></p></li><li><p><a href="https://jaxenter.com/implementing-continuous-delivery-117916.html" class="bare">https://jaxenter.com/implementing-continuous-delivery-117916.html</a></p></li><li><p><a href="https://technologyconversations.com/2014/04/29/continuous-delivery-introduction-to-concepts-and-tools/" class="bare">https://technologyconversations.com/2014/04/29/continuous-delivery-introduction-to-concepts-and-tools/</a></p></li><li><p><a href="http://blog.arungupta.me/continuous-integration-delivery-deployment-maturity-model" class="bare">http://blog.arungupta.me/continuous-integration-delivery-deployment-maturity-model</a></p></li><li><p><a href="http://blog.crisp.se/2013/02/05/yassalsundman/continuous-delivery-vs-continuous-deployment" class="bare">http://blog.crisp.se/2013/02/05/yassalsundman/continuous-delivery-vs-continuous-deployment</a></p></li></ul></div></div></section><section id="docker_2"><h2>Docker</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://labs.play-with-docker.com/" class="bare">https://labs.play-with-docker.com/</a></p></li><li><p><a href="https://dduportal.github.io/cours/cnam-docker-2018" class="bare">https://dduportal.github.io/cours/cnam-docker-2018</a></p></li><li><p><a href="https://kodekloud.com/blog/docker-for-beginners/" class="bare">https://kodekloud.com/blog/docker-for-beginners/</a></p></li><li><p><a href="https://www.slideshare.net/dotCloud/why-docker" class="bare">https://www.slideshare.net/dotCloud/why-docker</a></p></li><li><p><a href="https://docs.docker.com/engine/reference/builder/" class="bare">https://docs.docker.com/engine/reference/builder/</a></p></li><li><p><a href="https://www.r-bloggers.com/2021/05/best-practices-for-r-with-docker/" class="bare">https://www.r-bloggers.com/2021/05/best-practices-for-r-with-docker/</a></p></li><li><p><a href="https://github.com/wagoodman/dive" class="bare">https://github.com/wagoodman/dive</a></p></li><li><p><a href="https://docs.docker.com/engine/tutorials/networkingcontainers/" class="bare">https://docs.docker.com/engine/tutorials/networkingcontainers/</a></p></li><li><p><a href="https://towardsdatascience.com/docker-networking-919461b7f498" class="bare">https://towardsdatascience.com/docker-networking-919461b7f498</a></p></li><li><p><a href="https://blog.stephane-robert.info/post/docker-buildkit-partie-1/" class="bare">https://blog.stephane-robert.info/post/docker-buildkit-partie-1/</a></p></li><li><p><a href="https://dev.to/montells/docker-args-1ael" class="bare">https://dev.to/montells/docker-args-1ael</a></p></li></ul></div></div></section><section id="devops"><h2>DevOps</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://blog.stephane-robert.info/docs/glossaire/introduction/" class="bare">https://blog.stephane-robert.info/docs/glossaire/introduction/</a></p></li></ul></div></div></section></section>
 <section id="merci" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Merci !</h2><div class="slide-content"><div class="paragraph"><p><span class="icon"><i class="fa fa-envelope"></i></span> <a href="mailto:gounthar@gmail.com">gounthar@gmail.com</a></p></div>
 <div class="paragraph small"><small><a href="https://gounthar.github.io/gounthar/cours-devops-docker/volumes">Slides: https://gounthar.github.io/gounthar/cours-devops-docker/volumes</a></small></div>
