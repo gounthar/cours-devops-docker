@@ -2139,7 +2139,7 @@ docker network create my-net
 docker container run –d --net=my-net –p 3306:3306 mysql
 docker container run –d --net=my-net –v /docs:/docs --name col1 httpd:2.4.58-bookworm
 docker container run –d --net=my-net –v /docs:/docs --name col2 httpd:2.4.58-bookworm</code></pre></div></div></div></section><section id="tout_scripter"><h2>📜💻 Tout scripter</h2><div class="slide-content"><div class="imageblock"><img src="media/351794078-image3.gif" alt="351794078 image3"></div>
-<div class="ulist"><ul><li class="fragment"><p>Et tout lancer indépendamment ?</p></li><li class="fragment"><p>Et tout monitorer un par un ?</p></li><li class="fragment"><p>Peut mieux faire, non ?</p></li></ul></div></div></section><section id="docker_compose_yml"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:</code></pre></div></div></div></section><section id="docker_compose_yml_2"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+<div class="ulist"><ul><li class="fragment"><p>Et tout lancer indépendamment ?</p></li><li class="fragment"><p>Et tout monitorer un par un ?</p></li><li class="fragment"><p>Peut mieux faire, non ?</p></li></ul></div></div></section><section id="docker_compose_yml"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:</code></pre></div></div></div></section><section id="docker_compose_yml_2"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   apache:
 
 
@@ -2152,7 +2152,7 @@ docker container run –d --net=my-net –v /docs:/docs --name col2 httpd:2.4.58
 
 
 
-  db:</code></pre></div></div></div></section><section id="docker_compose_yml_3"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+  db:</code></pre></div></div></div></section><section id="docker_compose_yml_3"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   apache:
     image: "my-httpd:2.4"
 
@@ -2165,7 +2165,7 @@ docker container run –d --net=my-net –v /docs:/docs --name col2 httpd:2.4.58
 
 
 
-  db:</code></pre></div></div></div></section><section id="docker_compose_yml_4"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+  db:</code></pre></div></div></div></section><section id="docker_compose_yml_4"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   apache:
     image: "my-httpd:2.4"
     ports:
@@ -2178,7 +2178,7 @@ docker container run –d --net=my-net –v /docs:/docs --name col2 httpd:2.4.58
 
 
 
-  db:</code></pre></div></div></div></section><section id="docker_compose_yml_5"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+  db:</code></pre></div></div></div></section><section id="docker_compose_yml_5"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   apache:
     image: "my-httpd:2.4"
     ports:
@@ -2191,7 +2191,7 @@ docker container run –d --net=my-net –v /docs:/docs --name col2 httpd:2.4.58
 
 
 
-  db:</code></pre></div></div></div></section><section id="docker_compose_yml_6"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+  db:</code></pre></div></div></div></section><section id="docker_compose_yml_6"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   apache:
     image: "my-httpd:2.4"
     ports:
@@ -2204,7 +2204,7 @@ docker container run –d --net=my-net –v /docs:/docs --name col2 httpd:2.4.58
 
 
 
-  db:</code></pre></div></div></div></section><section id="docker_compose_yml_7"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+  db:</code></pre></div></div></div></section><section id="docker_compose_yml_7"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   apache:
     image: "my-httpd:2.4"
     ports:
@@ -2217,7 +2217,7 @@ docker container run –d --net=my-net –v /docs:/docs --name col2 httpd:2.4.58
     build: .
 
 
-  db:</code></pre></div></div></div></section><section id="docker_compose_yml_8"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+  db:</code></pre></div></div></div></section><section id="docker_compose_yml_8"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   apache:
     image: "my-httpd:2.4"
     ports:
@@ -2230,7 +2230,7 @@ docker container run –d --net=my-net –v /docs:/docs --name col2 httpd:2.4.58
     build: .
     environment:
       - DB_HOST=db
-  db:</code></pre></div></div></div></section><section id="docker_compose_yml_9"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+  db:</code></pre></div></div></div></section><section id="docker_compose_yml_9"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   apache:
     image: "my-httpd:2.4"
     ports:
@@ -2244,7 +2244,7 @@ docker container run –d --net=my-net –v /docs:/docs --name col2 httpd:2.4.58
     environment:
       - DB_HOST=db
   db:
-    image: "mysql:5.6"</code></pre></div></div></div></section><section id="docker_compose_yml_10"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">services:
+    image: "mysql:5.6"</code></pre></div></div></div></section><section id="docker_compose_yml_10"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   apache:
     image: "my-httpd:2.4"
     ports:
@@ -2260,15 +2260,287 @@ docker container run –d --net=my-net –v /docs:/docs --name col2 httpd:2.4.58
   db:
     image: "mysql:5.6"
     ports:
-      - "3306:3306"</code></pre></div></div></div></section><section id="et_après_2"><h2>🤔➡️ Et après ?</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose up -d
+      - "3306:3306"</code></pre></div></div></div></section><section id="et_après_2" data-auto-animate><h2>🤔➡️ Et après ?</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose up -d
 docker compose build
 docker compose logs
 docker compose stop
 docker compose restart
-docker compose down</code></pre></div></div></div></section><section id="ordre_de_démarrage"><h2>🏁🔢 Ordre de démarrage</h2><div class="slide-content"><div class="paragraph"><p>pour attendre qu&#8217;un container réponde sur le réseau avant de démarrer&#8230;&#8203; Voir exemple de myfirstandroid et travail ashutosh</p></div>
+docker compose down</code></pre></div></div></div></section><section id="ordre_de_démarrage" data-auto-animate><h2>🏁🔢 Ordre de démarrage</h2><div class="slide-content"><div class="paragraph"><p>L&#8217;ordre de démarrage fait référence à la séquence dans laquelle les services définis dans un fichier Docker Compose sont lancés.</p></div></div></section><section id="ordre_de_démarrage_2" data-auto-animate><h2>🏁🔢 Ordre de démarrage</h2><div class="slide-content"><div class="paragraph title"><p>Pourquoi est-ce important ?</p></div>
+<div class="paragraph fragment"><p>Certains services peuvent dépendre d&#8217;autres services pour fonctionner correctement.</p></div>
+<div class="paragraph fragment"><p>Par exemple, une application web peut avoir besoin qu&#8217;une base de données soit opérationnelle avant de pouvoir démarrer.</p></div></div></section><section id="ordre_de_démarrage_3" data-auto-animate><h2>🏁🔢 Ordre de démarrage</h2><div class="slide-content"><div class="paragraph title"><p>Comment Docker Compose gère-t-il l&#8217;ordre de démarrage ?</p></div>
+<div class="paragraph fragment"><p>Par défaut, Docker Compose démarre les services dans l&#8217;ordre dans lequel ils sont définis dans le fichier Docker Compose.</p></div>
+<div class="paragraph fragment"><p>Cependant, cela ne garantit pas que les services dépendants seront prêts à être utilisés lorsque les services qui en dépendent seront lancés.</p></div></div></section><section id="ordre_de_démarrage_4" data-auto-animate><h2>🏁🔢 Ordre de démarrage</h2><div class="slide-content"><div class="paragraph title"><p>Comment gérer les dépendances entre services ?</p></div>
+<div class="paragraph fragment"><p>Docker Compose offre deux directives pour gérer les dépendances entre services : <code>depends_on</code> et <code>healthcheck</code>.</p></div>
+<div class="ulist"><ul><li class="fragment"><p><code>depends_on</code> : Cette directive peut être utilisée pour indiquer qu&#8217;un service dépend d&#8217;un autre service.
+Cependant, cela ne garantit pas que le service dépendant sera prêt à être utilisé lorsque le service qui en dépend sera lancé.</p></li><li class="fragment"><p><code>healthcheck</code> : Cette directive peut être utilisée pour vérifier l&#8217;état de santé d&#8217;un service.
+En combinaison avec <code>depends_on</code>, elle peut aider à s&#8217;assurer qu&#8217;un service est prêt à être utilisé avant de lancer les services qui en dépendent.</p></li></ul></div></div></section><section id="ordre_de_démarrage_5" data-auto-animate><h2>🏁🔢 Ordre de démarrage</h2><div class="slide-content"><div class="paragraph title"><p>Exemple
+Voici un exemple de fichier Docker Compose qui utilise <code>depends_on</code> et <code>healthcheck</code> pour gérer l&#8217;ordre de démarrage des services :</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">version: '3'
+services:
+  web:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 30s
+      retries: 3</code></pre></div></div>
+<div class="paragraph fragment"><p>Dans cet exemple, le service web dépend du service db.
+Le service db est vérifié toutes les 30 secondes pour s&#8217;assurer qu&#8217;il est prêt à être utilisé.
+Le service web ne sera lancé que lorsque le service db sera en bonne santé.</p></div></div></section><section id="ordre_de_démarrage_conditions" data-auto-animate><h2>🏁🔢 Ordre de démarrage❓🤔 Conditions.</h2><div class="slide-content"><div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Rappel:
+La directive <code>depends_on</code> dans un fichier Docker Compose est utilisée pour indiquer qu&#8217;un service dépend d&#8217;un autre service.
+Cela signifie que le service dépendant ne sera pas démarré tant que les services dont il dépend n&#8217;auront pas été démarrés.</td></tr></table></div></div></section><section id="ordre_de_démarrage_autres_conditions" data-auto-animate><h2>🏁🔢 Ordre de démarrage❓🤔 Autres conditions.</h2><div class="slide-content"><div class="paragraph"><p>En plus de la condition service_healthy, il existe d&#8217;autres conditions que vous pouvez utiliser avec <code>depends_on</code>:</p></div>
+<div class="paragraph fragment"><p><code>service_started</code> : Cette condition signifie que le service dépendant ne sera pas démarré tant que le service dont il dépend n&#8217;aura pas été démarré.</p></div>
+<div class="paragraph fragment"><p><code>service_completed_successfully</code>: Cette condition indique qu&#8217;un service dépendant ne doit pas démarrer avant qu&#8217;un autre service ait terminé avec succès. Cela peut être utile dans des scénarios où un service doit effectuer une tâche unique qui doit être terminée avant que d&#8217;autres services puissent débuter.</p></div>
+<div class="paragraph fragment"><p>Cependant, cela ne garantit pas que le service dont il dépend est prêt à être utilisé.</p></div></div></section><section id="ordre_de_démarrage_autre_condition" data-auto-animate><h2>🏁🔢 Ordre de démarrage❓🤔 Autre condition.</h2><div class="slide-content"><div class="paragraph"><p>Voici un exemple de comment vous pourriez utiliser <code>service_started</code> dans un fichier Docker Compose :</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">version: '3'
+services:
+  web:
+    build: .
+    depends_on:
+      db:
+        condition: service_started
+  db:
+    image: postgres</code></pre></div></div>
+<div class="paragraph fragment"><p>Dans cet exemple, le service <code>web</code> ne sera démarré que lorsque le service <code>db</code> aura été démarré.</p></div></div></section><section id="ordre_de_démarrage_healthcheck" data-auto-animate><h2>🏁🔢 Ordre de démarrage &amp; 🩺✅ healthcheck</h2><div class="slide-content"><div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Rappel
+<code>healthcheck</code> est une instruction dans un <code>Dockerfile</code> qui permet de vérifier l&#8217;état de santé d&#8217;un service.
+Il peut être utilisé pour déterminer si un service est prêt à être utilisé ou non.</td></tr></table></div>
+<div class="paragraph fragment"><p>Voici un exemple de <code>healthcheck</code> dans un <code>Dockerfile</code> :</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM postgres
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD pg_isready -U postgres || exit 1</code></pre></div></div>
+<div class="paragraph fragment"><p>Dans cet exemple, <code>pg_isready -U postgres</code> est la commande utilisée pour vérifier l&#8217;état de santé du service.
+Si cette commande réussit, le service est considéré comme sain.
+Sinon, il est considéré comme malsain.</p></div></div></section><section id="ordre_de_démarrage_healthcheck_2" data-auto-animate><h2>🏁🔢 Ordre de démarrage &amp; 🩺✅ healthcheck</h2><div class="slide-content"><div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Rappel
+<code>depends_on</code> est une directive dans un fichier Docker Compose qui indique qu&#8217;un service dépend d&#8217;un autre service.
+Il peut être utilisé pour contrôler l&#8217;ordre de démarrage des services.</td></tr></table></div>
+<div class="paragraph fragment"><p>Voici un exemple de depends_on dans un fichier Docker Compose :</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">version: '3'
+services:
+  web:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres</code></pre></div></div>
+<div class="paragraph fragment"><p>Dans cet exemple, le service <code>web</code> dépend du service <code>db</code>.
+Le service web ne sera démarré que lorsque le service db sera en bonne santé.</p></div></div></section><section id="comment_healthcheck_et_depends_on_travaillent_ensemble" data-auto-animate><h2>🏁🔢 🩺✅ Comment healthcheck et depends_on travaillent ensemble ?</h2><div class="slide-content"><div class="paragraph title"><p>En combinant <code>healthcheck</code> et <code>depends_on</code>, vous pouvez contrôler l&#8217;ordre de démarrage des services en fonction de leur état de santé.
+Par exemple, vous pouvez vous assurer qu&#8217;un service de base de données est prêt à être utilisé avant de démarrer une application web qui en dépend.</p></div></div></section><section id="ordre_de_démarrage_pour_résumer" data-auto-animate><h2>🏁🔢 Ordre de démarrage 📊📝 Pour résumer</h2><div class="slide-content"><div class="paragraph"><p>L&#8217;ordre de démarrage fait référence à la séquence dans laquelle les services définis dans un fichier Docker Compose sont lancés.
+Par défaut, Docker Compose démarre les services dans l&#8217;ordre dans lequel ils sont définis dans le fichier Docker Compose.</p></div>
+<div class="paragraph fragment"><p>Docker Compose offre deux directives pour gérer les dépendances entre services : <code>depends_on</code> et <code>healthcheck</code>.</p></div></div></section><section id="ordre_de_démarrage_pour_résumer_2" data-auto-animate><h2>🏁🔢 Ordre de démarrage 📊📝 Pour résumer</h2><div class="slide-content"><div class="ulist"><ul><li><p><code>depends_on</code> : Cette directive peut être utilisée pour indiquer qu&#8217;un service dépend d&#8217;un autre service. Elle peut être utilisée avec deux conditions : <code>service_started</code> et <code>service_healthy</code>.</p></li><li><p><code>service_started</code> : Cette condition signifie que le service dépendant ne sera pas démarré tant que le service dont il dépend n&#8217;aura pas été démarré. Cependant, cela ne garantit pas que le service dont il dépend est prêt à être utilisé.</p></li><li><p><code>service_healthy</code> : Cette condition est utilisée avec la directive healthcheck dans un Dockerfile pour vérifier l&#8217;état de santé d&#8217;un service. Si la commande healthcheck réussit, Docker considère le service comme sain. Sinon, il est considéré comme malsain.</p></li></ul></div></div></section><section id="ordre_de_démarrage_pour_résumer_3" data-auto-animate><h2>🏁🔢 Ordre de démarrage 📊📝 Pour résumer</h2><div class="slide-content"><div class="paragraph title"><p>Exemple
+Voici un exemple de fichier Docker Compose qui utilise depends_on et healthcheck pour gérer l&#8217;ordre de démarrage des services :</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">version: '3'
+services:
+  web:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 30s
+      retries: 3</code></pre></div></div></div></section><section id="étude_de_cas" data-auto-animate><h2>🏁🔢 Étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Un exemple de fichier docker-compose.yml utilisé dans Jenkins:</p></div>
+<div class="paragraph"><p><a href="https://raw.githubusercontent.com/ash-sxn/GSoC-2023-docker-based-quickstart/main/docker-compose.yaml" class="bare">https://raw.githubusercontent.com/ash-sxn/GSoC-2023-docker-based-quickstart/main/docker-compose.yaml</a></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">sidekick_service:
+    # Configuration for the sidekick service
+    image: ${DOCKERHUB_USERNAME}/jenkinsci-tutorials:sidekick_
+    stdin_open: true
+    tty: true
+    entrypoint: sh -c "/usr/local/bin/keygen.sh /ssh-dir"  # Runs the keygen.sh script and specifies the output directory
+    volumes:
+      - agent-ssh-dir:/ssh-dir  # Mounts the agent-ssh-dir volume to the /ssh-dir path inside the container
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5</code></pre></div></div>
+<div class="paragraph fragment"><p>Les options <code>stdin_open: true</code> et <code>tty: true</code> sont utilisées pour garder l&#8217;entrée standard du conteneur ouverte et pour allouer un pseudo-TTY au conteneur, respectivement.
+C&#8217;est généralement fait lorsque vous voulez interagir avec le service en cours d&#8217;exécution.</p></div></div></section><section id="étude_de_cas_2" data-auto-animate><h2>🏁🔢 Étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">sidekick_service:
+    # Configuration for the sidekick service
+    image: ${DOCKERHUB_USERNAME}/jenkinsci-tutorials:sidekick_
+    stdin_open: true
+    tty: true
+    entrypoint: sh -c "/usr/local/bin/keygen.sh /ssh-dir"  # Runs the keygen.sh script and specifies the output directory
+    volumes:
+      - agent-ssh-dir:/ssh-dir  # Mounts the agent-ssh-dir volume to the /ssh-dir path inside the container
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5</code></pre></div></div>
+<div class="ulist"><ul><li><p>La directive <code>entrypoint</code> est utilisée pour spécifier la commande qui sera exécutée lorsque le conteneur démarre.</p></li><li><p>Dans ce cas, elle exécute une commande shell qui exécute un script nommé <code>keygen.sh</code> situé à <code>/usr/local/bin/keygen.sh</code>.</p></li><li><p>Le script reçoit un argument <code>/ssh-dir</code>, qui est le répertoire où le script effectuera ses opérations.</p></li></ul></div></div></section><section id="étude_de_cas_3" data-auto-animate><h2>🏁🔢 Étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">sidekick_service:
+    # Configuration for the sidekick service
+    image: ${DOCKERHUB_USERNAME}/jenkinsci-tutorials:sidekick_
+    stdin_open: true
+    tty: true
+    entrypoint: sh -c "/usr/local/bin/keygen.sh /ssh-dir"  # Runs the keygen.sh script and specifies the output directory
+    volumes:
+      - agent-ssh-dir:/ssh-dir  # Mounts the agent-ssh-dir volume to the /ssh-dir path inside the container
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>La directive volumes est utilisée pour monter un volume nommé <code>agent-ssh-dir</code> sur le chemin <code>/ssh-dir</code> à l&#8217;intérieur du conteneur.</p></li><li class="fragment"><p>Cela permet de conserver les données entre les redémarrages du conteneur et peut également être utilisé pour partager des données entre les conteneurs.</p></li></ul></div></div></section><section id="étude_de_cas_4" data-auto-animate><h2>🏁🔢 Étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">sidekick_service:
+    # Configuration for the sidekick service
+    image: ${DOCKERHUB_USERNAME}/jenkinsci-tutorials:sidekick_
+    stdin_open: true
+    tty: true
+    entrypoint: sh -c "/usr/local/bin/keygen.sh /ssh-dir"  # Runs the keygen.sh script and specifies the output directory
+    volumes:
+      - agent-ssh-dir:/ssh-dir  # Mounts the agent-ssh-dir volume to the /ssh-dir path inside the container
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Enfin, un healthcheck est défini pour le service. Il s&#8217;agit d&#8217;une commande que Docker exécutera à l&#8217;intérieur du conteneur pour vérifier sa santé.</p></li><li class="fragment"><p>Dans ce cas, la commande vérifie si un fichier nommé <code>conductor_ok</code> existe dans le répertoire <code>/ssh-dir</code>.</p></li><li class="fragment"><p>Si le fichier existe, la commande réussit et Docker considère le service comme sain.</p></li><li class="fragment"><p>Si le fichier n&#8217;existe pas, la commande échoue et Docker considère le service comme malsain.</p></li><li class="fragment"><p>Docker exécutera cette vérification de santé toutes les 5 secondes (<code>interval: 5s</code>), et si elle ne répond pas dans les 10 secondes (<code>timeout: 10s</code>), Docker la considérera comme un échec. Docker réessaiera une vérification de santé échouée 5 fois (<code>retries: 5</code>) avant de considérer le service comme malsain.</p></li></ul></div></div></section><section id="étude_de_cas_5" class="columns" data-auto-animate><h2>🏁🔢 Étude de cas 📚🔍</h2><div class="slide-content"><div class="openblock column is-two-thirds"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  sidekick_service: [...]
+
+  jenkins_controller: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  default_agent: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+      jenkins_controller:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Checks if the authorized_keys file exists in the /home/jenkins/.ssh path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Mounts the agent-ssh-dir volume to the /home/jenkins/.ssh path inside the container as read-only</code></pre></div></div></div></div>
+<div class="openblock column"><div class="content"><div class="ulist"><ul><li><p>Service jenkins_controller</p><div class="ulist"><ul><li class="fragment"><p>Ce service dépend du <code>sidekick_service</code>.</p></li><li class="fragment"><p>Il ne démarrera que lorsque le <code>sidekick_service</code> aura terminé avec succès.</p></li><li class="fragment"><p>C&#8217;est ce que signifie la condition <code>service_completed_successfully</code>.</p></li></ul></div></li></ul></div></div></div></div></section><section id="étude_de_cas_6" class="columns" data-auto-animate><h2>🏁🔢 Étude de cas 📚🔍</h2><div class="slide-content"><div class="openblock column is-two-thirds"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  sidekick_service: [...]
+
+  jenkins_controller: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  default_agent: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+      jenkins_controller:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Checks if the authorized_keys file exists in the /home/jenkins/.ssh path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Mounts the agent-ssh-dir volume to the /home/jenkins/.ssh path inside the container as read-only</code></pre></div></div></div></div>
+<div class="openblock column"><div class="content"><div class="paragraph"><p>Un <code>healthcheck</code> est également défini pour ce service.</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Docker vérifie si un fichier nommé <code>conductor_ok</code> existe dans le chemin <code>/ssh-dir</code>.</p></li><li class="fragment"><p>Si le fichier existe, Docker considère le service comme sain.</p></li><li class="fragment"><p>Sinon, il est considéré comme malsain.</p></li></ul></div></div></div></div></section><section id="étude_de_cas_7" class="columns" data-auto-animate><h2>🏁🔢 Étude de cas 📚🔍</h2><div class="slide-content"><div class="openblock column is-two-thirds"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  sidekick_service: [...]
+
+  jenkins_controller: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  default_agent: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+      jenkins_controller:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Checks if the authorized_keys file exists in the /home/jenkins/.ssh path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Mounts the agent-ssh-dir volume to the /home/jenkins/.ssh path inside the container as read-only</code></pre></div></div></div></div>
+<div class="openblock column"><div class="content"><div class="paragraph"><p>Service <code>default_agent</code></p></div>
+<div class="ulist"><ul><li class="fragment"><p>Ce service dépend également du <code>sidekick_service</code> et du <code>jenkins_controller</code>.</p></li><li class="fragment"><p>Il ne démarrera que lorsque le <code>sidekick_service</code> aura terminé avec succès et que le <code>jenkins_controller</code> aura démarré.</p></li><li class="fragment"><p>C&#8217;est ce que signifient les conditions <code>service_completed_successfully</code> et <code>service_started</code>.</p></li></ul></div></div></div></div></section><section id="étude_de_cas_8" class="columns" data-auto-animate><h2>🏁🔢 Étude de cas 📚🔍</h2><div class="slide-content"><div class="openblock column is-two-thirds"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  sidekick_service: [...]
+
+  jenkins_controller: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  default_agent: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+      jenkins_controller:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Checks if the authorized_keys file exists in the /home/jenkins/.ssh path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Mounts the agent-ssh-dir volume to the /home/jenkins/.ssh path inside the container as read-only</code></pre></div></div></div></div>
+<div class="openblock column"><div class="content"><div class="paragraph"><p>Un <code>healthcheck</code> est également défini pour ce service.</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Docker vérifie si un fichier nommé <code>authorized_keys</code> existe dans le chemin <code>/home/jenkins/.ssh</code>.</p></li><li class="fragment"><p>Si le fichier existe, Docker considère le service comme sain.</p></li><li class="fragment"><p>Sinon, il est considéré comme malsain.</p></li></ul></div></div></div></div></section><section id="étude_de_cas_9" class="columns" data-auto-animate><h2>🏁🔢 Étude de cas 📚🔍</h2><div class="slide-content"><div class="openblock column is-two-thirds"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  sidekick_service: [...]
+
+  jenkins_controller: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Checks if the conductor_ok file exists in the /ssh-dir path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  default_agent: [...]
+    depends_on:
+      sidekick_service:
+        condition: service_completed_successfully  # Depends on the successful completion of the sidekick_service
+      jenkins_controller:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Checks if the authorized_keys file exists in the /home/jenkins/.ssh path
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Mounts the agent-ssh-dir volume to the /home/jenkins/.ssh path inside the container as read-only</code></pre></div></div></div></div>
+<div class="openblock column"><div class="content"><div class="paragraph"><p>Enfin, un volume nommé <code>agent-ssh-dir</code> est monté sur le chemin <code>/home/jenkins/.ssh</code> à l&#8217;intérieur du conteneur en lecture seule.</p></div></div></div></div></section><section id="étude_de_cas_10" data-auto-animate><h2>🏁🔢 Étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>À étudier au calme chez vous:</p></div>
+<div class="paragraph"><p><a href="https://raw.githubusercontent.com/gounthar/MyFirstAndroidAppBuiltByJenkins/stf/jenkins/docker-compose.yml" class="bare">https://raw.githubusercontent.com/gounthar/MyFirstAndroidAppBuiltByJenkins/stf/jenkins/docker-compose.yml</a></p></div>
 <div class="imageblock"><img src="media/47642838-image4.png" alt="47642838 image4"></div>
 <aside class="notes"><div class="paragraph"><p>Dans le temps, on recommandait de faire un script qui attendait que le service soit démarré avant de continuer.
-<a href="https://github.com/vishnubob/wait-for-it" class="bare">https://github.com/vishnubob/wait-for-it</a></p></div></aside></div></section><section id="transformer_son_application_en_docker_compose"><h2>Transformer son application en docker compose</h2><div class="slide-content"><div class="paragraph"><p><a href="https://github.com/jwilder/dockerize" class="bare">https://github.com/jwilder/dockerize</a></p></div></div></section><section id="travaux_pratiques_12"><h2>Travaux pratiques #12</h2><div class="slide-content"><div class="imageblock"><img src="media/497269344-image5.png" alt="497269344 image5"></div>
+<a href="https://github.com/vishnubob/wait-for-it" class="bare">https://github.com/vishnubob/wait-for-it</a></p></div></aside></div></section><section id="transformer_son_application_en_docker_compose"><h2>Transformer son application en docker compose</h2><div class="slide-content"><div class="paragraph"><p>Deux approches différentes et complémentaires :</p></div>
+<div class="ulist"><ul><li class="fragment"><p><a href="https://www.composerize.com/" class="bare">https://www.composerize.com/</a></p></li><li class="fragment"><p><a href="https://github.com/jwilder/dockerize" class="bare">https://github.com/jwilder/dockerize</a></p></li></ul></div></div></section><section id="travaux_pratiques_12"><h2>Travaux pratiques #12</h2><div class="slide-content"><div class="imageblock"><img src="media/497269344-image5.png" alt="497269344 image5"></div>
 <div class="paragraph"><p><a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git</a></p></div></div></section></section>
 <section><section id="bibliographie" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Bibliographie</h2></section><section id="ligne_de_commande_2"><h2>Ligne de commande</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://tldp.org" class="bare">https://tldp.org</a></p></li><li><p><a href="https://en.wikipedia.org/wiki/POSIX" class="bare">https://en.wikipedia.org/wiki/POSIX</a></p></li><li><p><a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop" class="bare">https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop</a></p></li><li><p><a href="https://linuxhandbook.com/linux-directory-structure/" class="bare">https://linuxhandbook.com/linux-directory-structure/</a></p></li><li><p><a href="https://blog.stephane-robert.info/docs/admin-serveurs/linux/script-shell/" class="bare">https://blog.stephane-robert.info/docs/admin-serveurs/linux/script-shell/</a></p></li><li><p><a href="https://linuxopsys.com/topics/bash-script-examples" class="bare">https://linuxopsys.com/topics/bash-script-examples</a></p></li></ul></div></div></section><section id="git_vcs"><h2>Git / VCS</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://docs.github.com" class="bare">https://docs.github.com</a></p></li><li><p><a href="https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control" class="bare">https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control</a></p></li><li><p><a href="http://martinfowler.com/bliki/VersionControlTools.html" class="bare">http://martinfowler.com/bliki/VersionControlTools.html</a></p></li><li><p><a href="http://martinfowler.com/bliki/FeatureBranch.html" class="bare">http://martinfowler.com/bliki/FeatureBranch.html</a></p></li><li><p><a href="https://about.gitlab.com/2014/09/29/gitlab-flow/" class="bare">https://about.gitlab.com/2014/09/29/gitlab-flow/</a></p></li><li><p><a href="https://www.atlassian.com/git/tutorials/comparing-workflows" class="bare">https://www.atlassian.com/git/tutorials/comparing-workflows</a></p></li><li><p><a href="http://nvie.com/posts/a-successful-git-branching-model/" class="bare">http://nvie.com/posts/a-successful-git-branching-model/</a></p></li><li><p><a href="https://blog.stephane-robert.info/docs/developper/version/git/introduction/" class="bare">https://blog.stephane-robert.info/docs/developper/version/git/introduction/</a></p></li></ul></div></div></section><section id="intégration_continue"><h2>Intégration Continue</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="http://martinfowler.com/articles/continuousIntegration.html" class="bare">http://martinfowler.com/articles/continuousIntegration.html</a></p></li><li><p><a href="http://martinfowler.com/bliki/ContinuousDelivery.html" class="bare">http://martinfowler.com/bliki/ContinuousDelivery.html</a></p></li><li><p><a href="https://jaxenter.com/implementing-continuous-delivery-117916.html" class="bare">https://jaxenter.com/implementing-continuous-delivery-117916.html</a></p></li><li><p><a href="https://technologyconversations.com/2014/04/29/continuous-delivery-introduction-to-concepts-and-tools/" class="bare">https://technologyconversations.com/2014/04/29/continuous-delivery-introduction-to-concepts-and-tools/</a></p></li><li><p><a href="http://blog.arungupta.me/continuous-integration-delivery-deployment-maturity-model" class="bare">http://blog.arungupta.me/continuous-integration-delivery-deployment-maturity-model</a></p></li><li><p><a href="http://blog.crisp.se/2013/02/05/yassalsundman/continuous-delivery-vs-continuous-deployment" class="bare">http://blog.crisp.se/2013/02/05/yassalsundman/continuous-delivery-vs-continuous-deployment</a></p></li></ul></div></div></section><section id="docker_2"><h2>Docker</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://labs.play-with-docker.com/" class="bare">https://labs.play-with-docker.com/</a></p></li><li><p><a href="https://dduportal.github.io/cours/cnam-docker-2018" class="bare">https://dduportal.github.io/cours/cnam-docker-2018</a></p></li><li><p><a href="https://kodekloud.com/blog/docker-for-beginners/" class="bare">https://kodekloud.com/blog/docker-for-beginners/</a></p></li><li><p><a href="https://www.slideshare.net/dotCloud/why-docker" class="bare">https://www.slideshare.net/dotCloud/why-docker</a></p></li><li><p><a href="https://docs.docker.com/engine/reference/builder/" class="bare">https://docs.docker.com/engine/reference/builder/</a></p></li><li><p><a href="https://www.r-bloggers.com/2021/05/best-practices-for-r-with-docker/" class="bare">https://www.r-bloggers.com/2021/05/best-practices-for-r-with-docker/</a></p></li><li><p><a href="https://github.com/wagoodman/dive" class="bare">https://github.com/wagoodman/dive</a></p></li><li><p><a href="https://docs.docker.com/engine/tutorials/networkingcontainers/" class="bare">https://docs.docker.com/engine/tutorials/networkingcontainers/</a></p></li><li><p><a href="https://towardsdatascience.com/docker-networking-919461b7f498" class="bare">https://towardsdatascience.com/docker-networking-919461b7f498</a></p></li><li><p><a href="https://blog.stephane-robert.info/post/docker-buildkit-partie-1/" class="bare">https://blog.stephane-robert.info/post/docker-buildkit-partie-1/</a></p></li><li><p><a href="https://dev.to/montells/docker-args-1ael" class="bare">https://dev.to/montells/docker-args-1ael</a></p></li></ul></div></div></section><section id="devops"><h2>DevOps</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://blog.stephane-robert.info/docs/glossaire/introduction/" class="bare">https://blog.stephane-robert.info/docs/glossaire/introduction/</a></p></li></ul></div></div></section></section>
 <section id="merci" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Merci !</h2><div class="slide-content"><div class="paragraph"><p><span class="icon"><i class="fa fa-envelope"></i></span> <a href="mailto:gounthar@gmail.com">gounthar@gmail.com</a></p></div>
