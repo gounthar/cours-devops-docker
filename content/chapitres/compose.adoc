@@ -790,9 +790,281 @@ Deux approches différentes et complémentaires :
 * https://www.composerize.com/
 * https://github.com/jwilder/dockerize
 
-== Travaux pratiques #12
+== 🎓 Travaux pratiques #12
 
 image::497269344-image5.png[]
 
 https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git
 
+[%auto-animate]
+== 🎓 Travaux pratiques #12-BIS 🔨🔥
+
+Ça vous dirait d'avoir votre propre forge Gitlab ?
+[%step]
+😏 Non, et bien c'est parti quand même.
+[%step]
+* Créez un nouveau fichier appelé `docker-compose.yml`.
+* Dans ce fichier, définissez trois services : `gitlab`, `gitlab-runner-1` et `gitlab-runner-2`.
+* Pour le service `gitlab`:
+** utilisez l'image `gitlab/gitlab-ce:latest` (préfixée par le cache spécifique ILI)
+** redémarrez toujours le conteneur s'il s'arrête,
+** définissez le nom d'hôte sur `localhost`,
+** définissez l'URL externe sur `http://localhost` et exposez les ports `80`, `443` et `22`.
+
+[%auto-animate]
+== 🎓 Travaux pratiques #12-BIS
+[%step]
+* Pour les services gitlab-runner-1 et gitlab-runner-2:
+[%step]
+** utilisez l'image `gitlab/gitlab-runner:latest` (préfixée par le cache spécifique ILI),
+** redémarrez toujours le conteneur s'il s'arrête,
+** dépendez du service gitlab et montez le socket Docker et le fichier de configuration de GitLab Runner.
+[%step]
+* Créez des volumes pour:
+[%step]
+** les fichiers de configuration,
+** les fichiers journaux
+** et les fichiers de données de GitLab,
+** ainsi que pour les fichiers de configuration de GitLab Runner.
+
+[%auto-animate]
+== 🎓 Travaux pratiques #12-BIS 🔨🔥
+
+Pas assez détaillé? 😨
+[%step]
+* Ouvrez votre éditeur de texte préféré et créez un nouveau fichier.
+* Nommez ce fichier `docker-compose.yml`.
+* Commencez le fichier avec la ligne `services:` pour commencer à définir les services de votre application.
+* Commencez à définir votre premier service en tapant `gitlab:` sur une nouvelle ligne. Ce sera le service pour votre serveur GitLab.
+* Sous `gitlab:`, ajoutez les détails de votre service.
+[%step]
+** Par exemple, `image: 'gitlab/gitlab-ce:latest'` pour spécifier l'image Docker à utiliser pour ce service.
+
+[%auto-animate]
+== 🎓 Travaux pratiques #12-BIS 🔨🔥
+
+* Sous `gitlab:`, ajoutez les détails de votre service.
+** Par exemple, `image: 'gitlab/gitlab-ce:latest'` pour spécifier l'image Docker à utiliser pour ce service.
+** Continuez à ajouter des détails pour le service gitlab, comme `restart: always` pour toujours redémarrer le conteneur s'il s'arrête, et `hostname: 'localhost'` pour définir le nom d'hôte du serveur GitLab.
+[%step]
+* Définissez l'URL externe de votre serveur GitLab en ajoutant `environment:` et `GITLAB_OMNIBUS_CONFIG: |` sur de nouvelles lignes,
+* puis `external_url 'http://localhost'` sur la ligne suivante.
+* Exposez les ports nécessaires en ajoutant `ports:` sur une nouvelle ligne,
+* puis `- '80:80'`, `- '443:443'` et `- '22:22'` sur les lignes suivantes.
+
+
+[%auto-animate]
+== 🎓 Travaux pratiques #12-BIS 🔨🔥
+
+[%step]
+* Montez les volumes nécessaires en ajoutant `volumes:` sur une nouvelle ligne,
+[%step]
+** puis `- 'gitlab_config:/etc/gitlab'`,
+** `- 'gitlab_logs:/var/log/gitlab'`
+** et `- 'gitlab_data:/var/opt/gitlab'` sur les lignes suivantes.
+[%step]
+* Répétez ces étapes pour les services gitlab-runner-1 et gitlab-runner-2, en remplaçant `gitlab` par `gitlab-runner-1` et `gitlab-runner-2` respectivement.
+
+
+[%auto-animate]
+== 🎓 Travaux pratiques #12-BIS 🔨🔥
+
+[%step]
+* Pour les services `gitlab-runner-1` et `gitlab-runner-2`, remplacez l'URL externe par une dépendance au service gitlab en ajoutant `depends_on:` sur une nouvelle ligne, puis `- gitlab` sur la ligne suivante.
+* Montez le socket Docker et le fichier de configuration de GitLab Runner
+[%step]
+** en ajoutant `- '/var/run/docker.sock:/var/run/docker.sock'`
+** et `- 'gitlab-runner-1-config:/etc/gitlab-runner'` (ou `- 'gitlab-runner-2-config:/etc/gitlab-runner'` pour `gitlab-runner-2`) sous `volumes:`.
+
+[%auto-animate]
+== 🎓 Travaux pratiques #12-BIS 🔨🔥
+
+[%step]
+Enfin, définissez les volumes pour votre application en ajoutant `volumes:` sur une nouvelle ligne à la fin de votre fichier, puis
+[%step]
+** `- gitlab_config:`,
+** `- gitlab_logs:`,
+** `- gitlab_data:`,
+** `- gitlab-runner-1-config:`
+** et `- gitlab-runner-2-config:` sur les lignes suivantes.
+
+== ✅ Solution Travaux pratiques #12-BIS 🔨🔥
+
+[source,yaml]
+----
+include::../code-samples/compose/tp12-bis.yml[]
+----
+
+[%auto-animate]
+[.columns]
+== 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
+
+[.column]
+image::when.png[height=500px]
+[.column]
+video::gitlab-logs.speed.very.small.mp4[height=500px,options=autoplay,loop,nocontrols]
+
+[%auto-animate]
+[background-video="2000_years_later.mp4",background-video-loop=true,background-video-muted=true]
+[.intellij.background]
+== 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
+
+Il va falloir se logguer, lier les runners au serveur, créer un projet, etc...
+
+[%auto-animate]
+[.columns]
+== 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
+
+[.column]
+image::gitlab-login.png[height=500px]
+
+[.column]
+--
+Pour trouver le mot de passe, il va falloir le demander gentiment à Gitlab:
+
+[source,bash]
+----
+docker compose -f tp12-bis.yml exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_
+password
+Password: qaPxXU+RqioolV3bAljvs2VYnyYa4jO/UYcis/UXLAk=
+----
+[%step]
+Ensuite, il va falloir restreindre l'accès:
+[%step]
+image::sign-up-restrictions.png[]
+--
+
+[%auto-animate]
+== 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
+Pour utiliser le runner GitLab dans GitLab, vous devez le configurer.
+[%step]
+Pour une configuration correcte, nous aurons besoin d'un jeton copié depuis le portail.
+[%step]
+Pour ce faire, allez à l'adresse : http://localhost/admin/runners et cliquez sur le bouton "Copier le jeton".
+
+[%auto-animate]
+== 👤 Profils dans Docker Compose 🐙
+On a vu déjà l'instruction `depends_on` dans un fichier Docker Compose.
+[%step]
+- Elle permet de définir des dépendances entre les services.
+- Mais que faire si on veut définir un lot de services qui fonctionnent ensemble, sans pour autant être en interdépendance ?
+- Les profils dans Docker Compose permettent de définir des groupes de services qui peuvent être activés ou désactivés ensemble.
+- Cela peut être utile pour gérer des environnements de développement, de test et de production différents dans le même fichier Docker Compose.
+- Pour définir un profil pour un service, vous pouvez ajouter la clé `profiles` à la définition du service dans votre fichier Docker Compose.
+
+[%auto-animate]
+== 👤 Profils dans Docker Compose 🐙
+Par exemple :
+
+[%step]
+[source,yaml]
+----
+services:
+  mon_service:
+    image: mon_image
+    profiles:
+      - dev
+----
+[%step]
+Dans cet exemple, le service mon_service appartient au profil dev.
+
+[%auto-animate]
+== 👤 Profils dans Docker Compose 🐙
+
+[%step]
+- Pour démarrer seulement les services qui appartiennent à un certain profil, vous pouvez utiliser l'option `--profile` avec la commande `docker-compose up`.
+- Par exemple :
+
+[%step]
+[source,bash]
+----
+docker-compose up --profile dev
+----
+[%step]
+Cette commande démarrera seulement les services qui appartiennent au profil `dev`.
+
+[%auto-animate]
+== 👤 Profils dans Docker Compose 🐙
+
+[%step]
+- Les profils peuvent rendre votre fichier Docker Compose plus organisé et flexible.
+- Ils vous permettent de définir différents environnements dans le même fichier et de choisir facilement quels services démarrer en fonction de vos besoins.
+- Jetons un coup d'œil à un exemple de fichier Docker Compose avec des profils :
+
+[%step]
+[source,yaml]
+----
+services:
+  service_dev:
+    image: mon_image_dev
+    profiles:
+      - dev
+  service_prod:
+    image: mon_image_prod
+    profiles:
+      - prod
+----
+[%step]
+- Dans cet exemple, nous avons deux services : `service_dev` et `service_prod`.
+- Chacun appartient à un profil différent.
+
+[%auto-animate]
+== 👤 Profils dans Docker Compose 🐙
+[source,yaml]
+----
+services:
+  service_dev:
+    image: mon_image_dev
+    profiles:
+      - dev
+  service_prod:
+    image: mon_image_prod
+    profiles:
+      - prod
+----
+[%step]
+- Nous pouvons choisir de démarrer seulement les services de développement avec `docker-compose up --profile dev`, ou uniquement les services de production avec `docker-compose up --profile prod`.
+- Les profils dans Docker Compose sont un outil puissant pour gérer différents environnements dans le même fichier Docker Compose.
+- Ils peuvent rendre votre développement et vos tests plus efficaces et organisés.
+
+== 🔨🔥 Une autre forge, ça vous dit? 😐
+
+[%step]
+😏 Non, et bien, c'est parti quand même.
+[%step]
+
+https://raw.githubusercontent.com/ash-sxn/GSoC-2023-docker-based-quickstart/main/build-docker-compose.yaml
+[%step]
+[source,yaml]
+----
+include::../code-samples/compose/jenkins-docker-compose.yml[]
+----
+
+== 🔨🔥 Une autre forge, ça vous dit? 😐
+
+Indigeste? 😨
+[%step]
+Ne relevons que les points importants:
+
+[%step]
+[source,yaml]
+----
+  # Le service maven est un agent Jenkins avec Maven et le JDK installés.
+  maven:
+    build: dockerfiles/maven/.  # Le Dockerfile pour construire l'image du service Maven.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    profiles:
+      - maven  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      jenkins_controller:
+        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
+----

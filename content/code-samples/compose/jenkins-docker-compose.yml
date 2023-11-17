@@ -1,0 +1,158 @@
+services:
+  # Le service sidekick est responsable de la génération des clés SSH et de la vérification de leur existence.
+  sidekick_service:
+    build: dockerfiles/sidekick/.  # Le Dockerfile pour construire l'image du service sidekick.
+    stdin_open: true  # Permet au service de garder STDIN ouvert même s'il n'est pas attaché.
+    tty: true  # Alloue un pseudo-TTY pour le service.
+    entrypoint: sh -c "/usr/local/bin/keygen.sh /ssh-dir"  # La commande que le service exécute lorsqu'il démarre.
+    volumes:
+      - agent-ssh-dir:/ssh-dir  # Monte le volume agent-ssh-dir au chemin /ssh-dir à l'intérieur du conteneur.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Vérifie si le fichier conductor_ok existe dans le chemin /ssh-dir.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+
+  # Le service jenkins_controller est responsable de la gestion des jobs et des configurations Jenkins.
+  jenkins_controller:
+    build: dockerfiles/.  # Le Dockerfile pour construire l'image du service jenkins_controller.
+    restart: on-failure  # Le service sera redémarré s'il quitte en raison d'une erreur.
+    ports:
+      - "8080:8080"  # Expose le port 8080 du service à l'hôte.
+    volumes:
+      - jenkins_home:/var/jenkins_home  # Monte le volume jenkins_home au chemin /var/jenkins_home à l'intérieur du conteneur.
+      - agent-ssh-dir:/ssh-dir  # Monte le volume agent-ssh-dir au chemin /ssh-dir à l'intérieur du conteneur.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Vérifie si le fichier conductor_ok existe dans le chemin /ssh-dir.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+
+  # Le service default_agent est un agent Jenkins avec un JDK installé.
+  default_agent:
+    image: jenkins/ssh-agent:5.5.0-jdk17  # L'image Docker pour le service.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      jenkins_controller:
+        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
+
+  # Le service maven est un agent Jenkins avec Maven installé.
+  maven:
+    build: dockerfiles/maven/.  # Le Dockerfile pour construire l'image du service Maven.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    profiles:
+      - maven  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      jenkins_controller:
+        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
+
+  # Le service python est un agent Jenkins avec Python installé.
+  python:
+    build: dockerfiles/python/.  # Le Dockerfile pour construire l'image du service Python.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    profiles:
+      - python  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      jenkins_controller:
+        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
+
+  # Le service node est un agent Jenkins avec Node.js installé.
+  node:
+    build: dockerfiles/node/.  # Le Dockerfile pour construire l'image du service Node.js.
+    environment:
+      - GITPOD_WORKSPACE_URL=${GITPOD_WORKSPACE_URL}  # Les variables d'environnement pour le service.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    profiles:
+      - node  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      jenkins_controller:
+        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
+    ports:
+      - "3000:3000"  # Expose le port 3000 du service à l'hôte.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
+
+  # Le service multi_jenkins_controller est un contrôleur Jenkins pour gérer plusieurs jobs et configurations Jenkins.
+  multi_jenkins_controller:
+    build: 06_multibranch_pipeline/dockerfiles/.  # Le Dockerfile pour construire l'image du service multi Jenkins controller.
+    restart: on-failure  # Le service sera redémarré s'il quitte en raison d'une erreur.
+    ports:
+      - "8080:8080"  # Expose le port 8080 du service à l'hôte.
+    volumes:
+      - jenkins_home:/var/jenkins_home  # Monte le volume jenkins_home au chemin /var/jenkins_home à l'intérieur du conteneur.
+      - agent-ssh-dir:/ssh-dir  # Monte le volume agent-ssh-dir au chemin /ssh-dir à l'intérieur du conteneur.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Vérifie si le fichier conductor_ok existe dans le chemin /ssh-dir.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+
+  # Le service multi est un agent Jenkins pour gérer plusieurs jobs et configurations Jenkins.
+  multi:
+    build: 06_multibranch_pipeline/dockerfiles/agent/.  # Le Dockerfile pour construire l'image du service multi Jenkins agent.
+    environment:
+      - GITPOD_WORKSPACE_URL=${GITPOD_WORKSPACE_URL}  # Les variables d'environnement pour le service.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    profiles:
+      - multi  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      multi_jenkins_controller:
+        condition: service_started  # Le service multi_jenkins_controller doit démarrer avant que ce service ne démarre.
+    ports:
+      - "3000:3000"  # Expose le port 3000 du service à l'hôte.
+      - "5000:5000"  # Expose le port 5000 du service à l'hôte.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
+
+# Les volumes utilisés par les services.
+volumes:
+  jenkins_home:  # Un volume pour stocker les données de Jenkins.
+  agent-ssh-dir:  # Un volume pour stocker les clés SSH.
+    name: agent-ssh-dir  # Le nom du volume.

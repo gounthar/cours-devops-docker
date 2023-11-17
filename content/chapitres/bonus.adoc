@@ -204,6 +204,20 @@ Créer un index "timestamp" sur Kibana puis aller à l'écran "discover"
 
 Lancer un conteneur nginx et concentrez ses logs dans ELK
 
+== iDées
+
+dependabot gitlab
+updatecli
+renovabot gitlab
+
+gitlab complet docker compose
+jenkins complet docker compose
+Kube?
+
+services ashutosh mix and match de conteneurs
+
+build arm64, cloud et buildx
+
 == Debugging : docker exec
 
 rappel : `docker container exec `permet de lancer une commande dans un container
