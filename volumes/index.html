@@ -2539,8 +2539,289 @@ C&#8217;est généralement fait lorsque vous voulez interagir avec le service en
 <div class="imageblock"><img src="media/47642838-image4.png" alt="47642838 image4"></div>
 <aside class="notes"><div class="paragraph"><p>Dans le temps, on recommandait de faire un script qui attendait que le service soit démarré avant de continuer.
 <a href="https://github.com/vishnubob/wait-for-it" class="bare">https://github.com/vishnubob/wait-for-it</a></p></div></aside></div></section><section id="transformer_son_application_en_docker_compose"><h2>Transformer son application en docker compose</h2><div class="slide-content"><div class="paragraph"><p>Deux approches différentes et complémentaires :</p></div>
-<div class="ulist"><ul><li class="fragment"><p><a href="https://www.composerize.com/" class="bare">https://www.composerize.com/</a></p></li><li class="fragment"><p><a href="https://github.com/jwilder/dockerize" class="bare">https://github.com/jwilder/dockerize</a></p></li></ul></div></div></section><section id="travaux_pratiques_12"><h2>Travaux pratiques #12</h2><div class="slide-content"><div class="imageblock"><img src="media/497269344-image5.png" alt="497269344 image5"></div>
-<div class="paragraph"><p><a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git</a></p></div></div></section></section>
+<div class="ulist"><ul><li class="fragment"><p><a href="https://www.composerize.com/" class="bare">https://www.composerize.com/</a></p></li><li class="fragment"><p><a href="https://github.com/jwilder/dockerize" class="bare">https://github.com/jwilder/dockerize</a></p></li></ul></div></div></section><section id="travaux_pratiques_12"><h2>🎓 Travaux pratiques #12</h2><div class="slide-content"><div class="imageblock"><img src="media/497269344-image5.png" alt="497269344 image5"></div>
+<div class="paragraph"><p><a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git</a></p></div></div></section><section id="travaux_pratiques_12_bis" data-auto-animate><h2>🎓 Travaux pratiques #12-BIS 🔨🔥</h2><div class="slide-content"><div class="paragraph"><p>Ça vous dirait d&#8217;avoir votre propre forge Gitlab ?</p></div>
+<div class="paragraph fragment"><p>😏 Non, et bien c&#8217;est parti quand même.</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Créez un nouveau fichier appelé <code>docker-compose.yml</code>.</p></li><li class="fragment"><p>Dans ce fichier, définissez trois services : <code>gitlab</code>, <code>gitlab-runner-1</code> et <code>gitlab-runner-2</code>.</p></li><li class="fragment"><p>Pour le service <code>gitlab</code>:</p><div class="ulist"><ul><li><p>utilisez l&#8217;image <code>gitlab/gitlab-ce:latest</code> (préfixée par le cache spécifique ILI)</p></li><li><p>redémarrez toujours le conteneur s&#8217;il s&#8217;arrête,</p></li><li><p>définissez le nom d&#8217;hôte sur <code>localhost</code>,</p></li><li><p>définissez l&#8217;URL externe sur <code><a href="http://localhost" class="bare">http://localhost</a></code> et exposez les ports <code>80</code>, <code>443</code> et <code>22</code>.</p></li></ul></div></li></ul></div></div></section><section id="travaux_pratiques_12_bis_2" data-auto-animate><h2>🎓 Travaux pratiques #12-BIS</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Pour les services gitlab-runner-1 et gitlab-runner-2:</p><div class="ulist"><ul><li class="fragment"><p>utilisez l&#8217;image <code>gitlab/gitlab-runner:latest</code> (préfixée par le cache spécifique ILI),</p></li><li class="fragment"><p>redémarrez toujours le conteneur s&#8217;il s&#8217;arrête,</p></li><li class="fragment"><p>dépendez du service gitlab et montez le socket Docker et le fichier de configuration de GitLab Runner.</p></li></ul></div></li><li class="fragment"><p>Créez des volumes pour:</p><div class="ulist"><ul><li class="fragment"><p>les fichiers de configuration,</p></li><li class="fragment"><p>les fichiers journaux</p></li><li class="fragment"><p>et les fichiers de données de GitLab,</p></li><li class="fragment"><p>ainsi que pour les fichiers de configuration de GitLab Runner.</p></li></ul></div></li></ul></div></div></section><section id="travaux_pratiques_12_bis_3" data-auto-animate><h2>🎓 Travaux pratiques #12-BIS 🔨🔥</h2><div class="slide-content"><div class="paragraph"><p>Pas assez détaillé? 😨</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Ouvrez votre éditeur de texte préféré et créez un nouveau fichier.</p></li><li class="fragment"><p>Nommez ce fichier <code>docker-compose.yml</code>.</p></li><li class="fragment"><p>Commencez le fichier avec la ligne <code>services:</code> pour commencer à définir les services de votre application.</p></li><li class="fragment"><p>Commencez à définir votre premier service en tapant <code>gitlab:</code> sur une nouvelle ligne. Ce sera le service pour votre serveur GitLab.</p></li><li class="fragment"><p>Sous <code>gitlab:</code>, ajoutez les détails de votre service.</p><div class="ulist"><ul><li class="fragment"><p>Par exemple, <code>image: 'gitlab/gitlab-ce:latest'</code> pour spécifier l&#8217;image Docker à utiliser pour ce service.</p></li></ul></div></li></ul></div></div></section><section id="travaux_pratiques_12_bis_4" data-auto-animate><h2>🎓 Travaux pratiques #12-BIS 🔨🔥</h2><div class="slide-content"><div class="ulist"><ul><li><p>Sous <code>gitlab:</code>, ajoutez les détails de votre service.</p><div class="ulist"><ul><li><p>Par exemple, <code>image: 'gitlab/gitlab-ce:latest'</code> pour spécifier l&#8217;image Docker à utiliser pour ce service.</p></li><li><p>Continuez à ajouter des détails pour le service gitlab, comme <code>restart: always</code> pour toujours redémarrer le conteneur s&#8217;il s&#8217;arrête, et <code>hostname: 'localhost'</code> pour définir le nom d&#8217;hôte du serveur GitLab.</p></li></ul></div></li><li><p>Définissez l&#8217;URL externe de votre serveur GitLab en ajoutant <code>environment:</code> et <code>GITLAB_OMNIBUS_CONFIG: |</code> sur de nouvelles lignes,</p></li><li><p>puis <code>external_url 'http://localhost'</code> sur la ligne suivante.</p></li><li><p>Exposez les ports nécessaires en ajoutant <code>ports:</code> sur une nouvelle ligne,</p></li><li><p>puis <code>- '80:80'</code>, <code>- '443:443'</code> et <code>- '22:22'</code> sur les lignes suivantes.</p></li></ul></div></div></section><section id="travaux_pratiques_12_bis_5" data-auto-animate><h2>🎓 Travaux pratiques #12-BIS 🔨🔥</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Montez les volumes nécessaires en ajoutant <code>volumes:</code> sur une nouvelle ligne,</p><div class="ulist"><ul><li class="fragment"><p>puis <code>- 'gitlab_config:/etc/gitlab'</code>,</p></li><li class="fragment"><p><code>- 'gitlab_logs:/var/log/gitlab'</code></p></li><li class="fragment"><p>et <code>- 'gitlab_data:/var/opt/gitlab'</code> sur les lignes suivantes.</p></li></ul></div></li><li class="fragment"><p>Répétez ces étapes pour les services gitlab-runner-1 et gitlab-runner-2, en remplaçant <code>gitlab</code> par <code>gitlab-runner-1</code> et <code>gitlab-runner-2</code> respectivement.</p></li></ul></div></div></section><section id="travaux_pratiques_12_bis_6" data-auto-animate><h2>🎓 Travaux pratiques #12-BIS 🔨🔥</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Pour les services <code>gitlab-runner-1</code> et <code>gitlab-runner-2</code>, remplacez l&#8217;URL externe par une dépendance au service gitlab en ajoutant <code>depends_on:</code> sur une nouvelle ligne, puis <code>- gitlab</code> sur la ligne suivante.</p></li><li class="fragment"><p>Montez le socket Docker et le fichier de configuration de GitLab Runner</p><div class="ulist"><ul><li class="fragment"><p>en ajoutant <code>- '/var/run/docker.sock:/var/run/docker.sock'</code></p></li><li class="fragment"><p>et <code>- 'gitlab-runner-1-config:/etc/gitlab-runner'</code> (ou <code>- 'gitlab-runner-2-config:/etc/gitlab-runner'</code> pour <code>gitlab-runner-2</code>) sous <code>volumes:</code>.</p></li></ul></div></li></ul></div></div></section><section id="travaux_pratiques_12_bis_7" data-auto-animate><h2>🎓 Travaux pratiques #12-BIS 🔨🔥</h2><div class="slide-content"><div class="paragraph fragment"><p>Enfin, définissez les volumes pour votre application en ajoutant <code>volumes:</code> sur une nouvelle ligne à la fin de votre fichier, puis</p></div>
+<div class="ulist"><ul><li class="fragment"><p><code>- gitlab_config:</code>,</p></li><li class="fragment"><p><code>- gitlab_logs:</code>,</p></li><li class="fragment"><p><code>- gitlab_data:</code>,</p></li><li class="fragment"><p><code>- gitlab-runner-1-config:</code></p></li><li class="fragment"><p>et <code>- gitlab-runner-2-config:</code> sur les lignes suivantes.</p></li></ul></div></div></section><section id="solution_travaux_pratiques_12_bis"><h2>✅ Solution Travaux pratiques #12-BIS 🔨🔥</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># This is a Docker Compose file for setting up a GitLab server and two GitLab runners.
+
+services:
+  # The GitLab server service
+  gitlab:
+    # The Docker image to use for the GitLab server
+    image: 'gitlab/gitlab-ce:latest'
+    # Always restart the container if it stops
+    restart: always
+    # The hostname for the GitLab server
+    hostname: 'localhost'
+    # Environment variables for the GitLab server
+    environment:
+      # Configuration for the GitLab Omnibus package
+      GITLAB_OMNIBUS_CONFIG: |
+        # The external URL for the GitLab server
+        external_url 'http://localhost'
+    # The ports to expose from the GitLab server
+    ports:
+      - '80:80'   # HTTP
+      - '443:443' # HTTPS
+      - '22:22'   # SSH
+    # The volumes to mount for the GitLab server
+    volumes:
+      - 'gitlab_config:/etc/gitlab'       # Configuration files
+      - 'gitlab_logs:/var/log/gitlab'     # Log files
+      - 'gitlab_data:/var/opt/gitlab'     # Data files
+
+  # The first GitLab runner service
+  gitlab-runner-1:
+    # The Docker image to use for the GitLab runner
+    image: 'gitlab/gitlab-runner:latest'
+    # Always restart the container if it stops
+    restart: always
+    # The services this service depends on
+    depends_on:
+      - gitlab # Depends on the GitLab server
+    # The volumes to mount for the GitLab runner
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock' # Docker socket for running Docker commands
+      - 'gitlab-runner-1-config:/etc/gitlab-runner' # Configuration files
+
+  # The second GitLab runner service
+  gitlab-runner-2:
+    # The Docker image to use for the GitLab runner
+    image: 'gitlab/gitlab-runner:latest'
+    # Always restart the container if it stops
+    restart: always
+    # The services this service depends on
+    depends_on:
+      - gitlab # Depends on the GitLab server
+    # The volumes to mount for the GitLab runner
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock' # Docker socket for running Docker commands
+      - 'gitlab-runner-2-config:/etc/gitlab-runner' # Configuration files
+
+# The volumes to create for the services
+volumes:
+  gitlab_config:         # Volume for GitLab server configuration files
+  gitlab_logs:           # Volume for GitLab server log files
+  gitlab_data:           # Volume for GitLab server data files
+  gitlab-runner-1-config: # Volume for GitLab runner 1 configuration files
+  gitlab-runner-2-config: # Volume for GitLab runner 2 configuration files</code></pre></div></div></div></section><section id="jai_ma_forge_bon_et_maintenant" class="columns" data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="imageblock column"><img src="media/when.png" alt="when" height="500px"></div>
+<div class="videoblock column"><video src="media/gitlab-logs.speed.very.small.mp4" width="100%" height="loop" data-autoplay controls>Your browser does not support the video tag.</video></div></div></section><section id="jai_ma_forge_bon_et_maintenant_2" class="intellij background" data-background-video="media/2000_years_later.mp4" data-background-video-loop data-background-video-muted data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="paragraph"><p>Il va falloir se logguer, lier les runners au serveur, créer un projet, etc&#8230;&#8203;</p></div></div></section><section id="jai_ma_forge_bon_et_maintenant_3" class="columns" data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="imageblock column"><img src="media/gitlab-login.png" alt="gitlab login" height="500px"></div>
+<div class="openblock column"><div class="content"><div class="paragraph"><p>Pour trouver le mot de passe, il va falloir le demander gentiment à Gitlab:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose -f tp12-bis.yml exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_
+password
+Password: qaPxXU+RqioolV3bAljvs2VYnyYa4jO/UYcis/UXLAk=</code></pre></div></div>
+<div class="paragraph fragment"><p>Ensuite, il va falloir restreindre l&#8217;accès:</p></div>
+<div class="imageblock fragment"><img src="media/sign-up-restrictions.png" alt="sign up restrictions"></div></div></div></div></section><section id="jai_ma_forge_bon_et_maintenant_4" data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="paragraph"><p>Pour utiliser le runner GitLab dans GitLab, vous devez le configurer.</p></div>
+<div class="paragraph fragment"><p>Pour une configuration correcte, nous aurons besoin d&#8217;un jeton copié depuis le portail.</p></div>
+<div class="paragraph fragment"><p>Pour ce faire, allez à l&#8217;adresse : <a href="http://localhost/admin/runners" class="bare">http://localhost/admin/runners</a> et cliquez sur le bouton "Copier le jeton".</p></div></div></section><section id="profils_dans_docker_compose" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="paragraph"><p>On a vu déjà l&#8217;instruction <code>depends_on</code> dans un fichier Docker Compose.</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Elle permet de définir des dépendances entre les services.</p></li><li class="fragment"><p>Mais que faire si on veut définir un lot de services qui fonctionnent ensemble, sans pour autant être en interdépendance ?</p></li><li class="fragment"><p>Les profils dans Docker Compose permettent de définir des groupes de services qui peuvent être activés ou désactivés ensemble.</p></li><li class="fragment"><p>Cela peut être utile pour gérer des environnements de développement, de test et de production différents dans le même fichier Docker Compose.</p></li><li class="fragment"><p>Pour définir un profil pour un service, vous pouvez ajouter la clé <code>profiles</code> à la définition du service dans votre fichier Docker Compose.</p></li></ul></div></div></section><section id="profils_dans_docker_compose_2" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="paragraph"><p>Par exemple :</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  mon_service:
+    image: mon_image
+    profiles:
+      - dev</code></pre></div></div>
+<div class="paragraph fragment"><p>Dans cet exemple, le service mon_service appartient au profil dev.</p></div></div></section><section id="profils_dans_docker_compose_3" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Pour démarrer seulement les services qui appartiennent à un certain profil, vous pouvez utiliser l&#8217;option <code>--profile</code> avec la commande <code>docker-compose up</code>.</p></li><li class="fragment"><p>Par exemple :</p></li></ul></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker-compose up --profile dev</code></pre></div></div>
+<div class="paragraph fragment"><p>Cette commande démarrera seulement les services qui appartiennent au profil <code>dev</code>.</p></div></div></section><section id="profils_dans_docker_compose_4" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Les profils peuvent rendre votre fichier Docker Compose plus organisé et flexible.</p></li><li class="fragment"><p>Ils vous permettent de définir différents environnements dans le même fichier et de choisir facilement quels services démarrer en fonction de vos besoins.</p></li><li class="fragment"><p>Jetons un coup d&#8217;œil à un exemple de fichier Docker Compose avec des profils :</p></li></ul></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  service_dev:
+    image: mon_image_dev
+    profiles:
+      - dev
+  service_prod:
+    image: mon_image_prod
+    profiles:
+      - prod</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Dans cet exemple, nous avons deux services : <code>service_dev</code> et <code>service_prod</code>.</p></li><li class="fragment"><p>Chacun appartient à un profil différent.</p></li></ul></div></div></section><section id="profils_dans_docker_compose_5" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  service_dev:
+    image: mon_image_dev
+    profiles:
+      - dev
+  service_prod:
+    image: mon_image_prod
+    profiles:
+      - prod</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Nous pouvons choisir de démarrer seulement les services de développement avec <code>docker-compose up --profile dev</code>, ou uniquement les services de production avec <code>docker-compose up --profile prod</code>.</p></li><li class="fragment"><p>Les profils dans Docker Compose sont un outil puissant pour gérer différents environnements dans le même fichier Docker Compose.</p></li><li class="fragment"><p>Ils peuvent rendre votre développement et vos tests plus efficaces et organisés.</p></li></ul></div></div></section><section id="une_autre_forge_ça_vous_dit"><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph fragment"><p>😏 Non, et bien, c&#8217;est parti quand même.</p></div>
+<div class="paragraph fragment"><p><a href="https://raw.githubusercontent.com/ash-sxn/GSoC-2023-docker-based-quickstart/main/build-docker-compose.yaml" class="bare">https://raw.githubusercontent.com/ash-sxn/GSoC-2023-docker-based-quickstart/main/build-docker-compose.yaml</a></p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  # Le service sidekick est responsable de la génération des clés SSH et de la vérification de leur existence.
+  sidekick_service:
+    build: dockerfiles/sidekick/.  # Le Dockerfile pour construire l'image du service sidekick.
+    stdin_open: true  # Permet au service de garder STDIN ouvert même s'il n'est pas attaché.
+    tty: true  # Alloue un pseudo-TTY pour le service.
+    entrypoint: sh -c "/usr/local/bin/keygen.sh /ssh-dir"  # La commande que le service exécute lorsqu'il démarre.
+    volumes:
+      - agent-ssh-dir:/ssh-dir  # Monte le volume agent-ssh-dir au chemin /ssh-dir à l'intérieur du conteneur.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Vérifie si le fichier conductor_ok existe dans le chemin /ssh-dir.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+
+  # Le service jenkins_controller est responsable de la gestion des jobs et des configurations Jenkins.
+  jenkins_controller:
+    build: dockerfiles/.  # Le Dockerfile pour construire l'image du service jenkins_controller.
+    restart: on-failure  # Le service sera redémarré s'il quitte en raison d'une erreur.
+    ports:
+      - "8080:8080"  # Expose le port 8080 du service à l'hôte.
+    volumes:
+      - jenkins_home:/var/jenkins_home  # Monte le volume jenkins_home au chemin /var/jenkins_home à l'intérieur du conteneur.
+      - agent-ssh-dir:/ssh-dir  # Monte le volume agent-ssh-dir au chemin /ssh-dir à l'intérieur du conteneur.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Vérifie si le fichier conductor_ok existe dans le chemin /ssh-dir.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+
+  # Le service default_agent est un agent Jenkins avec un JDK installé.
+  default_agent:
+    image: jenkins/ssh-agent:5.5.0-jdk17  # L'image Docker pour le service.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      jenkins_controller:
+        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
+
+  # Le service maven est un agent Jenkins avec Maven installé.
+  maven:
+    build: dockerfiles/maven/.  # Le Dockerfile pour construire l'image du service Maven.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    profiles:
+      - maven  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      jenkins_controller:
+        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
+
+  # Le service python est un agent Jenkins avec Python installé.
+  python:
+    build: dockerfiles/python/.  # Le Dockerfile pour construire l'image du service Python.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    profiles:
+      - python  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      jenkins_controller:
+        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
+
+  # Le service node est un agent Jenkins avec Node.js installé.
+  node:
+    build: dockerfiles/node/.  # Le Dockerfile pour construire l'image du service Node.js.
+    environment:
+      - GITPOD_WORKSPACE_URL=${GITPOD_WORKSPACE_URL}  # Les variables d'environnement pour le service.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    profiles:
+      - node  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      jenkins_controller:
+        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
+    ports:
+      - "3000:3000"  # Expose le port 3000 du service à l'hôte.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
+
+  # Le service multi_jenkins_controller est un contrôleur Jenkins pour gérer plusieurs jobs et configurations Jenkins.
+  multi_jenkins_controller:
+    build: 06_multibranch_pipeline/dockerfiles/.  # Le Dockerfile pour construire l'image du service multi Jenkins controller.
+    restart: on-failure  # Le service sera redémarré s'il quitte en raison d'une erreur.
+    ports:
+      - "8080:8080"  # Expose le port 8080 du service à l'hôte.
+    volumes:
+      - jenkins_home:/var/jenkins_home  # Monte le volume jenkins_home au chemin /var/jenkins_home à l'intérieur du conteneur.
+      - agent-ssh-dir:/ssh-dir  # Monte le volume agent-ssh-dir au chemin /ssh-dir à l'intérieur du conteneur.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Vérifie si le fichier conductor_ok existe dans le chemin /ssh-dir.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+
+  # Le service multi est un agent Jenkins pour gérer plusieurs jobs et configurations Jenkins.
+  multi:
+    build: 06_multibranch_pipeline/dockerfiles/agent/.  # Le Dockerfile pour construire l'image du service multi Jenkins agent.
+    environment:
+      - GITPOD_WORKSPACE_URL=${GITPOD_WORKSPACE_URL}  # Les variables d'environnement pour le service.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    profiles:
+      - multi  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      multi_jenkins_controller:
+        condition: service_started  # Le service multi_jenkins_controller doit démarrer avant que ce service ne démarre.
+    ports:
+      - "3000:3000"  # Expose le port 3000 du service à l'hôte.
+      - "5000:5000"  # Expose le port 5000 du service à l'hôte.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
+
+# Les volumes utilisés par les services.
+volumes:
+  jenkins_home:  # Un volume pour stocker les données de Jenkins.
+  agent-ssh-dir:  # Un volume pour stocker les clés SSH.
+    name: agent-ssh-dir  # Le nom du volume.</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_2"><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph"><p>Indigeste? 😨</p></div>
+<div class="paragraph fragment"><p>Ne relevons que les points importants:</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service maven est un agent Jenkins avec Maven et le JDK installés.
+  maven:
+    build: dockerfiles/maven/.  # Le Dockerfile pour construire l'image du service Maven.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    profiles:
+      - maven  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      jenkins_controller:
+        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.</code></pre></div></div></div></section></section>
 <section><section id="bonus"><h2>Bonus</h2></section><section id="les_petits_plus"><h2>Les petits plus</h2><div class="slide-content"><div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
 <div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
 <div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
@@ -2642,7 +2923,14 @@ nginx</pre></div></div>
 <div class="paragraph"><p>Lancer une stack ELK grâce aux fichiers fournis dans le repo <a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp13" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp13</a></p></div>
 <div class="paragraph"><p>Alimenter en logs avec la commande <code>docker run --log-driver=gelf --log-opt gelf-address=udp://localhost:12201 alpine bash -c 'seq 1 100'</code></p></div>
 <div class="paragraph"><p>Créer un index "timestamp" sur Kibana puis aller à l&#8217;écran "discover"</p></div>
-<div class="paragraph"><p>Lancer un conteneur nginx et concentrez ses logs dans ELK</p></div></div></section><section id="debugging_docker_exec"><h2>Debugging : docker exec</h2><div class="slide-content"><div class="paragraph"><p>rappel : `docker container exec `permet de lancer une commande dans un container</p></div>
+<div class="paragraph"><p>Lancer un conteneur nginx et concentrez ses logs dans ELK</p></div></div></section><section id="idées"><h2>iDées</h2><div class="slide-content"><div class="paragraph"><p>dependabot gitlab
+updatecli
+renovabot gitlab</p></div>
+<div class="paragraph"><p>gitlab complet docker compose
+jenkins complet docker compose
+Kube?</p></div>
+<div class="paragraph"><p>services ashutosh mix and match de conteneurs</p></div>
+<div class="paragraph"><p>build arm64, cloud et buildx</p></div></div></section><section id="debugging_docker_exec"><h2>Debugging : docker exec</h2><div class="slide-content"><div class="paragraph"><p>rappel : `docker container exec `permet de lancer une commande dans un container</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker exec &lt;containerID&gt; echo "hello"</code></pre></div></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker exec –it &lt;containerID&gt; bash</code></pre></div></div></div></section><section id="debugging_docker_inspect"><h2>Debugging : docker inspect</h2><div class="slide-content"><div class="paragraph"><p>rappel : `docker inspect `permet de lister toutes les caractéristiques d&#8217;une image ou d&#8217;un container.</p></div>
 <div class="paragraph"><p>On peut filtrer le retour de la commande avec <code>jq</code> ou l&#8217;option <code>--format</code>.</p></div></div></section><section id="debugging_docker_cp"><h2>Debugging : docker cp</h2><div class="slide-content"><div class="paragraph"><p>Cette commande permet d&#8217;échanger des fichiers entre un conteneur et la machine hôte.</p></div>
