@@ -1312,7 +1312,7 @@ app.js</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run --workdir /customdir --entrypoint ls node
 &lt;0 fichiers présents !&gt;</code></pre></div></div>
 <div class="paragraph fragment"><p>Comment fournir des fichiers à mes containers ?</p></div></div></section><section id="embarquer_des_fichiers_2" data-auto-animate><h2>📁 Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Copie de fichiers.</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM node:20.8.0-alpine3.18
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM node:21.2.0-alpine3.18
 WORKDIR /app
 COPY ./* /app</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-node .
@@ -1722,7 +1722,7 @@ WORKDIR /app/gs-spring-boot/complete
 RUN mvn package
 
 # Use a lightweight Java image for running the application
-FROM eclipse-temurin:21_35-jre-alpine
+FROM eclipse-temurin:21.0.1_12-jre-alpine
 WORKDIR /app
 
 # Copy the built JAR file from the previous build stage
@@ -1733,7 +1733,7 @@ CMD ["java", "-jar", "spring-boot-complete-0.0.1-SNAPSHOT.jar"]</code></pre></di
 <div class="paragraph fragment"><p>Le multistage, c&#8217;est la classe à Arras.
 On en reparle après.</p></div></div></section><section id="une_première_solution"><h2>🧩 Une première solution</h2><div class="slide-content"><div class="paragraph"><p>Avec un autre exemple&#8230;&#8203;
 Une image pour construire l&#8217;appli:</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM golang:1.19
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM golang:1.21
 
 WORKDIR /go/src/github.com/alexellis/href-counter/
 
@@ -1744,7 +1744,7 @@ COPY app.go	.
 
 RUN CGO_ENABLED=0 GOOS=linux go build  -ldflags "-s -w" -o app .</code></pre></div></div>
 <div class="paragraph fragment"><p>Une image pour faire tourner l&#8217;appli</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.17.1
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18.4
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
@@ -1892,16 +1892,17 @@ RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="admonitionblock caution"><table><tr><td class="icon"><i class="fa fa-fire" title="Caution"></i></td><td class="content">Les données sont perdues à l&#8217;arrêt du container.</td></tr></table></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -transparent white -resize x1080 volumes-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="filesystem_en_ram_3" data-auto-animate><h2>💾🧠 FileSystem en RAM</h2><div class="slide-content"><div class="imageblock"><img src="media/volumes-output22_with_transparency.png" alt="volumes output22 with transparency"></div>
 <div class="admonitionblock caution"><table><tr><td class="icon"><i class="fa fa-fire" title="Caution"></i></td><td class="content">Les données sont perdues à l&#8217;arrêt du container.</td></tr></table></div>
-<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -transparent white -resize x1080 volumes-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="bilan_de_compétences" data-auto-animate><h2>📊📝 Bilan de compétences</h2><div class="slide-content"><div class="ulist"><ul><li><p>Création d&#8217;images</p></li><li><p>Création des containers</p><div class="ulist"><ul><li><p>cycle de vie</p></li><li><p>nommage</p></li><li><p>débug</p></li><li><p>réseau</p></li><li><p>volumes</p></li></ul></div></li></ul></div></div></section><section id="bilan_de_compétences_2" data-auto-animate><h2>📊📝 Bilan de compétences</h2><div class="slide-content"><div class="ulist"><ul><li><p>Création d&#8217;images ✅</p></li><li><p>Création des containers ✅</p><div class="ulist"><ul><li><p>cycle de vie ✅</p></li><li><p>nommage ✅</p></li><li><p>débug ✅</p></li><li><p>réseau  ✅</p></li><li><p>volumes ✅</p></li></ul></div></li></ul></div></div></section><section id="travaux_pratiques_8" data-auto-animate><h2>🎓 Travaux pratiques #8</h2><div class="slide-content"><div class="paragraph"><p>Lancer un container `nginx `et lui faire distribuer une page web externe au container.</p></div>
+<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -transparent white -resize x1080 volumes-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="bilan_de_compétences" data-auto-animate><h2>📊📝 Bilan de compétences</h2><div class="slide-content"><div class="ulist"><ul><li><p>Création d&#8217;images</p></li><li><p>Création des containers</p><div class="ulist"><ul><li><p>cycle de vie</p></li><li><p>nommage</p></li><li><p>débug</p></li><li><p>réseau</p></li><li><p>volumes</p></li></ul></div></li></ul></div></div></section><section id="bilan_de_compétences_2" data-auto-animate><h2>📊📝 Bilan de compétences</h2><div class="slide-content"><div class="ulist"><ul><li><p>Création d&#8217;images ✅</p></li><li><p>Création des containers ✅</p><div class="ulist"><ul><li><p>cycle de vie ✅</p></li><li><p>nommage ✅</p></li><li><p>débug ✅</p></li><li><p>réseau  ✅</p></li><li><p>volumes ✅</p></li></ul></div></li></ul></div></div></section><section id="travaux_pratiques_8" data-auto-animate><h2>🎓 Travaux pratiques #8</h2><div class="slide-content"><div class="paragraph"><p>Lancer un container `nginx `et lui faire distribuer une page web externe au container.
+Trouver deux façons différentes de rendre disponible la page web au container.</p></div>
 <div class="imageblock"><img src="media/1763880002-image10.png" alt="1763880002 image10"></div></div></section><section id="solution_travaux_pratiques_8" data-auto-animate><h2>✅ Solution travaux pratiques #8</h2><div class="slide-content"><div class="paragraph title"><p>En utilisant un montage de répertoire (Bind Mount) :</p></div>
 <div class="paragraph fragment"><p>Utilisez un montage de répertoire pour mapper un répertoire de l&#8217;hôte vers le conteneur Nginx.</p></div>
 <div class="paragraph fragment"><p>Placez vos fichiers HTML dans un répertoire sur votre machine hôte, puis mappez ce répertoire vers le conteneur Nginx.</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 80:80 --name mon-nginx -v /chemin/vers/la/page/web/sur/lhote:/usr/share/nginx/html nginx</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
 <div class="paragraph fragment"><p>Remplacez <code>/chemin/vers/la/page/web/sur/lhote</code> par le chemin réel vers le répertoire contenant vos fichiers de la page web sur l&#8217;hôte.</p></div></div></section><section id="solution_travaux_pratiques_8_2" data-auto-animate><h2>✅ Solution travaux pratiques #8</h2><div class="slide-content"><div class="paragraph title"><p>En utilisant un volume nommé (Named Volume) :</p></div>
 <div class="paragraph fragment"><p>Créez un volume nommé et copiez vos fichiers de la page web dedans.</p></div>
 <div class="paragraph fragment"><p>Montez ce volume nommé dans le conteneur Nginx.</p></div>
 <div class="paragraph fragment"><p>Tout d&#8217;abord, créez un volume nommé :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume create mon-nginx-html</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
 <div class="paragraph fragment"><p>Copiez vos fichiers de la page web dans ce volume :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm \
   --volume mon-nginx-html:/cible \   # Montez le volume nommé "mon-nginx-html" dans le conteneur sous le répertoire "/cible".
@@ -1909,23 +1910,23 @@ RUN echo hello &gt; ./world.txt</code></pre></div></div>
   --workdir /cible \                # Définissez le répertoire de travail à "/cible" dans le conteneur.
   busybox cp -r /html .   # Copiez récursivement le contenu depuis "/chemin/vers/la/page/web/sur/lhote" dans le répertoire actuel du conteneur.</code></pre></div></div>
 <div class="paragraph fragment"><p>Maintenant, lancez le conteneur Nginx et montez le volume nommé :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 80:80 --name mon-nginx -v mon-nginx-html:/usr/share/nginx/html nginx</code></pre></div></div></div></section><section id="travaux_pratiques_9"><h2>🎓 Travaux pratiques #9</h2><div class="slide-content"><div class="paragraph title"><p>Étapes:</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div></div></section><section id="travaux_pratiques_9"><h2>🎓 Travaux pratiques #9</h2><div class="slide-content"><div class="paragraph title"><p>Étapes:</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Créer un volume nommé "data"</p></li><li class="fragment"><p>Démarrer un container attaché à ce volume</p></li><li class="fragment"><p>Lancer un processus qui écrit un fichier dans le volume</p></li><li class="fragment"><p>Démarrer un second container attaché à ce volume</p></li><li class="fragment"><p>Lire les données du volume depuis le second container</p></li><li class="fragment"><p>Supprimer le volume</p></li></ul></div></div></section><section id="solution_travaux_pratiques_9"><h2>✅ Solution travaux pratiques #9</h2><div class="slide-content"><div class="paragraph"><p>Créer un volume nommé "data" :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume create data</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
 <div class="paragraph fragment"><p>Démarrer un premier conteneur attaché à ce volume :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --name premier-container -v data:/donnees busybox</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
 <div class="paragraph fragment"><p>Dans le premier conteneur, lancez un processus qui écrit un fichier dans le volume (par exemple, un fichier texte) :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">echo "Données du premier conteneur" &gt; /donnees/mon-fichier.txt</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
 <div class="paragraph fragment"><p>Quittez le premier conteneur.</p></div>
 <div class="paragraph fragment"><p>Démarrer un second conteneur attaché au même volume :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --name second-container -v data:/donnees busybox</code></pre></div></div></div></section><section id="solution_travaux_pratiques_9_2"><h2>✅ Solution travaux pratiques #9</h2><div class="slide-content"><div class="paragraph"><p>Démarrer un second conteneur attaché au même volume :</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --name second-container -v data:/donnees busybox</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div></div></section><section id="solution_travaux_pratiques_9_2"><h2>✅ Solution travaux pratiques #9</h2><div class="slide-content"><div class="paragraph"><p>Démarrer un second conteneur attaché au même volume :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
 <div class="paragraph"><p>Dans le second conteneur, lisez les données du volume (le fichier texte) :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cat /donnees/mon-fichier.txt</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
 <div class="paragraph fragment"><p>Vous devriez voir le contenu du fichier affiché à l&#8217;écran.</p></div>
 <div class="paragraph fragment"><p>Quittez le second conteneur.</p></div>
 <div class="paragraph fragment"><p>Vous pouvez maintenant supprimer le volume "data" car vous n&#8217;en avez plus besoin :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume rm data</code></pre></div></div></div></section><section id="travaux_pratiques_10"><h2>🎓  Travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Écrire un Dockerfile qui:</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div></div></section><section id="travaux_pratiques_10"><h2>🎓  Travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Écrire un Dockerfile qui:</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Ajoute des fichiers dans un dossier</p></li><li class="fragment"><p>Déclare ce dossier comme volume anonyme</p></li><li class="fragment"><p>Ajoute d&#8217;autres fichiers dans ce dossier</p></li></ul></div>
 <div class="paragraph fragment"><p><strong>Que verra-ton dans ce dossier au sein de nos containers ?</strong></p></div></div></section><section id="solution_travaux_pratiques_10" data-auto-animate><h2>✅ Solution travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Tout d&#8217;abord, créez un répertoire pour votre projet et placez-vous dedans.</p></div>
 <div class="paragraph fragment"><p>Créez un Dockerfile avec le contenu suivant :</p></div>
