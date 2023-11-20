@@ -4,7 +4,7 @@ services:
   # The GitLab server service
   gitlab:
     # The Docker image to use for the GitLab server
-    image: 'gitlab/gitlab-ce:latest'
+    image: 'gitlab/gitlab-ce:16.6.0-ce.0'
     # Always restart the container if it stops
     restart: always
     # The hostname for the GitLab server
@@ -29,7 +29,7 @@ services:
   # The first GitLab runner service
   gitlab-runner-1:
     # The Docker image to use for the GitLab runner
-    image: 'gitlab/gitlab-runner:latest'
+    image: 'gitlab/gitlab-runner:alpine3.16-v16.6.0'
     # Always restart the container if it stops
     restart: always
     # The services this service depends on
@@ -43,7 +43,7 @@ services:
   # The second GitLab runner service
   gitlab-runner-2:
     # The Docker image to use for the GitLab runner
-    image: 'gitlab/gitlab-runner:latest'
+    image: 'gitlab/gitlab-runner:alpine3.16-v16.6.0'
     # Always restart the container if it stops
     restart: always
     # The services this service depends on

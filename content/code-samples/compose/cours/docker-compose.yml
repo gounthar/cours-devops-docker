@@ -1,0 +1,77 @@
+# Ceci est un fichier Docker Compose pour un projet qui comprend plusieurs services.
+
+# 'x-slides-base' est une ancre YAML qui définit une configuration commune pour plusieurs services.
+x-slides-base: &slides-base
+  # La configuration de construction pour l'image Docker.
+  build:
+    # Le contexte de construction est le répertoire courant.
+    context: ./
+    args:
+      # Active la fonction de mise en cache en ligne de Docker BuildKit.
+      BUILDKIT_INLINE_CACHE: 1
+  # Variables d'environnement pour le conteneur Docker.
+  environment:
+    - PRESENTATION_URL=${PRESENTATION_URL}
+    - REPOSITORY_URL=${REPOSITORY_URL}
+  # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
+  user: ${CURRENT_UID}
+  # Un montage tmpfs pour des opérations d'E/S plus rapides.
+  tmpfs:
+    - ${BUILD_DIR}
+  # Volumes pour le conteneur Docker.
+  volumes:
+    - ./content:/app/content
+    - ./assets:/app/assets
+    - ${DIST_DIR}:/app/dist
+    - ./gulp/gulpfile.js:/app/gulpfile.js
+    - ./gulp/tasks:/app/tasks
+    - ./npm-packages:/app/npm-packages
+
+# Les services qui composent l'application.
+services:
+  # Le service 'serve'.
+  serve:
+    # Utilise la configuration commune définie par l'ancre 'x-slides-base'.
+    <<: *slides-base
+    # Expose le port 8000 du conteneur à l'hôte.
+    ports:
+      - "8000:8000"
+
+  # Le service 'build'.
+  build:
+    <<: *slides-base
+    # Ce service dépend du service 'qrcode'.
+    depends_on:
+      qrcode:
+        # Le service 'qrcode' doit se terminer avec succès avant que ce service ne démarre.
+        condition: service_completed_successfully
+    # Le point d'entrée pour le conteneur Docker.
+    entrypoint: >
+      sh -xc 'gulp build && cp -r "${BUILD_DIR}"/* /app/dist/'
+
+  # Le service 'qrcode'.
+  qrcode:
+    <<: *slides-base
+    # Le point d'entrée pour le conteneur Docker.
+    entrypoint: /app/node_modules/.bin/qrcode
+    # La commande à exécuter dans le conteneur Docker.
+    command: >
+      -t png -o /app/content/media/qrcode.png ${PRESENTATION_URL}
+
+  # Le service 'pdf'.
+  pdf:
+    # L'image Docker pour ce service.
+    image: ghcr.io/astefanutti/decktape:3.7.0
+    # Ce service dépend du service 'build'.
+    depends_on:
+      build:
+        # Le service 'build' doit se terminer avec succès avant que ce service ne démarre.
+        condition: service_completed_successfully
+    # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
+    user: ${CURRENT_UID}
+    # Volumes pour le conteneur Docker.
+    volumes:
+      - ${DIST_DIR}:/slides
+    # La commande à exécuter dans le conteneur Docker.
+    command: >
+      /slides/index.html /slides/slides.pdf --size='1024x768' --pause 0

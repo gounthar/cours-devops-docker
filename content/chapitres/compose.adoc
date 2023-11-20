@@ -936,15 +936,23 @@ image::sign-up-restrictions.png[]
 
 [%auto-animate]
 == 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
-- Pour utiliser le runner GitLab dans GitLab, vous devez le configurer.
+
+Pour utiliser le runner GitLab dans GitLab, vous devez le configurer.
 [%step]
 - Pour une configuration correcte, nous aurons besoin d'un jeton copié depuis le portail.
+[%step]
 - Pire que ça, pas un jeton, mais carrément une commande à adapter à `docker compose`.
+[%step]
 - Pour ce faire, allez à l'adresse : http://localhost/admin/runners et cliquez sur le bouton "New instance runner".
+[%step]
 - Choisissez "Linux".
+[%step]
 - "Run untagged jobs"
+[%step]
 - Donnez une description au runner.
+[%step]
 - Cliquez sur le bouton "Create runner"
+[%step]
 - Vous avez ensuite une commande à copier et modifier pour `docker compose`.
 
 
@@ -977,6 +985,11 @@ Runner registered successfully. Feel free to start it, but if it's running alrea
 
 Configuration (with the authentication token) was saved in "/etc/gitlab-runner/config.toml"
 ----
+
+[%auto-animate]
+== !
+
+image::gitlab-runners-compose.png[background, size=cover]
 
 [%auto-animate]
 == 👤 Profils dans Docker Compose 🐙
@@ -1085,26 +1098,204 @@ Ne relevons que les points importants:
 [%step]
 [source,yaml]
 ----
-  # Le service maven est un agent Jenkins avec Maven et le JDK installés.
-  maven:
-    build: dockerfiles/maven/.  # Le Dockerfile pour construire l'image du service Maven.
-    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
-    profiles:
-      - maven  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
-    depends_on:  # Les services dont ce service dépend.
-      sidekick_service:
-        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
-      jenkins_controller:
-        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
-    healthcheck:  # La commande de vérification de santé pour le service.
-      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
-      interval: 5s  # Le temps entre les vérifications de santé.
-      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
-      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
-    volumes:
-      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
+include::../code-samples/compose/jenkins-docker-compose.yml[lines=51..68]
 ----
 
+[%auto-animate]
+== 🔨🔥 Une autre forge, ça vous dit? 😐
+Maven
+[source,dockerfile]
+----
+include::../code-samples/compose/GSoC/maven/Dockerfile[]
+----
+
+[%auto-animate]
+== 🔨🔥 Une autre forge, ça vous dit? 😐
+Python
+[source,yaml]
+----
+include::../code-samples/compose/jenkins-docker-compose.yml[lines=70..87]
+----
+
+[%auto-animate]
+== 🔨🔥 Une autre forge, ça vous dit? 😐
+
+[source,dockerfile]
+----
+include::../code-samples/compose/GSoC/python/Dockerfile[]
+----
+
+[%auto-animate]
+== 🔨🔥 Une autre forge, ça vous dit? 😐
+À vous maintenant!
+
+[source,bash]
+----
+git clone https://github.com/ash-sxn/GSoC-2023-docker-based-quickstart.git
+----
+[%step]
+À vous de modifier les sources de façon à passer par le cache ILI
+[%step]
+Ensuite, ne restera qu'à lancer la "forge":
+[%step]
+[source,bash]
+----
+docker-compose up --build -d --force-recreate maven
+----
+[%step]
+Ou encore si vous voulez tout construire localement:
+[%step]
+[source,bash]
+----
+docker-compose -f build-docker-compose.yaml up --build -d --force-recreate maven
+----
+
+
+[%auto-animate]
+== !
+
+image::jenkins-compose.png[background, size=cover]
+
+[%auto-animate]
 == Autre étude de cas 📚🔍
 
 Et pourquoi pas s'attaquer au docker-compose qui a généré ce cours ?
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+Et pourquoi pas s'attaquer au docker-compose qui a généré ce cours ?
+
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[]
+----
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+Et pourquoi pas s'attaquer au docker-compose qui a généré ce cours ?
+[%step]
+Indigeste? 😨
+[%step]
+Ne relevons que les points importants:
+
+[%step]
+Les ancres...
+[%step]
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=1..28]
+----
+
+[%auto-animate]
+== ➡️🔄 Les ancres dans `docker compose` ⚓
+
+Docker Compose permet de définir et de gérer plusieurs services Docker dans un seul fichier YAML.
+[%step]
+- Les ancres (`&`) et les alias (`*`) sont des fonctionnalités YAML qui peuvent être utilisées dans Docker Compose pour réutiliser des configurations.
+- Une ancre est une référence à un objet ou à une valeur dans un fichier YAML.
+Elle est définie en utilisant l'opérateur `&` suivi d'un nom unique.
+
+[%step]
+[source,yaml]
+----
+x-slides-base: &slides-base
+  build:
+    context: ./
+----
+[%step]
+Dans cet exemple, `x-slides-base` est une ancre qui représente un objet avec une clé `build`.
+
+[%auto-animate]
+== ➡️🔄 Les ancres dans `docker compose` ⚓
+
+Les ancres peuvent être référencées ailleurs dans le fichier YAML en utilisant l'opérateur `*`.
+[%step]
+[source,yaml]
+----
+services:
+  serve:
+    <<: *slides-base
+----
+[%step]
+- Les ancres permettent de réutiliser des configurations, ce qui rend le fichier Docker Compose plus lisible et plus facile à maintenir.
+- Si vous devez modifier une configuration qui est utilisée à plusieurs endroits, vous pouvez simplement modifier l'ancre.
+- En conclusion, les ancres et les alias sont des outils puissants pour gérer des configurations complexes dans Docker Compose. Ils permettent de réduire la duplication et d'améliorer la lisibilité de votre fichier Docker Compose.
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+Le fameux qrcode...
+[%step]
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=52..59]
+----
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+Le service qui construit les slides à partir d'`asciidoc` avec `reveal.js`.
+[%step]
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=40..50]
+----
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+Le service qui construit les slides à partir d'`asciidoc` avec `reveal.js`.
+[%step]
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=32..38]
+----
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+Le service qui construit le pdf à partir des slides.
+[%step]
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=61..77]
+----
+
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+Pour rappel, l'ancre contenait :
+[%step]
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=3..28]
+----
+
+[%auto-animate]
+[.columns]
+== ➡️🔄 Build quoi? 🛠️📦
+[.column]
+--
+[%step]
+- Docker BuildKit est un outil de construction de Docker qui apporte de nombreuses améliorations par rapport à l'ancien système de construction.
+- L'une de ces améliorations est la mise en cache en ligne.
+- La mise en cache en ligne est une fonctionnalité de Docker BuildKit qui permet de réutiliser les couches de cache existantes lors de la construction d'une image Docker.
+
+[%step]
+image::multi-layered-cake-removebg-preview.png[height=100px]
+--
+[.column.is-one-third]
+--
+[%step]
+Elle est activée en définissant l'argument `BUILDKIT_INLINE_CACHE` à `1`.
+
+[%step]
+[source,yaml]
+----
+args:
+  BUILDKIT_INLINE_CACHE: 1
+----
+--
