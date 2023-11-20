@@ -936,11 +936,47 @@ image::sign-up-restrictions.png[]
 
 [%auto-animate]
 == 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
-Pour utiliser le runner GitLab dans GitLab, vous devez le configurer.
+- Pour utiliser le runner GitLab dans GitLab, vous devez le configurer.
 [%step]
-Pour une configuration correcte, nous aurons besoin d'un jeton copié depuis le portail.
-[%step]
-Pour ce faire, allez à l'adresse : http://localhost/admin/runners et cliquez sur le bouton "Copier le jeton".
+- Pour une configuration correcte, nous aurons besoin d'un jeton copié depuis le portail.
+- Pire que ça, pas un jeton, mais carrément une commande à adapter à `docker compose`.
+- Pour ce faire, allez à l'adresse : http://localhost/admin/runners et cliquez sur le bouton "New instance runner".
+- Choisissez "Linux".
+- "Run untagged jobs"
+- Donnez une description au runner.
+- Cliquez sur le bouton "Create runner"
+- Vous avez ensuite une commande à copier et modifier pour `docker compose`.
+
+
+[%auto-animate]
+[%notitle,background-iframe="https://www.youtube.com/embed/S-npLuur6KM?rel=0&start=0&enablejsapi=1&autoplay=1&loop=1&controls=1&modestbranding=1"]
+== 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
+
+[.notes]
+--
+https://youtu.be/S-npLuur6KM
+--
+
+[%auto-animate]
+== 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
+
+[source,bash]
+----
+docker compose -f tp12-bis.yml exec gitlab-runner-1 gitlab-runner register --url http://gitlab  --token glrt-PF5rLbUKzku5g8BL2y7J
+Runtime platform                                    arch=amd64 os=linux pid=103 revision=853330f9 version=16.5.0
+Running in system-mode.
+
+Enter the GitLab instance URL (for example, https://gitlab.com/):
+[http://gitlab]:
+Verifying runner... is valid                        runner=PF5rLbUKz
+Enter a name for the runner. This is stored only in the local config.toml file:
+[3c2ee0d97d2b]: runner 1
+Enter an executor: parallels, docker-autoscaler, docker+machine, custom, docker, docker-windows, shell, ssh, virtualbox, instance, kubernetes:
+shell
+Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
+
+Configuration (with the authentication token) was saved in "/etc/gitlab-runner/config.toml"
+----
 
 [%auto-animate]
 == 👤 Profils dans Docker Compose 🐙
@@ -1068,3 +1104,7 @@ Ne relevons que les points importants:
     volumes:
       - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
 ----
+
+== Autre étude de cas 📚🔍
+
+Et pourquoi pas s'attaquer au docker-compose qui a généré ce cours ?

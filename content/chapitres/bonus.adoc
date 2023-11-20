@@ -303,15 +303,17 @@ On sait que `docker load `est la solution pour commencer
 
 A l'aide !
 
-[%auto-animate]
-== Conseils pour l'eval'
-
-image::final answer.png[]
+== 🐳😴 Lazy Docker
 
 [%auto-animate]
 == Conseils pour l'eval'
 
-image::dont panic.png[]
+image::final answer.png[height=500px]
+
+[%auto-animate]
+== Conseils pour l'eval'
+
+image::dont panic.png[height=500px]
 
 == Vous devez avoir les compétences suivantes:
 
@@ -341,6 +343,6 @@ https://docs.docker.com/engine/reference/builder/
 
 https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
 
-== one more thing
+== 🤔👉 One more thing
 
-image::415439355-image7.png[]
+image::415439355-image7.png[height=500px]

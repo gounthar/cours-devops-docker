@@ -60,4 +60,6 @@ volumes:
   gitlab_logs:           # Volume for GitLab server log files
   gitlab_data:           # Volume for GitLab server data files
   gitlab-runner-1-config: # Volume for GitLab runner 1 configuration files
+    name: gitlab-runner-1-config
   gitlab-runner-2-config: # Volume for GitLab runner 2 configuration files
+    name: gitlab-runner-2-config
