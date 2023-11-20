@@ -2550,7 +2550,7 @@ services:
   # The GitLab server service
   gitlab:
     # The Docker image to use for the GitLab server
-    image: 'gitlab/gitlab-ce:latest'
+    image: 'gitlab/gitlab-ce:16.6.0-ce.0'
     # Always restart the container if it stops
     restart: always
     # The hostname for the GitLab server
@@ -2575,7 +2575,7 @@ services:
   # The first GitLab runner service
   gitlab-runner-1:
     # The Docker image to use for the GitLab runner
-    image: 'gitlab/gitlab-runner:latest'
+    image: 'gitlab/gitlab-runner:alpine3.16-v16.6.0'
     # Always restart the container if it stops
     restart: always
     # The services this service depends on
@@ -2589,7 +2589,7 @@ services:
   # The second GitLab runner service
   gitlab-runner-2:
     # The Docker image to use for the GitLab runner
-    image: 'gitlab/gitlab-runner:latest'
+    image: 'gitlab/gitlab-runner:alpine3.16-v16.6.0'
     # Always restart the container if it stops
     restart: always
     # The services this service depends on
@@ -2615,7 +2615,8 @@ volumes:
 password
 Password: qaPxXU+RqioolV3bAljvs2VYnyYa4jO/UYcis/UXLAk=</code></pre></div></div>
 <div class="paragraph fragment"><p>Ensuite, il va falloir restreindre l&#8217;accès:</p></div>
-<div class="imageblock fragment"><img src="media/sign-up-restrictions.png" alt="sign up restrictions"></div></div></div></div></section><section id="jai_ma_forge_bon_et_maintenant_4" data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="ulist"><ul><li><p>Pour utiliser le runner GitLab dans GitLab, vous devez le configurer.</p></li><li><p>Pour une configuration correcte, nous aurons besoin d&#8217;un jeton copié depuis le portail.</p></li><li><p>Pire que ça, pas un jeton, mais carrément une commande à adapter à <code>docker compose</code>.</p></li><li><p>Pour ce faire, allez à l&#8217;adresse : <a href="http://localhost/admin/runners" class="bare">http://localhost/admin/runners</a> et cliquez sur le bouton "New instance runner".</p></li><li><p>Choisissez "Linux".</p></li><li><p>"Run untagged jobs"</p></li><li><p>Donnez une description au runner.</p></li><li><p>Cliquez sur le bouton "Create runner"</p></li><li><p>Vous avez ensuite une commande à copier et modifier pour <code>docker compose</code>.</p></li></ul></div></div></section><section id="jai_ma_forge_bon_et_maintenant_5" data-background-iframe="https://www.youtube.com/embed/S-npLuur6KM?rel=0&start=0&enablejsapi=1&autoplay=1&loop=1&controls=1&modestbranding=1" data-auto-animate><div class="slide-content"><aside class="notes"><div class="paragraph"><p><a href="https://youtu.be/S-npLuur6KM" class="bare">https://youtu.be/S-npLuur6KM</a></p></div></aside></div></section><section id="jai_ma_forge_bon_et_maintenant_6" data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose -f tp12-bis.yml exec gitlab-runner-1 gitlab-runner register --url http://gitlab  --token glrt-PF5rLbUKzku5g8BL2y7J
+<div class="imageblock fragment"><img src="media/sign-up-restrictions.png" alt="sign up restrictions"></div></div></div></div></section><section id="jai_ma_forge_bon_et_maintenant_4" data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="paragraph"><p>Pour utiliser le runner GitLab dans GitLab, vous devez le configurer.</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Pour une configuration correcte, nous aurons besoin d&#8217;un jeton copié depuis le portail.</p></li><li class="fragment"><p>Pire que ça, pas un jeton, mais carrément une commande à adapter à <code>docker compose</code>.</p></li><li class="fragment"><p>Pour ce faire, allez à l&#8217;adresse : <a href="http://localhost/admin/runners" class="bare">http://localhost/admin/runners</a> et cliquez sur le bouton "New instance runner".</p></li><li class="fragment"><p>Choisissez "Linux".</p></li><li class="fragment"><p>"Run untagged jobs"</p></li><li class="fragment"><p>Donnez une description au runner.</p></li><li class="fragment"><p>Cliquez sur le bouton "Create runner"</p></li><li class="fragment"><p>Vous avez ensuite une commande à copier et modifier pour <code>docker compose</code>.</p></li></ul></div></div></section><section id="jai_ma_forge_bon_et_maintenant_5" data-background-iframe="https://www.youtube.com/embed/S-npLuur6KM?rel=0&start=0&enablejsapi=1&autoplay=1&loop=1&controls=1&modestbranding=1" data-auto-animate><div class="slide-content"><aside class="notes"><div class="paragraph"><p><a href="https://youtu.be/S-npLuur6KM" class="bare">https://youtu.be/S-npLuur6KM</a></p></div></aside></div></section><section id="jai_ma_forge_bon_et_maintenant_6" data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose -f tp12-bis.yml exec gitlab-runner-1 gitlab-runner register --url http://gitlab  --token glrt-PF5rLbUKzku5g8BL2y7J
 Runtime platform                                    arch=amd64 os=linux pid=103 revision=853330f9 version=16.5.0
 Running in system-mode.
 
@@ -2628,7 +2629,7 @@ Enter an executor: parallels, docker-autoscaler, docker+machine, custom, docker,
 shell
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
 
-Configuration (with the authentication token) was saved in "/etc/gitlab-runner/config.toml"</code></pre></div></div></div></section><section id="profils_dans_docker_compose" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="paragraph"><p>On a vu déjà l&#8217;instruction <code>depends_on</code> dans un fichier Docker Compose.</p></div>
+Configuration (with the authentication token) was saved in "/etc/gitlab-runner/config.toml"</code></pre></div></div></div></section><section data-background-image="media/gitlab-runners-compose.png" data-background-size="cover" data-auto-animate></section><section id="profils_dans_docker_compose" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="paragraph"><p>On a vu déjà l&#8217;instruction <code>depends_on</code> dans un fichier Docker Compose.</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Elle permet de définir des dépendances entre les services.</p></li><li class="fragment"><p>Mais que faire si on veut définir un lot de services qui fonctionnent ensemble, sans pour autant être en interdépendance ?</p></li><li class="fragment"><p>Les profils dans Docker Compose permettent de définir des groupes de services qui peuvent être activés ou désactivés ensemble.</p></li><li class="fragment"><p>Cela peut être utile pour gérer des environnements de développement, de test et de production différents dans le même fichier Docker Compose.</p></li><li class="fragment"><p>Pour définir un profil pour un service, vous pouvez ajouter la clé <code>profiles</code> à la définition du service dans votre fichier Docker Compose.</p></li></ul></div></div></section><section id="profils_dans_docker_compose_2" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="paragraph"><p>Par exemple :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   mon_service:
@@ -2817,7 +2818,7 @@ volumes:
   agent-ssh-dir:  # Un volume pour stocker les clés SSH.
     name: agent-ssh-dir  # Le nom du volume.</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_2"><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph"><p>Indigeste? 😨</p></div>
 <div class="paragraph fragment"><p>Ne relevons que les points importants:</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service maven est un agent Jenkins avec Maven et le JDK installés.
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service maven est un agent Jenkins avec Maven installé.
   maven:
     build: dockerfiles/maven/.  # Le Dockerfile pour construire l'image du service Maven.
     container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
@@ -2834,7 +2835,268 @@ volumes:
       timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
       retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
     volumes:
-      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.</code></pre></div></div></div></section><section id="autre_étude_de_cas"><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker-compose qui a généré ce cours ?</p></div></div></section></section>
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_3" data-auto-animate><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph"><p>Maven</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM jenkins/ssh-agent:5.12.0-jdk17 as ssh-agent
+
+# ca-certificates because curl will need it later on for the maven installation
+RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends ca-certificates curl &amp;&amp; apt-get clean &amp;&amp; \
+  rm -rf /var/lib/apt/lists/*
+
+# Now time to install maven
+ARG MAVEN_VERSION=3.9.2
+
+# Set SHELL flags for RUN commands to allow -e and pipefail
+# Rationale:https://github.com/hadolint/hadolint/wiki/DL4006
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+# Add a checksum for the maven binary
+RUN curl -sS -L -O --output-dir /tmp/ --create-dirs  https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
+    &amp;&amp; printf "%s" "$(sha512sum /tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz)" | sha512sum -c - \
+    &amp;&amp; curl -sS -L -O --output-dir /tmp/ --create-dirs  https://downloads.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz.sha512 \
+    &amp;&amp; printf "%s /tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" "$(cat /tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz.sha512)" | sha512sum --check --status - \
+    &amp;&amp; tar xzf "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" -C /opt/ \
+    &amp;&amp; rm "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
+    &amp;&amp; ln -s /opt/apache-maven-${MAVEN_VERSION} /opt/maven \
+    &amp;&amp; ln -s /opt/maven/bin/mvn /usr/bin/mvn \
+    &amp;&amp; mkdir -p /etc/profile.d \
+    &amp;&amp; echo "export JAVA_HOME=$JAVA_HOME \n \
+             export M2_HOME=/opt/maven \n \
+             export PATH=${M2_HOME}/bin:${PATH}" &gt; /etc/profile.d/maven.sh
+ENV M2_HOME="/opt/maven"
+ENV PATH="${M2_HOME}/bin/:${PATH}"
+RUN echo "PATH=${PATH}" &gt;&gt; /etc/environment &amp;&amp; chown -R jenkins:jenkins "${JENKINS_AGENT_HOME}"</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_4" data-auto-animate><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph"><p>Python</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service python est un agent Jenkins avec Python installé.
+  python:
+    build: dockerfiles/python/.  # Le Dockerfile pour construire l'image du service Python.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    profiles:
+      - python  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      jenkins_controller:
+        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_5" data-auto-animate><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Use the base image
+FROM jenkins/ssh-agent:5.12.0-jdk17 as ssh-agent
+
+# Install necessary Dependencies
+RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends \
+    binutils ca-certificates curl git python3 python3-pip python3-setuptools python3-wheel python3-dev wget
+
+# Create an alias for python3 as python
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+# Install required python packages
+RUN pip install docker-py feedparser nosexcover prometheus_client pycobertura pylint pytest pytest-cov requests setuptools sphinx pyinstaller
+
+# Add the Jenkins agent user to the environment
+RUN echo "PATH=${PATH}" &gt;&gt; /etc/environment
+
+# Set ownership for Jenkins agent home directory
+RUN chown -R jenkins:jenkins "${JENKINS_AGENT_HOME}"</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_6" data-auto-animate><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph"><p>À vous maintenant!</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">git clone https://github.com/ash-sxn/GSoC-2023-docker-based-quickstart.git</code></pre></div></div>
+<div class="paragraph fragment"><p>À vous de modifier les sources de façon à passer par le cache ILI</p></div>
+<div class="paragraph fragment"><p>Ensuite, ne restera qu&#8217;à lancer la "forge":</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker-compose up --build -d --force-recreate maven</code></pre></div></div>
+<div class="paragraph fragment"><p>Ou encore si vous voulez tout construire localement:</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker-compose -f build-docker-compose.yaml up --build -d --force-recreate maven</code></pre></div></div></div></section><section data-background-image="media/jenkins-compose.png" data-background-size="cover" data-auto-animate></section><section id="autre_étude_de_cas" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker-compose qui a généré ce cours ?</p></div></div></section><section id="autre_étude_de_cas_2" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker-compose qui a généré ce cours ?</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># Ceci est un fichier Docker Compose pour un projet qui comprend plusieurs services.
+
+# 'x-slides-base' est une ancre YAML qui définit une configuration commune pour plusieurs services.
+x-slides-base: &amp;slides-base
+  # La configuration de construction pour l'image Docker.
+  build:
+    # Le contexte de construction est le répertoire courant.
+    context: ./
+    args:
+      # Active la fonction de mise en cache en ligne de Docker BuildKit.
+      BUILDKIT_INLINE_CACHE: 1
+  # Variables d'environnement pour le conteneur Docker.
+  environment:
+    - PRESENTATION_URL=${PRESENTATION_URL}
+    - REPOSITORY_URL=${REPOSITORY_URL}
+  # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
+  user: ${CURRENT_UID}
+  # Un montage tmpfs pour des opérations d'E/S plus rapides.
+  tmpfs:
+    - ${BUILD_DIR}
+  # Volumes pour le conteneur Docker.
+  volumes:
+    - ./content:/app/content
+    - ./assets:/app/assets
+    - ${DIST_DIR}:/app/dist
+    - ./gulp/gulpfile.js:/app/gulpfile.js
+    - ./gulp/tasks:/app/tasks
+    - ./npm-packages:/app/npm-packages
+
+# Les services qui composent l'application.
+services:
+  # Le service 'serve'.
+  serve:
+    # Utilise la configuration commune définie par l'ancre 'x-slides-base'.
+    &lt;&lt;: *slides-base
+    # Expose le port 8000 du conteneur à l'hôte.
+    ports:
+      - "8000:8000"
+
+  # Le service 'build'.
+  build:
+    &lt;&lt;: *slides-base
+    # Ce service dépend du service 'qrcode'.
+    depends_on:
+      qrcode:
+        # Le service 'qrcode' doit se terminer avec succès avant que ce service ne démarre.
+        condition: service_completed_successfully
+    # Le point d'entrée pour le conteneur Docker.
+    entrypoint: &gt;
+      sh -xc 'gulp build &amp;&amp; cp -r "${BUILD_DIR}"/* /app/dist/'
+
+  # Le service 'qrcode'.
+  qrcode:
+    &lt;&lt;: *slides-base
+    # Le point d'entrée pour le conteneur Docker.
+    entrypoint: /app/node_modules/.bin/qrcode
+    # La commande à exécuter dans le conteneur Docker.
+    command: &gt;
+      -t png -o /app/content/media/qrcode.png ${PRESENTATION_URL}
+
+  # Le service 'pdf'.
+  pdf:
+    # L'image Docker pour ce service.
+    image: ghcr.io/astefanutti/decktape:3.7.0
+    # Ce service dépend du service 'build'.
+    depends_on:
+      build:
+        # Le service 'build' doit se terminer avec succès avant que ce service ne démarre.
+        condition: service_completed_successfully
+    # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
+    user: ${CURRENT_UID}
+    # Volumes pour le conteneur Docker.
+    volumes:
+      - ${DIST_DIR}:/slides
+    # La commande à exécuter dans le conteneur Docker.
+    command: &gt;
+      /slides/index.html /slides/slides.pdf --size='1024x768' --pause 0</code></pre></div></div></div></section><section id="autre_étude_de_cas_3" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker-compose qui a généré ce cours ?</p></div>
+<div class="paragraph fragment"><p>Indigeste? 😨</p></div>
+<div class="paragraph fragment"><p>Ne relevons que les points importants:</p></div>
+<div class="paragraph fragment"><p>Les ancres&#8230;&#8203;</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># Ceci est un fichier Docker Compose pour un projet qui comprend plusieurs services.
+
+# 'x-slides-base' est une ancre YAML qui définit une configuration commune pour plusieurs services.
+x-slides-base: &amp;slides-base
+  # La configuration de construction pour l'image Docker.
+  build:
+    # Le contexte de construction est le répertoire courant.
+    context: ./
+    args:
+      # Active la fonction de mise en cache en ligne de Docker BuildKit.
+      BUILDKIT_INLINE_CACHE: 1
+  # Variables d'environnement pour le conteneur Docker.
+  environment:
+    - PRESENTATION_URL=${PRESENTATION_URL}
+    - REPOSITORY_URL=${REPOSITORY_URL}
+  # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
+  user: ${CURRENT_UID}
+  # Un montage tmpfs pour des opérations d'E/S plus rapides.
+  tmpfs:
+    - ${BUILD_DIR}
+  # Volumes pour le conteneur Docker.
+  volumes:
+    - ./content:/app/content
+    - ./assets:/app/assets
+    - ${DIST_DIR}:/app/dist
+    - ./gulp/gulpfile.js:/app/gulpfile.js
+    - ./gulp/tasks:/app/tasks
+    - ./npm-packages:/app/npm-packages</code></pre></div></div></div></section><section id="les_ancres_dans_docker_compose" data-auto-animate><h2>➡️🔄 Les ancres dans <code>docker compose</code> ⚓</h2><div class="slide-content"><div class="paragraph"><p>Docker Compose permet de définir et de gérer plusieurs services Docker dans un seul fichier YAML.</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Les ancres (<code>&amp;</code>) et les alias (<code>*</code>) sont des fonctionnalités YAML qui peuvent être utilisées dans Docker Compose pour réutiliser des configurations.</p></li><li class="fragment"><p>Une ancre est une référence à un objet ou à une valeur dans un fichier YAML.
+Elle est définie en utilisant l&#8217;opérateur <code>&amp;</code> suivi d&#8217;un nom unique.</p></li></ul></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">x-slides-base: &amp;slides-base
+  build:
+    context: ./</code></pre></div></div>
+<div class="paragraph fragment"><p>Dans cet exemple, <code>x-slides-base</code> est une ancre qui représente un objet avec une clé <code>build</code>.</p></div></div></section><section id="les_ancres_dans_docker_compose_2" data-auto-animate><h2>➡️🔄 Les ancres dans <code>docker compose</code> ⚓</h2><div class="slide-content"><div class="paragraph"><p>Les ancres peuvent être référencées ailleurs dans le fichier YAML en utilisant l&#8217;opérateur <code>*</code>.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  serve:
+    &lt;&lt;: *slides-base</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Les ancres permettent de réutiliser des configurations, ce qui rend le fichier Docker Compose plus lisible et plus facile à maintenir.</p></li><li class="fragment"><p>Si vous devez modifier une configuration qui est utilisée à plusieurs endroits, vous pouvez simplement modifier l&#8217;ancre.</p></li><li class="fragment"><p>En conclusion, les ancres et les alias sont des outils puissants pour gérer des configurations complexes dans Docker Compose. Ils permettent de réduire la duplication et d&#8217;améliorer la lisibilité de votre fichier Docker Compose.</p></li></ul></div></div></section><section id="autre_étude_de_cas_4" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Le fameux qrcode&#8230;&#8203;</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service 'qrcode'.
+  qrcode:
+    &lt;&lt;: *slides-base
+    # Le point d'entrée pour le conteneur Docker.
+    entrypoint: /app/node_modules/.bin/qrcode
+    # La commande à exécuter dans le conteneur Docker.
+    command: &gt;
+      -t png -o /app/content/media/qrcode.png ${PRESENTATION_URL}</code></pre></div></div></div></section><section id="autre_étude_de_cas_5" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Le service qui construit les slides à partir d'`asciidoc` avec <code>reveal.js</code>.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service 'build'.
+  build:
+    &lt;&lt;: *slides-base
+    # Ce service dépend du service 'qrcode'.
+    depends_on:
+      qrcode:
+        # Le service 'qrcode' doit se terminer avec succès avant que ce service ne démarre.
+        condition: service_completed_successfully
+    # Le point d'entrée pour le conteneur Docker.
+    entrypoint: &gt;
+      sh -xc 'gulp build &amp;&amp; cp -r "${BUILD_DIR}"/* /app/dist/'</code></pre></div></div></div></section><section id="autre_étude_de_cas_6" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Le service qui construit les slides à partir d'`asciidoc` avec <code>reveal.js</code>.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service 'serve'.
+  serve:
+    # Utilise la configuration commune définie par l'ancre 'x-slides-base'.
+    &lt;&lt;: *slides-base
+    # Expose le port 8000 du conteneur à l'hôte.
+    ports:
+      - "8000:8000"</code></pre></div></div></div></section><section id="autre_étude_de_cas_7" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Le service qui construit le pdf à partir des slides.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service 'pdf'.
+  pdf:
+    # L'image Docker pour ce service.
+    image: ghcr.io/astefanutti/decktape:3.7.0
+    # Ce service dépend du service 'build'.
+    depends_on:
+      build:
+        # Le service 'build' doit se terminer avec succès avant que ce service ne démarre.
+        condition: service_completed_successfully
+    # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
+    user: ${CURRENT_UID}
+    # Volumes pour le conteneur Docker.
+    volumes:
+      - ${DIST_DIR}:/slides
+    # La commande à exécuter dans le conteneur Docker.
+    command: &gt;
+      /slides/index.html /slides/slides.pdf --size='1024x768' --pause 0</code></pre></div></div></div></section><section id="autre_étude_de_cas_8" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Pour rappel, l&#8217;ancre contenait :</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># 'x-slides-base' est une ancre YAML qui définit une configuration commune pour plusieurs services.
+x-slides-base: &amp;slides-base
+  # La configuration de construction pour l'image Docker.
+  build:
+    # Le contexte de construction est le répertoire courant.
+    context: ./
+    args:
+      # Active la fonction de mise en cache en ligne de Docker BuildKit.
+      BUILDKIT_INLINE_CACHE: 1
+  # Variables d'environnement pour le conteneur Docker.
+  environment:
+    - PRESENTATION_URL=${PRESENTATION_URL}
+    - REPOSITORY_URL=${REPOSITORY_URL}
+  # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
+  user: ${CURRENT_UID}
+  # Un montage tmpfs pour des opérations d'E/S plus rapides.
+  tmpfs:
+    - ${BUILD_DIR}
+  # Volumes pour le conteneur Docker.
+  volumes:
+    - ./content:/app/content
+    - ./assets:/app/assets
+    - ${DIST_DIR}:/app/dist
+    - ./gulp/gulpfile.js:/app/gulpfile.js
+    - ./gulp/tasks:/app/tasks
+    - ./npm-packages:/app/npm-packages</code></pre></div></div></div></section><section id="build_quoi" class="columns" data-auto-animate><h2>➡️🔄 Build quoi? 🛠️📦</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="ulist"><ul><li class="fragment"><p>Docker BuildKit est un outil de construction de Docker qui apporte de nombreuses améliorations par rapport à l&#8217;ancien système de construction.</p></li><li class="fragment"><p>L&#8217;une de ces améliorations est la mise en cache en ligne.</p></li><li class="fragment"><p>La mise en cache en ligne est une fonctionnalité de Docker BuildKit qui permet de réutiliser les couches de cache existantes lors de la construction d&#8217;une image Docker.</p></li></ul></div>
+<div class="imageblock fragment"><img src="media/multi-layered-cake-removebg-preview.png" alt="multi layered cake removebg preview" height="100px"></div></div></div>
+<div class="openblock column is-one-third"><div class="content"><div class="paragraph fragment"><p>Elle est activée en définissant l&#8217;argument <code>BUILDKIT_INLINE_CACHE</code> à <code>1</code>.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">args:
+  BUILDKIT_INLINE_CACHE: 1</code></pre></div></div></div></div></div></section></section>
 <section><section id="bonus"><h2>Bonus</h2></section><section id="les_petits_plus"><h2>Les petits plus</h2><div class="slide-content"><div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
 <div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
 <div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
