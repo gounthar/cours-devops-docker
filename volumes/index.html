@@ -2611,8 +2611,7 @@ volumes:
     name: gitlab-runner-2-config</code></pre></div></div></div></section><section id="jai_ma_forge_bon_et_maintenant" class="columns" data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="imageblock column"><img src="media/when.png" alt="when" height="500px"></div>
 <div class="videoblock column"><video src="media/gitlab-logs.speed.very.small.mp4" width="100%" height="loop" data-autoplay controls>Your browser does not support the video tag.</video></div></div></section><section id="jai_ma_forge_bon_et_maintenant_2" class="intellij background" data-background-video="media/2000_years_later.mp4" data-background-video-loop data-background-video-muted data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="paragraph"><p>Il va falloir se logguer, lier les runners au serveur, créer un projet, etc&#8230;&#8203;</p></div></div></section><section id="jai_ma_forge_bon_et_maintenant_3" class="columns" data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="imageblock column"><img src="media/gitlab-login.png" alt="gitlab login" height="500px"></div>
 <div class="openblock column"><div class="content"><div class="paragraph"><p>Pour trouver le mot de passe, il va falloir le demander gentiment à Gitlab:</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose -f tp12-bis.yml exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_
-password
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose -f tp12-bis.yml exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password
 Password: qaPxXU+RqioolV3bAljvs2VYnyYa4jO/UYcis/UXLAk=</code></pre></div></div>
 <div class="paragraph fragment"><p>Ensuite, il va falloir restreindre l&#8217;accès:</p></div>
 <div class="imageblock fragment"><img src="media/sign-up-restrictions.png" alt="sign up restrictions"></div></div></div></div></section><section id="jai_ma_forge_bon_et_maintenant_4" data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="paragraph"><p>Pour utiliser le runner GitLab dans GitLab, vous devez le configurer.</p></div>
@@ -3412,14 +3411,98 @@ nginx</pre></div></div>
 <div class="paragraph"><p>Lancer une stack ELK grâce aux fichiers fournis dans le repo <a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp13" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp13</a></p></div>
 <div class="paragraph"><p>Alimenter en logs avec la commande <code>docker run --log-driver=gelf --log-opt gelf-address=udp://localhost:12201 alpine bash -c 'seq 1 100'</code></p></div>
 <div class="paragraph"><p>Créer un index "timestamp" sur Kibana puis aller à l&#8217;écran "discover"</p></div>
-<div class="paragraph"><p>Lancer un conteneur nginx et concentrez ses logs dans ELK</p></div></div></section><section id="idées"><h2>iDées</h2><div class="slide-content"><div class="paragraph"><p>dependabot gitlab
+<div class="paragraph"><p>Lancer un conteneur nginx et concentrez ses logs dans ELK</p></div></div></section><section id="gitlab_et_dependabot" class="columns"><h2>GitLab et Dependabot</h2><div class="slide-content"><div class="imageblock column"><img src="https://about.gitlab.com/images/press/press-kit-icon.svg" alt="press kit icon" height="200px"></div>
+<div class="imageblock column"><img src="https://avatars.githubusercontent.com/u/27347476?s=200&v=4" alt="27347476?s=200&amp;v=4" height="200px"></div></div></section><section id="quest_ce_que_dependabot"><h2>🤔 Qu&#8217;est-ce que Dependabot ?</h2><div class="slide-content"><div class="paragraph"><p>Dependabot est un outil qui vous aide à maintenir vos dépendances à jour.</p></div>
+<div class="imageblock"><img src="https://avatars.githubusercontent.com/u/27347476?s=200&v=4" alt="27347476?s=200&amp;v=4"></div>
+<div class="paragraph fragment"><p>Il ouvre automatiquement des merge requests pour les mises à jour de dépendances dans vos projets GitLab.</p></div></div></section><section id="comment_dependabot_fonctionne_t_il_avec_docker"><h2>🛠️ Comment Dependabot fonctionne-t-il avec Docker ?</h2><div class="slide-content"><div class="paragraph"><p>Dependabot peut analyser vos <code>Dockerfiles</code> et vos fichiers <code>docker-compose</code> pour trouver les dépendances qui peuvent être mises à jour.</p></div>
+<div class="paragraph fragment"><p>Il crée ensuite des merge requests pour chaque mise à jour de dépendance.</p></div></div></section><section id="pourquoi_utiliser_dependabot_avec_docker"><h2>🎯 Pourquoi utiliser Dependabot avec Docker ?</h2><div class="slide-content"><div class="olist arabic"><ol class="arabic"><li><p>Garder vos dépendances à jour est crucial pour la sécurité et la stabilité de vos applications.</p></li><li><p>Dependabot automatise ce processus, vous faisant gagner du temps et réduisant le risque d&#8217;oublier une mise à jour importante.</p></li><li><p>Dependabot n&#8217;est pas magique, il faut que votre CI soit capable de construire votre application avec les nouvelles dépendances.</p></li><li><p>Ce qui n&#8217;est pas testé ne fonctionne pas.</p></li></ol></div></div></section><section id="comment_configurer_dependabot_pour_gitlab" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="ulist"><ul><li><p>Malheureusement, il n&#8217;y a pas encore de support officiel pour GitLab dans Dependabot (et vice versa).</p></li><li><p>Notre forge Gitlab est définie dans un fichier docker-compose.yml, et Dependabot aussi.</p></li><li><p>Dependabot doit avoir accès à notre forge GitLab pour pouvoir ouvrir des merge requests.</p></li><li><p>Suivons donc <a href="https://dependabot-gitlab.gitlab.io/dependabot/guide/getting-started.html#step-2-set-up-access-tokens">la documentation officielle</a>.</p></li></ul></div></div></section><section data-background-image="media/personal-access-token.png" data-background-size="cover" data-auto-animate></section><section data-background-image="media/personal-access-token-settings.png" data-background-size="cover" data-auto-animate></section><section id="comment_configurer_dependabot_pour_gitlab_2" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Notez bien le token, vous ne le reverrez plus jamais.</td></tr></table></div>
+<div class="paragraph"><p><a href="https://dependabot-gitlab.gitlab.io/dependabot/guide/getting-started.html#step-3-start-the-app">L&#8217;étape suivante</a>, c&#8217;est de positionner les valeurs de certaines variables d&#8217;environnement.
+Ça peut être dans un <code>.env</code>, ou dans les variables d&#8217;environnement de votre machine.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">export SETTINGS__GITLAB_URL=http://localhost
+export SETTINGS__GITLAB_ACCESS_TOKEN=glpat-LXUfrxeFXuRJXNTNNifD</code></pre></div></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_3" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="paragraph"><p>Démarrez l&#8217;application avec <code>docker compose</code>:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">curl -s https://gitlab.com/dependabot-gitlab/dependabot/-/raw/v3.8.0-alpha.1/docker-compose.yml | docker compose -f - up -d</code></pre></div></div>
+<div class="imageblock fragment"><img src="media/dependabot-cant-see-gitlab.png" alt="dependabot cant see gitlab"></div>
+<div class="paragraph fragment"><p>😢</p></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_4" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="paragraph"><p>Vous vous souvenez du chapitre sur les réseaux Docker ?</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Dans Docker, chaque conteneur a son propre espace de nom réseau, ce qui signifie que localhost à l&#8217;intérieur d&#8217;un conteneur fait référence au conteneur lui-même, et non à la machine hôte ou à d&#8217;autres conteneurs.</p></li><li class="fragment"><p>Lorsque vous essayez de faire un <code>ping</code> sur <code>gitlab-instance-gitlab-1</code> depuis le conteneur web, il ne connaît pas le nom d&#8217;hôte <code>gitlab-instance-gitlab-1</code> car il n&#8217;est pas dans le même espace de nom réseau.</p></li><li class="fragment"><p>Pour permettre aux conteneurs de communiquer entre eux, ils doivent être dans le même réseau Docker.</p></li></ul></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_5" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="ulist"><ul><li><p>Lorsque vous utilisez Docker Compose, il crée automatiquement un réseau par défaut pour votre application et tout service défini dans le <code>docker-compose.yml</code> peut atteindre les autres en utilisant le nom du service comme nom d&#8217;hôte.</p></li></ul></div>
+<div class="ulist"><ul><li class="fragment"><p>Dans notre cas, le conteneur <code>web</code> et le conteneur <code>gitlab-instance-gitlab-1</code> ne sont pas dans le même réseau Docker.</p></li><li class="fragment"><p>Vous pouvez vérifier cela en inspectant les réseaux de chaque conteneur à l&#8217;aide de la commande <code>docker inspect</code>.</p></li><li class="fragment"><p>S&#8217;ils ne sont pas dans le même réseau, nous pouvons créer un réseau et ajouter les deux services à celui-ci dans notre fichier <code>docker-compose.yml</code>.</p></li></ul></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_6" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="ulist"><ul><li><p>Voici un exemple :</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre>version: '3'
+services:
+  web:
+    image: web
+    networks:
+      - mynetwork
+  gitlab-instance-gitlab-1:
+    image: gitlab
+    networks:
+      - mynetwork
+networks:
+  mynetwork:</pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Après avoir mis à jour votre fichier <code>docker-compose.yml</code>, vous devez recréer vos conteneurs pour que les modifications prennent effet.</p></li><li class="fragment"><p>Vous pouvez le faire avec la commande <code>docker-compose up -d --force-recreate</code>.</p></li><li class="fragment"><p>Après cela, vous devriez pouvoir faire un <code>ping</code> sur <code>gitlab-instance-gitlab-1</code> depuis le conteneur web.</p></li></ul></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_7" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  web:
+    image: *base_image
+    networks:
+[...]
+networks:
+  mynetwork:</code></pre></div></div>
+<div class="paragraph fragment"><p>Et&#8230;&#8203;</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  gitlab:
+    # The Docker image to use for the GitLab server
+    image: 'gitlab/gitlab-ce:16.6.0-ce.0'
+    networks:
+      - mynetwork
+[...]
+networks:
+  mynetwork:</code></pre></div></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_8" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="paragraph"><p>Sauf que&#8230;&#8203;</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">root@95def7cb933d:/home/dependabot/app# nmap -sn 172.30.0.0/16
+Starting Nmap 7.80 ( https://nmap.org ) at 2023-11-21 20:45 UTC
+Nmap scan report for 172.30.0.1
+Host is up (0.0000090s latency).
+MAC Address: 02:42:50:A6:7C:5A (Unknown)
+Nmap scan report for symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2)
+Host is up (0.000012s latency).
+MAC Address: 02:42:AC:1E:00:02 (Unknown)
+Nmap scan report for symbiosis-gitlab-runner-1-1.symbiosis_mynetwork (172.30.0.3)
+Host is up (0.000015s latency).
+MAC Address: 02:42:AC:1E:00:03 (Unknown)
+Nmap scan report for symbiosis-gitlab-runner-2-1.symbiosis_mynetwork (172.30.0.4)
+Host is up (0.000032s latency).
+MAC Address: 02:42:AC:1E:00:04 (Unknown)
+Nmap scan report for symbiosis-redis-1.symbiosis_mynetwork (172.30.0.5)
+Host is up (0.0000070s latency).
+MAC Address: 02:42:AC:1E:00:05 (Unknown)
+Nmap scan report for symbiosis-mongodb-1.symbiosis_mynetwork (172.30.0.6)
+Host is up (0.000016s latency).
+MAC Address: 02:42:AC:1E:00:06 (Unknown)
+Nmap scan report for symbiosis-docker-1.symbiosis_mynetwork (172.30.0.7)
+Host is up (0.000021s latency).
+MAC Address: 02:42:AC:1E:00:07 (Unknown)
+Nmap scan report for symbiosis-worker-1.symbiosis_mynetwork (172.30.0.9)
+Host is up (0.000024s latency).
+MAC Address: 02:42:AC:1E:00:09 (Unknown)
+Nmap scan report for 95def7cb933d (172.30.0.10)
+Host is up.</code></pre></div></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_9" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="paragraph"><p>Victoire?</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose -f docker-compose-dependabot.yml exec -it -u root web b
+ash
+root@95def7cb933d:/home/dependabot/app# ping symbiosis-gitlab-1.symbiosis_mynetwork
+PING symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2) 56(84) bytes of data.
+64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=1 ttl=64 time=0.165 ms
+64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=2 ttl=64 time=0.053 ms
+64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=3 ttl=64 time=0.039 ms
+64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=4 ttl=64 time=0.040 ms
+64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=5 ttl=64 time=0.056 ms
+^C
+--- symbiosis-gitlab-1.symbiosis_mynetwork ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4165ms
+rtt min/avg/max/mdev = 0.039/0.070/0.165/0.047 ms</code></pre></div></div>
+<div class="imageblock fragment"><img src="media/dependabot-404-gitlab.png" alt="dependabot 404 gitlab"></div>
+<div class="paragraph fragment"><p>On y est presque!</p></div>
+<aside class="notes"><div class="paragraph"><p>dependabot gitlab
 updatecli
 renovabot gitlab</p></div>
 <div class="paragraph"><p>gitlab complet docker compose
 jenkins complet docker compose
 Kube?</p></div>
 <div class="paragraph"><p>services ashutosh mix and match de conteneurs</p></div>
-<div class="paragraph"><p>build arm64, cloud et buildx</p></div></div></section><section id="debugging_docker_exec"><h2>Debugging : docker exec</h2><div class="slide-content"><div class="paragraph"><p>rappel : `docker container exec `permet de lancer une commande dans un container</p></div>
+<div class="paragraph"><p>build arm64, cloud et buildx</p></div></aside></div></section><section id="debugging_docker_exec"><h2>Debugging : docker exec</h2><div class="slide-content"><div class="paragraph"><p>rappel : `docker container exec `permet de lancer une commande dans un container</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker exec &lt;containerID&gt; echo "hello"</code></pre></div></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker exec –it &lt;containerID&gt; bash</code></pre></div></div></div></section><section id="debugging_docker_inspect"><h2>Debugging : docker inspect</h2><div class="slide-content"><div class="paragraph"><p>rappel : `docker inspect `permet de lister toutes les caractéristiques d&#8217;une image ou d&#8217;un container.</p></div>
 <div class="paragraph"><p>On peut filtrer le retour de la commande avec <code>jq</code> ou l&#8217;option <code>--format</code>.</p></div></div></section><section id="debugging_docker_cp"><h2>Debugging : docker cp</h2><div class="slide-content"><div class="paragraph"><p>Cette commande permet d&#8217;échanger des fichiers entre un conteneur et la machine hôte.</p></div>
@@ -3452,7 +3535,8 @@ CONTAINER           CPU %     MEM USAGE/LIMIT     MEM %     NET I/O
 <div class="paragraph"><p>Nous n&#8217;avons que le binaire de son image à cette adresse.</p></div>
 <div class="paragraph"><p><a href="https://owncloud.univ-artois.fr/index.php/s/9s8XBLXvRwBJsrm" class="bare">https://owncloud.univ-artois.fr/index.php/s/9s8XBLXvRwBJsrm</a></p></div>
 <div class="paragraph"><p>On sait que `docker load `est la solution pour commencer</p></div>
-<div class="paragraph"><p>A l&#8217;aide !</p></div></div></section><section id="lazy_docker"><h2>🐳😴 Lazy Docker</h2></section><section id="conseils_pour_leval" data-auto-animate><h2>Conseils pour l&#8217;eval'</h2><div class="slide-content"><div class="imageblock"><img src="media/final%20answer.png" alt="final answer" height="500px"></div></div></section><section id="conseils_pour_leval_2" data-auto-animate><h2>Conseils pour l&#8217;eval'</h2><div class="slide-content"><div class="imageblock"><img src="media/dont%20panic.png" alt="dont panic" height="500px"></div></div></section><section id="vous_devez_avoir_les_compétences_suivantes"><h2>Vous devez avoir les compétences suivantes:</h2><div class="slide-content"><div class="paragraph"><p>Savoir lancer un container avec toutes les options</p></div>
+<div class="paragraph"><p>A l&#8217;aide !</p></div></div></section><section id="lazy_docker"><h2>🐳😴 Lazy Docker</h2><div class="slide-content"><div class="paragraph"><p><a href="https://blog.stephane-robert.info/docs/conteneurs/moteurs-conteneurs/lazydocker/" class="bare">https://blog.stephane-robert.info/docs/conteneurs/moteurs-conteneurs/lazydocker/</a></p></div></div></section><section id="conseils_pour_leval" class="columns" data-auto-animate><h2>Conseils pour l&#8217;eval'</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="imageblock"><img src="media/final%20answer.png" alt="final answer" height="500px"></div></div></div>
+<div class="openblock column"><div class="content"><div class="ulist"><ul><li><p><a href="https://moodle.univ-artois.fr/mod/resource/view.php?id=39414" class="bare">https://moodle.univ-artois.fr/mod/resource/view.php?id=39414</a></p></li><li><p><a href="https://moodle.univ-artois.fr/mod/choicegroup/view.php?id=39415" class="bare">https://moodle.univ-artois.fr/mod/choicegroup/view.php?id=39415</a></p></li><li><p><a href="https://moodle.univ-artois.fr/mod/assign/view.php?id=39416" class="bare">https://moodle.univ-artois.fr/mod/assign/view.php?id=39416</a></p></li></ul></div></div></div></div></section><section id="conseils_pour_leval_2" data-auto-animate><h2>Conseils pour l&#8217;eval'</h2><div class="slide-content"><div class="imageblock"><img src="media/dont%20panic.png" alt="dont panic" height="500px"></div></div></section><section id="vous_devez_avoir_les_compétences_suivantes"><h2>Vous devez avoir les compétences suivantes:</h2><div class="slide-content"><div class="paragraph"><p>Savoir lancer un container avec toutes les options</p></div>
 <div class="ulist"><ul><li><p><code>-v, -p, -w, -e, --rm, etc.</code></p></li></ul></div>
 <div class="paragraph"><p>Écrire un Dockerfile optimisé pour "dockeriser" une application</p></div>
 <div class="ulist"><ul><li><p>pas trop gourmand, facile à modifier, paramétrable.</p></li></ul></div>
