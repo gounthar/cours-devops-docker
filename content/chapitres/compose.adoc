@@ -924,8 +924,7 @@ Pour trouver le mot de passe, il va falloir le demander gentiment à Gitlab:
 
 [source,bash]
 ----
-docker compose -f tp12-bis.yml exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_
-password
+docker compose -f tp12-bis.yml exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password
 Password: qaPxXU+RqioolV3bAljvs2VYnyYa4jO/UYcis/UXLAk=
 ----
 [%step]

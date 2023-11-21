@@ -204,7 +204,214 @@ Créer un index "timestamp" sur Kibana puis aller à l'écran "discover"
 
 Lancer un conteneur nginx et concentrez ses logs dans ELK
 
-== iDées
+[.columns]
+== GitLab et Dependabot
+
+[.column]
+image::https://about.gitlab.com/images/press/press-kit-icon.svg[height=200px]
+[.column]
+image::https://avatars.githubusercontent.com/u/27347476?s=200&v=4[height=200px]
+
+== 🤔 Qu'est-ce que Dependabot ?
+
+Dependabot est un outil qui vous aide à maintenir vos dépendances à jour.
+
+image::https://avatars.githubusercontent.com/u/27347476?s=200&v=4[]
+
+[%step]
+Il ouvre automatiquement des merge requests pour les mises à jour de dépendances dans vos projets GitLab.
+
+== 🛠️ Comment Dependabot fonctionne-t-il avec Docker ?
+
+Dependabot peut analyser vos `Dockerfiles` et vos fichiers `docker-compose` pour trouver les dépendances qui peuvent être mises à jour.
+[%step]
+Il crée ensuite des merge requests pour chaque mise à jour de dépendance.
+
+== 🎯 Pourquoi utiliser Dependabot avec Docker ?
+
+. Garder vos dépendances à jour est crucial pour la sécurité et la stabilité de vos applications.
+. Dependabot automatise ce processus, vous faisant gagner du temps et réduisant le risque d'oublier une mise à jour importante.
+. Dependabot n'est pas magique, il faut que votre CI soit capable de construire votre application avec les nouvelles dépendances.
+. Ce qui n'est pas testé ne fonctionne pas.
+
+[%auto-animate]
+== 🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️
+
+* Malheureusement, il n'y a pas encore de support officiel pour GitLab dans Dependabot (et vice versa).
+[%step]
+* Notre forge Gitlab est définie dans un fichier docker-compose.yml, et Dependabot aussi.
+* Dependabot doit avoir accès à notre forge GitLab pour pouvoir ouvrir des merge requests.
+* Suivons donc https://dependabot-gitlab.gitlab.io/dependabot/guide/getting-started.html#step-2-set-up-access-tokens[la documentation officielle].
+
+[%auto-animate]
+== !
+
+image::personal-access-token.png[background, size=cover]
+
+[%auto-animate]
+== !
+
+image::personal-access-token-settings.png[background, size=cover]
+
+[%auto-animate]
+== 🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️
+
+WARNING: Notez bien le token, vous ne le reverrez plus jamais.
+
+https://dependabot-gitlab.gitlab.io/dependabot/guide/getting-started.html#step-3-start-the-app[L'étape suivante], c'est de positionner les valeurs de certaines variables d'environnement.
+Ça peut être dans un `.env`, ou dans les variables d'environnement de votre machine.
+[source,bash]
+----
+export SETTINGS__GITLAB_URL=http://localhost
+export SETTINGS__GITLAB_ACCESS_TOKEN=glpat-LXUfrxeFXuRJXNTNNifD
+----
+
+[%auto-animate]
+== 🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️
+
+Démarrez l'application avec `docker compose`:
+
+[source,bash]
+----
+curl -s https://gitlab.com/dependabot-gitlab/dependabot/-/raw/v3.8.0-alpha.1/docker-compose.yml | docker compose -f - up -d
+----
+[%step]
+image::dependabot-cant-see-gitlab.png[]
+[%step]
+😢
+
+[%auto-animate]
+== 🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️
+
+Vous vous souvenez du chapitre sur les réseaux Docker ?
+[%step]
+* Dans Docker, chaque conteneur a son propre espace de nom réseau, ce qui signifie que localhost à l'intérieur d'un conteneur fait référence au conteneur lui-même, et non à la machine hôte ou à d'autres conteneurs.
+* Lorsque vous essayez de faire un `ping` sur `gitlab-instance-gitlab-1` depuis le conteneur web, il ne connaît pas le nom d'hôte `gitlab-instance-gitlab-1` car il n'est pas dans le même espace de nom réseau.
+* Pour permettre aux conteneurs de communiquer entre eux, ils doivent être dans le même réseau Docker.
+
+[%auto-animate]
+== 🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️
+
+* Lorsque vous utilisez Docker Compose, il crée automatiquement un réseau par défaut pour votre application et tout service défini dans le `docker-compose.yml` peut atteindre les autres en utilisant le nom du service comme nom d'hôte.
+
+[%step]
+* Dans notre cas, le conteneur `web` et le conteneur `gitlab-instance-gitlab-1` ne sont pas dans le même réseau Docker.
+* Vous pouvez vérifier cela en inspectant les réseaux de chaque conteneur à l'aide de la commande `docker inspect`.
+* S'ils ne sont pas dans le même réseau, nous pouvons créer un réseau et ajouter les deux services à celui-ci dans notre fichier `docker-compose.yml`.
+
+[%auto-animate]
+== 🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️
+
+* Voici un exemple :
+[%step]
+[source,yaml]
+----
+version: '3'
+services:
+  web:
+    image: web
+    networks:
+      - mynetwork
+  gitlab-instance-gitlab-1:
+    image: gitlab
+    networks:
+      - mynetwork
+networks:
+  mynetwork:
+----
+[%step]
+* Après avoir mis à jour votre fichier `docker-compose.yml`, vous devez recréer vos conteneurs pour que les modifications prennent effet.
+* Vous pouvez le faire avec la commande `docker-compose up -d --force-recreate`.
+* Après cela, vous devriez pouvoir faire un `ping` sur `gitlab-instance-gitlab-1` depuis le conteneur web.
+
+[%auto-animate]
+== 🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️
+
+[source,yaml]
+----
+include::../code-samples/bonus/dependabot/symbiosis/docker-compose-dependabot.yml[lines=135..137]
+[...]
+include::../code-samples/bonus/dependabot/symbiosis/docker-compose-dependabot.yml[lines=203..204]
+----
+
+[%step]
+Et...
+
+[%step]
+[source,yaml]
+----
+include::../code-samples/bonus/dependabot/symbiosis/docker-compose-gitlab.yml[lines=5..9]
+[...]
+include::../code-samples/bonus/dependabot/symbiosis/docker-compose-gitlab.yml[lines=74..75]
+----
+
+[%auto-animate]
+== 🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️
+Sauf que...
+[%step]
+[source,bash]
+----
+root@95def7cb933d:/home/dependabot/app# nmap -sn 172.30.0.0/16
+Starting Nmap 7.80 ( https://nmap.org ) at 2023-11-21 20:45 UTC
+Nmap scan report for 172.30.0.1
+Host is up (0.0000090s latency).
+MAC Address: 02:42:50:A6:7C:5A (Unknown)
+Nmap scan report for symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2)
+Host is up (0.000012s latency).
+MAC Address: 02:42:AC:1E:00:02 (Unknown)
+Nmap scan report for symbiosis-gitlab-runner-1-1.symbiosis_mynetwork (172.30.0.3)
+Host is up (0.000015s latency).
+MAC Address: 02:42:AC:1E:00:03 (Unknown)
+Nmap scan report for symbiosis-gitlab-runner-2-1.symbiosis_mynetwork (172.30.0.4)
+Host is up (0.000032s latency).
+MAC Address: 02:42:AC:1E:00:04 (Unknown)
+Nmap scan report for symbiosis-redis-1.symbiosis_mynetwork (172.30.0.5)
+Host is up (0.0000070s latency).
+MAC Address: 02:42:AC:1E:00:05 (Unknown)
+Nmap scan report for symbiosis-mongodb-1.symbiosis_mynetwork (172.30.0.6)
+Host is up (0.000016s latency).
+MAC Address: 02:42:AC:1E:00:06 (Unknown)
+Nmap scan report for symbiosis-docker-1.symbiosis_mynetwork (172.30.0.7)
+Host is up (0.000021s latency).
+MAC Address: 02:42:AC:1E:00:07 (Unknown)
+Nmap scan report for symbiosis-worker-1.symbiosis_mynetwork (172.30.0.9)
+Host is up (0.000024s latency).
+MAC Address: 02:42:AC:1E:00:09 (Unknown)
+Nmap scan report for 95def7cb933d (172.30.0.10)
+Host is up.
+----
+
+[%auto-animate]
+== 🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️
+Victoire?
+
+[%step]
+
+[source,bash]
+----
+docker compose -f docker-compose-dependabot.yml exec -it -u root web b
+ash
+root@95def7cb933d:/home/dependabot/app# ping symbiosis-gitlab-1.symbiosis_mynetwork
+PING symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2) 56(84) bytes of data.
+64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=1 ttl=64 time=0.165 ms
+64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=2 ttl=64 time=0.053 ms
+64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=3 ttl=64 time=0.039 ms
+64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=4 ttl=64 time=0.040 ms
+64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=5 ttl=64 time=0.056 ms
+^C
+--- symbiosis-gitlab-1.symbiosis_mynetwork ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4165ms
+rtt min/avg/max/mdev = 0.039/0.070/0.165/0.047 ms
+----
+
+[%step]
+image::dependabot-404-gitlab.png[]
+
+[%step]
+On y est presque!
+
+[.notes]
+--
 
 dependabot gitlab
 updatecli
@@ -217,6 +424,7 @@ Kube?
 services ashutosh mix and match de conteneurs
 
 build arm64, cloud et buildx
+--
 
 == Debugging : docker exec
 
@@ -305,10 +513,21 @@ A l'aide !
 
 == 🐳😴 Lazy Docker
 
-[%auto-animate]
-== Conseils pour l'eval'
+https://blog.stephane-robert.info/docs/conteneurs/moteurs-conteneurs/lazydocker/
 
+[%auto-animate]
+[.columns]
+== Conseils pour l'eval'
+[.column]
+--
 image::final answer.png[height=500px]
+--
+[.column]
+--
+* https://moodle.univ-artois.fr/mod/resource/view.php?id=39414
+* https://moodle.univ-artois.fr/mod/choicegroup/view.php?id=39415
+* https://moodle.univ-artois.fr/mod/assign/view.php?id=39416
+--
 
 [%auto-animate]
 == Conseils pour l'eval'
