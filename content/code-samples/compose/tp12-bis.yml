@@ -1,0 +1,65 @@
+# This is a Docker Compose file for setting up a GitLab server and two GitLab runners.
+
+services:
+  # The GitLab server service
+  gitlab:
+    # The Docker image to use for the GitLab server
+    image: 'gitlab/gitlab-ce:16.6.0-ce.0'
+    # Always restart the container if it stops
+    restart: always
+    # The hostname for the GitLab server
+    hostname: 'localhost'
+    # Environment variables for the GitLab server
+    environment:
+      # Configuration for the GitLab Omnibus package
+      GITLAB_OMNIBUS_CONFIG: |
+        # The external URL for the GitLab server
+        external_url 'http://localhost'
+    # The ports to expose from the GitLab server
+    ports:
+      - '80:80'   # HTTP
+      - '443:443' # HTTPS
+      - '22:22'   # SSH
+    # The volumes to mount for the GitLab server
+    volumes:
+      - 'gitlab_config:/etc/gitlab'       # Configuration files
+      - 'gitlab_logs:/var/log/gitlab'     # Log files
+      - 'gitlab_data:/var/opt/gitlab'     # Data files
+
+  # The first GitLab runner service
+  gitlab-runner-1:
+    # The Docker image to use for the GitLab runner
+    image: 'gitlab/gitlab-runner:alpine3.16-v16.6.0'
+    # Always restart the container if it stops
+    restart: always
+    # The services this service depends on
+    depends_on:
+      - gitlab # Depends on the GitLab server
+    # The volumes to mount for the GitLab runner
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock' # Docker socket for running Docker commands
+      - 'gitlab-runner-1-config:/etc/gitlab-runner' # Configuration files
+
+  # The second GitLab runner service
+  gitlab-runner-2:
+    # The Docker image to use for the GitLab runner
+    image: 'gitlab/gitlab-runner:alpine3.16-v16.6.0'
+    # Always restart the container if it stops
+    restart: always
+    # The services this service depends on
+    depends_on:
+      - gitlab # Depends on the GitLab server
+    # The volumes to mount for the GitLab runner
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock' # Docker socket for running Docker commands
+      - 'gitlab-runner-2-config:/etc/gitlab-runner' # Configuration files
+
+# The volumes to create for the services
+volumes:
+  gitlab_config:         # Volume for GitLab server configuration files
+  gitlab_logs:           # Volume for GitLab server log files
+  gitlab_data:           # Volume for GitLab server data files
+  gitlab-runner-1-config: # Volume for GitLab runner 1 configuration files
+    name: gitlab-runner-1-config
+  gitlab-runner-2-config: # Volume for GitLab runner 2 configuration files
+    name: gitlab-runner-2-config

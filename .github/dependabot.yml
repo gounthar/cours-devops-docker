@@ -70,3 +70,23 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./content/code-samples/compose/cours"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./content/code-samples/compose/GSoC/maven"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./content/code-samples/compose/GSoC/python/Dockerfile"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./content/code-samples/compose"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10

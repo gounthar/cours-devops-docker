@@ -790,9 +790,706 @@ Deux approches différentes et complémentaires :
 * https://www.composerize.com/
 * https://github.com/jwilder/dockerize
 
-== Travaux pratiques #12
+== 🎓 Travaux pratiques #12
 
 image::497269344-image5.png[]
 
 https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git
 
+[%auto-animate]
+== 🎓 Travaux pratiques #12-BIS 🔨🔥
+
+Ça vous dirait d'avoir votre propre forge Gitlab ?
+[%step]
+😏 Non, et bien c'est parti quand même.
+[%step]
+* Créez un nouveau fichier appelé `docker-compose.yml`.
+* Dans ce fichier, définissez trois services : `gitlab`, `gitlab-runner-1` et `gitlab-runner-2`.
+* Pour le service `gitlab`:
+** utilisez l'image `gitlab/gitlab-ce:latest` (préfixée par le cache spécifique ILI)
+** redémarrez toujours le conteneur s'il s'arrête,
+** définissez le nom d'hôte sur `localhost`,
+** définissez l'URL externe sur `http://localhost` et exposez les ports `80`, `443` et `22`.
+
+[%auto-animate]
+== 🎓 Travaux pratiques #12-BIS
+[%step]
+* Pour les services gitlab-runner-1 et gitlab-runner-2:
+[%step]
+** utilisez l'image `gitlab/gitlab-runner:latest` (préfixée par le cache spécifique ILI),
+** redémarrez toujours le conteneur s'il s'arrête,
+** dépendez du service gitlab et montez le socket Docker et le fichier de configuration de GitLab Runner.
+[%step]
+* Créez des volumes pour:
+[%step]
+** les fichiers de configuration,
+** les fichiers journaux
+** et les fichiers de données de GitLab,
+** ainsi que pour les fichiers de configuration de GitLab Runner.
+
+[%auto-animate]
+== 🎓 Travaux pratiques #12-BIS 🔨🔥
+
+Pas assez détaillé? 😨
+[%step]
+* Ouvrez votre éditeur de texte préféré et créez un nouveau fichier.
+* Nommez ce fichier `docker-compose.yml`.
+* Commencez le fichier avec la ligne `services:` pour commencer à définir les services de votre application.
+* Commencez à définir votre premier service en tapant `gitlab:` sur une nouvelle ligne. Ce sera le service pour votre serveur GitLab.
+* Sous `gitlab:`, ajoutez les détails de votre service.
+[%step]
+** Par exemple, `image: 'gitlab/gitlab-ce:latest'` pour spécifier l'image Docker à utiliser pour ce service.
+
+[%auto-animate]
+== 🎓 Travaux pratiques #12-BIS 🔨🔥
+
+* Sous `gitlab:`, ajoutez les détails de votre service.
+** Par exemple, `image: 'gitlab/gitlab-ce:latest'` pour spécifier l'image Docker à utiliser pour ce service.
+** Continuez à ajouter des détails pour le service gitlab, comme `restart: always` pour toujours redémarrer le conteneur s'il s'arrête, et `hostname: 'localhost'` pour définir le nom d'hôte du serveur GitLab.
+[%step]
+* Définissez l'URL externe de votre serveur GitLab en ajoutant `environment:` et `GITLAB_OMNIBUS_CONFIG: |` sur de nouvelles lignes,
+* puis `external_url 'http://localhost'` sur la ligne suivante.
+* Exposez les ports nécessaires en ajoutant `ports:` sur une nouvelle ligne,
+* puis `- '80:80'`, `- '443:443'` et `- '22:22'` sur les lignes suivantes.
+
+
+[%auto-animate]
+== 🎓 Travaux pratiques #12-BIS 🔨🔥
+
+[%step]
+* Montez les volumes nécessaires en ajoutant `volumes:` sur une nouvelle ligne,
+[%step]
+** puis `- 'gitlab_config:/etc/gitlab'`,
+** `- 'gitlab_logs:/var/log/gitlab'`
+** et `- 'gitlab_data:/var/opt/gitlab'` sur les lignes suivantes.
+[%step]
+* Répétez ces étapes pour les services gitlab-runner-1 et gitlab-runner-2, en remplaçant `gitlab` par `gitlab-runner-1` et `gitlab-runner-2` respectivement.
+
+
+[%auto-animate]
+== 🎓 Travaux pratiques #12-BIS 🔨🔥
+
+[%step]
+* Pour les services `gitlab-runner-1` et `gitlab-runner-2`, remplacez l'URL externe par une dépendance au service gitlab en ajoutant `depends_on:` sur une nouvelle ligne, puis `- gitlab` sur la ligne suivante.
+* Montez le socket Docker et le fichier de configuration de GitLab Runner
+[%step]
+** en ajoutant `- '/var/run/docker.sock:/var/run/docker.sock'`
+** et `- 'gitlab-runner-1-config:/etc/gitlab-runner'` (ou `- 'gitlab-runner-2-config:/etc/gitlab-runner'` pour `gitlab-runner-2`) sous `volumes:`.
+
+[%auto-animate]
+== 🎓 Travaux pratiques #12-BIS 🔨🔥
+
+[%step]
+Enfin, définissez les volumes pour votre application en ajoutant `volumes:` sur une nouvelle ligne à la fin de votre fichier, puis
+[%step]
+** `- gitlab_config:`,
+** `- gitlab_logs:`,
+** `- gitlab_data:`,
+** `- gitlab-runner-1-config:`
+** et `- gitlab-runner-2-config:` sur les lignes suivantes.
+
+== ✅ Solution Travaux pratiques #12-BIS 🔨🔥
+
+[source,yaml]
+----
+include::../code-samples/compose/tp12-bis.yml[]
+----
+
+[%auto-animate]
+[.columns]
+== 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
+
+[.column]
+image::when.png[height=500px]
+[.column]
+video::gitlab-logs.speed.very.small.mp4[height=500px,options=autoplay,loop,nocontrols]
+
+[%auto-animate]
+[background-video="2000_years_later.mp4",background-video-loop=true,background-video-muted=true]
+[.intellij.background]
+== 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
+
+Il va falloir se logguer, lier les runners au serveur, créer un projet, etc...
+
+[%auto-animate]
+[.columns]
+== 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
+
+[.column]
+image::gitlab-login.png[height=500px]
+
+[.column]
+--
+Pour trouver le mot de passe, il va falloir le demander gentiment à Gitlab:
+
+[source,bash]
+----
+docker compose -f tp12-bis.yml exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password
+Password: qaPxXU+RqioolV3bAljvs2VYnyYa4jO/UYcis/UXLAk=
+----
+[%step]
+Ensuite, il va falloir restreindre l'accès:
+[%step]
+image::sign-up-restrictions.png[]
+--
+
+[%auto-animate]
+== 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
+
+Pour utiliser le runner GitLab dans GitLab, vous devez le configurer.
+[%step]
+- Pour une configuration correcte, nous aurons besoin d'un jeton copié depuis le portail.
+[%step]
+- Pire que ça, pas un jeton, mais carrément une commande à adapter à `docker compose`.
+[%step]
+- Pour ce faire, allez à l'adresse : http://localhost/admin/runners et cliquez sur le bouton "New instance runner".
+[%step]
+- Choisissez "Linux".
+[%step]
+- "Run untagged jobs"
+[%step]
+- Donnez une description au runner.
+[%step]
+- Cliquez sur le bouton "Create runner"
+[%step]
+- Vous avez ensuite une commande à copier et modifier pour `docker compose`.
+
+
+[%auto-animate]
+[%notitle,background-iframe="https://www.youtube.com/embed/S-npLuur6KM?rel=0&start=0&enablejsapi=1&autoplay=1&loop=1&controls=1&modestbranding=1"]
+== 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
+
+[.notes]
+--
+https://youtu.be/S-npLuur6KM
+--
+
+[%auto-animate]
+== 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
+
+[source,bash]
+----
+docker compose -f tp12-bis.yml exec gitlab-runner-1 gitlab-runner register --url http://gitlab  --token glrt-PF5rLbUKzku5g8BL2y7J
+Runtime platform                                    arch=amd64 os=linux pid=103 revision=853330f9 version=16.5.0
+Running in system-mode.
+
+Enter the GitLab instance URL (for example, https://gitlab.com/):
+[http://gitlab]:
+Verifying runner... is valid                        runner=PF5rLbUKz
+Enter a name for the runner. This is stored only in the local config.toml file:
+[3c2ee0d97d2b]: runner 1
+Enter an executor: parallels, docker-autoscaler, docker+machine, custom, docker, docker-windows, shell, ssh, virtualbox, instance, kubernetes:
+shell
+Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
+
+Configuration (with the authentication token) was saved in "/etc/gitlab-runner/config.toml"
+----
+
+[%auto-animate]
+== !
+
+image::gitlab-runners-compose.png[background, size=cover]
+
+[%auto-animate]
+== 👤 Profils dans Docker Compose 🐙
+On a vu déjà l'instruction `depends_on` dans un fichier Docker Compose.
+[%step]
+- Elle permet de définir des dépendances entre les services.
+- Mais que faire si on veut définir un lot de services qui fonctionnent ensemble, sans pour autant être en interdépendance ?
+- Les profils dans Docker Compose permettent de définir des groupes de services qui peuvent être activés ou désactivés ensemble.
+- Cela peut être utile pour gérer des environnements de développement, de test et de production différents dans le même fichier Docker Compose.
+- Pour définir un profil pour un service, vous pouvez ajouter la clé `profiles` à la définition du service dans votre fichier Docker Compose.
+
+[%auto-animate]
+== 👤 Profils dans Docker Compose 🐙
+Par exemple :
+
+[%step]
+[source,yaml]
+----
+services:
+  mon_service:
+    image: mon_image
+    profiles:
+      - dev
+----
+[%step]
+Dans cet exemple, le service mon_service appartient au profil dev.
+
+[%auto-animate]
+== 👤 Profils dans Docker Compose 🐙
+
+[%step]
+- Pour démarrer seulement les services qui appartiennent à un certain profil, vous pouvez utiliser l'option `--profile` avec la commande `docker-compose up`.
+- Par exemple :
+
+[%step]
+[source,bash]
+----
+docker-compose up --profile dev
+----
+[%step]
+Cette commande démarrera seulement les services qui appartiennent au profil `dev`.
+
+[%auto-animate]
+== 👤 Profils dans Docker Compose 🐙
+
+[%step]
+- Les profils peuvent rendre votre fichier Docker Compose plus organisé et flexible.
+- Ils vous permettent de définir différents environnements dans le même fichier et de choisir facilement quels services démarrer en fonction de vos besoins.
+- Jetons un coup d'œil à un exemple de fichier Docker Compose avec des profils :
+
+[%step]
+[source,yaml]
+----
+services:
+  service_dev:
+    image: mon_image_dev
+    profiles:
+      - dev
+  service_prod:
+    image: mon_image_prod
+    profiles:
+      - prod
+----
+[%step]
+- Dans cet exemple, nous avons deux services : `service_dev` et `service_prod`.
+- Chacun appartient à un profil différent.
+
+[%auto-animate]
+== 👤 Profils dans Docker Compose 🐙
+[source,yaml]
+----
+services:
+  service_dev:
+    image: mon_image_dev
+    profiles:
+      - dev
+  service_prod:
+    image: mon_image_prod
+    profiles:
+      - prod
+----
+[%step]
+- Nous pouvons choisir de démarrer seulement les services de développement avec `docker-compose up --profile dev`, ou uniquement les services de production avec `docker-compose up --profile prod`.
+- Les profils dans Docker Compose sont un outil puissant pour gérer différents environnements dans le même fichier Docker Compose.
+- Ils peuvent rendre votre développement et vos tests plus efficaces et organisés.
+
+== 🔨🔥 Une autre forge, ça vous dit? 😐
+
+[%step]
+😏 Non, et bien, c'est parti quand même.
+[%step]
+
+https://raw.githubusercontent.com/ash-sxn/GSoC-2023-docker-based-quickstart/main/build-docker-compose.yaml
+[%step]
+[source,yaml]
+----
+include::../code-samples/compose/jenkins-docker-compose.yml[]
+----
+
+== 🔨🔥 Une autre forge, ça vous dit? 😐
+
+Indigeste? 😨
+[%step]
+Ne relevons que les points importants:
+
+[%step]
+[source,yaml]
+----
+include::../code-samples/compose/jenkins-docker-compose.yml[lines=51..68]
+----
+
+[%auto-animate]
+== 🔨🔥 Une autre forge, ça vous dit? 😐
+Maven
+[source,dockerfile]
+----
+include::../code-samples/compose/GSoC/maven/Dockerfile[]
+----
+
+[%auto-animate]
+== 🔨🔥 Une autre forge, ça vous dit? 😐
+Python
+[source,yaml]
+----
+include::../code-samples/compose/jenkins-docker-compose.yml[lines=70..87]
+----
+
+[%auto-animate]
+== 🔨🔥 Une autre forge, ça vous dit? 😐
+
+[source,dockerfile]
+----
+include::../code-samples/compose/GSoC/python/Dockerfile[]
+----
+
+[%auto-animate]
+== 🔨🔥 Une autre forge, ça vous dit? 😐
+À vous maintenant!
+
+[source,bash]
+----
+git clone https://github.com/ash-sxn/GSoC-2023-docker-based-quickstart.git
+----
+[%step]
+À vous de modifier les sources de façon à passer par le cache ILI
+[%step]
+Ensuite, ne restera qu'à lancer la "forge":
+[%step]
+[source,bash]
+----
+docker-compose up --build -d --force-recreate maven
+----
+[%step]
+Ou encore si vous voulez tout construire localement:
+[%step]
+[source,bash]
+----
+docker-compose -f build-docker-compose.yaml up --build -d --force-recreate maven
+----
+
+
+[%auto-animate]
+== !
+
+image::jenkins-compose.png[background, size=cover]
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+Et pourquoi pas s'attaquer au docker-compose qui a généré ce cours ?
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+Et pourquoi pas s'attaquer au docker-compose qui a généré ce cours ?
+
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[]
+----
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+Et pourquoi pas s'attaquer au docker-compose qui a généré ce cours ?
+[%step]
+Indigeste? 😨
+[%step]
+Ne relevons que les points importants:
+
+[%step]
+Les ancres...
+[%step]
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=1..28]
+----
+
+[%auto-animate]
+== ➡️🔄 Les ancres dans `docker compose` ⚓
+
+Docker Compose permet de définir et de gérer plusieurs services Docker dans un seul fichier YAML.
+[%step]
+- Les ancres (`&`) et les alias (`*`) sont des fonctionnalités YAML qui peuvent être utilisées dans Docker Compose pour réutiliser des configurations.
+- Une ancre est une référence à un objet ou à une valeur dans un fichier YAML.
+Elle est définie en utilisant l'opérateur `&` suivi d'un nom unique.
+
+[%step]
+[source,yaml]
+----
+x-slides-base: &slides-base
+  build:
+    context: ./
+----
+[%step]
+Dans cet exemple, `x-slides-base` est une ancre qui représente un objet avec une clé `build`.
+
+[%auto-animate]
+== ➡️🔄 Les ancres dans `docker compose` ⚓
+
+Les ancres peuvent être référencées ailleurs dans le fichier YAML en utilisant l'opérateur `*`.
+[%step]
+[source,yaml]
+----
+services:
+  serve:
+    <<: *slides-base
+----
+[%step]
+- Les ancres permettent de réutiliser des configurations, ce qui rend le fichier Docker Compose plus lisible et plus facile à maintenir.
+- Si vous devez modifier une configuration qui est utilisée à plusieurs endroits, vous pouvez simplement modifier l'ancre.
+- En conclusion, les ancres et les alias sont des outils puissants pour gérer des configurations complexes dans Docker Compose. Ils permettent de réduire la duplication et d'améliorer la lisibilité de votre fichier Docker Compose.
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+Le fameux qrcode...
+[%step]
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=52..59]
+----
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+Le service qui construit les slides à partir d'`asciidoc` avec `reveal.js`.
+[%step]
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=40..50]
+----
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+Le service qui construit les slides à partir d'`asciidoc` avec `reveal.js`.
+[%step]
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=32..38]
+----
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+Le service qui construit le pdf à partir des slides.
+[%step]
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=61..77]
+----
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+Pour rappel, l'ancre contenait :
+[%step]
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=3..28]
+----
+
+[%auto-animate]
+[.columns]
+== ➡️🔄 Build quoi? 🛠️📦
+[.column]
+--
+[%step]
+- Docker BuildKit est un outil de construction de Docker qui apporte de nombreuses améliorations par rapport à l'ancien système de construction.
+- L'une de ces améliorations est la mise en cache en ligne.
+- La mise en cache en ligne est une fonctionnalité de Docker BuildKit qui permet de réutiliser les couches de cache existantes lors de la construction d'une image Docker.
+
+[%step]
+image::multi-layered-cake-removebg-preview.png[height=100px]
+--
+[.column.is-one-third]
+--
+[%step]
+Elle est activée en définissant l'argument `BUILDKIT_INLINE_CACHE` à `1`.
+
+[%step]
+[source,yaml]
+----
+args:
+  BUILDKIT_INLINE_CACHE: 1
+----
+--
+
+[%auto-animate]
+[.columns]
+== ➡️🔄 Environnement 🌍🌿
+[.column]
+--
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=12..15]
+----
+--
+[.column]
+--
+Deux variables d'environnement sont définies pour le conteneur Docker : `PRESENTATION_URL` et `REPOSITORY_URL`.
+[%step]
+Ces variables sont définies à l'aide de la syntaxe `${VARIABLE_NAME}`, qui est une manière standard d'accéder aux variables d'environnement dans les fichiers de configuration YAML.
+--
+
+[%auto-animate]
+== ➡️🔄 Environnement 🌍🌿
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=12..15]
+----
+Lorsque Docker Compose rencontre cette syntaxe, il cherche la valeur de la variable d'environnement dans plusieurs endroits, en suivant un ordre spécifique :
+[%step]
+* Il vérifie d'abord si la variable est définie dans le shell courant.
+* Si c'est le cas, il utilise cette valeur.
+* Si la variable n'est pas définie dans le shell, Docker Compose cherche ensuite dans un fichier `.env` situé dans le même répertoire que le fichier `docker-compose.yml`.
+* Si la variable est définie dans ce fichier, Docker Compose utilise cette valeur.
+
+[%auto-animate]
+== ➡️🔄 Environnement 🌍🌿
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=12..15]
+----
+* Si la variable n'est définie ni dans le shell ni dans le fichier `.env`, Docker Compose utilise la valeur par défaut spécifiée dans le fichier `docker-compose.yml` (s'il y en a une).
+* Dans notre cas, aucune valeur par défaut n'est spécifiée, donc si la variable n'est définie ni dans le shell ni dans le fichier `.env`, Docker Compose générera une erreur.
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=16..17]
+----
+[%step]
+* Dans Docker, chaque instruction dans le Dockerfile est exécutée par un utilisateur particulier.
+* Par défaut, cet utilisateur est root, mais pour des raisons de sécurité, il est souvent recommandé d'exécuter les processus en tant qu'utilisateur non root.
+* Cette ligne définit l'ID de l'utilisateur qui exécutera les commandes à l'intérieur du conteneur Docker à la valeur de la variable d'environnement `CURRENT_UID`.
+* La syntaxe `${CURRENT_UID}` est utilisée pour accéder à la valeur d'une variable d'environnement.
+* Dans ce cas, Docker Compose recherchera une variable d'environnement nommée `CURRENT_UID` et utilisera sa valeur.
+* Si `CURRENT_UID` n'est pas défini dans l'environnement où Docker Compose est exécuté, Docker Compose renverra une erreur.
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+[source,yaml]
+----
+include::../code-samples/compose/cours/Dockerfile[]
+----
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+[source,dockerfile]
+----
+include::../code-samples/compose/cours/Dockerfile[lines=16..23]
+----
+[%step]
+* Ce Dockerfile met en place un environnement `Node.js` avec des outils et dépendances supplémentaires.
+* Il installe les dernières versions de `npm` et `npm-check-updates` globalement, copie les dépendances `npm` de l'application dans l'image Docker, et crée des liens symboliques pour `package.json` et `package-lock.json` à la racine de `/app`.
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+[source,dockerfile]
+----
+include::../code-samples/compose/cours/Dockerfile[lines=29..34]
+----
+[%step]
+* Il télécharge également et installe une version spécifique de `FontAwesome`
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+[source,dockerfile]
+----
+include::../code-samples/compose/cours/Dockerfile[lines=36..42]
+----
+[%step]
+* Il installe les dépendances `npm` en utilisant le `package-lock.json` (en revenant à une installation `npm` régulière si nécessaire), et lie la commande `gulp` pour qu'elle soit disponible dans le `PATH`.
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+[source,dockerfile]
+----
+include::../code-samples/compose/cours/Dockerfile[lines=44..52]
+----
+[%step]
+* Les tâches `gulp` et la configuration sont copiées dans l'image Docker, un volume est défini pour le répertoire `/app`, et le port `8000` est exposé pour `HTTP`.
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+[source,dockerfile]
+----
+include::../code-samples/compose/cours/Dockerfile[lines=54..56]
+----
+[%step]
+* Le point d'entrée est défini sur `tini`, et `gulp` est exécuté par défaut.
+
+== 🐋 Tini dans Docker
+
+== 🤔 Qu'est-ce que Tini ?
+
+Tini est un `init` minuscule mais valide pour les conteneurs. Il est conçu pour être le système init le plus simple possible.
+
+== 🛠️ Que fait Tini ?
+
+Tini fait deux choses :
+
+. Il génère votre processus en tant que son enfant (directement, pas en tant que petit-enfant, comme le ferait un shell).
+. Il attend ensuite les signaux et les transmet au processus enfant.
+
+== 🎯 Pourquoi Tini est-il utile dans Docker ?
+
+. Docker exécute un seul processus dans un conteneur par défaut. Si ce processus génère des processus enfants et ne les récolte pas correctement, ils deviennent des processus zombies.
+. Tini assure que ces processus zombies sont correctement récoltés, améliorant ainsi le comportement du conteneur et réduisant la probabilité de cas limites.
+
+== 🐋 Tini dans notre Dockerfile
+
+Dans notre Dockerfile, nous utilisons Tini comme point d'entrée :
+
+[source,dockerfile]
+----
+ENTRYPOINT ["/sbin/tini","-g","gulp"]
+----
+
+. Cela signifie que Tini est le premier processus qui est lancé dans notre conteneur.
+. Il lancera ensuite `gulp` en tant que processus enfant.
+. Tout signal envoyé au conteneur sera transmis par Tini à `gulp`.
+. Si `gulp` génère des processus enfants et ne les récolte pas, Tini le fera.
+
+[%auto-animate]
+== 🐋 Docker peut travailler main dans la main avec d'autres outils... 👫🤝
+
+[source,makefile]
+----
+include::../code-samples/compose/cours/Makefile[]
+----
+
+[%auto-animate]
+== 🐋 Docker peut travailler main dans la main avec d'autres outils... 👫🤝
+
+[source,makefile]
+----
+include::../code-samples/compose/cours/Makefile[lines=8..11]
+----
+
+Cette configuration de docker compose concerne Docker BuildKit, une fonctionnalité de Docker qui améliore les performances de construction des images Docker.
+
+* La ligne `DOCKER_BUILDKIT ?= 1` vérifie si la variable d'environnement `DOCKER_BUILDKIT` est déjà définie.
+** Si ce n'est pas le cas, elle lui attribue la valeur `1`, ce qui active Docker BuildKit.
+* De même, `COMPOSE_DOCKER_CLI_BUILD ?= 1` vérifie si la variable d'environnement `COMPOSE_DOCKER_CLI_BUILD` est déjà définie.
+** Si ce n'est pas le cas, elle lui attribue la valeur `1`.
+** Cette variable d'environnement est utilisée pour activer l'utilisation de Docker CLI lors de l'utilisation de Docker Compose.
+** C'est nécessaire car Docker Compose ne supporte pas BuildKit par défaut, donc cette variable d'environnement est une solution de contournement pour l'activer.
+[%step]
+En résumé, ces deux lignes de code activent Docker BuildKit pour améliorer les performances de construction des images Docker lors de l'utilisation de Docker Compose.
+
+[%auto-animate]
+== 🐋 Docker peut travailler main dans la main avec d'autres outils... 👫🤝
+
+[source,makefile]
+----
+include::../code-samples/compose/cours/Makefile[lines=13..30]
+----
+
+[%auto-animate]
+== 🐋 Docker peut travailler main dans la main avec d'autres outils... 👫🤝
+
+[source,makefile]
+----
+include::../code-samples/compose/cours/Makefile[lines=35..41]
+----
+[%step]
+* Cette règle `Makefile` est utilisée pour construire le projet à l'intérieur d'un conteneur Docker.
+* Elle utilise la fonction `compose_up` pour exécuter la commande `docker compose up` avec l'option `--exit-code-from=build`.
+* Cette option permet à la commande `docker compose up` de renvoyer le code de sortie du service `build`, ce qui permet à Make de savoir si la construction du projet a réussi ou non.
+
+== 📖🔚 Fin du chapitre docker compose 🐋🐙
+
+image::bitmoji-whale friend.png[height=500px]

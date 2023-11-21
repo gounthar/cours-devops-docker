@@ -314,7 +314,6 @@ for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -tra
 == 🎓 Travaux pratiques #8
 
 Lancer un container `nginx `et lui faire distribuer une page web externe au container.
-Trouver deux façons différentes de rendre disponible la page web au container.
 
 image::1763880002-image10.png[]
 
@@ -334,6 +333,7 @@ Placez vos fichiers HTML dans un répertoire sur votre machine hôte, puis mappe
 [%step]
 [source,bash]
 ----
+docker container run -d -p 80:80 --name mon-nginx -v /chemin/vers/la/page/web/sur/lhote:/usr/share/nginx/html nginx
 ----
 [%step]
 Remplacez `/chemin/vers/la/page/web/sur/lhote` par le chemin réel vers le répertoire contenant vos fichiers de la page web sur l'hôte.
@@ -354,6 +354,7 @@ Tout d'abord, créez un volume nommé :
 [%step]
 [source,bash]
 ----
+docker volume create mon-nginx-html
 ----
 [%step]
 Copiez vos fichiers de la page web dans ce volume :
@@ -373,6 +374,7 @@ Maintenant, lancez le conteneur Nginx et montez le volume nommé :
 [%step]
 [source,bash]
 ----
+docker container run -d -p 80:80 --name mon-nginx -v mon-nginx-html:/usr/share/nginx/html nginx
 ----
 
 == 🎓 Travaux pratiques #9
@@ -392,18 +394,21 @@ Créer un volume nommé "data" :
 [%step]
 [source,bash]
 ----
+docker volume create data
 ----
 [%step]
 Démarrer un premier conteneur attaché à ce volume :
 [%step]
 [source,bash]
 ----
+docker container run -it --name premier-container -v data:/donnees busybox
 ----
 [%step]
 Dans le premier conteneur, lancez un processus qui écrit un fichier dans le volume (par exemple, un fichier texte) :
 [%step]
 [source,bash]
 ----
+echo "Données du premier conteneur" > /donnees/mon-fichier.txt
 ----
 [%step]
 Quittez le premier conteneur.
@@ -412,6 +417,7 @@ Démarrer un second conteneur attaché au même volume :
 [%step]
 [source,bash]
 ----
+docker container run -it --name second-container -v data:/donnees busybox
 ----
 
 == ✅ Solution travaux pratiques #9
@@ -419,12 +425,13 @@ Démarrer un second conteneur attaché au même volume :
 Démarrer un second conteneur attaché au même volume :
 [source,bash]
 ----
+docker container run -it --name second-container -v data:/donnees busybox
 ----
-
 Dans le second conteneur, lisez les données du volume (le fichier texte) :
 [%step]
 [source,bash]
 ----
+cat /donnees/mon-fichier.txt
 ----
 [%step]
 Vous devriez voir le contenu du fichier affiché à l'écran.
@@ -435,6 +442,7 @@ Vous pouvez maintenant supprimer le volume "data" car vous n'en avez plus besoin
 [%step]
 [source,bash]
 ----
+docker volume rm data
 ----
 
 == 🎓  Travaux pratiques #10
