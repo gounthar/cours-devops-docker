@@ -1263,7 +1263,6 @@ Le service qui construit le pdf à partir des slides.
 include::../code-samples/compose/cours/docker-compose.yml[lines=61..77]
 ----
 
-
 [%auto-animate]
 == Autre étude de cas 📚🔍
 
@@ -1299,3 +1298,199 @@ args:
   BUILDKIT_INLINE_CACHE: 1
 ----
 --
+
+[%auto-animate]
+[.columns]
+== ➡️🔄 Environnement 🌍🌿
+[.column]
+--
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=12..15]
+----
+--
+[.column]
+--
+Deux variables d'environnement sont définies pour le conteneur Docker : `PRESENTATION_URL` et `REPOSITORY_URL`.
+[%step]
+Ces variables sont définies à l'aide de la syntaxe `${VARIABLE_NAME}`, qui est une manière standard d'accéder aux variables d'environnement dans les fichiers de configuration YAML.
+--
+
+[%auto-animate]
+== ➡️🔄 Environnement 🌍🌿
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=12..15]
+----
+Lorsque Docker Compose rencontre cette syntaxe, il cherche la valeur de la variable d'environnement dans plusieurs endroits, en suivant un ordre spécifique :
+[%step]
+* Il vérifie d'abord si la variable est définie dans le shell courant.
+* Si c'est le cas, il utilise cette valeur.
+* Si la variable n'est pas définie dans le shell, Docker Compose cherche ensuite dans un fichier `.env` situé dans le même répertoire que le fichier `docker-compose.yml`.
+* Si la variable est définie dans ce fichier, Docker Compose utilise cette valeur.
+
+[%auto-animate]
+== ➡️🔄 Environnement 🌍🌿
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=12..15]
+----
+* Si la variable n'est définie ni dans le shell ni dans le fichier `.env`, Docker Compose utilise la valeur par défaut spécifiée dans le fichier `docker-compose.yml` (s'il y en a une).
+* Dans notre cas, aucune valeur par défaut n'est spécifiée, donc si la variable n'est définie ni dans le shell ni dans le fichier `.env`, Docker Compose générera une erreur.
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+[source,yaml]
+----
+include::../code-samples/compose/cours/docker-compose.yml[lines=16..17]
+----
+[%step]
+* Dans Docker, chaque instruction dans le Dockerfile est exécutée par un utilisateur particulier.
+* Par défaut, cet utilisateur est root, mais pour des raisons de sécurité, il est souvent recommandé d'exécuter les processus en tant qu'utilisateur non root.
+* Cette ligne définit l'ID de l'utilisateur qui exécutera les commandes à l'intérieur du conteneur Docker à la valeur de la variable d'environnement `CURRENT_UID`.
+* La syntaxe `${CURRENT_UID}` est utilisée pour accéder à la valeur d'une variable d'environnement.
+* Dans ce cas, Docker Compose recherchera une variable d'environnement nommée `CURRENT_UID` et utilisera sa valeur.
+* Si `CURRENT_UID` n'est pas défini dans l'environnement où Docker Compose est exécuté, Docker Compose renverra une erreur.
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+[source,yaml]
+----
+include::../code-samples/compose/cours/Dockerfile[]
+----
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+[source,dockerfile]
+----
+include::../code-samples/compose/cours/Dockerfile[lines=16..23]
+----
+[%step]
+* Ce Dockerfile met en place un environnement `Node.js` avec des outils et dépendances supplémentaires.
+* Il installe les dernières versions de `npm` et `npm-check-updates` globalement, copie les dépendances `npm` de l'application dans l'image Docker, et crée des liens symboliques pour `package.json` et `package-lock.json` à la racine de `/app`.
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+[source,dockerfile]
+----
+include::../code-samples/compose/cours/Dockerfile[lines=29..34]
+----
+[%step]
+* Il télécharge également et installe une version spécifique de `FontAwesome`
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+[source,dockerfile]
+----
+include::../code-samples/compose/cours/Dockerfile[lines=36..42]
+----
+[%step]
+* Il installe les dépendances `npm` en utilisant le `package-lock.json` (en revenant à une installation `npm` régulière si nécessaire), et lie la commande `gulp` pour qu'elle soit disponible dans le `PATH`.
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+[source,dockerfile]
+----
+include::../code-samples/compose/cours/Dockerfile[lines=44..52]
+----
+[%step]
+* Les tâches `gulp` et la configuration sont copiées dans l'image Docker, un volume est défini pour le répertoire `/app`, et le port `8000` est exposé pour `HTTP`.
+
+[%auto-animate]
+== Autre étude de cas 📚🔍
+
+[source,dockerfile]
+----
+include::../code-samples/compose/cours/Dockerfile[lines=54..56]
+----
+[%step]
+* Le point d'entrée est défini sur `tini`, et `gulp` est exécuté par défaut.
+
+== 🐋 Tini dans Docker
+
+== 🤔 Qu'est-ce que Tini ?
+
+Tini est un `init` minuscule mais valide pour les conteneurs. Il est conçu pour être le système init le plus simple possible.
+
+== 🛠️ Que fait Tini ?
+
+Tini fait deux choses :
+
+. Il génère votre processus en tant que son enfant (directement, pas en tant que petit-enfant, comme le ferait un shell).
+. Il attend ensuite les signaux et les transmet au processus enfant.
+
+== 🎯 Pourquoi Tini est-il utile dans Docker ?
+
+. Docker exécute un seul processus dans un conteneur par défaut. Si ce processus génère des processus enfants et ne les récolte pas correctement, ils deviennent des processus zombies.
+. Tini assure que ces processus zombies sont correctement récoltés, améliorant ainsi le comportement du conteneur et réduisant la probabilité de cas limites.
+
+== 🐋 Tini dans notre Dockerfile
+
+Dans notre Dockerfile, nous utilisons Tini comme point d'entrée :
+
+[source,dockerfile]
+----
+ENTRYPOINT ["/sbin/tini","-g","gulp"]
+----
+
+. Cela signifie que Tini est le premier processus qui est lancé dans notre conteneur.
+. Il lancera ensuite `gulp` en tant que processus enfant.
+. Tout signal envoyé au conteneur sera transmis par Tini à `gulp`.
+. Si `gulp` génère des processus enfants et ne les récolte pas, Tini le fera.
+
+[%auto-animate]
+== 🐋 Docker peut travailler main dans la main avec d'autres outils... 👫🤝
+
+[source,makefile]
+----
+include::../code-samples/compose/cours/Makefile[]
+----
+
+[%auto-animate]
+== 🐋 Docker peut travailler main dans la main avec d'autres outils... 👫🤝
+
+[source,makefile]
+----
+include::../code-samples/compose/cours/Makefile[lines=8..11]
+----
+
+Cette configuration de docker compose concerne Docker BuildKit, une fonctionnalité de Docker qui améliore les performances de construction des images Docker.
+
+* La ligne `DOCKER_BUILDKIT ?= 1` vérifie si la variable d'environnement `DOCKER_BUILDKIT` est déjà définie.
+** Si ce n'est pas le cas, elle lui attribue la valeur `1`, ce qui active Docker BuildKit.
+* De même, `COMPOSE_DOCKER_CLI_BUILD ?= 1` vérifie si la variable d'environnement `COMPOSE_DOCKER_CLI_BUILD` est déjà définie.
+** Si ce n'est pas le cas, elle lui attribue la valeur `1`.
+** Cette variable d'environnement est utilisée pour activer l'utilisation de Docker CLI lors de l'utilisation de Docker Compose.
+** C'est nécessaire car Docker Compose ne supporte pas BuildKit par défaut, donc cette variable d'environnement est une solution de contournement pour l'activer.
+[%step]
+En résumé, ces deux lignes de code activent Docker BuildKit pour améliorer les performances de construction des images Docker lors de l'utilisation de Docker Compose.
+
+[%auto-animate]
+== 🐋 Docker peut travailler main dans la main avec d'autres outils... 👫🤝
+
+[source,makefile]
+----
+include::../code-samples/compose/cours/Makefile[lines=13..30]
+----
+
+[%auto-animate]
+== 🐋 Docker peut travailler main dans la main avec d'autres outils... 👫🤝
+
+[source,makefile]
+----
+include::../code-samples/compose/cours/Makefile[lines=35..41]
+----
+[%step]
+* Cette règle `Makefile` est utilisée pour construire le projet à l'intérieur d'un conteneur Docker.
+* Elle utilise la fonction `compose_up` pour exécuter la commande `docker compose up` avec l'option `--exit-code-from=build`.
+* Cette option permet à la commande `docker compose up` de renvoyer le code de sortie du service `build`, ce qui permet à Make de savoir si la construction du projet a réussi ou non.
+
+== 📖🔚 Fin du chapitre docker compose 🐋🐙
+
+image::bitmoji-whale friend.png[height=500px]
