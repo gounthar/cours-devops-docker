@@ -1312,7 +1312,7 @@ app.js</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run --workdir /customdir --entrypoint ls node
 &lt;0 fichiers présents !&gt;</code></pre></div></div>
 <div class="paragraph fragment"><p>Comment fournir des fichiers à mes containers ?</p></div></div></section><section id="embarquer_des_fichiers_2" data-auto-animate><h2>📁 Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Copie de fichiers.</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM node:21.2.0-alpine3.18
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM node:20.8.0-alpine3.18
 WORKDIR /app
 COPY ./* /app</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-node .
@@ -1722,7 +1722,7 @@ WORKDIR /app/gs-spring-boot/complete
 RUN mvn package
 
 # Use a lightweight Java image for running the application
-FROM eclipse-temurin:21.0.1_12-jre-alpine
+FROM eclipse-temurin:21_35-jre-alpine
 WORKDIR /app
 
 # Copy the built JAR file from the previous build stage
@@ -1733,7 +1733,7 @@ CMD ["java", "-jar", "spring-boot-complete-0.0.1-SNAPSHOT.jar"]</code></pre></di
 <div class="paragraph fragment"><p>Le multistage, c&#8217;est la classe à Arras.
 On en reparle après.</p></div></div></section><section id="une_première_solution"><h2>🧩 Une première solution</h2><div class="slide-content"><div class="paragraph"><p>Avec un autre exemple&#8230;&#8203;
 Une image pour construire l&#8217;appli:</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM golang:1.21
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM golang:1.19
 
 WORKDIR /go/src/github.com/alexellis/href-counter/
 
@@ -1744,7 +1744,7 @@ COPY app.go	.
 
 RUN CGO_ENABLED=0 GOOS=linux go build  -ldflags "-s -w" -o app .</code></pre></div></div>
 <div class="paragraph fragment"><p>Une image pour faire tourner l&#8217;appli</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18.4
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.17.1
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
@@ -1892,17 +1892,16 @@ RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="admonitionblock caution"><table><tr><td class="icon"><i class="fa fa-fire" title="Caution"></i></td><td class="content">Les données sont perdues à l&#8217;arrêt du container.</td></tr></table></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -transparent white -resize x1080 volumes-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="filesystem_en_ram_3" data-auto-animate><h2>💾🧠 FileSystem en RAM</h2><div class="slide-content"><div class="imageblock"><img src="media/volumes-output22_with_transparency.png" alt="volumes output22 with transparency"></div>
 <div class="admonitionblock caution"><table><tr><td class="icon"><i class="fa fa-fire" title="Caution"></i></td><td class="content">Les données sont perdues à l&#8217;arrêt du container.</td></tr></table></div>
-<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -transparent white -resize x1080 volumes-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="bilan_de_compétences" data-auto-animate><h2>📊📝 Bilan de compétences</h2><div class="slide-content"><div class="ulist"><ul><li><p>Création d&#8217;images</p></li><li><p>Création des containers</p><div class="ulist"><ul><li><p>cycle de vie</p></li><li><p>nommage</p></li><li><p>débug</p></li><li><p>réseau</p></li><li><p>volumes</p></li></ul></div></li></ul></div></div></section><section id="bilan_de_compétences_2" data-auto-animate><h2>📊📝 Bilan de compétences</h2><div class="slide-content"><div class="ulist"><ul><li><p>Création d&#8217;images ✅</p></li><li><p>Création des containers ✅</p><div class="ulist"><ul><li><p>cycle de vie ✅</p></li><li><p>nommage ✅</p></li><li><p>débug ✅</p></li><li><p>réseau  ✅</p></li><li><p>volumes ✅</p></li></ul></div></li></ul></div></div></section><section id="travaux_pratiques_8" data-auto-animate><h2>🎓 Travaux pratiques #8</h2><div class="slide-content"><div class="paragraph"><p>Lancer un container `nginx `et lui faire distribuer une page web externe au container.
-Trouver deux façons différentes de rendre disponible la page web au container.</p></div>
+<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -transparent white -resize x1080 volumes-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="bilan_de_compétences" data-auto-animate><h2>📊📝 Bilan de compétences</h2><div class="slide-content"><div class="ulist"><ul><li><p>Création d&#8217;images</p></li><li><p>Création des containers</p><div class="ulist"><ul><li><p>cycle de vie</p></li><li><p>nommage</p></li><li><p>débug</p></li><li><p>réseau</p></li><li><p>volumes</p></li></ul></div></li></ul></div></div></section><section id="bilan_de_compétences_2" data-auto-animate><h2>📊📝 Bilan de compétences</h2><div class="slide-content"><div class="ulist"><ul><li><p>Création d&#8217;images ✅</p></li><li><p>Création des containers ✅</p><div class="ulist"><ul><li><p>cycle de vie ✅</p></li><li><p>nommage ✅</p></li><li><p>débug ✅</p></li><li><p>réseau  ✅</p></li><li><p>volumes ✅</p></li></ul></div></li></ul></div></div></section><section id="travaux_pratiques_8" data-auto-animate><h2>🎓 Travaux pratiques #8</h2><div class="slide-content"><div class="paragraph"><p>Lancer un container `nginx `et lui faire distribuer une page web externe au container.</p></div>
 <div class="imageblock"><img src="media/1763880002-image10.png" alt="1763880002 image10"></div></div></section><section id="solution_travaux_pratiques_8" data-auto-animate><h2>✅ Solution travaux pratiques #8</h2><div class="slide-content"><div class="paragraph title"><p>En utilisant un montage de répertoire (Bind Mount) :</p></div>
 <div class="paragraph fragment"><p>Utilisez un montage de répertoire pour mapper un répertoire de l&#8217;hôte vers le conteneur Nginx.</p></div>
 <div class="paragraph fragment"><p>Placez vos fichiers HTML dans un répertoire sur votre machine hôte, puis mappez ce répertoire vers le conteneur Nginx.</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 80:80 --name mon-nginx -v /chemin/vers/la/page/web/sur/lhote:/usr/share/nginx/html nginx</code></pre></div></div>
 <div class="paragraph fragment"><p>Remplacez <code>/chemin/vers/la/page/web/sur/lhote</code> par le chemin réel vers le répertoire contenant vos fichiers de la page web sur l&#8217;hôte.</p></div></div></section><section id="solution_travaux_pratiques_8_2" data-auto-animate><h2>✅ Solution travaux pratiques #8</h2><div class="slide-content"><div class="paragraph title"><p>En utilisant un volume nommé (Named Volume) :</p></div>
 <div class="paragraph fragment"><p>Créez un volume nommé et copiez vos fichiers de la page web dedans.</p></div>
 <div class="paragraph fragment"><p>Montez ce volume nommé dans le conteneur Nginx.</p></div>
 <div class="paragraph fragment"><p>Tout d&#8217;abord, créez un volume nommé :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume create mon-nginx-html</code></pre></div></div>
 <div class="paragraph fragment"><p>Copiez vos fichiers de la page web dans ce volume :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm \
   --volume mon-nginx-html:/cible \   # Montez le volume nommé "mon-nginx-html" dans le conteneur sous le répertoire "/cible".
@@ -1910,23 +1909,23 @@ Trouver deux façons différentes de rendre disponible la page web au container.
   --workdir /cible \                # Définissez le répertoire de travail à "/cible" dans le conteneur.
   busybox cp -r /html .   # Copiez récursivement le contenu depuis "/chemin/vers/la/page/web/sur/lhote" dans le répertoire actuel du conteneur.</code></pre></div></div>
 <div class="paragraph fragment"><p>Maintenant, lancez le conteneur Nginx et montez le volume nommé :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div></div></section><section id="travaux_pratiques_9"><h2>🎓 Travaux pratiques #9</h2><div class="slide-content"><div class="paragraph title"><p>Étapes:</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 80:80 --name mon-nginx -v mon-nginx-html:/usr/share/nginx/html nginx</code></pre></div></div></div></section><section id="travaux_pratiques_9"><h2>🎓 Travaux pratiques #9</h2><div class="slide-content"><div class="paragraph title"><p>Étapes:</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Créer un volume nommé "data"</p></li><li class="fragment"><p>Démarrer un container attaché à ce volume</p></li><li class="fragment"><p>Lancer un processus qui écrit un fichier dans le volume</p></li><li class="fragment"><p>Démarrer un second container attaché à ce volume</p></li><li class="fragment"><p>Lire les données du volume depuis le second container</p></li><li class="fragment"><p>Supprimer le volume</p></li></ul></div></div></section><section id="solution_travaux_pratiques_9"><h2>✅ Solution travaux pratiques #9</h2><div class="slide-content"><div class="paragraph"><p>Créer un volume nommé "data" :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume create data</code></pre></div></div>
 <div class="paragraph fragment"><p>Démarrer un premier conteneur attaché à ce volume :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --name premier-container -v data:/donnees busybox</code></pre></div></div>
 <div class="paragraph fragment"><p>Dans le premier conteneur, lancez un processus qui écrit un fichier dans le volume (par exemple, un fichier texte) :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">echo "Données du premier conteneur" &gt; /donnees/mon-fichier.txt</code></pre></div></div>
 <div class="paragraph fragment"><p>Quittez le premier conteneur.</p></div>
 <div class="paragraph fragment"><p>Démarrer un second conteneur attaché au même volume :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div></div></section><section id="solution_travaux_pratiques_9_2"><h2>✅ Solution travaux pratiques #9</h2><div class="slide-content"><div class="paragraph"><p>Démarrer un second conteneur attaché au même volume :</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --name second-container -v data:/donnees busybox</code></pre></div></div></div></section><section id="solution_travaux_pratiques_9_2"><h2>✅ Solution travaux pratiques #9</h2><div class="slide-content"><div class="paragraph"><p>Démarrer un second conteneur attaché au même volume :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --name second-container -v data:/donnees busybox</code></pre></div></div>
 <div class="paragraph"><p>Dans le second conteneur, lisez les données du volume (le fichier texte) :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cat /donnees/mon-fichier.txt</code></pre></div></div>
 <div class="paragraph fragment"><p>Vous devriez voir le contenu du fichier affiché à l&#8217;écran.</p></div>
 <div class="paragraph fragment"><p>Quittez le second conteneur.</p></div>
 <div class="paragraph fragment"><p>Vous pouvez maintenant supprimer le volume "data" car vous n&#8217;en avez plus besoin :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div></div></section><section id="travaux_pratiques_10"><h2>🎓  Travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Écrire un Dockerfile qui:</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume rm data</code></pre></div></div></div></section><section id="travaux_pratiques_10"><h2>🎓  Travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Écrire un Dockerfile qui:</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Ajoute des fichiers dans un dossier</p></li><li class="fragment"><p>Déclare ce dossier comme volume anonyme</p></li><li class="fragment"><p>Ajoute d&#8217;autres fichiers dans ce dossier</p></li></ul></div>
 <div class="paragraph fragment"><p><strong>Que verra-ton dans ce dossier au sein de nos containers ?</strong></p></div></div></section><section id="solution_travaux_pratiques_10" data-auto-animate><h2>✅ Solution travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Tout d&#8217;abord, créez un répertoire pour votre projet et placez-vous dedans.</p></div>
 <div class="paragraph fragment"><p>Créez un Dockerfile avec le contenu suivant :</p></div>
@@ -2540,8 +2539,777 @@ C&#8217;est généralement fait lorsque vous voulez interagir avec le service en
 <div class="imageblock"><img src="media/47642838-image4.png" alt="47642838 image4"></div>
 <aside class="notes"><div class="paragraph"><p>Dans le temps, on recommandait de faire un script qui attendait que le service soit démarré avant de continuer.
 <a href="https://github.com/vishnubob/wait-for-it" class="bare">https://github.com/vishnubob/wait-for-it</a></p></div></aside></div></section><section id="transformer_son_application_en_docker_compose"><h2>Transformer son application en docker compose</h2><div class="slide-content"><div class="paragraph"><p>Deux approches différentes et complémentaires :</p></div>
-<div class="ulist"><ul><li class="fragment"><p><a href="https://www.composerize.com/" class="bare">https://www.composerize.com/</a></p></li><li class="fragment"><p><a href="https://github.com/jwilder/dockerize" class="bare">https://github.com/jwilder/dockerize</a></p></li></ul></div></div></section><section id="travaux_pratiques_12"><h2>Travaux pratiques #12</h2><div class="slide-content"><div class="imageblock"><img src="media/497269344-image5.png" alt="497269344 image5"></div>
-<div class="paragraph"><p><a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git</a></p></div></div></section></section>
+<div class="ulist"><ul><li class="fragment"><p><a href="https://www.composerize.com/" class="bare">https://www.composerize.com/</a></p></li><li class="fragment"><p><a href="https://github.com/jwilder/dockerize" class="bare">https://github.com/jwilder/dockerize</a></p></li></ul></div></div></section><section id="travaux_pratiques_12"><h2>🎓 Travaux pratiques #12</h2><div class="slide-content"><div class="imageblock"><img src="media/497269344-image5.png" alt="497269344 image5"></div>
+<div class="paragraph"><p><a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git</a></p></div></div></section><section id="travaux_pratiques_12_bis" data-auto-animate><h2>🎓 Travaux pratiques #12-BIS 🔨🔥</h2><div class="slide-content"><div class="paragraph"><p>Ça vous dirait d&#8217;avoir votre propre forge Gitlab ?</p></div>
+<div class="paragraph fragment"><p>😏 Non, et bien c&#8217;est parti quand même.</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Créez un nouveau fichier appelé <code>docker-compose.yml</code>.</p></li><li class="fragment"><p>Dans ce fichier, définissez trois services : <code>gitlab</code>, <code>gitlab-runner-1</code> et <code>gitlab-runner-2</code>.</p></li><li class="fragment"><p>Pour le service <code>gitlab</code>:</p><div class="ulist"><ul><li><p>utilisez l&#8217;image <code>gitlab/gitlab-ce:latest</code> (préfixée par le cache spécifique ILI)</p></li><li><p>redémarrez toujours le conteneur s&#8217;il s&#8217;arrête,</p></li><li><p>définissez le nom d&#8217;hôte sur <code>localhost</code>,</p></li><li><p>définissez l&#8217;URL externe sur <code><a href="http://localhost" class="bare">http://localhost</a></code> et exposez les ports <code>80</code>, <code>443</code> et <code>22</code>.</p></li></ul></div></li></ul></div></div></section><section id="travaux_pratiques_12_bis_2" data-auto-animate><h2>🎓 Travaux pratiques #12-BIS</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Pour les services gitlab-runner-1 et gitlab-runner-2:</p><div class="ulist"><ul><li class="fragment"><p>utilisez l&#8217;image <code>gitlab/gitlab-runner:latest</code> (préfixée par le cache spécifique ILI),</p></li><li class="fragment"><p>redémarrez toujours le conteneur s&#8217;il s&#8217;arrête,</p></li><li class="fragment"><p>dépendez du service gitlab et montez le socket Docker et le fichier de configuration de GitLab Runner.</p></li></ul></div></li><li class="fragment"><p>Créez des volumes pour:</p><div class="ulist"><ul><li class="fragment"><p>les fichiers de configuration,</p></li><li class="fragment"><p>les fichiers journaux</p></li><li class="fragment"><p>et les fichiers de données de GitLab,</p></li><li class="fragment"><p>ainsi que pour les fichiers de configuration de GitLab Runner.</p></li></ul></div></li></ul></div></div></section><section id="travaux_pratiques_12_bis_3" data-auto-animate><h2>🎓 Travaux pratiques #12-BIS 🔨🔥</h2><div class="slide-content"><div class="paragraph"><p>Pas assez détaillé? 😨</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Ouvrez votre éditeur de texte préféré et créez un nouveau fichier.</p></li><li class="fragment"><p>Nommez ce fichier <code>docker-compose.yml</code>.</p></li><li class="fragment"><p>Commencez le fichier avec la ligne <code>services:</code> pour commencer à définir les services de votre application.</p></li><li class="fragment"><p>Commencez à définir votre premier service en tapant <code>gitlab:</code> sur une nouvelle ligne. Ce sera le service pour votre serveur GitLab.</p></li><li class="fragment"><p>Sous <code>gitlab:</code>, ajoutez les détails de votre service.</p><div class="ulist"><ul><li class="fragment"><p>Par exemple, <code>image: 'gitlab/gitlab-ce:latest'</code> pour spécifier l&#8217;image Docker à utiliser pour ce service.</p></li></ul></div></li></ul></div></div></section><section id="travaux_pratiques_12_bis_4" data-auto-animate><h2>🎓 Travaux pratiques #12-BIS 🔨🔥</h2><div class="slide-content"><div class="ulist"><ul><li><p>Sous <code>gitlab:</code>, ajoutez les détails de votre service.</p><div class="ulist"><ul><li><p>Par exemple, <code>image: 'gitlab/gitlab-ce:latest'</code> pour spécifier l&#8217;image Docker à utiliser pour ce service.</p></li><li><p>Continuez à ajouter des détails pour le service gitlab, comme <code>restart: always</code> pour toujours redémarrer le conteneur s&#8217;il s&#8217;arrête, et <code>hostname: 'localhost'</code> pour définir le nom d&#8217;hôte du serveur GitLab.</p></li></ul></div></li><li><p>Définissez l&#8217;URL externe de votre serveur GitLab en ajoutant <code>environment:</code> et <code>GITLAB_OMNIBUS_CONFIG: |</code> sur de nouvelles lignes,</p></li><li><p>puis <code>external_url 'http://localhost'</code> sur la ligne suivante.</p></li><li><p>Exposez les ports nécessaires en ajoutant <code>ports:</code> sur une nouvelle ligne,</p></li><li><p>puis <code>- '80:80'</code>, <code>- '443:443'</code> et <code>- '22:22'</code> sur les lignes suivantes.</p></li></ul></div></div></section><section id="travaux_pratiques_12_bis_5" data-auto-animate><h2>🎓 Travaux pratiques #12-BIS 🔨🔥</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Montez les volumes nécessaires en ajoutant <code>volumes:</code> sur une nouvelle ligne,</p><div class="ulist"><ul><li class="fragment"><p>puis <code>- 'gitlab_config:/etc/gitlab'</code>,</p></li><li class="fragment"><p><code>- 'gitlab_logs:/var/log/gitlab'</code></p></li><li class="fragment"><p>et <code>- 'gitlab_data:/var/opt/gitlab'</code> sur les lignes suivantes.</p></li></ul></div></li><li class="fragment"><p>Répétez ces étapes pour les services gitlab-runner-1 et gitlab-runner-2, en remplaçant <code>gitlab</code> par <code>gitlab-runner-1</code> et <code>gitlab-runner-2</code> respectivement.</p></li></ul></div></div></section><section id="travaux_pratiques_12_bis_6" data-auto-animate><h2>🎓 Travaux pratiques #12-BIS 🔨🔥</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Pour les services <code>gitlab-runner-1</code> et <code>gitlab-runner-2</code>, remplacez l&#8217;URL externe par une dépendance au service gitlab en ajoutant <code>depends_on:</code> sur une nouvelle ligne, puis <code>- gitlab</code> sur la ligne suivante.</p></li><li class="fragment"><p>Montez le socket Docker et le fichier de configuration de GitLab Runner</p><div class="ulist"><ul><li class="fragment"><p>en ajoutant <code>- '/var/run/docker.sock:/var/run/docker.sock'</code></p></li><li class="fragment"><p>et <code>- 'gitlab-runner-1-config:/etc/gitlab-runner'</code> (ou <code>- 'gitlab-runner-2-config:/etc/gitlab-runner'</code> pour <code>gitlab-runner-2</code>) sous <code>volumes:</code>.</p></li></ul></div></li></ul></div></div></section><section id="travaux_pratiques_12_bis_7" data-auto-animate><h2>🎓 Travaux pratiques #12-BIS 🔨🔥</h2><div class="slide-content"><div class="paragraph fragment"><p>Enfin, définissez les volumes pour votre application en ajoutant <code>volumes:</code> sur une nouvelle ligne à la fin de votre fichier, puis</p></div>
+<div class="ulist"><ul><li class="fragment"><p><code>- gitlab_config:</code>,</p></li><li class="fragment"><p><code>- gitlab_logs:</code>,</p></li><li class="fragment"><p><code>- gitlab_data:</code>,</p></li><li class="fragment"><p><code>- gitlab-runner-1-config:</code></p></li><li class="fragment"><p>et <code>- gitlab-runner-2-config:</code> sur les lignes suivantes.</p></li></ul></div></div></section><section id="solution_travaux_pratiques_12_bis"><h2>✅ Solution Travaux pratiques #12-BIS 🔨🔥</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># This is a Docker Compose file for setting up a GitLab server and two GitLab runners.
+
+services:
+  # The GitLab server service
+  gitlab:
+    # The Docker image to use for the GitLab server
+    image: 'gitlab/gitlab-ce:16.6.0-ce.0'
+    # Always restart the container if it stops
+    restart: always
+    # The hostname for the GitLab server
+    hostname: 'localhost'
+    # Environment variables for the GitLab server
+    environment:
+      # Configuration for the GitLab Omnibus package
+      GITLAB_OMNIBUS_CONFIG: |
+        # The external URL for the GitLab server
+        external_url 'http://localhost'
+    # The ports to expose from the GitLab server
+    ports:
+      - '80:80'   # HTTP
+      - '443:443' # HTTPS
+      - '22:22'   # SSH
+    # The volumes to mount for the GitLab server
+    volumes:
+      - 'gitlab_config:/etc/gitlab'       # Configuration files
+      - 'gitlab_logs:/var/log/gitlab'     # Log files
+      - 'gitlab_data:/var/opt/gitlab'     # Data files
+
+  # The first GitLab runner service
+  gitlab-runner-1:
+    # The Docker image to use for the GitLab runner
+    image: 'gitlab/gitlab-runner:alpine3.16-v16.6.0'
+    # Always restart the container if it stops
+    restart: always
+    # The services this service depends on
+    depends_on:
+      - gitlab # Depends on the GitLab server
+    # The volumes to mount for the GitLab runner
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock' # Docker socket for running Docker commands
+      - 'gitlab-runner-1-config:/etc/gitlab-runner' # Configuration files
+
+  # The second GitLab runner service
+  gitlab-runner-2:
+    # The Docker image to use for the GitLab runner
+    image: 'gitlab/gitlab-runner:alpine3.16-v16.6.0'
+    # Always restart the container if it stops
+    restart: always
+    # The services this service depends on
+    depends_on:
+      - gitlab # Depends on the GitLab server
+    # The volumes to mount for the GitLab runner
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock' # Docker socket for running Docker commands
+      - 'gitlab-runner-2-config:/etc/gitlab-runner' # Configuration files
+
+# The volumes to create for the services
+volumes:
+  gitlab_config:         # Volume for GitLab server configuration files
+  gitlab_logs:           # Volume for GitLab server log files
+  gitlab_data:           # Volume for GitLab server data files
+  gitlab-runner-1-config: # Volume for GitLab runner 1 configuration files
+    name: gitlab-runner-1-config
+  gitlab-runner-2-config: # Volume for GitLab runner 2 configuration files
+    name: gitlab-runner-2-config</code></pre></div></div></div></section><section id="jai_ma_forge_bon_et_maintenant" class="columns" data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="imageblock column"><img src="media/when.png" alt="when" height="500px"></div>
+<div class="videoblock column"><video src="media/gitlab-logs.speed.very.small.mp4" width="100%" height="loop" data-autoplay controls>Your browser does not support the video tag.</video></div></div></section><section id="jai_ma_forge_bon_et_maintenant_2" class="intellij background" data-background-video="media/2000_years_later.mp4" data-background-video-loop data-background-video-muted data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="paragraph"><p>Il va falloir se logguer, lier les runners au serveur, créer un projet, etc&#8230;&#8203;</p></div></div></section><section id="jai_ma_forge_bon_et_maintenant_3" class="columns" data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="imageblock column"><img src="media/gitlab-login.png" alt="gitlab login" height="500px"></div>
+<div class="openblock column"><div class="content"><div class="paragraph"><p>Pour trouver le mot de passe, il va falloir le demander gentiment à Gitlab:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose -f tp12-bis.yml exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password
+Password: qaPxXU+RqioolV3bAljvs2VYnyYa4jO/UYcis/UXLAk=</code></pre></div></div>
+<div class="paragraph fragment"><p>Ensuite, il va falloir restreindre l&#8217;accès:</p></div>
+<div class="imageblock fragment"><img src="media/sign-up-restrictions.png" alt="sign up restrictions"></div></div></div></div></section><section id="jai_ma_forge_bon_et_maintenant_4" data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="paragraph"><p>Pour utiliser le runner GitLab dans GitLab, vous devez le configurer.</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Pour une configuration correcte, nous aurons besoin d&#8217;un jeton copié depuis le portail.</p></li><li class="fragment"><p>Pire que ça, pas un jeton, mais carrément une commande à adapter à <code>docker compose</code>.</p></li><li class="fragment"><p>Pour ce faire, allez à l&#8217;adresse : <a href="http://localhost/admin/runners" class="bare">http://localhost/admin/runners</a> et cliquez sur le bouton "New instance runner".</p></li><li class="fragment"><p>Choisissez "Linux".</p></li><li class="fragment"><p>"Run untagged jobs"</p></li><li class="fragment"><p>Donnez une description au runner.</p></li><li class="fragment"><p>Cliquez sur le bouton "Create runner"</p></li><li class="fragment"><p>Vous avez ensuite une commande à copier et modifier pour <code>docker compose</code>.</p></li></ul></div></div></section><section id="jai_ma_forge_bon_et_maintenant_5" data-background-iframe="https://www.youtube.com/embed/S-npLuur6KM?rel=0&start=0&enablejsapi=1&autoplay=1&loop=1&controls=1&modestbranding=1" data-auto-animate><div class="slide-content"><aside class="notes"><div class="paragraph"><p><a href="https://youtu.be/S-npLuur6KM" class="bare">https://youtu.be/S-npLuur6KM</a></p></div></aside></div></section><section id="jai_ma_forge_bon_et_maintenant_6" data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose -f tp12-bis.yml exec gitlab-runner-1 gitlab-runner register --url http://gitlab  --token glrt-PF5rLbUKzku5g8BL2y7J
+Runtime platform                                    arch=amd64 os=linux pid=103 revision=853330f9 version=16.5.0
+Running in system-mode.
+
+Enter the GitLab instance URL (for example, https://gitlab.com/):
+[http://gitlab]:
+Verifying runner... is valid                        runner=PF5rLbUKz
+Enter a name for the runner. This is stored only in the local config.toml file:
+[3c2ee0d97d2b]: runner 1
+Enter an executor: parallels, docker-autoscaler, docker+machine, custom, docker, docker-windows, shell, ssh, virtualbox, instance, kubernetes:
+shell
+Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
+
+Configuration (with the authentication token) was saved in "/etc/gitlab-runner/config.toml"</code></pre></div></div></div></section><section data-background-image="media/gitlab-runners-compose.png" data-background-size="cover" data-auto-animate></section><section id="profils_dans_docker_compose" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="paragraph"><p>On a vu déjà l&#8217;instruction <code>depends_on</code> dans un fichier Docker Compose.</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Elle permet de définir des dépendances entre les services.</p></li><li class="fragment"><p>Mais que faire si on veut définir un lot de services qui fonctionnent ensemble, sans pour autant être en interdépendance ?</p></li><li class="fragment"><p>Les profils dans Docker Compose permettent de définir des groupes de services qui peuvent être activés ou désactivés ensemble.</p></li><li class="fragment"><p>Cela peut être utile pour gérer des environnements de développement, de test et de production différents dans le même fichier Docker Compose.</p></li><li class="fragment"><p>Pour définir un profil pour un service, vous pouvez ajouter la clé <code>profiles</code> à la définition du service dans votre fichier Docker Compose.</p></li></ul></div></div></section><section id="profils_dans_docker_compose_2" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="paragraph"><p>Par exemple :</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  mon_service:
+    image: mon_image
+    profiles:
+      - dev</code></pre></div></div>
+<div class="paragraph fragment"><p>Dans cet exemple, le service mon_service appartient au profil dev.</p></div></div></section><section id="profils_dans_docker_compose_3" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Pour démarrer seulement les services qui appartiennent à un certain profil, vous pouvez utiliser l&#8217;option <code>--profile</code> avec la commande <code>docker-compose up</code>.</p></li><li class="fragment"><p>Par exemple :</p></li></ul></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker-compose up --profile dev</code></pre></div></div>
+<div class="paragraph fragment"><p>Cette commande démarrera seulement les services qui appartiennent au profil <code>dev</code>.</p></div></div></section><section id="profils_dans_docker_compose_4" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Les profils peuvent rendre votre fichier Docker Compose plus organisé et flexible.</p></li><li class="fragment"><p>Ils vous permettent de définir différents environnements dans le même fichier et de choisir facilement quels services démarrer en fonction de vos besoins.</p></li><li class="fragment"><p>Jetons un coup d&#8217;œil à un exemple de fichier Docker Compose avec des profils :</p></li></ul></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  service_dev:
+    image: mon_image_dev
+    profiles:
+      - dev
+  service_prod:
+    image: mon_image_prod
+    profiles:
+      - prod</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Dans cet exemple, nous avons deux services : <code>service_dev</code> et <code>service_prod</code>.</p></li><li class="fragment"><p>Chacun appartient à un profil différent.</p></li></ul></div></div></section><section id="profils_dans_docker_compose_5" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  service_dev:
+    image: mon_image_dev
+    profiles:
+      - dev
+  service_prod:
+    image: mon_image_prod
+    profiles:
+      - prod</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Nous pouvons choisir de démarrer seulement les services de développement avec <code>docker-compose up --profile dev</code>, ou uniquement les services de production avec <code>docker-compose up --profile prod</code>.</p></li><li class="fragment"><p>Les profils dans Docker Compose sont un outil puissant pour gérer différents environnements dans le même fichier Docker Compose.</p></li><li class="fragment"><p>Ils peuvent rendre votre développement et vos tests plus efficaces et organisés.</p></li></ul></div></div></section><section id="une_autre_forge_ça_vous_dit"><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph fragment"><p>😏 Non, et bien, c&#8217;est parti quand même.</p></div>
+<div class="paragraph fragment"><p><a href="https://raw.githubusercontent.com/ash-sxn/GSoC-2023-docker-based-quickstart/main/build-docker-compose.yaml" class="bare">https://raw.githubusercontent.com/ash-sxn/GSoC-2023-docker-based-quickstart/main/build-docker-compose.yaml</a></p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  # Le service sidekick est responsable de la génération des clés SSH et de la vérification de leur existence.
+  sidekick_service:
+    build: dockerfiles/sidekick/.  # Le Dockerfile pour construire l'image du service sidekick.
+    stdin_open: true  # Permet au service de garder STDIN ouvert même s'il n'est pas attaché.
+    tty: true  # Alloue un pseudo-TTY pour le service.
+    entrypoint: sh -c "/usr/local/bin/keygen.sh /ssh-dir"  # La commande que le service exécute lorsqu'il démarre.
+    volumes:
+      - agent-ssh-dir:/ssh-dir  # Monte le volume agent-ssh-dir au chemin /ssh-dir à l'intérieur du conteneur.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Vérifie si le fichier conductor_ok existe dans le chemin /ssh-dir.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+
+  # Le service jenkins_controller est responsable de la gestion des jobs et des configurations Jenkins.
+  jenkins_controller:
+    build: dockerfiles/.  # Le Dockerfile pour construire l'image du service jenkins_controller.
+    restart: on-failure  # Le service sera redémarré s'il quitte en raison d'une erreur.
+    ports:
+      - "8080:8080"  # Expose le port 8080 du service à l'hôte.
+    volumes:
+      - jenkins_home:/var/jenkins_home  # Monte le volume jenkins_home au chemin /var/jenkins_home à l'intérieur du conteneur.
+      - agent-ssh-dir:/ssh-dir  # Monte le volume agent-ssh-dir au chemin /ssh-dir à l'intérieur du conteneur.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Vérifie si le fichier conductor_ok existe dans le chemin /ssh-dir.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+
+  # Le service default_agent est un agent Jenkins avec un JDK installé.
+  default_agent:
+    image: jenkins/ssh-agent:5.5.0-jdk17  # L'image Docker pour le service.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      jenkins_controller:
+        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
+
+  # Le service maven est un agent Jenkins avec Maven installé.
+  maven:
+    build: dockerfiles/maven/.  # Le Dockerfile pour construire l'image du service Maven.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    profiles:
+      - maven  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      jenkins_controller:
+        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
+
+  # Le service python est un agent Jenkins avec Python installé.
+  python:
+    build: dockerfiles/python/.  # Le Dockerfile pour construire l'image du service Python.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    profiles:
+      - python  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      jenkins_controller:
+        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
+
+  # Le service node est un agent Jenkins avec Node.js installé.
+  node:
+    build: dockerfiles/node/.  # Le Dockerfile pour construire l'image du service Node.js.
+    environment:
+      - GITPOD_WORKSPACE_URL=${GITPOD_WORKSPACE_URL}  # Les variables d'environnement pour le service.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    profiles:
+      - node  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      jenkins_controller:
+        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
+    ports:
+      - "3000:3000"  # Expose le port 3000 du service à l'hôte.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
+
+  # Le service multi_jenkins_controller est un contrôleur Jenkins pour gérer plusieurs jobs et configurations Jenkins.
+  multi_jenkins_controller:
+    build: 06_multibranch_pipeline/dockerfiles/.  # Le Dockerfile pour construire l'image du service multi Jenkins controller.
+    restart: on-failure  # Le service sera redémarré s'il quitte en raison d'une erreur.
+    ports:
+      - "8080:8080"  # Expose le port 8080 du service à l'hôte.
+    volumes:
+      - jenkins_home:/var/jenkins_home  # Monte le volume jenkins_home au chemin /var/jenkins_home à l'intérieur du conteneur.
+      - agent-ssh-dir:/ssh-dir  # Monte le volume agent-ssh-dir au chemin /ssh-dir à l'intérieur du conteneur.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1" ]  # Vérifie si le fichier conductor_ok existe dans le chemin /ssh-dir.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+
+  # Le service multi est un agent Jenkins pour gérer plusieurs jobs et configurations Jenkins.
+  multi:
+    build: 06_multibranch_pipeline/dockerfiles/agent/.  # Le Dockerfile pour construire l'image du service multi Jenkins agent.
+    environment:
+      - GITPOD_WORKSPACE_URL=${GITPOD_WORKSPACE_URL}  # Les variables d'environnement pour le service.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    profiles:
+      - multi  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      multi_jenkins_controller:
+        condition: service_started  # Le service multi_jenkins_controller doit démarrer avant que ce service ne démarre.
+    ports:
+      - "3000:3000"  # Expose le port 3000 du service à l'hôte.
+      - "5000:5000"  # Expose le port 5000 du service à l'hôte.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.
+
+# Les volumes utilisés par les services.
+volumes:
+  jenkins_home:  # Un volume pour stocker les données de Jenkins.
+  agent-ssh-dir:  # Un volume pour stocker les clés SSH.
+    name: agent-ssh-dir  # Le nom du volume.</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_2"><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph"><p>Indigeste? 😨</p></div>
+<div class="paragraph fragment"><p>Ne relevons que les points importants:</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service maven est un agent Jenkins avec Maven installé.
+  maven:
+    build: dockerfiles/maven/.  # Le Dockerfile pour construire l'image du service Maven.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    profiles:
+      - maven  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      jenkins_controller:
+        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_3" data-auto-animate><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph"><p>Maven</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM jenkins/ssh-agent:5.12.0-jdk17 as ssh-agent
+
+# ca-certificates because curl will need it later on for the maven installation
+RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends ca-certificates curl &amp;&amp; apt-get clean &amp;&amp; \
+  rm -rf /var/lib/apt/lists/*
+
+# Now time to install maven
+ARG MAVEN_VERSION=3.9.2
+
+# Set SHELL flags for RUN commands to allow -e and pipefail
+# Rationale:https://github.com/hadolint/hadolint/wiki/DL4006
+SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
+
+# Add a checksum for the maven binary
+RUN curl -sS -L -O --output-dir /tmp/ --create-dirs  https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
+    &amp;&amp; printf "%s" "$(sha512sum /tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz)" | sha512sum -c - \
+    &amp;&amp; curl -sS -L -O --output-dir /tmp/ --create-dirs  https://downloads.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz.sha512 \
+    &amp;&amp; printf "%s /tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" "$(cat /tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz.sha512)" | sha512sum --check --status - \
+    &amp;&amp; tar xzf "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" -C /opt/ \
+    &amp;&amp; rm "/tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
+    &amp;&amp; ln -s /opt/apache-maven-${MAVEN_VERSION} /opt/maven \
+    &amp;&amp; ln -s /opt/maven/bin/mvn /usr/bin/mvn \
+    &amp;&amp; mkdir -p /etc/profile.d \
+    &amp;&amp; echo "export JAVA_HOME=$JAVA_HOME \n \
+             export M2_HOME=/opt/maven \n \
+             export PATH=${M2_HOME}/bin:${PATH}" &gt; /etc/profile.d/maven.sh
+ENV M2_HOME="/opt/maven"
+ENV PATH="${M2_HOME}/bin/:${PATH}"
+RUN echo "PATH=${PATH}" &gt;&gt; /etc/environment &amp;&amp; chown -R jenkins:jenkins "${JENKINS_AGENT_HOME}"</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_4" data-auto-animate><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph"><p>Python</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service python est un agent Jenkins avec Python installé.
+  python:
+    build: dockerfiles/python/.  # Le Dockerfile pour construire l'image du service Python.
+    container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
+    profiles:
+      - python  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
+    depends_on:  # Les services dont ce service dépend.
+      sidekick_service:
+        condition: service_completed_successfully  # Le sidekick_service doit se terminer avec succès avant que ce service ne démarre.
+      jenkins_controller:
+        condition: service_started  # Le service jenkins_controller doit démarrer avant que ce service ne démarre.
+    healthcheck:  # La commande de vérification de santé pour le service.
+      test: [ "CMD-SHELL", "[ -f /home/jenkins/.ssh/authorized_keys ] || exit 1" ]  # Vérifie si le fichier authorized_keys existe dans le chemin /home/jenkins/.ssh.
+      interval: 5s  # Le temps entre les vérifications de santé.
+      timeout: 10s  # Le temps à attendre avant de considérer que la vérification a échoué.
+      retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
+    volumes:
+      - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_5" data-auto-animate><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Use the base image
+FROM jenkins/ssh-agent:5.12.0-jdk17 as ssh-agent
+
+# Install necessary Dependencies
+RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends \
+    binutils ca-certificates curl git python3 python3-pip python3-setuptools python3-wheel python3-dev wget
+
+# Create an alias for python3 as python
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+# Install required python packages
+RUN pip install docker-py feedparser nosexcover prometheus_client pycobertura pylint pytest pytest-cov requests setuptools sphinx pyinstaller
+
+# Add the Jenkins agent user to the environment
+RUN echo "PATH=${PATH}" &gt;&gt; /etc/environment
+
+# Set ownership for Jenkins agent home directory
+RUN chown -R jenkins:jenkins "${JENKINS_AGENT_HOME}"</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_6" data-auto-animate><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph"><p>À vous maintenant!</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">git clone https://github.com/ash-sxn/GSoC-2023-docker-based-quickstart.git</code></pre></div></div>
+<div class="paragraph fragment"><p>À vous de modifier les sources de façon à passer par le cache ILI</p></div>
+<div class="paragraph fragment"><p>Ensuite, ne restera qu&#8217;à lancer la "forge":</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker-compose up --build -d --force-recreate maven</code></pre></div></div>
+<div class="paragraph fragment"><p>Ou encore si vous voulez tout construire localement:</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker-compose -f build-docker-compose.yaml up --build -d --force-recreate maven</code></pre></div></div></div></section><section data-background-image="media/jenkins-compose.png" data-background-size="cover" data-auto-animate></section><section id="autre_étude_de_cas" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker-compose qui a généré ce cours ?</p></div></div></section><section id="autre_étude_de_cas_2" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker-compose qui a généré ce cours ?</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># Ceci est un fichier Docker Compose pour un projet qui comprend plusieurs services.
+
+# 'x-slides-base' est une ancre YAML qui définit une configuration commune pour plusieurs services.
+x-slides-base: &amp;slides-base
+  # La configuration de construction pour l'image Docker.
+  build:
+    # Le contexte de construction est le répertoire courant.
+    context: ./
+    args:
+      # Active la fonction de mise en cache en ligne de Docker BuildKit.
+      BUILDKIT_INLINE_CACHE: 1
+  # Variables d'environnement pour le conteneur Docker.
+  environment:
+    - PRESENTATION_URL=${PRESENTATION_URL}
+    - REPOSITORY_URL=${REPOSITORY_URL}
+  # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
+  user: ${CURRENT_UID}
+  # Un montage tmpfs pour des opérations d'E/S plus rapides.
+  tmpfs:
+    - ${BUILD_DIR}
+  # Volumes pour le conteneur Docker.
+  volumes:
+    - ./content:/app/content
+    - ./assets:/app/assets
+    - ${DIST_DIR}:/app/dist
+    - ./gulp/gulpfile.js:/app/gulpfile.js
+    - ./gulp/tasks:/app/tasks
+    - ./npm-packages:/app/npm-packages
+
+# Les services qui composent l'application.
+services:
+  # Le service 'serve'.
+  serve:
+    # Utilise la configuration commune définie par l'ancre 'x-slides-base'.
+    &lt;&lt;: *slides-base
+    # Expose le port 8000 du conteneur à l'hôte.
+    ports:
+      - "8000:8000"
+
+  # Le service 'build'.
+  build:
+    &lt;&lt;: *slides-base
+    # Ce service dépend du service 'qrcode'.
+    depends_on:
+      qrcode:
+        # Le service 'qrcode' doit se terminer avec succès avant que ce service ne démarre.
+        condition: service_completed_successfully
+    # Le point d'entrée pour le conteneur Docker.
+    entrypoint: &gt;
+      sh -xc 'gulp build &amp;&amp; cp -r "${BUILD_DIR}"/* /app/dist/'
+
+  # Le service 'qrcode'.
+  qrcode:
+    &lt;&lt;: *slides-base
+    # Le point d'entrée pour le conteneur Docker.
+    entrypoint: /app/node_modules/.bin/qrcode
+    # La commande à exécuter dans le conteneur Docker.
+    command: &gt;
+      -t png -o /app/content/media/qrcode.png ${PRESENTATION_URL}
+
+  # Le service 'pdf'.
+  pdf:
+    # L'image Docker pour ce service.
+    image: ghcr.io/astefanutti/decktape:3.7.0
+    # Ce service dépend du service 'build'.
+    depends_on:
+      build:
+        # Le service 'build' doit se terminer avec succès avant que ce service ne démarre.
+        condition: service_completed_successfully
+    # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
+    user: ${CURRENT_UID}
+    # Volumes pour le conteneur Docker.
+    volumes:
+      - ${DIST_DIR}:/slides
+    # La commande à exécuter dans le conteneur Docker.
+    command: &gt;
+      /slides/index.html /slides/slides.pdf --size='1024x768' --pause 0</code></pre></div></div></div></section><section id="autre_étude_de_cas_3" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker-compose qui a généré ce cours ?</p></div>
+<div class="paragraph fragment"><p>Indigeste? 😨</p></div>
+<div class="paragraph fragment"><p>Ne relevons que les points importants:</p></div>
+<div class="paragraph fragment"><p>Les ancres&#8230;&#8203;</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># Ceci est un fichier Docker Compose pour un projet qui comprend plusieurs services.
+
+# 'x-slides-base' est une ancre YAML qui définit une configuration commune pour plusieurs services.
+x-slides-base: &amp;slides-base
+  # La configuration de construction pour l'image Docker.
+  build:
+    # Le contexte de construction est le répertoire courant.
+    context: ./
+    args:
+      # Active la fonction de mise en cache en ligne de Docker BuildKit.
+      BUILDKIT_INLINE_CACHE: 1
+  # Variables d'environnement pour le conteneur Docker.
+  environment:
+    - PRESENTATION_URL=${PRESENTATION_URL}
+    - REPOSITORY_URL=${REPOSITORY_URL}
+  # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
+  user: ${CURRENT_UID}
+  # Un montage tmpfs pour des opérations d'E/S plus rapides.
+  tmpfs:
+    - ${BUILD_DIR}
+  # Volumes pour le conteneur Docker.
+  volumes:
+    - ./content:/app/content
+    - ./assets:/app/assets
+    - ${DIST_DIR}:/app/dist
+    - ./gulp/gulpfile.js:/app/gulpfile.js
+    - ./gulp/tasks:/app/tasks
+    - ./npm-packages:/app/npm-packages</code></pre></div></div></div></section><section id="les_ancres_dans_docker_compose" data-auto-animate><h2>➡️🔄 Les ancres dans <code>docker compose</code> ⚓</h2><div class="slide-content"><div class="paragraph"><p>Docker Compose permet de définir et de gérer plusieurs services Docker dans un seul fichier YAML.</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Les ancres (<code>&amp;</code>) et les alias (<code>*</code>) sont des fonctionnalités YAML qui peuvent être utilisées dans Docker Compose pour réutiliser des configurations.</p></li><li class="fragment"><p>Une ancre est une référence à un objet ou à une valeur dans un fichier YAML.
+Elle est définie en utilisant l&#8217;opérateur <code>&amp;</code> suivi d&#8217;un nom unique.</p></li></ul></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">x-slides-base: &amp;slides-base
+  build:
+    context: ./</code></pre></div></div>
+<div class="paragraph fragment"><p>Dans cet exemple, <code>x-slides-base</code> est une ancre qui représente un objet avec une clé <code>build</code>.</p></div></div></section><section id="les_ancres_dans_docker_compose_2" data-auto-animate><h2>➡️🔄 Les ancres dans <code>docker compose</code> ⚓</h2><div class="slide-content"><div class="paragraph"><p>Les ancres peuvent être référencées ailleurs dans le fichier YAML en utilisant l&#8217;opérateur <code>*</code>.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  serve:
+    &lt;&lt;: *slides-base</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Les ancres permettent de réutiliser des configurations, ce qui rend le fichier Docker Compose plus lisible et plus facile à maintenir.</p></li><li class="fragment"><p>Si vous devez modifier une configuration qui est utilisée à plusieurs endroits, vous pouvez simplement modifier l&#8217;ancre.</p></li><li class="fragment"><p>En conclusion, les ancres et les alias sont des outils puissants pour gérer des configurations complexes dans Docker Compose. Ils permettent de réduire la duplication et d&#8217;améliorer la lisibilité de votre fichier Docker Compose.</p></li></ul></div></div></section><section id="autre_étude_de_cas_4" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Le fameux qrcode&#8230;&#8203;</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service 'qrcode'.
+  qrcode:
+    &lt;&lt;: *slides-base
+    # Le point d'entrée pour le conteneur Docker.
+    entrypoint: /app/node_modules/.bin/qrcode
+    # La commande à exécuter dans le conteneur Docker.
+    command: &gt;
+      -t png -o /app/content/media/qrcode.png ${PRESENTATION_URL}</code></pre></div></div></div></section><section id="autre_étude_de_cas_5" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Le service qui construit les slides à partir d'`asciidoc` avec <code>reveal.js</code>.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service 'build'.
+  build:
+    &lt;&lt;: *slides-base
+    # Ce service dépend du service 'qrcode'.
+    depends_on:
+      qrcode:
+        # Le service 'qrcode' doit se terminer avec succès avant que ce service ne démarre.
+        condition: service_completed_successfully
+    # Le point d'entrée pour le conteneur Docker.
+    entrypoint: &gt;
+      sh -xc 'gulp build &amp;&amp; cp -r "${BUILD_DIR}"/* /app/dist/'</code></pre></div></div></div></section><section id="autre_étude_de_cas_6" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Le service qui construit les slides à partir d'`asciidoc` avec <code>reveal.js</code>.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service 'serve'.
+  serve:
+    # Utilise la configuration commune définie par l'ancre 'x-slides-base'.
+    &lt;&lt;: *slides-base
+    # Expose le port 8000 du conteneur à l'hôte.
+    ports:
+      - "8000:8000"</code></pre></div></div></div></section><section id="autre_étude_de_cas_7" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Le service qui construit le pdf à partir des slides.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service 'pdf'.
+  pdf:
+    # L'image Docker pour ce service.
+    image: ghcr.io/astefanutti/decktape:3.7.0
+    # Ce service dépend du service 'build'.
+    depends_on:
+      build:
+        # Le service 'build' doit se terminer avec succès avant que ce service ne démarre.
+        condition: service_completed_successfully
+    # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
+    user: ${CURRENT_UID}
+    # Volumes pour le conteneur Docker.
+    volumes:
+      - ${DIST_DIR}:/slides
+    # La commande à exécuter dans le conteneur Docker.
+    command: &gt;
+      /slides/index.html /slides/slides.pdf --size='1024x768' --pause 0</code></pre></div></div></div></section><section id="autre_étude_de_cas_8" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Pour rappel, l&#8217;ancre contenait :</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># 'x-slides-base' est une ancre YAML qui définit une configuration commune pour plusieurs services.
+x-slides-base: &amp;slides-base
+  # La configuration de construction pour l'image Docker.
+  build:
+    # Le contexte de construction est le répertoire courant.
+    context: ./
+    args:
+      # Active la fonction de mise en cache en ligne de Docker BuildKit.
+      BUILDKIT_INLINE_CACHE: 1
+  # Variables d'environnement pour le conteneur Docker.
+  environment:
+    - PRESENTATION_URL=${PRESENTATION_URL}
+    - REPOSITORY_URL=${REPOSITORY_URL}
+  # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
+  user: ${CURRENT_UID}
+  # Un montage tmpfs pour des opérations d'E/S plus rapides.
+  tmpfs:
+    - ${BUILD_DIR}
+  # Volumes pour le conteneur Docker.
+  volumes:
+    - ./content:/app/content
+    - ./assets:/app/assets
+    - ${DIST_DIR}:/app/dist
+    - ./gulp/gulpfile.js:/app/gulpfile.js
+    - ./gulp/tasks:/app/tasks
+    - ./npm-packages:/app/npm-packages</code></pre></div></div></div></section><section id="build_quoi" class="columns" data-auto-animate><h2>➡️🔄 Build quoi? 🛠️📦</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="ulist"><ul><li class="fragment"><p>Docker BuildKit est un outil de construction de Docker qui apporte de nombreuses améliorations par rapport à l&#8217;ancien système de construction.</p></li><li class="fragment"><p>L&#8217;une de ces améliorations est la mise en cache en ligne.</p></li><li class="fragment"><p>La mise en cache en ligne est une fonctionnalité de Docker BuildKit qui permet de réutiliser les couches de cache existantes lors de la construction d&#8217;une image Docker.</p></li></ul></div>
+<div class="imageblock fragment"><img src="media/multi-layered-cake-removebg-preview.png" alt="multi layered cake removebg preview" height="100px"></div></div></div>
+<div class="openblock column is-one-third"><div class="content"><div class="paragraph fragment"><p>Elle est activée en définissant l&#8217;argument <code>BUILDKIT_INLINE_CACHE</code> à <code>1</code>.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">args:
+  BUILDKIT_INLINE_CACHE: 1</code></pre></div></div></div></div></div></section><section id="environnement" class="columns" data-auto-animate><h2>➡️🔄 Environnement 🌍🌿</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Variables d'environnement pour le conteneur Docker.
+  environment:
+    - PRESENTATION_URL=${PRESENTATION_URL}
+    - REPOSITORY_URL=${REPOSITORY_URL}</code></pre></div></div></div></div>
+<div class="openblock column"><div class="content"><div class="paragraph"><p>Deux variables d&#8217;environnement sont définies pour le conteneur Docker : <code>PRESENTATION_URL</code> et <code>REPOSITORY_URL</code>.</p></div>
+<div class="paragraph fragment"><p>Ces variables sont définies à l&#8217;aide de la syntaxe <code>${VARIABLE_NAME}</code>, qui est une manière standard d&#8217;accéder aux variables d&#8217;environnement dans les fichiers de configuration YAML.</p></div></div></div></div></section><section id="environnement_2" data-auto-animate><h2>➡️🔄 Environnement 🌍🌿</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Variables d'environnement pour le conteneur Docker.
+  environment:
+    - PRESENTATION_URL=${PRESENTATION_URL}
+    - REPOSITORY_URL=${REPOSITORY_URL}</code></pre></div></div>
+<div class="paragraph"><p>Lorsque Docker Compose rencontre cette syntaxe, il cherche la valeur de la variable d&#8217;environnement dans plusieurs endroits, en suivant un ordre spécifique :</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Il vérifie d&#8217;abord si la variable est définie dans le shell courant.</p></li><li class="fragment"><p>Si c&#8217;est le cas, il utilise cette valeur.</p></li><li class="fragment"><p>Si la variable n&#8217;est pas définie dans le shell, Docker Compose cherche ensuite dans un fichier <code>.env</code> situé dans le même répertoire que le fichier <code>docker-compose.yml</code>.</p></li><li class="fragment"><p>Si la variable est définie dans ce fichier, Docker Compose utilise cette valeur.</p></li></ul></div></div></section><section id="environnement_3" data-auto-animate><h2>➡️🔄 Environnement 🌍🌿</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Variables d'environnement pour le conteneur Docker.
+  environment:
+    - PRESENTATION_URL=${PRESENTATION_URL}
+    - REPOSITORY_URL=${REPOSITORY_URL}</code></pre></div></div>
+<div class="ulist"><ul><li><p>Si la variable n&#8217;est définie ni dans le shell ni dans le fichier <code>.env</code>, Docker Compose utilise la valeur par défaut spécifiée dans le fichier <code>docker-compose.yml</code> (s&#8217;il y en a une).</p></li><li><p>Dans notre cas, aucune valeur par défaut n&#8217;est spécifiée, donc si la variable n&#8217;est définie ni dans le shell ni dans le fichier <code>.env</code>, Docker Compose générera une erreur.</p></li></ul></div></div></section><section id="autre_étude_de_cas_9" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
+  user: ${CURRENT_UID}</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Dans Docker, chaque instruction dans le Dockerfile est exécutée par un utilisateur particulier.</p></li><li class="fragment"><p>Par défaut, cet utilisateur est root, mais pour des raisons de sécurité, il est souvent recommandé d&#8217;exécuter les processus en tant qu&#8217;utilisateur non root.</p></li><li class="fragment"><p>Cette ligne définit l&#8217;ID de l&#8217;utilisateur qui exécutera les commandes à l&#8217;intérieur du conteneur Docker à la valeur de la variable d&#8217;environnement <code>CURRENT_UID</code>.</p></li><li class="fragment"><p>La syntaxe <code>${CURRENT_UID}</code> est utilisée pour accéder à la valeur d&#8217;une variable d&#8217;environnement.</p></li><li class="fragment"><p>Dans ce cas, Docker Compose recherchera une variable d&#8217;environnement nommée <code>CURRENT_UID</code> et utilisera sa valeur.</p></li><li class="fragment"><p>Si <code>CURRENT_UID</code> n&#8217;est pas défini dans l&#8217;environnement où Docker Compose est exécuté, Docker Compose renverra une erreur.</p></li></ul></div></div></section><section id="autre_étude_de_cas_10" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># Ce Dockerfile met en place un environnement Node.js avec des outils et dépendances supplémentaires.
+# Il est basé sur l'image Docker officielle de Node.js (version 18, variante Alpine).
+
+FROM node:18-alpine
+
+# Installer la dernière version des dépendances requises
+# hadolint ignore=DL3018
+RUN apk add --no-cache \
+  curl \ # Outil pour transférer des données avec des URLs
+  git \ # Système de contrôle de version distribué
+  tini \ # Un init minuscule mais valide pour les conteneurs
+  unzip # Outil pour décompresser les fichiers zip
+
+# Installer les dépendances NPM globalement (dernières versions)
+# hadolint ignore=DL3016,DL3059
+RUN npm install --global npm npm-check-updates # Mettre à jour npm à la dernière version et installer npm-check-updates
+
+# Copier les dépendances NPM de l'application dans l'image Docker
+COPY ./npm-packages /app/npm-packages
+# Créer des liens symboliques pour package.json et package-lock.json à la racine de /app
+# Cela permet d'exécuter les opérations npm sans erreur ENOENT
+RUN ln -s /app/npm-packages/package.json /app/package.json \
+  &amp;&amp; ln -s /app/npm-packages/package-lock.json /app/package-lock.json
+
+# Définir le répertoire de travail dans l'image Docker à /app
+WORKDIR /app
+
+# Télécharger et installer une version spécifique de FontAwesome
+ARG FONTAWESOME_VERSION=6.4.0
+RUN curl --silent --show-error --location --output /tmp/fontawesome.zip \
+    "https://use.fontawesome.com/releases/v${FONTAWESOME_VERSION}/fontawesome-free-${FONTAWESOME_VERSION}-web.zip" \
+  &amp;&amp; unzip -q /tmp/fontawesome.zip -d /tmp \
+  &amp;&amp; mv /tmp/"fontawesome-free-${FONTAWESOME_VERSION}-web" /app/fontawesome \
+  &amp;&amp; rm -rf /tmp/font*
+
+# Installer les dépendances NPM en utilisant le package-lock.json
+# Si l'installation échoue, revenir à une installation npm régulière
+RUN { npm install-clean &amp;&amp; npx update-browserslist-db@latest; } || npm install
+
+# Lier la commande gulp pour qu'elle soit disponible dans le PATH
+# hadolint ignore=DL3059
+RUN npm link gulp
+
+# Copier les tâches gulp et la configuration dans l'image Docker
+COPY ./gulp/tasks /app/tasks
+COPY ./gulp/gulpfile.js /app/gulpfile.js
+
+# Définir un volume pour le répertoire /app
+VOLUME ["/app"]
+
+# Exposer le port 8000 pour HTTP
+EXPOSE 8000
+
+# Utiliser tini comme point d'entrée, et exécuter gulp par défaut
+ENTRYPOINT ["/sbin/tini","-g","gulp"]
+CMD ["default"]</code></pre></div></div></div></section><section id="autre_étude_de_cas_11" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">RUN npm install --global npm npm-check-updates # Mettre à jour npm à la dernière version et installer npm-check-updates
+
+# Copier les dépendances NPM de l'application dans l'image Docker
+COPY ./npm-packages /app/npm-packages
+# Créer des liens symboliques pour package.json et package-lock.json à la racine de /app
+# Cela permet d'exécuter les opérations npm sans erreur ENOENT
+RUN ln -s /app/npm-packages/package.json /app/package.json \
+  &amp;&amp; ln -s /app/npm-packages/package-lock.json /app/package-lock.json</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Ce Dockerfile met en place un environnement <code>Node.js</code> avec des outils et dépendances supplémentaires.</p></li><li class="fragment"><p>Il installe les dernières versions de <code>npm</code> et <code>npm-check-updates</code> globalement, copie les dépendances <code>npm</code> de l&#8217;application dans l&#8217;image Docker, et crée des liens symboliques pour <code>package.json</code> et <code>package-lock.json</code> à la racine de <code>/app</code>.</p></li></ul></div></div></section><section id="autre_étude_de_cas_12" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">ARG FONTAWESOME_VERSION=6.4.0
+RUN curl --silent --show-error --location --output /tmp/fontawesome.zip \
+    "https://use.fontawesome.com/releases/v${FONTAWESOME_VERSION}/fontawesome-free-${FONTAWESOME_VERSION}-web.zip" \
+  &amp;&amp; unzip -q /tmp/fontawesome.zip -d /tmp \
+  &amp;&amp; mv /tmp/"fontawesome-free-${FONTAWESOME_VERSION}-web" /app/fontawesome \
+  &amp;&amp; rm -rf /tmp/font*</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Il télécharge également et installe une version spécifique de <code>FontAwesome</code></p></li></ul></div></div></section><section id="autre_étude_de_cas_13" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Installer les dépendances NPM en utilisant le package-lock.json
+# Si l'installation échoue, revenir à une installation npm régulière
+RUN { npm install-clean &amp;&amp; npx update-browserslist-db@latest; } || npm install
+
+# Lier la commande gulp pour qu'elle soit disponible dans le PATH
+# hadolint ignore=DL3059
+RUN npm link gulp</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Il installe les dépendances <code>npm</code> en utilisant le <code>package-lock.json</code> (en revenant à une installation <code>npm</code> régulière si nécessaire), et lie la commande <code>gulp</code> pour qu&#8217;elle soit disponible dans le <code>PATH</code>.</p></li></ul></div></div></section><section id="autre_étude_de_cas_14" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Copier les tâches gulp et la configuration dans l'image Docker
+COPY ./gulp/tasks /app/tasks
+COPY ./gulp/gulpfile.js /app/gulpfile.js
+
+# Définir un volume pour le répertoire /app
+VOLUME ["/app"]
+
+# Exposer le port 8000 pour HTTP
+EXPOSE 8000</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Les tâches <code>gulp</code> et la configuration sont copiées dans l&#8217;image Docker, un volume est défini pour le répertoire <code>/app</code>, et le port <code>8000</code> est exposé pour <code>HTTP</code>.</p></li></ul></div></div></section><section id="autre_étude_de_cas_15" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Utiliser tini comme point d'entrée, et exécuter gulp par défaut
+ENTRYPOINT ["/sbin/tini","-g","gulp"]
+CMD ["default"]</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Le point d&#8217;entrée est défini sur <code>tini</code>, et <code>gulp</code> est exécuté par défaut.</p></li></ul></div></div></section><section id="tini_dans_docker"><h2>🐋 Tini dans Docker</h2></section><section id="quest_ce_que_tini"><h2>🤔 Qu&#8217;est-ce que Tini ?</h2><div class="slide-content"><div class="paragraph"><p>Tini est un <code>init</code> minuscule mais valide pour les conteneurs. Il est conçu pour être le système init le plus simple possible.</p></div></div></section><section id="que_fait_tini"><h2>🛠️ Que fait Tini ?</h2><div class="slide-content"><div class="paragraph"><p>Tini fait deux choses :</p></div>
+<div class="olist arabic"><ol class="arabic"><li><p>Il génère votre processus en tant que son enfant (directement, pas en tant que petit-enfant, comme le ferait un shell).</p></li><li><p>Il attend ensuite les signaux et les transmet au processus enfant.</p></li></ol></div></div></section><section id="pourquoi_tini_est_il_utile_dans_docker"><h2>🎯 Pourquoi Tini est-il utile dans Docker ?</h2><div class="slide-content"><div class="olist arabic"><ol class="arabic"><li><p>Docker exécute un seul processus dans un conteneur par défaut. Si ce processus génère des processus enfants et ne les récolte pas correctement, ils deviennent des processus zombies.</p></li><li><p>Tini assure que ces processus zombies sont correctement récoltés, améliorant ainsi le comportement du conteneur et réduisant la probabilité de cas limites.</p></li></ol></div></div></section><section id="tini_dans_notre_dockerfile"><h2>🐋 Tini dans notre Dockerfile</h2><div class="slide-content"><div class="paragraph"><p>Dans notre Dockerfile, nous utilisons Tini comme point d&#8217;entrée :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">ENTRYPOINT ["/sbin/tini","-g","gulp"]</code></pre></div></div>
+<div class="olist arabic"><ol class="arabic"><li><p>Cela signifie que Tini est le premier processus qui est lancé dans notre conteneur.</p></li><li><p>Il lancera ensuite <code>gulp</code> en tant que processus enfant.</p></li><li><p>Tout signal envoyé au conteneur sera transmis par Tini à <code>gulp</code>.</p></li><li><p>Si <code>gulp</code> génère des processus enfants et ne les récolte pas, Tini le fera.</p></li></ol></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Ce Makefile est utilisé pour gérer le projet Docker Compose.
+
+# Définir les valeurs par défaut pour les variables DIST_DIR et REPOSITORY_URL.
+DIST_DIR ?= $(CURDIR)/dist
+REPOSITORY_URL ?= file://$(CURDIR)
+export REPOSITORY_URL DIST_DIR
+
+# Activer Docker BuildKit pour une construction plus rapide et la mise en cache des images.
+DOCKER_BUILDKIT ?= 1
+COMPOSE_DOCKER_CLI_BUILD ?= 1
+export DOCKER_BUILDKIT COMPOSE_DOCKER_CLI_BUILD
+
+# Définition des commandes shell réutilisables pour Docker Compose.
+
+# compose_cmd est une fonction qui exécute la commande 'docker compose' avec le fichier docker-compose.yml du répertoire courant.
+# Elle prend un argument $(1) qui représente les options supplémentaires à passer à la commande 'docker compose'.
+# $(CURDIR) est une variable d'environnement dans le Makefile qui représente le répertoire courant dans lequel
+# le Makefile est exécuté. C'est une fonctionnalité intégrée de GNU Make. Elle est souvent utilisée pour référencer
+# des fichiers ou des répertoires relatifs au répertoire courant.
+compose_cmd = docker compose --file=$(CURDIR)/docker-compose.yml $(1)
+
+# compose_up est une fonction qui utilise compose_cmd pour exécuter 'docker compose up'.
+# Elle prend un argument $(1) qui représente les options supplémentaires à passer à la commande 'docker compose up'.
+# L'option '--build' est toujours incluse, ce qui signifie que Docker construira les images avant de démarrer les conteneurs.
+compose_up = $(call compose_cmd, up --build $(1))
+
+# compose_run est une fonction qui utilise compose_cmd pour exécuter 'docker compose run'.
+# Elle prend un argument $(1) qui représente les options supplémentaires à passer à la commande 'docker compose run'.
+# L'option '--user=0' est toujours incluse, ce qui signifie que les commandes seront exécutées en tant que root à l'intérieur du conteneur.
+compose_run = $(call compose_cmd, run --user=0 $(1))
+
+# La cible par défaut. Elle nettoie le projet, le construit et le vérifie.
+all: clean build verify
+
+# Construire le projet à l'intérieur d'un conteneur Docker.
+# Cette règle Makefile utilise la fonction compose_up définie précédemment pour exécuter 'docker compose up' avec l'option '--exit-code-from=build'.
+# L'option '--exit-code-from=build' signifie que la commande 'docker compose up' renverra le code de sortie du service 'build'.
+# Si le service 'build' se termine avec un code de sortie non nul (ce qui signifie qu'une erreur s'est produite), alors 'docker compose up' se terminera également avec un code de sortie non nul.
+# Cela permet à Make de savoir si la construction du projet a réussi ou non.
+build:
+ @$(call compose_up,--exit-code-from=build build)
+
+# Vérifier le projet. Actuellement désactivé.
+verify:
+ @echo "Vérification désactivée"
+
+# Démarrer les services 'serve' et 'qrcode'.
+serve:
+ @$(call compose_up, --force-recreate serve qrcode)
+
+# Démarrer un shell à l'intérieur du conteneur du service 'serve'.
+shell:
+ @$(call compose_run,--entrypoint=sh --rm serve)
+
+# Mettre à jour le fichier de verrouillage pour les dépendances npm.
+dependencies-lock-update:
+ @$(call compose_run,--entrypoint=npm --rm serve install --package-lock)
+
+# Mettre à jour les dépendances npm et le fichier de verrouillage.
+dependencies-update:
+ @$(call compose_run,--entrypoint=ncu --workdir=/app/npm-packages --rm serve -u)
+ @make -C $(CURDIR) dependencies-lock-update
+
+# Construire une version PDF du projet.
+pdf:
+ @$(call compose_up, --exit-code-from=pdf pdf)
+
+# Nettoyer le projet en arrêtant et en supprimant les conteneurs Docker, les réseaux et les volumes.
+clean:
+ @$(call compose_cmd, down -v --remove-orphans)
+ @rm -rf $(DIST_DIR)
+
+# Démarrer le service 'qrcode'.
+qrcode:
+ @$(call compose_up, qrcode)
+
+# Déclarer des cibles factices.
+.PHONY: all build verify serve qrcode pdf dependencies-update dependencies-lock-update</code></pre></div></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_2" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Activer Docker BuildKit pour une construction plus rapide et la mise en cache des images.
+DOCKER_BUILDKIT ?= 1
+COMPOSE_DOCKER_CLI_BUILD ?= 1
+export DOCKER_BUILDKIT COMPOSE_DOCKER_CLI_BUILD</code></pre></div></div>
+<div class="paragraph"><p>Cette configuration de docker compose concerne Docker BuildKit, une fonctionnalité de Docker qui améliore les performances de construction des images Docker.</p></div>
+<div class="ulist"><ul><li><p>La ligne <code>DOCKER_BUILDKIT ?= 1</code> vérifie si la variable d&#8217;environnement <code>DOCKER_BUILDKIT</code> est déjà définie.</p><div class="ulist"><ul><li><p>Si ce n&#8217;est pas le cas, elle lui attribue la valeur <code>1</code>, ce qui active Docker BuildKit.</p></li></ul></div></li><li><p>De même, <code>COMPOSE_DOCKER_CLI_BUILD ?= 1</code> vérifie si la variable d&#8217;environnement <code>COMPOSE_DOCKER_CLI_BUILD</code> est déjà définie.</p><div class="ulist"><ul><li><p>Si ce n&#8217;est pas le cas, elle lui attribue la valeur <code>1</code>.</p></li><li><p>Cette variable d&#8217;environnement est utilisée pour activer l&#8217;utilisation de Docker CLI lors de l&#8217;utilisation de Docker Compose.</p></li><li><p>C&#8217;est nécessaire car Docker Compose ne supporte pas BuildKit par défaut, donc cette variable d&#8217;environnement est une solution de contournement pour l&#8217;activer.
+En résumé, ces deux lignes de code activent Docker BuildKit pour améliorer les performances de construction des images Docker lors de l&#8217;utilisation de Docker Compose.</p></li></ul></div></li></ul></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_3" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Définition des commandes shell réutilisables pour Docker Compose.
+
+# compose_cmd est une fonction qui exécute la commande 'docker compose' avec le fichier docker-compose.yml du répertoire courant.
+# Elle prend un argument $(1) qui représente les options supplémentaires à passer à la commande 'docker compose'.
+# $(CURDIR) est une variable d'environnement dans le Makefile qui représente le répertoire courant dans lequel
+# le Makefile est exécuté. C'est une fonctionnalité intégrée de GNU Make. Elle est souvent utilisée pour référencer
+# des fichiers ou des répertoires relatifs au répertoire courant.
+compose_cmd = docker compose --file=$(CURDIR)/docker-compose.yml $(1)
+
+# compose_up est une fonction qui utilise compose_cmd pour exécuter 'docker compose up'.
+# Elle prend un argument $(1) qui représente les options supplémentaires à passer à la commande 'docker compose up'.
+# L'option '--build' est toujours incluse, ce qui signifie que Docker construira les images avant de démarrer les conteneurs.
+compose_up = $(call compose_cmd, up --build $(1))
+
+# compose_run est une fonction qui utilise compose_cmd pour exécuter 'docker compose run'.
+# Elle prend un argument $(1) qui représente les options supplémentaires à passer à la commande 'docker compose run'.
+# L'option '--user=0' est toujours incluse, ce qui signifie que les commandes seront exécutées en tant que root à l'intérieur du conteneur.
+compose_run = $(call compose_cmd, run --user=0 $(1))</code></pre></div></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_4" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Construire le projet à l'intérieur d'un conteneur Docker.
+# Cette règle Makefile utilise la fonction compose_up définie précédemment pour exécuter 'docker compose up' avec l'option '--exit-code-from=build'.
+# L'option '--exit-code-from=build' signifie que la commande 'docker compose up' renverra le code de sortie du service 'build'.
+# Si le service 'build' se termine avec un code de sortie non nul (ce qui signifie qu'une erreur s'est produite), alors 'docker compose up' se terminera également avec un code de sortie non nul.
+# Cela permet à Make de savoir si la construction du projet a réussi ou non.
+build:
+ @$(call compose_up,--exit-code-from=build build)</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Cette règle <code>Makefile</code> est utilisée pour construire le projet à l&#8217;intérieur d&#8217;un conteneur Docker.</p></li><li class="fragment"><p>Elle utilise la fonction <code>compose_up</code> pour exécuter la commande <code>docker compose up</code> avec l&#8217;option <code>--exit-code-from=build</code>.</p></li><li class="fragment"><p>Cette option permet à la commande <code>docker compose up</code> de renvoyer le code de sortie du service <code>build</code>, ce qui permet à Make de savoir si la construction du projet a réussi ou non.</p></li></ul></div></div></section><section id="fin_du_chapitre_docker_compose"><h2>📖🔚 Fin du chapitre docker compose 🐋🐙</h2><div class="slide-content"><div class="imageblock"><img src="media/bitmoji-whale%20friend.png" alt="bitmoji whale friend" height="500px"></div></div></section></section>
 <section><section id="bonus"><h2>Bonus</h2></section><section id="les_petits_plus"><h2>Les petits plus</h2><div class="slide-content"><div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
 <div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
 <div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
@@ -2643,7 +3411,98 @@ nginx</pre></div></div>
 <div class="paragraph"><p>Lancer une stack ELK grâce aux fichiers fournis dans le repo <a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp13" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp13</a></p></div>
 <div class="paragraph"><p>Alimenter en logs avec la commande <code>docker run --log-driver=gelf --log-opt gelf-address=udp://localhost:12201 alpine bash -c 'seq 1 100'</code></p></div>
 <div class="paragraph"><p>Créer un index "timestamp" sur Kibana puis aller à l&#8217;écran "discover"</p></div>
-<div class="paragraph"><p>Lancer un conteneur nginx et concentrez ses logs dans ELK</p></div></div></section><section id="debugging_docker_exec"><h2>Debugging : docker exec</h2><div class="slide-content"><div class="paragraph"><p>rappel : `docker container exec `permet de lancer une commande dans un container</p></div>
+<div class="paragraph"><p>Lancer un conteneur nginx et concentrez ses logs dans ELK</p></div></div></section><section id="gitlab_et_dependabot" class="columns"><h2>GitLab et Dependabot</h2><div class="slide-content"><div class="imageblock column"><img src="https://about.gitlab.com/images/press/press-kit-icon.svg" alt="press kit icon" height="200px"></div>
+<div class="imageblock column"><img src="https://avatars.githubusercontent.com/u/27347476?s=200&v=4" alt="27347476?s=200&amp;v=4" height="200px"></div></div></section><section id="quest_ce_que_dependabot"><h2>🤔 Qu&#8217;est-ce que Dependabot ?</h2><div class="slide-content"><div class="paragraph"><p>Dependabot est un outil qui vous aide à maintenir vos dépendances à jour.</p></div>
+<div class="imageblock"><img src="https://avatars.githubusercontent.com/u/27347476?s=200&v=4" alt="27347476?s=200&amp;v=4"></div>
+<div class="paragraph fragment"><p>Il ouvre automatiquement des merge requests pour les mises à jour de dépendances dans vos projets GitLab.</p></div></div></section><section id="comment_dependabot_fonctionne_t_il_avec_docker"><h2>🛠️ Comment Dependabot fonctionne-t-il avec Docker ?</h2><div class="slide-content"><div class="paragraph"><p>Dependabot peut analyser vos <code>Dockerfiles</code> et vos fichiers <code>docker-compose</code> pour trouver les dépendances qui peuvent être mises à jour.</p></div>
+<div class="paragraph fragment"><p>Il crée ensuite des merge requests pour chaque mise à jour de dépendance.</p></div></div></section><section id="pourquoi_utiliser_dependabot_avec_docker"><h2>🎯 Pourquoi utiliser Dependabot avec Docker ?</h2><div class="slide-content"><div class="olist arabic"><ol class="arabic"><li><p>Garder vos dépendances à jour est crucial pour la sécurité et la stabilité de vos applications.</p></li><li><p>Dependabot automatise ce processus, vous faisant gagner du temps et réduisant le risque d&#8217;oublier une mise à jour importante.</p></li><li><p>Dependabot n&#8217;est pas magique, il faut que votre CI soit capable de construire votre application avec les nouvelles dépendances.</p></li><li><p>Ce qui n&#8217;est pas testé ne fonctionne pas.</p></li></ol></div></div></section><section id="comment_configurer_dependabot_pour_gitlab" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="ulist"><ul><li><p>Malheureusement, il n&#8217;y a pas encore de support officiel pour GitLab dans Dependabot (et vice versa).</p></li><li><p>Notre forge Gitlab est définie dans un fichier docker-compose.yml, et Dependabot aussi.</p></li><li><p>Dependabot doit avoir accès à notre forge GitLab pour pouvoir ouvrir des merge requests.</p></li><li><p>Suivons donc <a href="https://dependabot-gitlab.gitlab.io/dependabot/guide/getting-started.html#step-2-set-up-access-tokens">la documentation officielle</a>.</p></li></ul></div></div></section><section data-background-image="media/personal-access-token.png" data-background-size="cover" data-auto-animate></section><section data-background-image="media/personal-access-token-settings.png" data-background-size="cover" data-auto-animate></section><section id="comment_configurer_dependabot_pour_gitlab_2" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Notez bien le token, vous ne le reverrez plus jamais.</td></tr></table></div>
+<div class="paragraph"><p><a href="https://dependabot-gitlab.gitlab.io/dependabot/guide/getting-started.html#step-3-start-the-app">L&#8217;étape suivante</a>, c&#8217;est de positionner les valeurs de certaines variables d&#8217;environnement.
+Ça peut être dans un <code>.env</code>, ou dans les variables d&#8217;environnement de votre machine.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">export SETTINGS__GITLAB_URL=http://localhost
+export SETTINGS__GITLAB_ACCESS_TOKEN=glpat-LXUfrxeFXuRJXNTNNifD</code></pre></div></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_3" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="paragraph"><p>Démarrez l&#8217;application avec <code>docker compose</code>:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">curl -s https://gitlab.com/dependabot-gitlab/dependabot/-/raw/v3.8.0-alpha.1/docker-compose.yml | docker compose -f - up -d</code></pre></div></div>
+<div class="imageblock fragment"><img src="media/dependabot-cant-see-gitlab.png" alt="dependabot cant see gitlab"></div>
+<div class="paragraph fragment"><p>😢</p></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_4" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="paragraph"><p>Vous vous souvenez du chapitre sur les réseaux Docker ?</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Dans Docker, chaque conteneur a son propre espace de nom réseau, ce qui signifie que localhost à l&#8217;intérieur d&#8217;un conteneur fait référence au conteneur lui-même, et non à la machine hôte ou à d&#8217;autres conteneurs.</p></li><li class="fragment"><p>Lorsque vous essayez de faire un <code>ping</code> sur <code>gitlab-instance-gitlab-1</code> depuis le conteneur web, il ne connaît pas le nom d&#8217;hôte <code>gitlab-instance-gitlab-1</code> car il n&#8217;est pas dans le même espace de nom réseau.</p></li><li class="fragment"><p>Pour permettre aux conteneurs de communiquer entre eux, ils doivent être dans le même réseau Docker.</p></li></ul></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_5" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="ulist"><ul><li><p>Lorsque vous utilisez Docker Compose, il crée automatiquement un réseau par défaut pour votre application et tout service défini dans le <code>docker-compose.yml</code> peut atteindre les autres en utilisant le nom du service comme nom d&#8217;hôte.</p></li></ul></div>
+<div class="ulist"><ul><li class="fragment"><p>Dans notre cas, le conteneur <code>web</code> et le conteneur <code>gitlab-instance-gitlab-1</code> ne sont pas dans le même réseau Docker.</p></li><li class="fragment"><p>Vous pouvez vérifier cela en inspectant les réseaux de chaque conteneur à l&#8217;aide de la commande <code>docker inspect</code>.</p></li><li class="fragment"><p>S&#8217;ils ne sont pas dans le même réseau, nous pouvons créer un réseau et ajouter les deux services à celui-ci dans notre fichier <code>docker-compose.yml</code>.</p></li></ul></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_6" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="ulist"><ul><li><p>Voici un exemple :</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre>version: '3'
+services:
+  web:
+    image: web
+    networks:
+      - mynetwork
+  gitlab-instance-gitlab-1:
+    image: gitlab
+    networks:
+      - mynetwork
+networks:
+  mynetwork:</pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Après avoir mis à jour votre fichier <code>docker-compose.yml</code>, vous devez recréer vos conteneurs pour que les modifications prennent effet.</p></li><li class="fragment"><p>Vous pouvez le faire avec la commande <code>docker-compose up -d --force-recreate</code>.</p></li><li class="fragment"><p>Après cela, vous devriez pouvoir faire un <code>ping</code> sur <code>gitlab-instance-gitlab-1</code> depuis le conteneur web.</p></li></ul></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_7" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  web:
+    image: *base_image
+    networks:
+[...]
+networks:
+  mynetwork:</code></pre></div></div>
+<div class="paragraph fragment"><p>Et&#8230;&#8203;</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  gitlab:
+    # The Docker image to use for the GitLab server
+    image: 'gitlab/gitlab-ce:16.6.0-ce.0'
+    networks:
+      - mynetwork
+[...]
+networks:
+  mynetwork:</code></pre></div></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_8" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="paragraph"><p>Sauf que&#8230;&#8203;</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">root@95def7cb933d:/home/dependabot/app# nmap -sn 172.30.0.0/16
+Starting Nmap 7.80 ( https://nmap.org ) at 2023-11-21 20:45 UTC
+Nmap scan report for 172.30.0.1
+Host is up (0.0000090s latency).
+MAC Address: 02:42:50:A6:7C:5A (Unknown)
+Nmap scan report for symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2)
+Host is up (0.000012s latency).
+MAC Address: 02:42:AC:1E:00:02 (Unknown)
+Nmap scan report for symbiosis-gitlab-runner-1-1.symbiosis_mynetwork (172.30.0.3)
+Host is up (0.000015s latency).
+MAC Address: 02:42:AC:1E:00:03 (Unknown)
+Nmap scan report for symbiosis-gitlab-runner-2-1.symbiosis_mynetwork (172.30.0.4)
+Host is up (0.000032s latency).
+MAC Address: 02:42:AC:1E:00:04 (Unknown)
+Nmap scan report for symbiosis-redis-1.symbiosis_mynetwork (172.30.0.5)
+Host is up (0.0000070s latency).
+MAC Address: 02:42:AC:1E:00:05 (Unknown)
+Nmap scan report for symbiosis-mongodb-1.symbiosis_mynetwork (172.30.0.6)
+Host is up (0.000016s latency).
+MAC Address: 02:42:AC:1E:00:06 (Unknown)
+Nmap scan report for symbiosis-docker-1.symbiosis_mynetwork (172.30.0.7)
+Host is up (0.000021s latency).
+MAC Address: 02:42:AC:1E:00:07 (Unknown)
+Nmap scan report for symbiosis-worker-1.symbiosis_mynetwork (172.30.0.9)
+Host is up (0.000024s latency).
+MAC Address: 02:42:AC:1E:00:09 (Unknown)
+Nmap scan report for 95def7cb933d (172.30.0.10)
+Host is up.</code></pre></div></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_9" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="paragraph"><p>Victoire?</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose -f docker-compose-dependabot.yml exec -it -u root web b
+ash
+root@95def7cb933d:/home/dependabot/app# ping symbiosis-gitlab-1.symbiosis_mynetwork
+PING symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2) 56(84) bytes of data.
+64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=1 ttl=64 time=0.165 ms
+64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=2 ttl=64 time=0.053 ms
+64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=3 ttl=64 time=0.039 ms
+64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=4 ttl=64 time=0.040 ms
+64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=5 ttl=64 time=0.056 ms
+^C
+--- symbiosis-gitlab-1.symbiosis_mynetwork ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4165ms
+rtt min/avg/max/mdev = 0.039/0.070/0.165/0.047 ms</code></pre></div></div>
+<div class="imageblock fragment"><img src="media/dependabot-404-gitlab.png" alt="dependabot 404 gitlab"></div>
+<div class="paragraph fragment"><p>On y est presque!</p></div>
+<aside class="notes"><div class="paragraph"><p>dependabot gitlab
+updatecli
+renovabot gitlab</p></div>
+<div class="paragraph"><p>gitlab complet docker compose
+jenkins complet docker compose
+Kube?</p></div>
+<div class="paragraph"><p>services ashutosh mix and match de conteneurs</p></div>
+<div class="paragraph"><p>build arm64, cloud et buildx</p></div></aside></div></section><section id="debugging_docker_exec"><h2>Debugging : docker exec</h2><div class="slide-content"><div class="paragraph"><p>rappel : `docker container exec `permet de lancer une commande dans un container</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker exec &lt;containerID&gt; echo "hello"</code></pre></div></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker exec –it &lt;containerID&gt; bash</code></pre></div></div></div></section><section id="debugging_docker_inspect"><h2>Debugging : docker inspect</h2><div class="slide-content"><div class="paragraph"><p>rappel : `docker inspect `permet de lister toutes les caractéristiques d&#8217;une image ou d&#8217;un container.</p></div>
 <div class="paragraph"><p>On peut filtrer le retour de la commande avec <code>jq</code> ou l&#8217;option <code>--format</code>.</p></div></div></section><section id="debugging_docker_cp"><h2>Debugging : docker cp</h2><div class="slide-content"><div class="paragraph"><p>Cette commande permet d&#8217;échanger des fichiers entre un conteneur et la machine hôte.</p></div>
@@ -2676,7 +3535,8 @@ CONTAINER           CPU %     MEM USAGE/LIMIT     MEM %     NET I/O
 <div class="paragraph"><p>Nous n&#8217;avons que le binaire de son image à cette adresse.</p></div>
 <div class="paragraph"><p><a href="https://owncloud.univ-artois.fr/index.php/s/9s8XBLXvRwBJsrm" class="bare">https://owncloud.univ-artois.fr/index.php/s/9s8XBLXvRwBJsrm</a></p></div>
 <div class="paragraph"><p>On sait que `docker load `est la solution pour commencer</p></div>
-<div class="paragraph"><p>A l&#8217;aide !</p></div></div></section><section id="conseils_pour_leval" data-auto-animate><h2>Conseils pour l&#8217;eval'</h2><div class="slide-content"><div class="imageblock"><img src="media/final%20answer.png" alt="final answer"></div></div></section><section id="conseils_pour_leval_2" data-auto-animate><h2>Conseils pour l&#8217;eval'</h2><div class="slide-content"><div class="imageblock"><img src="media/dont%20panic.png" alt="dont panic"></div></div></section><section id="vous_devez_avoir_les_compétences_suivantes"><h2>Vous devez avoir les compétences suivantes:</h2><div class="slide-content"><div class="paragraph"><p>Savoir lancer un container avec toutes les options</p></div>
+<div class="paragraph"><p>A l&#8217;aide !</p></div></div></section><section id="lazy_docker"><h2>🐳😴 Lazy Docker</h2><div class="slide-content"><div class="paragraph"><p><a href="https://blog.stephane-robert.info/docs/conteneurs/moteurs-conteneurs/lazydocker/" class="bare">https://blog.stephane-robert.info/docs/conteneurs/moteurs-conteneurs/lazydocker/</a></p></div></div></section><section id="conseils_pour_leval" class="columns" data-auto-animate><h2>Conseils pour l&#8217;eval'</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="imageblock"><img src="media/final%20answer.png" alt="final answer" height="500px"></div></div></div>
+<div class="openblock column"><div class="content"><div class="ulist"><ul><li><p><a href="https://moodle.univ-artois.fr/mod/resource/view.php?id=39414" class="bare">https://moodle.univ-artois.fr/mod/resource/view.php?id=39414</a></p></li><li><p><a href="https://moodle.univ-artois.fr/mod/choicegroup/view.php?id=39415" class="bare">https://moodle.univ-artois.fr/mod/choicegroup/view.php?id=39415</a></p></li><li><p><a href="https://moodle.univ-artois.fr/mod/assign/view.php?id=39416" class="bare">https://moodle.univ-artois.fr/mod/assign/view.php?id=39416</a></p></li></ul></div></div></div></div></section><section id="conseils_pour_leval_2" data-auto-animate><h2>Conseils pour l&#8217;eval'</h2><div class="slide-content"><div class="imageblock"><img src="media/dont%20panic.png" alt="dont panic" height="500px"></div></div></section><section id="vous_devez_avoir_les_compétences_suivantes"><h2>Vous devez avoir les compétences suivantes:</h2><div class="slide-content"><div class="paragraph"><p>Savoir lancer un container avec toutes les options</p></div>
 <div class="ulist"><ul><li><p><code>-v, -p, -w, -e, --rm, etc.</code></p></li></ul></div>
 <div class="paragraph"><p>Écrire un Dockerfile optimisé pour "dockeriser" une application</p></div>
 <div class="ulist"><ul><li><p>pas trop gourmand, facile à modifier, paramétrable.</p></li></ul></div>
@@ -2686,7 +3546,7 @@ CONTAINER           CPU %     MEM USAGE/LIMIT     MEM %     NET I/O
 <div class="paragraph"><p>La documentation officielle de Docker</p></div>
 <div class="paragraph"><p><a href="https://docs.docker.com/engine/reference/run/" class="bare">https://docs.docker.com/engine/reference/run/</a></p></div>
 <div class="paragraph"><p><a href="https://docs.docker.com/engine/reference/builder/" class="bare">https://docs.docker.com/engine/reference/builder/</a></p></div>
-<div class="paragraph"><p><a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/" class="bare">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/</a></p></div></div></section><section id="one_more_thing"><h2>one more thing</h2><div class="slide-content"><div class="imageblock"><img src="media/415439355-image7.png" alt="415439355 image7"></div></div></section></section>
+<div class="paragraph"><p><a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/" class="bare">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/</a></p></div></div></section><section id="one_more_thing"><h2>🤔👉 One more thing</h2><div class="slide-content"><div class="imageblock"><img src="media/415439355-image7.png" alt="415439355 image7" height="500px"></div></div></section></section>
 <section><section id="bibliographie" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Bibliographie</h2></section><section id="ligne_de_commande_2"><h2>Ligne de commande</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://tldp.org" class="bare">https://tldp.org</a></p></li><li><p><a href="https://en.wikipedia.org/wiki/POSIX" class="bare">https://en.wikipedia.org/wiki/POSIX</a></p></li><li><p><a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop" class="bare">https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop</a></p></li><li><p><a href="https://linuxhandbook.com/linux-directory-structure/" class="bare">https://linuxhandbook.com/linux-directory-structure/</a></p></li><li><p><a href="https://blog.stephane-robert.info/docs/admin-serveurs/linux/script-shell/" class="bare">https://blog.stephane-robert.info/docs/admin-serveurs/linux/script-shell/</a></p></li><li><p><a href="https://linuxopsys.com/topics/bash-script-examples" class="bare">https://linuxopsys.com/topics/bash-script-examples</a></p></li></ul></div></div></section><section id="git_vcs"><h2>Git / VCS</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://docs.github.com" class="bare">https://docs.github.com</a></p></li><li><p><a href="https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control" class="bare">https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control</a></p></li><li><p><a href="http://martinfowler.com/bliki/VersionControlTools.html" class="bare">http://martinfowler.com/bliki/VersionControlTools.html</a></p></li><li><p><a href="http://martinfowler.com/bliki/FeatureBranch.html" class="bare">http://martinfowler.com/bliki/FeatureBranch.html</a></p></li><li><p><a href="https://about.gitlab.com/2014/09/29/gitlab-flow/" class="bare">https://about.gitlab.com/2014/09/29/gitlab-flow/</a></p></li><li><p><a href="https://www.atlassian.com/git/tutorials/comparing-workflows" class="bare">https://www.atlassian.com/git/tutorials/comparing-workflows</a></p></li><li><p><a href="http://nvie.com/posts/a-successful-git-branching-model/" class="bare">http://nvie.com/posts/a-successful-git-branching-model/</a></p></li><li><p><a href="https://blog.stephane-robert.info/docs/developper/version/git/introduction/" class="bare">https://blog.stephane-robert.info/docs/developper/version/git/introduction/</a></p></li></ul></div></div></section><section id="intégration_continue"><h2>Intégration Continue</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="http://martinfowler.com/articles/continuousIntegration.html" class="bare">http://martinfowler.com/articles/continuousIntegration.html</a></p></li><li><p><a href="http://martinfowler.com/bliki/ContinuousDelivery.html" class="bare">http://martinfowler.com/bliki/ContinuousDelivery.html</a></p></li><li><p><a href="https://jaxenter.com/implementing-continuous-delivery-117916.html" class="bare">https://jaxenter.com/implementing-continuous-delivery-117916.html</a></p></li><li><p><a href="https://technologyconversations.com/2014/04/29/continuous-delivery-introduction-to-concepts-and-tools/" class="bare">https://technologyconversations.com/2014/04/29/continuous-delivery-introduction-to-concepts-and-tools/</a></p></li><li><p><a href="http://blog.arungupta.me/continuous-integration-delivery-deployment-maturity-model" class="bare">http://blog.arungupta.me/continuous-integration-delivery-deployment-maturity-model</a></p></li><li><p><a href="http://blog.crisp.se/2013/02/05/yassalsundman/continuous-delivery-vs-continuous-deployment" class="bare">http://blog.crisp.se/2013/02/05/yassalsundman/continuous-delivery-vs-continuous-deployment</a></p></li></ul></div></div></section><section id="docker_2"><h2>Docker</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://labs.play-with-docker.com/" class="bare">https://labs.play-with-docker.com/</a></p></li><li><p><a href="https://dduportal.github.io/cours/cnam-docker-2018" class="bare">https://dduportal.github.io/cours/cnam-docker-2018</a></p></li><li><p><a href="https://kodekloud.com/blog/docker-for-beginners/" class="bare">https://kodekloud.com/blog/docker-for-beginners/</a></p></li><li><p><a href="https://www.slideshare.net/dotCloud/why-docker" class="bare">https://www.slideshare.net/dotCloud/why-docker</a></p></li><li><p><a href="https://docs.docker.com/engine/reference/builder/" class="bare">https://docs.docker.com/engine/reference/builder/</a></p></li><li><p><a href="https://www.r-bloggers.com/2021/05/best-practices-for-r-with-docker/" class="bare">https://www.r-bloggers.com/2021/05/best-practices-for-r-with-docker/</a></p></li><li><p><a href="https://github.com/wagoodman/dive" class="bare">https://github.com/wagoodman/dive</a></p></li><li><p><a href="https://docs.docker.com/engine/tutorials/networkingcontainers/" class="bare">https://docs.docker.com/engine/tutorials/networkingcontainers/</a></p></li><li><p><a href="https://towardsdatascience.com/docker-networking-919461b7f498" class="bare">https://towardsdatascience.com/docker-networking-919461b7f498</a></p></li><li><p><a href="https://blog.stephane-robert.info/post/docker-buildkit-partie-1/" class="bare">https://blog.stephane-robert.info/post/docker-buildkit-partie-1/</a></p></li><li><p><a href="https://dev.to/montells/docker-args-1ael" class="bare">https://dev.to/montells/docker-args-1ael</a></p></li></ul></div></div></section><section id="devops"><h2>DevOps</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://blog.stephane-robert.info/docs/glossaire/introduction/" class="bare">https://blog.stephane-robert.info/docs/glossaire/introduction/</a></p></li></ul></div></div></section></section>
 <section id="merci" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Merci !</h2><div class="slide-content"><div class="paragraph"><p><span class="icon"><i class="fa fa-envelope"></i></span> <a href="mailto:gounthar@gmail.com">gounthar@gmail.com</a></p></div>
 <div class="paragraph small"><small><a href="https://gounthar.github.io/gounthar/cours-devops-docker/main">Slides: https://gounthar.github.io/gounthar/cours-devops-docker/main</a></small></div>
