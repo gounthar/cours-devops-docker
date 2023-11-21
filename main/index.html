@@ -1312,7 +1312,7 @@ app.js</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run --workdir /customdir --entrypoint ls node
 &lt;0 fichiers présents !&gt;</code></pre></div></div>
 <div class="paragraph fragment"><p>Comment fournir des fichiers à mes containers ?</p></div></div></section><section id="embarquer_des_fichiers_2" data-auto-animate><h2>📁 Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Copie de fichiers.</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM node:20.8.0-alpine3.18
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM node:21.2.0-alpine3.18
 WORKDIR /app
 COPY ./* /app</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-node .
@@ -1733,7 +1733,7 @@ CMD ["java", "-jar", "spring-boot-complete-0.0.1-SNAPSHOT.jar"]</code></pre></di
 <div class="paragraph fragment"><p>Le multistage, c&#8217;est la classe à Arras.
 On en reparle après.</p></div></div></section><section id="une_première_solution"><h2>🧩 Une première solution</h2><div class="slide-content"><div class="paragraph"><p>Avec un autre exemple&#8230;&#8203;
 Une image pour construire l&#8217;appli:</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM golang:1.19
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM golang:1.21
 
 WORKDIR /go/src/github.com/alexellis/href-counter/
 
@@ -1744,7 +1744,7 @@ COPY app.go	.
 
 RUN CGO_ENABLED=0 GOOS=linux go build  -ldflags "-s -w" -o app .</code></pre></div></div>
 <div class="paragraph fragment"><p>Une image pour faire tourner l&#8217;appli</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.17.1
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18.4
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
@@ -3114,7 +3114,7 @@ x-slides-base: &amp;slides-base
 <div class="ulist"><ul><li class="fragment"><p>Dans Docker, chaque instruction dans le Dockerfile est exécutée par un utilisateur particulier.</p></li><li class="fragment"><p>Par défaut, cet utilisateur est root, mais pour des raisons de sécurité, il est souvent recommandé d&#8217;exécuter les processus en tant qu&#8217;utilisateur non root.</p></li><li class="fragment"><p>Cette ligne définit l&#8217;ID de l&#8217;utilisateur qui exécutera les commandes à l&#8217;intérieur du conteneur Docker à la valeur de la variable d&#8217;environnement <code>CURRENT_UID</code>.</p></li><li class="fragment"><p>La syntaxe <code>${CURRENT_UID}</code> est utilisée pour accéder à la valeur d&#8217;une variable d&#8217;environnement.</p></li><li class="fragment"><p>Dans ce cas, Docker Compose recherchera une variable d&#8217;environnement nommée <code>CURRENT_UID</code> et utilisera sa valeur.</p></li><li class="fragment"><p>Si <code>CURRENT_UID</code> n&#8217;est pas défini dans l&#8217;environnement où Docker Compose est exécuté, Docker Compose renverra une erreur.</p></li></ul></div></div></section><section id="autre_étude_de_cas_10" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># Ce Dockerfile met en place un environnement Node.js avec des outils et dépendances supplémentaires.
 # Il est basé sur l'image Docker officielle de Node.js (version 18, variante Alpine).
 
-FROM node:18-alpine
+FROM node:21-alpine
 
 # Installer la dernière version des dépendances requises
 # hadolint ignore=DL3018
