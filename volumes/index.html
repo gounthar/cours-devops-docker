@@ -1312,7 +1312,7 @@ app.js</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run --workdir /customdir --entrypoint ls node
 &lt;0 fichiers présents !&gt;</code></pre></div></div>
 <div class="paragraph fragment"><p>Comment fournir des fichiers à mes containers ?</p></div></div></section><section id="embarquer_des_fichiers_2" data-auto-animate><h2>📁 Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Copie de fichiers.</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM node:21.2.0-alpine3.18
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM node:20.8.0-alpine3.18
 WORKDIR /app
 COPY ./* /app</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-node .
@@ -1722,7 +1722,7 @@ WORKDIR /app/gs-spring-boot/complete
 RUN mvn package
 
 # Use a lightweight Java image for running the application
-FROM eclipse-temurin:21.0.1_12-jre-alpine
+FROM eclipse-temurin:21_35-jre-alpine
 WORKDIR /app
 
 # Copy the built JAR file from the previous build stage
@@ -1733,7 +1733,7 @@ CMD ["java", "-jar", "spring-boot-complete-0.0.1-SNAPSHOT.jar"]</code></pre></di
 <div class="paragraph fragment"><p>Le multistage, c&#8217;est la classe à Arras.
 On en reparle après.</p></div></div></section><section id="une_première_solution"><h2>🧩 Une première solution</h2><div class="slide-content"><div class="paragraph"><p>Avec un autre exemple&#8230;&#8203;
 Une image pour construire l&#8217;appli:</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM golang:1.21
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM golang:1.19
 
 WORKDIR /go/src/github.com/alexellis/href-counter/
 
@@ -1744,7 +1744,7 @@ COPY app.go	.
 
 RUN CGO_ENABLED=0 GOOS=linux go build  -ldflags "-s -w" -o app .</code></pre></div></div>
 <div class="paragraph fragment"><p>Une image pour faire tourner l&#8217;appli</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18.4
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.17.1
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
@@ -1892,17 +1892,16 @@ RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="admonitionblock caution"><table><tr><td class="icon"><i class="fa fa-fire" title="Caution"></i></td><td class="content">Les données sont perdues à l&#8217;arrêt du container.</td></tr></table></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -transparent white -resize x1080 volumes-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="filesystem_en_ram_3" data-auto-animate><h2>💾🧠 FileSystem en RAM</h2><div class="slide-content"><div class="imageblock"><img src="media/volumes-output22_with_transparency.png" alt="volumes output22 with transparency"></div>
 <div class="admonitionblock caution"><table><tr><td class="icon"><i class="fa fa-fire" title="Caution"></i></td><td class="content">Les données sont perdues à l&#8217;arrêt du container.</td></tr></table></div>
-<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -transparent white -resize x1080 volumes-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="bilan_de_compétences" data-auto-animate><h2>📊📝 Bilan de compétences</h2><div class="slide-content"><div class="ulist"><ul><li><p>Création d&#8217;images</p></li><li><p>Création des containers</p><div class="ulist"><ul><li><p>cycle de vie</p></li><li><p>nommage</p></li><li><p>débug</p></li><li><p>réseau</p></li><li><p>volumes</p></li></ul></div></li></ul></div></div></section><section id="bilan_de_compétences_2" data-auto-animate><h2>📊📝 Bilan de compétences</h2><div class="slide-content"><div class="ulist"><ul><li><p>Création d&#8217;images ✅</p></li><li><p>Création des containers ✅</p><div class="ulist"><ul><li><p>cycle de vie ✅</p></li><li><p>nommage ✅</p></li><li><p>débug ✅</p></li><li><p>réseau  ✅</p></li><li><p>volumes ✅</p></li></ul></div></li></ul></div></div></section><section id="travaux_pratiques_8" data-auto-animate><h2>🎓 Travaux pratiques #8</h2><div class="slide-content"><div class="paragraph"><p>Lancer un container `nginx `et lui faire distribuer une page web externe au container.
-Trouver deux façons différentes de rendre disponible la page web au container.</p></div>
+<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -transparent white -resize x1080 volumes-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="bilan_de_compétences" data-auto-animate><h2>📊📝 Bilan de compétences</h2><div class="slide-content"><div class="ulist"><ul><li><p>Création d&#8217;images</p></li><li><p>Création des containers</p><div class="ulist"><ul><li><p>cycle de vie</p></li><li><p>nommage</p></li><li><p>débug</p></li><li><p>réseau</p></li><li><p>volumes</p></li></ul></div></li></ul></div></div></section><section id="bilan_de_compétences_2" data-auto-animate><h2>📊📝 Bilan de compétences</h2><div class="slide-content"><div class="ulist"><ul><li><p>Création d&#8217;images ✅</p></li><li><p>Création des containers ✅</p><div class="ulist"><ul><li><p>cycle de vie ✅</p></li><li><p>nommage ✅</p></li><li><p>débug ✅</p></li><li><p>réseau  ✅</p></li><li><p>volumes ✅</p></li></ul></div></li></ul></div></div></section><section id="travaux_pratiques_8" data-auto-animate><h2>🎓 Travaux pratiques #8</h2><div class="slide-content"><div class="paragraph"><p>Lancer un container `nginx `et lui faire distribuer une page web externe au container.</p></div>
 <div class="imageblock"><img src="media/1763880002-image10.png" alt="1763880002 image10"></div></div></section><section id="solution_travaux_pratiques_8" data-auto-animate><h2>✅ Solution travaux pratiques #8</h2><div class="slide-content"><div class="paragraph title"><p>En utilisant un montage de répertoire (Bind Mount) :</p></div>
 <div class="paragraph fragment"><p>Utilisez un montage de répertoire pour mapper un répertoire de l&#8217;hôte vers le conteneur Nginx.</p></div>
 <div class="paragraph fragment"><p>Placez vos fichiers HTML dans un répertoire sur votre machine hôte, puis mappez ce répertoire vers le conteneur Nginx.</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 80:80 --name mon-nginx -v /chemin/vers/la/page/web/sur/lhote:/usr/share/nginx/html nginx</code></pre></div></div>
 <div class="paragraph fragment"><p>Remplacez <code>/chemin/vers/la/page/web/sur/lhote</code> par le chemin réel vers le répertoire contenant vos fichiers de la page web sur l&#8217;hôte.</p></div></div></section><section id="solution_travaux_pratiques_8_2" data-auto-animate><h2>✅ Solution travaux pratiques #8</h2><div class="slide-content"><div class="paragraph title"><p>En utilisant un volume nommé (Named Volume) :</p></div>
 <div class="paragraph fragment"><p>Créez un volume nommé et copiez vos fichiers de la page web dedans.</p></div>
 <div class="paragraph fragment"><p>Montez ce volume nommé dans le conteneur Nginx.</p></div>
 <div class="paragraph fragment"><p>Tout d&#8217;abord, créez un volume nommé :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume create mon-nginx-html</code></pre></div></div>
 <div class="paragraph fragment"><p>Copiez vos fichiers de la page web dans ce volume :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm \
   --volume mon-nginx-html:/cible \   # Montez le volume nommé "mon-nginx-html" dans le conteneur sous le répertoire "/cible".
@@ -1910,23 +1909,23 @@ Trouver deux façons différentes de rendre disponible la page web au container.
   --workdir /cible \                # Définissez le répertoire de travail à "/cible" dans le conteneur.
   busybox cp -r /html .   # Copiez récursivement le contenu depuis "/chemin/vers/la/page/web/sur/lhote" dans le répertoire actuel du conteneur.</code></pre></div></div>
 <div class="paragraph fragment"><p>Maintenant, lancez le conteneur Nginx et montez le volume nommé :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div></div></section><section id="travaux_pratiques_9"><h2>🎓 Travaux pratiques #9</h2><div class="slide-content"><div class="paragraph title"><p>Étapes:</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 80:80 --name mon-nginx -v mon-nginx-html:/usr/share/nginx/html nginx</code></pre></div></div></div></section><section id="travaux_pratiques_9"><h2>🎓 Travaux pratiques #9</h2><div class="slide-content"><div class="paragraph title"><p>Étapes:</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Créer un volume nommé "data"</p></li><li class="fragment"><p>Démarrer un container attaché à ce volume</p></li><li class="fragment"><p>Lancer un processus qui écrit un fichier dans le volume</p></li><li class="fragment"><p>Démarrer un second container attaché à ce volume</p></li><li class="fragment"><p>Lire les données du volume depuis le second container</p></li><li class="fragment"><p>Supprimer le volume</p></li></ul></div></div></section><section id="solution_travaux_pratiques_9"><h2>✅ Solution travaux pratiques #9</h2><div class="slide-content"><div class="paragraph"><p>Créer un volume nommé "data" :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume create data</code></pre></div></div>
 <div class="paragraph fragment"><p>Démarrer un premier conteneur attaché à ce volume :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --name premier-container -v data:/donnees busybox</code></pre></div></div>
 <div class="paragraph fragment"><p>Dans le premier conteneur, lancez un processus qui écrit un fichier dans le volume (par exemple, un fichier texte) :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">echo "Données du premier conteneur" &gt; /donnees/mon-fichier.txt</code></pre></div></div>
 <div class="paragraph fragment"><p>Quittez le premier conteneur.</p></div>
 <div class="paragraph fragment"><p>Démarrer un second conteneur attaché au même volume :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div></div></section><section id="solution_travaux_pratiques_9_2"><h2>✅ Solution travaux pratiques #9</h2><div class="slide-content"><div class="paragraph"><p>Démarrer un second conteneur attaché au même volume :</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --name second-container -v data:/donnees busybox</code></pre></div></div></div></section><section id="solution_travaux_pratiques_9_2"><h2>✅ Solution travaux pratiques #9</h2><div class="slide-content"><div class="paragraph"><p>Démarrer un second conteneur attaché au même volume :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --name second-container -v data:/donnees busybox</code></pre></div></div>
 <div class="paragraph"><p>Dans le second conteneur, lisez les données du volume (le fichier texte) :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cat /donnees/mon-fichier.txt</code></pre></div></div>
 <div class="paragraph fragment"><p>Vous devriez voir le contenu du fichier affiché à l&#8217;écran.</p></div>
 <div class="paragraph fragment"><p>Quittez le second conteneur.</p></div>
 <div class="paragraph fragment"><p>Vous pouvez maintenant supprimer le volume "data" car vous n&#8217;en avez plus besoin :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"></code></pre></div></div></div></section><section id="travaux_pratiques_10"><h2>🎓  Travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Écrire un Dockerfile qui:</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume rm data</code></pre></div></div></div></section><section id="travaux_pratiques_10"><h2>🎓  Travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Écrire un Dockerfile qui:</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Ajoute des fichiers dans un dossier</p></li><li class="fragment"><p>Déclare ce dossier comme volume anonyme</p></li><li class="fragment"><p>Ajoute d&#8217;autres fichiers dans ce dossier</p></li></ul></div>
 <div class="paragraph fragment"><p><strong>Que verra-ton dans ce dossier au sein de nos containers ?</strong></p></div></div></section><section id="solution_travaux_pratiques_10" data-auto-animate><h2>✅ Solution travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Tout d&#8217;abord, créez un répertoire pour votre projet et placez-vous dedans.</p></div>
 <div class="paragraph fragment"><p>Créez un Dockerfile avec le contenu suivant :</p></div>
@@ -3097,7 +3096,221 @@ x-slides-base: &amp;slides-base
 <div class="imageblock fragment"><img src="media/multi-layered-cake-removebg-preview.png" alt="multi layered cake removebg preview" height="100px"></div></div></div>
 <div class="openblock column is-one-third"><div class="content"><div class="paragraph fragment"><p>Elle est activée en définissant l&#8217;argument <code>BUILDKIT_INLINE_CACHE</code> à <code>1</code>.</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">args:
-  BUILDKIT_INLINE_CACHE: 1</code></pre></div></div></div></div></div></section></section>
+  BUILDKIT_INLINE_CACHE: 1</code></pre></div></div></div></div></div></section><section id="environnement" class="columns" data-auto-animate><h2>➡️🔄 Environnement 🌍🌿</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Variables d'environnement pour le conteneur Docker.
+  environment:
+    - PRESENTATION_URL=${PRESENTATION_URL}
+    - REPOSITORY_URL=${REPOSITORY_URL}</code></pre></div></div></div></div>
+<div class="openblock column"><div class="content"><div class="paragraph"><p>Deux variables d&#8217;environnement sont définies pour le conteneur Docker : <code>PRESENTATION_URL</code> et <code>REPOSITORY_URL</code>.</p></div>
+<div class="paragraph fragment"><p>Ces variables sont définies à l&#8217;aide de la syntaxe <code>${VARIABLE_NAME}</code>, qui est une manière standard d&#8217;accéder aux variables d&#8217;environnement dans les fichiers de configuration YAML.</p></div></div></div></div></section><section id="environnement_2" data-auto-animate><h2>➡️🔄 Environnement 🌍🌿</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Variables d'environnement pour le conteneur Docker.
+  environment:
+    - PRESENTATION_URL=${PRESENTATION_URL}
+    - REPOSITORY_URL=${REPOSITORY_URL}</code></pre></div></div>
+<div class="paragraph"><p>Lorsque Docker Compose rencontre cette syntaxe, il cherche la valeur de la variable d&#8217;environnement dans plusieurs endroits, en suivant un ordre spécifique :</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Il vérifie d&#8217;abord si la variable est définie dans le shell courant.</p></li><li class="fragment"><p>Si c&#8217;est le cas, il utilise cette valeur.</p></li><li class="fragment"><p>Si la variable n&#8217;est pas définie dans le shell, Docker Compose cherche ensuite dans un fichier <code>.env</code> situé dans le même répertoire que le fichier <code>docker-compose.yml</code>.</p></li><li class="fragment"><p>Si la variable est définie dans ce fichier, Docker Compose utilise cette valeur.</p></li></ul></div></div></section><section id="environnement_3" data-auto-animate><h2>➡️🔄 Environnement 🌍🌿</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Variables d'environnement pour le conteneur Docker.
+  environment:
+    - PRESENTATION_URL=${PRESENTATION_URL}
+    - REPOSITORY_URL=${REPOSITORY_URL}</code></pre></div></div>
+<div class="ulist"><ul><li><p>Si la variable n&#8217;est définie ni dans le shell ni dans le fichier <code>.env</code>, Docker Compose utilise la valeur par défaut spécifiée dans le fichier <code>docker-compose.yml</code> (s&#8217;il y en a une).</p></li><li><p>Dans notre cas, aucune valeur par défaut n&#8217;est spécifiée, donc si la variable n&#8217;est définie ni dans le shell ni dans le fichier <code>.env</code>, Docker Compose générera une erreur.</p></li></ul></div></div></section><section id="autre_étude_de_cas_9" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
+  user: ${CURRENT_UID}</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Dans Docker, chaque instruction dans le Dockerfile est exécutée par un utilisateur particulier.</p></li><li class="fragment"><p>Par défaut, cet utilisateur est root, mais pour des raisons de sécurité, il est souvent recommandé d&#8217;exécuter les processus en tant qu&#8217;utilisateur non root.</p></li><li class="fragment"><p>Cette ligne définit l&#8217;ID de l&#8217;utilisateur qui exécutera les commandes à l&#8217;intérieur du conteneur Docker à la valeur de la variable d&#8217;environnement <code>CURRENT_UID</code>.</p></li><li class="fragment"><p>La syntaxe <code>${CURRENT_UID}</code> est utilisée pour accéder à la valeur d&#8217;une variable d&#8217;environnement.</p></li><li class="fragment"><p>Dans ce cas, Docker Compose recherchera une variable d&#8217;environnement nommée <code>CURRENT_UID</code> et utilisera sa valeur.</p></li><li class="fragment"><p>Si <code>CURRENT_UID</code> n&#8217;est pas défini dans l&#8217;environnement où Docker Compose est exécuté, Docker Compose renverra une erreur.</p></li></ul></div></div></section><section id="autre_étude_de_cas_10" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># Ce Dockerfile met en place un environnement Node.js avec des outils et dépendances supplémentaires.
+# Il est basé sur l'image Docker officielle de Node.js (version 18, variante Alpine).
+
+FROM node:18-alpine
+
+# Installer la dernière version des dépendances requises
+# hadolint ignore=DL3018
+RUN apk add --no-cache \
+  curl \ # Outil pour transférer des données avec des URLs
+  git \ # Système de contrôle de version distribué
+  tini \ # Un init minuscule mais valide pour les conteneurs
+  unzip # Outil pour décompresser les fichiers zip
+
+# Installer les dépendances NPM globalement (dernières versions)
+# hadolint ignore=DL3016,DL3059
+RUN npm install --global npm npm-check-updates # Mettre à jour npm à la dernière version et installer npm-check-updates
+
+# Copier les dépendances NPM de l'application dans l'image Docker
+COPY ./npm-packages /app/npm-packages
+# Créer des liens symboliques pour package.json et package-lock.json à la racine de /app
+# Cela permet d'exécuter les opérations npm sans erreur ENOENT
+RUN ln -s /app/npm-packages/package.json /app/package.json \
+  &amp;&amp; ln -s /app/npm-packages/package-lock.json /app/package-lock.json
+
+# Définir le répertoire de travail dans l'image Docker à /app
+WORKDIR /app
+
+# Télécharger et installer une version spécifique de FontAwesome
+ARG FONTAWESOME_VERSION=6.4.0
+RUN curl --silent --show-error --location --output /tmp/fontawesome.zip \
+    "https://use.fontawesome.com/releases/v${FONTAWESOME_VERSION}/fontawesome-free-${FONTAWESOME_VERSION}-web.zip" \
+  &amp;&amp; unzip -q /tmp/fontawesome.zip -d /tmp \
+  &amp;&amp; mv /tmp/"fontawesome-free-${FONTAWESOME_VERSION}-web" /app/fontawesome \
+  &amp;&amp; rm -rf /tmp/font*
+
+# Installer les dépendances NPM en utilisant le package-lock.json
+# Si l'installation échoue, revenir à une installation npm régulière
+RUN { npm install-clean &amp;&amp; npx update-browserslist-db@latest; } || npm install
+
+# Lier la commande gulp pour qu'elle soit disponible dans le PATH
+# hadolint ignore=DL3059
+RUN npm link gulp
+
+# Copier les tâches gulp et la configuration dans l'image Docker
+COPY ./gulp/tasks /app/tasks
+COPY ./gulp/gulpfile.js /app/gulpfile.js
+
+# Définir un volume pour le répertoire /app
+VOLUME ["/app"]
+
+# Exposer le port 8000 pour HTTP
+EXPOSE 8000
+
+# Utiliser tini comme point d'entrée, et exécuter gulp par défaut
+ENTRYPOINT ["/sbin/tini","-g","gulp"]
+CMD ["default"]</code></pre></div></div></div></section><section id="autre_étude_de_cas_11" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">RUN npm install --global npm npm-check-updates # Mettre à jour npm à la dernière version et installer npm-check-updates
+
+# Copier les dépendances NPM de l'application dans l'image Docker
+COPY ./npm-packages /app/npm-packages
+# Créer des liens symboliques pour package.json et package-lock.json à la racine de /app
+# Cela permet d'exécuter les opérations npm sans erreur ENOENT
+RUN ln -s /app/npm-packages/package.json /app/package.json \
+  &amp;&amp; ln -s /app/npm-packages/package-lock.json /app/package-lock.json</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Ce Dockerfile met en place un environnement <code>Node.js</code> avec des outils et dépendances supplémentaires.</p></li><li class="fragment"><p>Il installe les dernières versions de <code>npm</code> et <code>npm-check-updates</code> globalement, copie les dépendances <code>npm</code> de l&#8217;application dans l&#8217;image Docker, et crée des liens symboliques pour <code>package.json</code> et <code>package-lock.json</code> à la racine de <code>/app</code>.</p></li></ul></div></div></section><section id="autre_étude_de_cas_12" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">ARG FONTAWESOME_VERSION=6.4.0
+RUN curl --silent --show-error --location --output /tmp/fontawesome.zip \
+    "https://use.fontawesome.com/releases/v${FONTAWESOME_VERSION}/fontawesome-free-${FONTAWESOME_VERSION}-web.zip" \
+  &amp;&amp; unzip -q /tmp/fontawesome.zip -d /tmp \
+  &amp;&amp; mv /tmp/"fontawesome-free-${FONTAWESOME_VERSION}-web" /app/fontawesome \
+  &amp;&amp; rm -rf /tmp/font*</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Il télécharge également et installe une version spécifique de <code>FontAwesome</code></p></li></ul></div></div></section><section id="autre_étude_de_cas_13" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Installer les dépendances NPM en utilisant le package-lock.json
+# Si l'installation échoue, revenir à une installation npm régulière
+RUN { npm install-clean &amp;&amp; npx update-browserslist-db@latest; } || npm install
+
+# Lier la commande gulp pour qu'elle soit disponible dans le PATH
+# hadolint ignore=DL3059
+RUN npm link gulp</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Il installe les dépendances <code>npm</code> en utilisant le <code>package-lock.json</code> (en revenant à une installation <code>npm</code> régulière si nécessaire), et lie la commande <code>gulp</code> pour qu&#8217;elle soit disponible dans le <code>PATH</code>.</p></li></ul></div></div></section><section id="autre_étude_de_cas_14" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Copier les tâches gulp et la configuration dans l'image Docker
+COPY ./gulp/tasks /app/tasks
+COPY ./gulp/gulpfile.js /app/gulpfile.js
+
+# Définir un volume pour le répertoire /app
+VOLUME ["/app"]
+
+# Exposer le port 8000 pour HTTP
+EXPOSE 8000</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Les tâches <code>gulp</code> et la configuration sont copiées dans l&#8217;image Docker, un volume est défini pour le répertoire <code>/app</code>, et le port <code>8000</code> est exposé pour <code>HTTP</code>.</p></li></ul></div></div></section><section id="autre_étude_de_cas_15" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Utiliser tini comme point d'entrée, et exécuter gulp par défaut
+ENTRYPOINT ["/sbin/tini","-g","gulp"]
+CMD ["default"]</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Le point d&#8217;entrée est défini sur <code>tini</code>, et <code>gulp</code> est exécuté par défaut.</p></li></ul></div></div></section><section id="tini_dans_docker"><h2>🐋 Tini dans Docker</h2></section><section id="quest_ce_que_tini"><h2>🤔 Qu&#8217;est-ce que Tini ?</h2><div class="slide-content"><div class="paragraph"><p>Tini est un <code>init</code> minuscule mais valide pour les conteneurs. Il est conçu pour être le système init le plus simple possible.</p></div></div></section><section id="que_fait_tini"><h2>🛠️ Que fait Tini ?</h2><div class="slide-content"><div class="paragraph"><p>Tini fait deux choses :</p></div>
+<div class="olist arabic"><ol class="arabic"><li><p>Il génère votre processus en tant que son enfant (directement, pas en tant que petit-enfant, comme le ferait un shell).</p></li><li><p>Il attend ensuite les signaux et les transmet au processus enfant.</p></li></ol></div></div></section><section id="pourquoi_tini_est_il_utile_dans_docker"><h2>🎯 Pourquoi Tini est-il utile dans Docker ?</h2><div class="slide-content"><div class="olist arabic"><ol class="arabic"><li><p>Docker exécute un seul processus dans un conteneur par défaut. Si ce processus génère des processus enfants et ne les récolte pas correctement, ils deviennent des processus zombies.</p></li><li><p>Tini assure que ces processus zombies sont correctement récoltés, améliorant ainsi le comportement du conteneur et réduisant la probabilité de cas limites.</p></li></ol></div></div></section><section id="tini_dans_notre_dockerfile"><h2>🐋 Tini dans notre Dockerfile</h2><div class="slide-content"><div class="paragraph"><p>Dans notre Dockerfile, nous utilisons Tini comme point d&#8217;entrée :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">ENTRYPOINT ["/sbin/tini","-g","gulp"]</code></pre></div></div>
+<div class="olist arabic"><ol class="arabic"><li><p>Cela signifie que Tini est le premier processus qui est lancé dans notre conteneur.</p></li><li><p>Il lancera ensuite <code>gulp</code> en tant que processus enfant.</p></li><li><p>Tout signal envoyé au conteneur sera transmis par Tini à <code>gulp</code>.</p></li><li><p>Si <code>gulp</code> génère des processus enfants et ne les récolte pas, Tini le fera.</p></li></ol></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Ce Makefile est utilisé pour gérer le projet Docker Compose.
+
+# Définir les valeurs par défaut pour les variables DIST_DIR et REPOSITORY_URL.
+DIST_DIR ?= $(CURDIR)/dist
+REPOSITORY_URL ?= file://$(CURDIR)
+export REPOSITORY_URL DIST_DIR
+
+# Activer Docker BuildKit pour une construction plus rapide et la mise en cache des images.
+DOCKER_BUILDKIT ?= 1
+COMPOSE_DOCKER_CLI_BUILD ?= 1
+export DOCKER_BUILDKIT COMPOSE_DOCKER_CLI_BUILD
+
+# Définition des commandes shell réutilisables pour Docker Compose.
+
+# compose_cmd est une fonction qui exécute la commande 'docker compose' avec le fichier docker-compose.yml du répertoire courant.
+# Elle prend un argument $(1) qui représente les options supplémentaires à passer à la commande 'docker compose'.
+# $(CURDIR) est une variable d'environnement dans le Makefile qui représente le répertoire courant dans lequel
+# le Makefile est exécuté. C'est une fonctionnalité intégrée de GNU Make. Elle est souvent utilisée pour référencer
+# des fichiers ou des répertoires relatifs au répertoire courant.
+compose_cmd = docker compose --file=$(CURDIR)/docker-compose.yml $(1)
+
+# compose_up est une fonction qui utilise compose_cmd pour exécuter 'docker compose up'.
+# Elle prend un argument $(1) qui représente les options supplémentaires à passer à la commande 'docker compose up'.
+# L'option '--build' est toujours incluse, ce qui signifie que Docker construira les images avant de démarrer les conteneurs.
+compose_up = $(call compose_cmd, up --build $(1))
+
+# compose_run est une fonction qui utilise compose_cmd pour exécuter 'docker compose run'.
+# Elle prend un argument $(1) qui représente les options supplémentaires à passer à la commande 'docker compose run'.
+# L'option '--user=0' est toujours incluse, ce qui signifie que les commandes seront exécutées en tant que root à l'intérieur du conteneur.
+compose_run = $(call compose_cmd, run --user=0 $(1))
+
+# La cible par défaut. Elle nettoie le projet, le construit et le vérifie.
+all: clean build verify
+
+# Construire le projet à l'intérieur d'un conteneur Docker.
+# Cette règle Makefile utilise la fonction compose_up définie précédemment pour exécuter 'docker compose up' avec l'option '--exit-code-from=build'.
+# L'option '--exit-code-from=build' signifie que la commande 'docker compose up' renverra le code de sortie du service 'build'.
+# Si le service 'build' se termine avec un code de sortie non nul (ce qui signifie qu'une erreur s'est produite), alors 'docker compose up' se terminera également avec un code de sortie non nul.
+# Cela permet à Make de savoir si la construction du projet a réussi ou non.
+build:
+ @$(call compose_up,--exit-code-from=build build)
+
+# Vérifier le projet. Actuellement désactivé.
+verify:
+ @echo "Vérification désactivée"
+
+# Démarrer les services 'serve' et 'qrcode'.
+serve:
+ @$(call compose_up, --force-recreate serve qrcode)
+
+# Démarrer un shell à l'intérieur du conteneur du service 'serve'.
+shell:
+ @$(call compose_run,--entrypoint=sh --rm serve)
+
+# Mettre à jour le fichier de verrouillage pour les dépendances npm.
+dependencies-lock-update:
+ @$(call compose_run,--entrypoint=npm --rm serve install --package-lock)
+
+# Mettre à jour les dépendances npm et le fichier de verrouillage.
+dependencies-update:
+ @$(call compose_run,--entrypoint=ncu --workdir=/app/npm-packages --rm serve -u)
+ @make -C $(CURDIR) dependencies-lock-update
+
+# Construire une version PDF du projet.
+pdf:
+ @$(call compose_up, --exit-code-from=pdf pdf)
+
+# Nettoyer le projet en arrêtant et en supprimant les conteneurs Docker, les réseaux et les volumes.
+clean:
+ @$(call compose_cmd, down -v --remove-orphans)
+ @rm -rf $(DIST_DIR)
+
+# Démarrer le service 'qrcode'.
+qrcode:
+ @$(call compose_up, qrcode)
+
+# Déclarer des cibles factices.
+.PHONY: all build verify serve qrcode pdf dependencies-update dependencies-lock-update</code></pre></div></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_2" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Activer Docker BuildKit pour une construction plus rapide et la mise en cache des images.
+DOCKER_BUILDKIT ?= 1
+COMPOSE_DOCKER_CLI_BUILD ?= 1
+export DOCKER_BUILDKIT COMPOSE_DOCKER_CLI_BUILD</code></pre></div></div>
+<div class="paragraph"><p>Cette configuration de docker compose concerne Docker BuildKit, une fonctionnalité de Docker qui améliore les performances de construction des images Docker.</p></div>
+<div class="ulist"><ul><li><p>La ligne <code>DOCKER_BUILDKIT ?= 1</code> vérifie si la variable d&#8217;environnement <code>DOCKER_BUILDKIT</code> est déjà définie.</p><div class="ulist"><ul><li><p>Si ce n&#8217;est pas le cas, elle lui attribue la valeur <code>1</code>, ce qui active Docker BuildKit.</p></li></ul></div></li><li><p>De même, <code>COMPOSE_DOCKER_CLI_BUILD ?= 1</code> vérifie si la variable d&#8217;environnement <code>COMPOSE_DOCKER_CLI_BUILD</code> est déjà définie.</p><div class="ulist"><ul><li><p>Si ce n&#8217;est pas le cas, elle lui attribue la valeur <code>1</code>.</p></li><li><p>Cette variable d&#8217;environnement est utilisée pour activer l&#8217;utilisation de Docker CLI lors de l&#8217;utilisation de Docker Compose.</p></li><li><p>C&#8217;est nécessaire car Docker Compose ne supporte pas BuildKit par défaut, donc cette variable d&#8217;environnement est une solution de contournement pour l&#8217;activer.
+En résumé, ces deux lignes de code activent Docker BuildKit pour améliorer les performances de construction des images Docker lors de l&#8217;utilisation de Docker Compose.</p></li></ul></div></li></ul></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_3" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Définition des commandes shell réutilisables pour Docker Compose.
+
+# compose_cmd est une fonction qui exécute la commande 'docker compose' avec le fichier docker-compose.yml du répertoire courant.
+# Elle prend un argument $(1) qui représente les options supplémentaires à passer à la commande 'docker compose'.
+# $(CURDIR) est une variable d'environnement dans le Makefile qui représente le répertoire courant dans lequel
+# le Makefile est exécuté. C'est une fonctionnalité intégrée de GNU Make. Elle est souvent utilisée pour référencer
+# des fichiers ou des répertoires relatifs au répertoire courant.
+compose_cmd = docker compose --file=$(CURDIR)/docker-compose.yml $(1)
+
+# compose_up est une fonction qui utilise compose_cmd pour exécuter 'docker compose up'.
+# Elle prend un argument $(1) qui représente les options supplémentaires à passer à la commande 'docker compose up'.
+# L'option '--build' est toujours incluse, ce qui signifie que Docker construira les images avant de démarrer les conteneurs.
+compose_up = $(call compose_cmd, up --build $(1))
+
+# compose_run est une fonction qui utilise compose_cmd pour exécuter 'docker compose run'.
+# Elle prend un argument $(1) qui représente les options supplémentaires à passer à la commande 'docker compose run'.
+# L'option '--user=0' est toujours incluse, ce qui signifie que les commandes seront exécutées en tant que root à l'intérieur du conteneur.
+compose_run = $(call compose_cmd, run --user=0 $(1))</code></pre></div></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_4" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Construire le projet à l'intérieur d'un conteneur Docker.
+# Cette règle Makefile utilise la fonction compose_up définie précédemment pour exécuter 'docker compose up' avec l'option '--exit-code-from=build'.
+# L'option '--exit-code-from=build' signifie que la commande 'docker compose up' renverra le code de sortie du service 'build'.
+# Si le service 'build' se termine avec un code de sortie non nul (ce qui signifie qu'une erreur s'est produite), alors 'docker compose up' se terminera également avec un code de sortie non nul.
+# Cela permet à Make de savoir si la construction du projet a réussi ou non.
+build:
+ @$(call compose_up,--exit-code-from=build build)</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Cette règle <code>Makefile</code> est utilisée pour construire le projet à l&#8217;intérieur d&#8217;un conteneur Docker.</p></li><li class="fragment"><p>Elle utilise la fonction <code>compose_up</code> pour exécuter la commande <code>docker compose up</code> avec l&#8217;option <code>--exit-code-from=build</code>.</p></li><li class="fragment"><p>Cette option permet à la commande <code>docker compose up</code> de renvoyer le code de sortie du service <code>build</code>, ce qui permet à Make de savoir si la construction du projet a réussi ou non.</p></li></ul></div></div></section><section id="fin_du_chapitre_docker_compose"><h2>📖🔚 Fin du chapitre docker compose 🐋🐙</h2><div class="slide-content"><div class="imageblock"><img src="media/bitmoji-whale%20friend.png" alt="bitmoji whale friend" height="500px"></div></div></section></section>
 <section><section id="bonus"><h2>Bonus</h2></section><section id="les_petits_plus"><h2>Les petits plus</h2><div class="slide-content"><div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
 <div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
 <div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
