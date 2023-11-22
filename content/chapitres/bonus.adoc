@@ -198,7 +198,7 @@ on configure le driver
 
 Lancer une stack ELK grâce aux fichiers fournis dans le repo https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp13
 
-Alimenter en logs avec la commande `docker run --log-driver=gelf --log-opt gelf-address=udp://localhost:12201 alpine bash -c 'seq 1 100'`
+Alimenter en logs avec la commande `docker container run --log-driver=gelf --log-opt gelf-address=udp://localhost:12201 alpine bash -c 'seq 1 100'`
 
 Créer un index "timestamp" sur Kibana puis aller à l'écran "discover"
 
@@ -321,7 +321,7 @@ networks:
 ----
 [%step]
 * Après avoir mis à jour votre fichier `docker-compose.yml`, vous devez recréer vos conteneurs pour que les modifications prennent effet.
-* Vous pouvez le faire avec la commande `docker-compose up -d --force-recreate`.
+* Vous pouvez le faire avec la commande `docker compose up -d --force-recreate`.
 * Après cela, vous devriez pouvoir faire un `ping` sur `gitlab-instance-gitlab-1` depuis le conteneur web.
 
 [%auto-animate]
@@ -497,27 +497,340 @@ CONTAINER           CPU %     MEM USAGE/LIMIT     MEM %     NET I/O
 42f128              0.00%     1.454 MB/4.145 GB   0.04%     648 B/648 B
 ----
 
-== Travaux pratiques #14
+== 🎓 Travaux pratiques #14
 
-Notre collègue Michel débute en Docker, il met à disposition des images Docker pour notre entreprise.
+Notre valeureux collègue Jean-Michel s'initiait à l'art mystérieux de Docker, et généreusement partageait ses créations sous forme d'images Docker pour l'entreprise.
 
-Michel a eu la chance de gagner au Loto et il a quitté son bureau du jour au lendemain alors qu'il était sur le point de nous délivrer une image Nginx.
+Michel a soudainement décroché le jackpot du Loto, laissant derrière lui son bureau du jour au lendemain, alors qu'il était sur le point de nous offrir une image Nginx.
 
-Nous n'avons que le binaire de son image à cette adresse.
+Désormais, nous n'avons que le binaire de son chef-d'œuvre, accessible à cette adresse :
 
 https://owncloud.univ-artois.fr/index.php/s/9s8XBLXvRwBJsrm
 
-On sait que `docker load `est la solution pour commencer
+Rassurez-vous, on nous a dit que `docker load` est la première étape de la formule magique pour percer les secrets de son œuvre.
 
-A l'aide !
+À vos claviers ! 🧙‍♂️✨
 
+[%auto-animate]
+== ✅ Solution travaux pratiques #14🕵️‍♂️🔍
+
+`docker load` est la première étape de la formule magique
+[%step]
+Okay...
+[%step]
+🧙‍♂️✨
+[%step]
+[source,bash]
+----
+docker load -i bad-nginx.dkr
+Loaded image: bad-nginx:1
+----
+[%step]
+Nous voilà bien avancés...
+[%step]
+On essaye de lancer un conteneur basé dessus ?
+[%step]
+[source,bash]
+----
+docker container run -d --name bad-1 bad-nginx:1
+f4caa4a641729c0ab3d7b5974fa735c128047f75292c7f16495b72c7c6808502
+----
+[%step]
+C'est lancé ?
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #14🕵️‍♂️🔍
+
+[source,bash]
+----
+docker container ls --format '{{.Names}}' | grep "bad"
+----
+[%step]
+Oups, il n'est pas là...
+[%step]
+Essayons encore.
+[%step]
+[source,bash]
+----
+docker container ls -a --format '{{.Names}}' | grep "bad"
+bad-1
+----
+[%step]
+C'est donc lancé, mais il a crashé.
+[%step]
+Allons donc chercher les logs...
+[%step]
+[source,bash]
+----
+docker container logs bad-1
+Error : nginx is not executable
+----
+[%step]
+On a trouvé le problème !
+[%step]
+Spoiler alert : on a trouvé UN problème, pas LE problème.
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #14🕵️‍♂️🔍
+Je ne sais pas ce qu'a fait Jean-Michel, mais il a cassé le binaire de Nginx.
+[%step]
+Est-ce un problème de permission, de dépendance, de version, de compilation ?
+[%step]
+En tous cas, c'est cassé.
+[%step]
+Regardons un peu ce que nous dit docker inspect de tout ça...
+[%step]
+[source,json]
+----
+docker image inspect bad-nginx:1
+[
+    {
+        "Id": "sha256:a469e4d1cb0c61324298fc6fde09f78f211420a1848b690dec35d9ac324a6cab",
+        "RepoTags": [
+            "bad-nginx:1"
+        ],
+        [...]
+        "ContainerConfig": {
+            [...]
+            "ExposedPorts": {
+                "80/tcp": {}
+            },
+----
+[%step]
+Port 80 exposé, c'est bon signe.
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #14🕵️‍♂️🔍
+
+[source,json]
+----
+            [...]
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+----
+[%step]
+On a un PATH, c'est bon signe.
+[%step]
+[source,json]
+----
+            "Cmd": [
+                "/bin/sh",
+                "-c",
+                "#(nop) ",
+                "CMD [\"/bin/sh\" \"-c\" \"nginx\"]"
+            ],
+----
+[%step]
+On a un CMD, c'est bon signe.
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #14🕵️‍♂️🔍
+[source,json]
+----
+            [...]
+            "Entrypoint": [
+                "/bin/sh",
+                "-c",
+                "/tmp/entrypoint.sh"
+            ],
+----
+[%step]
+On a un Entrypoint, c'est bon signe.
+
+[%step]
+[source,json]
+----
+            [...]
+            "Labels": {
+                [...]
+                "org.label-schema.name": "CentOS Base Image",
+                [...]
+            }
+        },
+        "DockerVersion": "18.09.0",
+        [...]
+        "Architecture": "amd64",
+        "Os": "linux",
+        [...]
+    }
+]
+----
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #14🕵️‍♂️🔍
+[source,json]
+----
+            [...]
+            "Labels": {
+                [...]
+                "org.label-schema.name": "CentOS Base Image",
+                [...]
+            }
+        },
+        "DockerVersion": "18.09.0",
+        [...]
+        "Architecture": "amd64",
+        "Os": "linux",
+        [...]
+    }
+]
+----
+[%step]
+C'est bien une image Linux `amd64` (donc pour ton PC, mais pas pour ton Mac M1, toi là-bas), mais argh, c'est basé sur CentOS, pas sur Alpine ou Debian !
+[%step]
+Ça a été construit avec une vieille version de Docker.
+[%step]
+Qu'est-ce qu'on fait maintenant ?
+
+[%auto-animate]
+[.columns]
+== ✅ Solution travaux pratiques #14🕵️‍♂️🔍
+[.column]
+--
+Tournons-nous vers l'histoire !
+
+image::https://img.20mn.fr/JejnWnikSbSj5suCAo9pug/1200x768_stephane-bern-arrive-elysee-4-octobre-2017.jpg[]
+--
+[.column]
+--
+[%step]
+[source,bash]
+----
+docker history bad-nginx:1
+IMAGE          CREATED       CREATED BY                                      SIZE      COMMENT
+a469e4d1cb0c   3 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0B
+<missing>      3 years ago   /bin/sh -c #(nop)  ENTRYPOINT ["/bin/sh" "-c…   0B
+<missing>      3 years ago   /bin/sh -c #(nop)  EXPOSE 80                    0B
+<missing>      3 years ago   /bin/sh -c #(nop) COPY file:b0fc89bcaf962602…   98B
+<missing>      3 years ago   /bin/sh -c yum install -y nginx && yum clean…   56.7MB
+<missing>      3 years ago   /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+<missing>      3 years ago   /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B
+<missing>      3 years ago   /bin/sh -c #(nop) ADD file:538afc0c5c964ce0d…   215MB
+----
+[%step]
+Ça se lit de bas en haut...
+[%step]
+Le premier `ADD` est l'image de base, CentOS.
+[%step]
+La deuxième ligne, c'est une métadata, on s'en fiche un peu.
+[%step]
+La troisième ligne, c'est le `CMD` de l'image de base, qui est `bash`.
+[%step]
+La quatrième ligne, c'est l'installation de Nginx par l'infâme `yum` de Centos (déjà repéré dans le `docker inspect`).
+--
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #14🕵️‍♂️🔍
+
+[source,bash]
+----
+docker history bad-nginx:1
+IMAGE          CREATED       CREATED BY                                      SIZE      COMMENT
+a469e4d1cb0c   3 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0B
+<missing>      3 years ago   /bin/sh -c #(nop)  ENTRYPOINT ["/bin/sh" "-c…   0B
+<missing>      3 years ago   /bin/sh -c #(nop)  EXPOSE 80                    0B
+<missing>      3 years ago   /bin/sh -c #(nop) COPY file:b0fc89bcaf962602…   98B
+<missing>      3 years ago   /bin/sh -c yum install -y nginx && yum clean…   56.7MB
+<missing>      3 years ago   /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+<missing>      3 years ago   /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B
+<missing>      3 years ago   /bin/sh -c #(nop) ADD file:538afc0c5c964ce0d…   215MB
+----
+[%step]
+La cinquième ligne, c'est sans doute la copie du fichier `index.html`.
+[%step]
+La sixième ligne, c'est l' `EXPOSE` de l'image finale, qui est `80` (déjà repéré dans le `docker inspect`).
+[%step]
+La septième ligne, c'est le `ENTRYPOINT` de l'image finale, qui est `/bin/sh -c /tmp/entrypoint.sh` (déjà repéré dans le `docker inspect`).
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #14🕵️‍♂️🔍
+Résumons-nous... On a:
+[%step]
+* une image de base CentOS (à remplacer par Alpine ou Debian)
+* une installation de `nginx`.
+* un port `80` exposé
+* un `ENTRYPOINT` qui lance un script `nginx`
+* un fichier HTML, qu'on n'a pas encore récupéré
+[%step]
+Ça progresse... On peut donc créer un premier 💀 Dockerfile
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #14🕵️‍♂️🔍💀
+
+[source,dockerfile]
+----
+# Utiliser Alpine ou Debian comme image de base
+FROM alpine
+
+# Mettre à jour le système et installer nginx
+RUN apk update && apk add nginx
+
+# Exposer le port 80
+EXPOSE 80
+
+# Ajouter un fichier HTML (remplacer /chemin/vers/votre/fichier.html par le chemin réel vers votre fichier HTML)
+ADD /chemin/vers/votre/fichier.html /usr/share/nginx/html
+
+# Définir le point d'entrée pour lancer nginx
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
+----
+[%step]
+Comment récupérer ce fichu fichier HTML?
+
+[%auto-animate]
+[.columns]
+== ✅ Solution travaux pratiques #14🕵️‍♂️🔍
+[.column]
+--
+Essayons de lancer un conteneur basé sur notre image, et de récupérer le fichier HTML.
+[%step]
+Le binaire `nginx` est non fonctionnel, essayons de lancer un conteneur avec un shell.
+[%step]
+
+[source,bash]
+----
+docker container run -it --name bad-2 --entrypoint=sh bad-nginx:1 sh
+/usr/bin/sh: /usr/bin/sh: cannot execute binary file
+----
+--
+[.column]
+--
+[%step]
+image::https://media.tenor.com/3gzS4mCevVkAAAAC/francais-queendugif.gif[]
+[%step]
+WARNING: Jean-Micheeeeeeeeeeeeeeeeel, j'ai deux mots à te dire! 😡
+--
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #14🕵️‍♂️🔍
+Le conteneur qui tourne, on oublie, donc... Jean-Michel a laissé un terrain miné derrière lui. 💣
+[%step]
+Mais on a d'autres armes en réserve... Le `docker container create` par exemple !
+[%step]
+[source,bash]
+----
+docker container create --name temp_container bad-nginx:1
+9149745197df413f7966181f6ca517b68713edd32ff7c35cea6e958d549a7553
+----
+[%step]
+Utilisons maintenant docker cp pour récupérer le fichier HTML.
+[%step]
+Quel est le répertoire où nginx s'attend à trouver ses fichiers HTML à servir?
+[%step]
+`/usr/share/nginx/html`
+[source,bash]
+----
+docker cp temp_container:/usr/share/nginx/html .
+----
+[%auto-animate]
 == 🐳😴 Lazy Docker
 
 https://blog.stephane-robert.info/docs/conteneurs/moteurs-conteneurs/lazydocker/
 
 [%auto-animate]
 [.columns]
-== Conseils pour l'eval'
+== Conseils pour l'éval'
 [.column]
 --
 image::final answer.png[height=500px]
