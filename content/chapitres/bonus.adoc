@@ -760,20 +760,7 @@ Résumons-nous... On a:
 
 [source,dockerfile]
 ----
-# Utiliser Alpine ou Debian comme image de base
-FROM alpine
-
-# Mettre à jour le système et installer nginx
-RUN apk update && apk add nginx
-
-# Exposer le port 80
-EXPOSE 80
-
-# Ajouter un fichier HTML (remplacer /chemin/vers/votre/fichier.html par le chemin réel vers votre fichier HTML)
-ADD /chemin/vers/votre/fichier.html /usr/share/nginx/html
-
-# Définir le point d'entrée pour lancer nginx
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+include::../code-samples/tp14/Dockerfile.squelette[]
 ----
 [%step]
 Comment récupérer ce fichu fichier HTML?
@@ -781,7 +768,7 @@ Comment récupérer ce fichu fichier HTML?
 [%auto-animate]
 [.columns]
 == ✅ Solution travaux pratiques #14🕵️‍♂️🔍
-[.column]
+[.column.is-half]
 --
 Essayons de lancer un conteneur basé sur notre image, et de récupérer le fichier HTML.
 [%step]
@@ -794,10 +781,15 @@ docker container run -it --name bad-2 --entrypoint=sh bad-nginx:1 sh
 /usr/bin/sh: /usr/bin/sh: cannot execute binary file
 ----
 --
-[.column]
+[.column.is-one-quarter]
 --
 [%step]
 image::https://media.tenor.com/3gzS4mCevVkAAAAC/francais-queendugif.gif[]
+[%step]
+Oui, je sais, il y a une faute dans la légende du gif...
+--
+[.column.is-one-quarter]
+--
 [%step]
 WARNING: Jean-Micheeeeeeeeeeeeeeeeel, j'ai deux mots à te dire! 😡
 --
@@ -819,10 +811,55 @@ Utilisons maintenant docker cp pour récupérer le fichier HTML.
 Quel est le répertoire où nginx s'attend à trouver ses fichiers HTML à servir?
 [%step]
 `/usr/share/nginx/html`
+[%step]
 [source,bash]
 ----
+mkdir /tmp/html && cd /tmp/html
 docker cp temp_container:/usr/share/nginx/html .
 ----
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #14🕵️‍♂️🔍
+[source,bash]
+----
+head html/index.html
+----
+
+[%step]
+[source,bash]
+----
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <title>Test Page for the Nginx HTTP Server on Red Hat Enterprise Linux</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <style type="text/css">
+            /*<![CDATA[*/
+            body {
+                background-color: #fff;
+----
+[%step]
+Jean-Michel n'avait même pas fini de remplir son fichier HTML...
+C'est encore le fichier de base de nginx sous CentOs.
+😞
+[%step]
+Jean-Michel, t'assures pas une 🥜, là...
+
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #14🕵️‍♂️🔍
+[source,dockerfile]
+----
+include::../code-samples/tp14/Dockerfile[]
+----
+[%step]
+Finalement, le 💀 de notre `Dockerfile` était déjà bon...
+[%step]
+Ou presque... Rien ne vous gêne dans ce Dockerfile?
+[%step]
+👫 don't let 👫...
+
 [%auto-animate]
 == 🐳😴 Lazy Docker
 

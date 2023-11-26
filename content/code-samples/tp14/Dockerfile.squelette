@@ -1,0 +1,14 @@
+# Utiliser Alpine ou Debian comme image de base
+FROM alpine
+
+# Mettre à jour le système et installer nginx
+RUN apk update && apk add nginx
+
+# Exposer le port 80
+EXPOSE 80
+
+# Ajouter un fichier HTML (remplacer /chemin/vers/votre/fichier.html par le chemin réel vers votre fichier HTML)
+ADD /chemin/vers/votre/fichier.html /usr/share/nginx/html
+
+# Définir le point d'entrée pour lancer nginx
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
