@@ -61,11 +61,6 @@ updates:
       interval: weekly
     open-pull-requests-limit: 10
   - package-ecosystem: docker
-    directory: "./"
-    schedule:
-      interval: weekly
-    open-pull-requests-limit: 10
-  - package-ecosystem: docker
     directory: "./content/code-samples/images/première-image/git"
     schedule:
       interval: weekly
@@ -87,6 +82,16 @@ updates:
     open-pull-requests-limit: 10
   - package-ecosystem: docker
     directory: "./content/code-samples/compose"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./dockerfiles/pdf/"
     schedule:
       interval: weekly
     open-pull-requests-limit: 10

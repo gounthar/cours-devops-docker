@@ -41,7 +41,7 @@ image::1956754704-image11.jpeg[]
 Pour ceux qui n'auraient pas de proxy parce que vous n'utilisez pas le réseau de la fac... On peut en lancer un avec Docker.
 Tout d'abord, créer un fichier `squid.conf` avec comme contenu:
 
-[source,conf]
+[source,apache]
 ----
 http_port 3128
 acl all src all

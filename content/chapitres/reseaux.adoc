@@ -41,7 +41,7 @@ Utilisation de l'API Docker : Une fois que l'API Docker est exposée, vous pouve
 
 Par exemple, pour lister les conteneurs en cours d'exécution, vous pouvez utiliser une requête HTTP GET :
 
-[source,httprequest]
+[source,http]
 ----
 GET http://adresse_ip_du_serveur_docker:2375/containers/json
 ----

@@ -1,7 +1,7 @@
 :docinfo: private
 :source-highlighter: highlight.js
 :highlightjsdir: highlightjs
-:highlightjs-languages: groovy, dockerfile, yaml, json, bash, java, javascript, xml, sql, properties, markdown, plaintext, diff
+:highlightjs-languages: groovy, dockerfile, yaml, json, bash, java, javascript, xml, sql, properties, markdown, plaintext, diff, http, apache
 :icons: font
 :iconfont-remote!:
 :sectids:
