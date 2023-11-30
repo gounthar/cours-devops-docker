@@ -36,7 +36,6 @@ dependencies-update:
 
 pdf:
 	@$(call compose_up, --exit-code-from=pdf pdf)
-
 clean:
 	@$(call compose_cmd, down -v --remove-orphans)
 	@rm -rf $(DIST_DIR)

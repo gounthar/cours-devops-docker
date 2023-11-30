@@ -37,24 +37,12 @@ services:
     command: >
       -t png -o /app/content/media/qrcode.png ${PRESENTATION_URL}
 
-  fat_pdf:
-    image: ghcr.io/astefanutti/decktape:3.10.0
+  pdf:
+    build:
+      context: ./dockerfiles/pdf
     depends_on:
       build:
-        condition: service_completed_successfully # PDF is generated from the dist/index.html
+        condition: service_completed_successfully
     user: ${CURRENT_UID}
     volumes:
       - ${DIST_DIR}:/slides
-    command: >
-      /slides/index.html /slides/fat_slides.pdf --size='2048x1536' --pause 0
-
-  pdf:
-    image: vulhub/ghostscript:9.56.1
-    depends_on:
-      fat_pdf:
-        condition: service_completed_successfully # The *BIG* PDF is there, ready to be WWched.
-    user: ${CURRENT_UID}
-    volumes:
-      - ${DIST_DIR}:/slides
-    command: >
-        gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=/slides/slides.pdf /slides/fat_slides.pdf && rm /slides/fat_slides.pdf
