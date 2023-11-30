@@ -1226,7 +1226,7 @@ docker run --rm docker-git:1.2.0 make --version</code></pre></div></div></div></
 <div class="imageblock fragment"><img src="media/1956754704-image11.jpeg" alt="1956754704 image11"></div>
 <aside class="notes"><div class="paragraph"><p>Pour ceux qui n&#8217;auraient pas de proxy parce que vous n&#8217;utilisez pas le réseau de la fac&#8230;&#8203; On peut en lancer un avec Docker.
 Tout d&#8217;abord, créer un fichier <code>squid.conf</code> avec comme contenu:</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-conf hljs" data-noescape="true" data-lang="conf">http_port 3128
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-apache hljs" data-noescape="true" data-lang="apache">http_port 3128
 acl all src all
 http_access allow all</code></pre></div></div>
 <div class="paragraph"><p>On peut ensuite lancer le proxy:</p></div>
@@ -1968,7 +1968,7 @@ Nouveau contenu du fichier 3</code></pre></div></div>
 <div class="paragraph"><p>Cela signifie que le moteur Docker écoutera les requêtes sur le port 2375.</p></div>
 <div class="paragraph"><p>Utilisation de l&#8217;API Docker : Une fois que l&#8217;API Docker est exposée, vous pouvez effectuer des opérations Docker en utilisant des requêtes HTTP. Le navigateur peut envoyer des requêtes HTTP directement à l&#8217;adresse IP du serveur Docker et au port 2375.</p></div>
 <div class="paragraph"><p>Par exemple, pour lister les conteneurs en cours d&#8217;exécution, vous pouvez utiliser une requête HTTP GET :</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-httprequest hljs" data-noescape="true" data-lang="httprequest">GET http://adresse_ip_du_serveur_docker:2375/containers/json</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-http hljs" data-noescape="true" data-lang="http">GET http://adresse_ip_du_serveur_docker:2375/containers/json</code></pre></div></div>
 <div class="paragraph"><p>Le serveur Docker répondra avec les détails des conteneurs en cours d&#8217;exécution au format JSON.</p></div>
 <div class="paragraph"><p>Sécurité : Il est important de noter que l&#8217;exposition de l&#8217;API Docker sur un port non sécurisé peut présenter des risques de sécurité, car n&#8217;importe qui avec accès au port 2375 peut potentiellement contrôler le moteur Docker. Pour des raisons de sécurité, il est recommandé de limiter l&#8217;accès à l&#8217;API Docker en utilisant des mécanismes d&#8217;authentification, d&#8217;autorisation et de chiffrement.</p></div>
 <div class="paragraph"><p>Outils tiers : En pratique, les navigateurs ne sont pas souvent utilisés pour interagir directement avec l&#8217;API Docker. Au lieu de cela, des outils tiers, des bibliothèques ou des clients Docker sont souvent utilisés pour simplifier les opérations Docker et fournir une couche de sécurité supplémentaire.</p></div></aside></div></section><section id="interagir_avec_le_docker_engine_5" data-auto-animate><h2>🤝 Interagir avec le Docker Engine</h2><div class="slide-content"><div class="imageblock"><img src="media/reseaux-output6_with_transparency.png" alt="reseaux output6 with transparency" height="600"></div>
@@ -3975,6 +3975,8 @@ Reveal.addEventListener('resize', function () {
 <script src="highlightjs/languages/markdown.min.js"></script>
 <script src="highlightjs/languages/plaintext.min.js"></script>
 <script src="highlightjs/languages/diff.min.js"></script>
+<script src="highlightjs/languages/http.min.js"></script>
+<script src="highlightjs/languages/apache.min.js"></script>
 
 <script>
 
