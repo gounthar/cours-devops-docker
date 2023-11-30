@@ -1226,7 +1226,7 @@ docker run --rm docker-git:1.2.0 make --version</code></pre></div></div></div></
 <div class="imageblock fragment"><img src="media/1956754704-image11.jpeg" alt="1956754704 image11"></div>
 <aside class="notes"><div class="paragraph"><p>Pour ceux qui n&#8217;auraient pas de proxy parce que vous n&#8217;utilisez pas le réseau de la fac&#8230;&#8203; On peut en lancer un avec Docker.
 Tout d&#8217;abord, créer un fichier <code>squid.conf</code> avec comme contenu:</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-conf hljs" data-noescape="true" data-lang="conf">http_port 3128
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-apache hljs" data-noescape="true" data-lang="apache">http_port 3128
 acl all src all
 http_access allow all</code></pre></div></div>
 <div class="paragraph"><p>On peut ensuite lancer le proxy:</p></div>
@@ -1968,7 +1968,7 @@ Nouveau contenu du fichier 3</code></pre></div></div>
 <div class="paragraph"><p>Cela signifie que le moteur Docker écoutera les requêtes sur le port 2375.</p></div>
 <div class="paragraph"><p>Utilisation de l&#8217;API Docker : Une fois que l&#8217;API Docker est exposée, vous pouvez effectuer des opérations Docker en utilisant des requêtes HTTP. Le navigateur peut envoyer des requêtes HTTP directement à l&#8217;adresse IP du serveur Docker et au port 2375.</p></div>
 <div class="paragraph"><p>Par exemple, pour lister les conteneurs en cours d&#8217;exécution, vous pouvez utiliser une requête HTTP GET :</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-httprequest hljs" data-noescape="true" data-lang="httprequest">GET http://adresse_ip_du_serveur_docker:2375/containers/json</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-http hljs" data-noescape="true" data-lang="http">GET http://adresse_ip_du_serveur_docker:2375/containers/json</code></pre></div></div>
 <div class="paragraph"><p>Le serveur Docker répondra avec les détails des conteneurs en cours d&#8217;exécution au format JSON.</p></div>
 <div class="paragraph"><p>Sécurité : Il est important de noter que l&#8217;exposition de l&#8217;API Docker sur un port non sécurisé peut présenter des risques de sécurité, car n&#8217;importe qui avec accès au port 2375 peut potentiellement contrôler le moteur Docker. Pour des raisons de sécurité, il est recommandé de limiter l&#8217;accès à l&#8217;API Docker en utilisant des mécanismes d&#8217;authentification, d&#8217;autorisation et de chiffrement.</p></div>
 <div class="paragraph"><p>Outils tiers : En pratique, les navigateurs ne sont pas souvent utilisés pour interagir directement avec l&#8217;API Docker. Au lieu de cela, des outils tiers, des bibliothèques ou des clients Docker sont souvent utilisés pour simplifier les opérations Docker et fournir une couche de sécurité supplémentaire.</p></div></aside></div></section><section id="interagir_avec_le_docker_engine_5" data-auto-animate><h2>🤝 Interagir avec le Docker Engine</h2><div class="slide-content"><div class="imageblock"><img src="media/reseaux-output6_with_transparency.png" alt="reseaux output6 with transparency" height="600"></div>
@@ -2635,8 +2635,8 @@ Configuration (with the authentication token) was saved in "/etc/gitlab-runner/c
     image: mon_image
     profiles:
       - dev</code></pre></div></div>
-<div class="paragraph fragment"><p>Dans cet exemple, le service mon_service appartient au profil dev.</p></div></div></section><section id="profils_dans_docker_compose_3" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Pour démarrer seulement les services qui appartiennent à un certain profil, vous pouvez utiliser l&#8217;option <code>--profile</code> avec la commande <code>docker-compose up</code>.</p></li><li class="fragment"><p>Par exemple :</p></li></ul></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker-compose up --profile dev</code></pre></div></div>
+<div class="paragraph fragment"><p>Dans cet exemple, le service mon_service appartient au profil dev.</p></div></div></section><section id="profils_dans_docker_compose_3" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Pour démarrer seulement les services qui appartiennent à un certain profil, vous pouvez utiliser l&#8217;option <code>--profile</code> avec la commande <code>docker compose up</code>.</p></li><li class="fragment"><p>Par exemple :</p></li></ul></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose up --profile dev</code></pre></div></div>
 <div class="paragraph fragment"><p>Cette commande démarrera seulement les services qui appartiennent au profil <code>dev</code>.</p></div></div></section><section id="profils_dans_docker_compose_4" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Les profils peuvent rendre votre fichier Docker Compose plus organisé et flexible.</p></li><li class="fragment"><p>Ils vous permettent de définir différents environnements dans le même fichier et de choisir facilement quels services démarrer en fonction de vos besoins.</p></li><li class="fragment"><p>Jetons un coup d&#8217;œil à un exemple de fichier Docker Compose avec des profils :</p></li></ul></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   service_dev:
@@ -2656,7 +2656,7 @@ Configuration (with the authentication token) was saved in "/etc/gitlab-runner/c
     image: mon_image_prod
     profiles:
       - prod</code></pre></div></div>
-<div class="ulist"><ul><li class="fragment"><p>Nous pouvons choisir de démarrer seulement les services de développement avec <code>docker-compose up --profile dev</code>, ou uniquement les services de production avec <code>docker-compose up --profile prod</code>.</p></li><li class="fragment"><p>Les profils dans Docker Compose sont un outil puissant pour gérer différents environnements dans le même fichier Docker Compose.</p></li><li class="fragment"><p>Ils peuvent rendre votre développement et vos tests plus efficaces et organisés.</p></li></ul></div></div></section><section id="une_autre_forge_ça_vous_dit"><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph fragment"><p>😏 Non, et bien, c&#8217;est parti quand même.</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Nous pouvons choisir de démarrer seulement les services de développement avec <code>docker compose up --profile dev</code>, ou uniquement les services de production avec <code>docker compose up --profile prod</code>.</p></li><li class="fragment"><p>Les profils dans Docker Compose sont un outil puissant pour gérer différents environnements dans le même fichier Docker Compose.</p></li><li class="fragment"><p>Ils peuvent rendre votre développement et vos tests plus efficaces et organisés.</p></li></ul></div></div></section><section id="une_autre_forge_ça_vous_dit"><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph fragment"><p>😏 Non, et bien, c&#8217;est parti quand même.</p></div>
 <div class="paragraph fragment"><p><a href="https://raw.githubusercontent.com/ash-sxn/GSoC-2023-docker-based-quickstart/main/build-docker-compose.yaml" class="bare">https://raw.githubusercontent.com/ash-sxn/GSoC-2023-docker-based-quickstart/main/build-docker-compose.yaml</a></p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   # Le service sidekick est responsable de la génération des clés SSH et de la vérification de leur existence.
@@ -2902,9 +2902,9 @@ RUN chown -R jenkins:jenkins "${JENKINS_AGENT_HOME}"</code></pre></div></div></d
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">git clone https://github.com/ash-sxn/GSoC-2023-docker-based-quickstart.git</code></pre></div></div>
 <div class="paragraph fragment"><p>À vous de modifier les sources de façon à passer par le cache ILI</p></div>
 <div class="paragraph fragment"><p>Ensuite, ne restera qu&#8217;à lancer la "forge":</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker-compose up --build -d --force-recreate maven</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose up --build -d --force-recreate maven</code></pre></div></div>
 <div class="paragraph fragment"><p>Ou encore si vous voulez tout construire localement:</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker-compose -f build-docker-compose.yaml up --build -d --force-recreate maven</code></pre></div></div></div></section><section data-background-image="media/jenkins-compose.png" data-background-size="cover" data-auto-animate></section><section id="autre_étude_de_cas" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker-compose qui a généré ce cours ?</p></div></div></section><section id="autre_étude_de_cas_2" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker-compose qui a généré ce cours ?</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose -f build-docker-compose.yaml up --build -d --force-recreate maven</code></pre></div></div></div></section><section data-background-image="media/jenkins-compose.png" data-background-size="cover" data-auto-animate></section><section id="autre_étude_de_cas" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker compose qui a généré ce cours ?</p></div></div></section><section id="autre_étude_de_cas_2" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker compose qui a généré ce cours ?</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># Ceci est un fichier Docker Compose pour un projet qui comprend plusieurs services.
 
 # 'x-slides-base' est une ancre YAML qui définit une configuration commune pour plusieurs services.
@@ -2981,7 +2981,7 @@ services:
       - ${DIST_DIR}:/slides
     # La commande à exécuter dans le conteneur Docker.
     command: &gt;
-      /slides/index.html /slides/slides.pdf --size='1024x768' --pause 0</code></pre></div></div></div></section><section id="autre_étude_de_cas_3" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker-compose qui a généré ce cours ?</p></div>
+      /slides/index.html /slides/slides.pdf --size='1024x768' --pause 0</code></pre></div></div></div></section><section id="autre_étude_de_cas_3" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker compose qui a généré ce cours ?</p></div>
 <div class="paragraph fragment"><p>Indigeste? 😨</p></div>
 <div class="paragraph fragment"><p>Ne relevons que les points importants:</p></div>
 <div class="paragraph fragment"><p>Les ancres&#8230;&#8203;</p></div>
@@ -3409,7 +3409,7 @@ nginx</pre></div></div>
 <div class="paragraph fragment"><p>on spécifie un driver</p></div>
 <div class="paragraph fragment"><p>on configure le driver</p></div></div></section><section id="travaux_pratiques_13"><h2>Travaux pratiques #13</h2><div class="slide-content"><div class="paragraph"><p>Étapes</p></div>
 <div class="paragraph"><p>Lancer une stack ELK grâce aux fichiers fournis dans le repo <a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp13" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp13</a></p></div>
-<div class="paragraph"><p>Alimenter en logs avec la commande <code>docker run --log-driver=gelf --log-opt gelf-address=udp://localhost:12201 alpine bash -c 'seq 1 100'</code></p></div>
+<div class="paragraph"><p>Alimenter en logs avec la commande <code>docker container run --log-driver=gelf --log-opt gelf-address=udp://localhost:12201 alpine bash -c 'seq 1 100'</code></p></div>
 <div class="paragraph"><p>Créer un index "timestamp" sur Kibana puis aller à l&#8217;écran "discover"</p></div>
 <div class="paragraph"><p>Lancer un conteneur nginx et concentrez ses logs dans ELK</p></div></div></section><section id="gitlab_et_dependabot" class="columns"><h2>GitLab et Dependabot</h2><div class="slide-content"><div class="imageblock column"><img src="https://about.gitlab.com/images/press/press-kit-icon.svg" alt="press kit icon" height="200px"></div>
 <div class="imageblock column"><img src="https://avatars.githubusercontent.com/u/27347476?s=200&v=4" alt="27347476?s=200&amp;v=4" height="200px"></div></div></section><section id="quest_ce_que_dependabot"><h2>🤔 Qu&#8217;est-ce que Dependabot ?</h2><div class="slide-content"><div class="paragraph"><p>Dependabot est un outil qui vous aide à maintenir vos dépendances à jour.</p></div>
@@ -3437,7 +3437,7 @@ services:
       - mynetwork
 networks:
   mynetwork:</pre></div></div>
-<div class="ulist"><ul><li class="fragment"><p>Après avoir mis à jour votre fichier <code>docker-compose.yml</code>, vous devez recréer vos conteneurs pour que les modifications prennent effet.</p></li><li class="fragment"><p>Vous pouvez le faire avec la commande <code>docker-compose up -d --force-recreate</code>.</p></li><li class="fragment"><p>Après cela, vous devriez pouvoir faire un <code>ping</code> sur <code>gitlab-instance-gitlab-1</code> depuis le conteneur web.</p></li></ul></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_7" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  web:
+<div class="ulist"><ul><li class="fragment"><p>Après avoir mis à jour votre fichier <code>docker-compose.yml</code>, vous devez recréer vos conteneurs pour que les modifications prennent effet.</p></li><li class="fragment"><p>Vous pouvez le faire avec la commande <code>docker compose up -d --force-recreate</code>.</p></li><li class="fragment"><p>Après cela, vous devriez pouvoir faire un <code>ping</code> sur <code>gitlab-instance-gitlab-1</code> depuis le conteneur web.</p></li></ul></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_7" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  web:
     image: *base_image
     networks:
 [...]
@@ -3530,13 +3530,190 @@ IMAGE               CREATED             CREATED BY                              
 &lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) ADD file:0dc53e7886c35bc21…   69.2MB</code></pre></div></div></div></section><section id="debugging_docker_stats"><h2>Debugging : docker stats</h2><div class="slide-content"><div class="paragraph"><p>Cette commande permet d&#8217;avoir les stats en temps réel d&#8217;un conteneur.</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker stats 42f128
 CONTAINER           CPU %     MEM USAGE/LIMIT     MEM %     NET I/O
-42f128              0.00%     1.454 MB/4.145 GB   0.04%     648 B/648 B</code></pre></div></div></div></section><section id="travaux_pratiques_14"><h2>Travaux pratiques #14</h2><div class="slide-content"><div class="paragraph"><p>Notre collègue Michel débute en Docker, il met à disposition des images Docker pour notre entreprise.</p></div>
-<div class="paragraph"><p>Michel a eu la chance de gagner au Loto et il a quitté son bureau du jour au lendemain alors qu&#8217;il était sur le point de nous délivrer une image Nginx.</p></div>
-<div class="paragraph"><p>Nous n&#8217;avons que le binaire de son image à cette adresse.</p></div>
+42f128              0.00%     1.454 MB/4.145 GB   0.04%     648 B/648 B</code></pre></div></div></div></section><section id="travaux_pratiques_14"><h2>🎓 Travaux pratiques #14</h2><div class="slide-content"><div class="paragraph"><p>Notre valeureux collègue Jean-Michel s&#8217;initiait à l&#8217;art mystérieux de Docker, et généreusement partageait ses créations sous forme d&#8217;images Docker pour l&#8217;entreprise.</p></div>
+<div class="paragraph"><p>Michel a soudainement décroché le jackpot du Loto, laissant derrière lui son bureau du jour au lendemain, alors qu&#8217;il était sur le point de nous offrir une image Nginx.</p></div>
+<div class="paragraph"><p>Désormais, nous n&#8217;avons que le binaire de son chef-d&#8217;œuvre, accessible à cette adresse :</p></div>
 <div class="paragraph"><p><a href="https://owncloud.univ-artois.fr/index.php/s/9s8XBLXvRwBJsrm" class="bare">https://owncloud.univ-artois.fr/index.php/s/9s8XBLXvRwBJsrm</a></p></div>
-<div class="paragraph"><p>On sait que `docker load `est la solution pour commencer</p></div>
-<div class="paragraph"><p>A l&#8217;aide !</p></div></div></section><section id="lazy_docker"><h2>🐳😴 Lazy Docker</h2><div class="slide-content"><div class="paragraph"><p><a href="https://blog.stephane-robert.info/docs/conteneurs/moteurs-conteneurs/lazydocker/" class="bare">https://blog.stephane-robert.info/docs/conteneurs/moteurs-conteneurs/lazydocker/</a></p></div></div></section><section id="conseils_pour_leval" class="columns" data-auto-animate><h2>Conseils pour l&#8217;eval'</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="imageblock"><img src="media/final%20answer.png" alt="final answer" height="500px"></div></div></div>
-<div class="openblock column"><div class="content"><div class="ulist"><ul><li><p><a href="https://moodle.univ-artois.fr/mod/resource/view.php?id=39414" class="bare">https://moodle.univ-artois.fr/mod/resource/view.php?id=39414</a></p></li><li><p><a href="https://moodle.univ-artois.fr/mod/choicegroup/view.php?id=39415" class="bare">https://moodle.univ-artois.fr/mod/choicegroup/view.php?id=39415</a></p></li><li><p><a href="https://moodle.univ-artois.fr/mod/assign/view.php?id=39416" class="bare">https://moodle.univ-artois.fr/mod/assign/view.php?id=39416</a></p></li></ul></div></div></div></div></section><section id="conseils_pour_leval_2" data-auto-animate><h2>Conseils pour l&#8217;eval'</h2><div class="slide-content"><div class="imageblock"><img src="media/dont%20panic.png" alt="dont panic" height="500px"></div></div></section><section id="vous_devez_avoir_les_compétences_suivantes"><h2>Vous devez avoir les compétences suivantes:</h2><div class="slide-content"><div class="paragraph"><p>Savoir lancer un container avec toutes les options</p></div>
+<div class="paragraph"><p>Rassurez-vous, on nous a dit que <code>docker load</code> est la première étape de la formule magique pour percer les secrets de son œuvre.</p></div>
+<div class="paragraph"><p>À vos claviers ! 🧙‍♂️✨</p></div></div></section><section id="solution_travaux_pratiques_14" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="paragraph"><p><code>docker load</code> est la première étape de la formule magique</p></div>
+<div class="paragraph fragment"><p>Okay&#8230;&#8203;</p></div>
+<div class="paragraph fragment"><p>🧙‍♂️✨</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker load -i bad-nginx.dkr
+Loaded image: bad-nginx:1</code></pre></div></div>
+<div class="paragraph fragment"><p>Nous voilà bien avancés&#8230;&#8203;</p></div>
+<div class="paragraph fragment"><p>On essaye de lancer un conteneur basé dessus ?</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d --name bad-1 bad-nginx:1
+f4caa4a641729c0ab3d7b5974fa735c128047f75292c7f16495b72c7c6808502</code></pre></div></div>
+<div class="paragraph fragment"><p>C&#8217;est lancé ?</p></div></div></section><section id="solution_travaux_pratiques_14_2" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls --format '{{.Names}}' | grep "bad"</code></pre></div></div>
+<div class="paragraph fragment"><p>Oups, il n&#8217;est pas là&#8230;&#8203;</p></div>
+<div class="paragraph fragment"><p>Essayons encore.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls -a --format '{{.Names}}' | grep "bad"
+bad-1</code></pre></div></div>
+<div class="paragraph fragment"><p>C&#8217;est donc lancé, mais il a crashé.</p></div>
+<div class="paragraph fragment"><p>Allons donc chercher les logs&#8230;&#8203;</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container logs bad-1
+Error : nginx is not executable</code></pre></div></div>
+<div class="paragraph fragment"><p>On a trouvé le problème !</p></div>
+<div class="paragraph fragment"><p>Spoiler alert : on a trouvé UN problème, pas LE problème.</p></div></div></section><section id="solution_travaux_pratiques_14_3" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="paragraph"><p>Je ne sais pas ce qu&#8217;a fait Jean-Michel, mais il a cassé le binaire de Nginx.</p></div>
+<div class="paragraph fragment"><p>Est-ce un problème de permission, de dépendance, de version, de compilation ?</p></div>
+<div class="paragraph fragment"><p>En tous cas, c&#8217;est cassé.</p></div>
+<div class="paragraph fragment"><p>Regardons un peu ce que nous dit docker inspect de tout ça&#8230;&#8203;</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">docker image inspect bad-nginx:1
+[
+    {
+        "Id": "sha256:a469e4d1cb0c61324298fc6fde09f78f211420a1848b690dec35d9ac324a6cab",
+        "RepoTags": [
+            "bad-nginx:1"
+        ],
+        [...]
+        "ContainerConfig": {
+            [...]
+            "ExposedPorts": {
+                "80/tcp": {}
+            },</code></pre></div></div>
+<div class="paragraph fragment"><p>Port 80 exposé, c&#8217;est bon signe.</p></div></div></section><section id="solution_travaux_pratiques_14_4" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">            [...]
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],</code></pre></div></div>
+<div class="paragraph fragment"><p>On a un PATH, c&#8217;est bon signe.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">            "Cmd": [
+                "/bin/sh",
+                "-c",
+                "#(nop) ",
+                "CMD [\"/bin/sh\" \"-c\" \"nginx\"]"
+            ],</code></pre></div></div>
+<div class="paragraph fragment"><p>On a un CMD, c&#8217;est bon signe.</p></div></div></section><section id="solution_travaux_pratiques_14_5" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">            [...]
+            "Entrypoint": [
+                "/bin/sh",
+                "-c",
+                "/tmp/entrypoint.sh"
+            ],</code></pre></div></div>
+<div class="paragraph fragment"><p>On a un Entrypoint, c&#8217;est bon signe.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">            [...]
+            "Labels": {
+                [...]
+                "org.label-schema.name": "CentOS Base Image",
+                [...]
+            }
+        },
+        "DockerVersion": "18.09.0",
+        [...]
+        "Architecture": "amd64",
+        "Os": "linux",
+        [...]
+    }
+]</code></pre></div></div></div></section><section id="solution_travaux_pratiques_14_6" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">            [...]
+            "Labels": {
+                [...]
+                "org.label-schema.name": "CentOS Base Image",
+                [...]
+            }
+        },
+        "DockerVersion": "18.09.0",
+        [...]
+        "Architecture": "amd64",
+        "Os": "linux",
+        [...]
+    }
+]</code></pre></div></div>
+<div class="paragraph fragment"><p>C&#8217;est bien une image Linux <code>amd64</code> (donc pour ton PC, mais pas pour ton Mac M1, toi là-bas), mais argh, c&#8217;est basé sur CentOS, pas sur Alpine ou Debian !</p></div>
+<div class="paragraph fragment"><p>Ça a été construit avec une vieille version de Docker.</p></div>
+<div class="paragraph fragment"><p>Qu&#8217;est-ce qu&#8217;on fait maintenant ?</p></div></div></section><section id="solution_travaux_pratiques_14_7" class="columns" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p>Tournons-nous vers l&#8217;histoire !</p></div>
+<div class="imageblock"><img src="https://img.20mn.fr/JejnWnikSbSj5suCAo9pug/1200x768_stephane-bern-arrive-elysee-4-octobre-2017.jpg" alt="1200x768 stephane bern arrive elysee 4 octobre 2017"></div></div></div>
+<div class="openblock column"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker history bad-nginx:1
+IMAGE          CREATED       CREATED BY                                      SIZE      COMMENT
+a469e4d1cb0c   3 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0B
+&lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  ENTRYPOINT ["/bin/sh" "-c…   0B
+&lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  EXPOSE 80                    0B
+&lt;missing&gt;      3 years ago   /bin/sh -c #(nop) COPY file:b0fc89bcaf962602…   98B
+&lt;missing&gt;      3 years ago   /bin/sh -c yum install -y nginx &amp;&amp; yum clean…   56.7MB
+&lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+&lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B
+&lt;missing&gt;      3 years ago   /bin/sh -c #(nop) ADD file:538afc0c5c964ce0d…   215MB</code></pre></div></div>
+<div class="paragraph fragment"><p>Ça se lit de bas en haut&#8230;&#8203;</p></div>
+<div class="paragraph fragment"><p>Le premier <code>ADD</code> est l&#8217;image de base, CentOS.</p></div>
+<div class="paragraph fragment"><p>La deuxième ligne, c&#8217;est une métadata, on s&#8217;en fiche un peu.</p></div>
+<div class="paragraph fragment"><p>La troisième ligne, c&#8217;est le <code>CMD</code> de l&#8217;image de base, qui est <code>bash</code>.</p></div>
+<div class="paragraph fragment"><p>La quatrième ligne, c&#8217;est l&#8217;installation de Nginx par l&#8217;infâme <code>yum</code> de Centos (déjà repéré dans le <code>docker inspect</code>).</p></div></div></div></div></section><section id="solution_travaux_pratiques_14_8" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker history bad-nginx:1
+IMAGE          CREATED       CREATED BY                                      SIZE      COMMENT
+a469e4d1cb0c   3 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0B
+&lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  ENTRYPOINT ["/bin/sh" "-c…   0B
+&lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  EXPOSE 80                    0B
+&lt;missing&gt;      3 years ago   /bin/sh -c #(nop) COPY file:b0fc89bcaf962602…   98B
+&lt;missing&gt;      3 years ago   /bin/sh -c yum install -y nginx &amp;&amp; yum clean…   56.7MB
+&lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+&lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B
+&lt;missing&gt;      3 years ago   /bin/sh -c #(nop) ADD file:538afc0c5c964ce0d…   215MB</code></pre></div></div>
+<div class="paragraph fragment"><p>La cinquième ligne, c&#8217;est sans doute la copie du fichier <code>index.html</code>.</p></div>
+<div class="paragraph fragment"><p>La sixième ligne, c&#8217;est l' <code>EXPOSE</code> de l&#8217;image finale, qui est <code>80</code> (déjà repéré dans le <code>docker inspect</code>).</p></div>
+<div class="paragraph fragment"><p>La septième ligne, c&#8217;est le <code>ENTRYPOINT</code> de l&#8217;image finale, qui est <code>/bin/sh -c /tmp/entrypoint.sh</code> (déjà repéré dans le <code>docker inspect</code>).</p></div></div></section><section id="solution_travaux_pratiques_14_9" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="paragraph"><p>Résumons-nous&#8230;&#8203; On a:</p></div>
+<div class="ulist"><ul><li class="fragment"><p>une image de base CentOS (à remplacer par Alpine ou Debian)</p></li><li class="fragment"><p>une installation de <code>nginx</code>.</p></li><li class="fragment"><p>un port <code>80</code> exposé</p></li><li class="fragment"><p>un <code>ENTRYPOINT</code> qui lance un script <code>nginx</code></p></li><li class="fragment"><p>un fichier HTML, qu&#8217;on n&#8217;a pas encore récupéré
+Ça progresse&#8230;&#8203; On peut donc créer un premier 💀 Dockerfile</p></li></ul></div></div></section><section id="solution_travaux_pratiques_14_10" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍💀</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Utiliser Alpine ou Debian comme image de base
+FROM alpine
+
+# Mettre à jour le système et installer nginx
+RUN apk update &amp;&amp; apk add nginx
+
+# Exposer le port 80
+EXPOSE 80
+
+# Ajouter un fichier HTML (remplacer /chemin/vers/votre/fichier.html par le chemin réel vers votre fichier HTML)
+ADD /chemin/vers/votre/fichier.html /usr/share/nginx/html
+
+# Définir le point d'entrée pour lancer nginx
+ENTRYPOINT ["nginx", "-g", "daemon off;"]</code></pre></div></div>
+<div class="paragraph fragment"><p>Comment récupérer ce fichu fichier HTML?</p></div></div></section><section id="solution_travaux_pratiques_14_11" class="columns" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="openblock column is-half"><div class="content"><div class="paragraph"><p>Essayons de lancer un conteneur basé sur notre image, et de récupérer le fichier HTML.</p></div>
+<div class="paragraph fragment"><p>Le binaire <code>nginx</code> est non fonctionnel, essayons de lancer un conteneur avec un shell.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --name bad-2 --entrypoint=sh bad-nginx:1 sh
+/usr/bin/sh: /usr/bin/sh: cannot execute binary file</code></pre></div></div></div></div>
+<div class="openblock column is-one-quarter"><div class="content"><div class="imageblock fragment"><img src="https://media.tenor.com/3gzS4mCevVkAAAAC/francais-queendugif.gif" alt="francais queendugif"></div>
+<div class="paragraph fragment"><p>Oui, je sais, il y a une faute dans la légende du gif&#8230;&#8203;</p></div></div></div>
+<div class="openblock column is-one-quarter"><div class="content"><div class="admonitionblock warning fragment"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Jean-Micheeeeeeeeeeeeeeeeel, j&#8217;ai deux mots à te dire! 😡</td></tr></table></div></div></div></div></section><section id="solution_travaux_pratiques_14_12" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="paragraph"><p>Le conteneur qui tourne, on oublie, donc&#8230;&#8203; Jean-Michel a laissé un terrain miné derrière lui. 💣</p></div>
+<div class="paragraph fragment"><p>Mais on a d&#8217;autres armes en réserve&#8230;&#8203; Le <code>docker container create</code> par exemple !</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container create --name temp_container bad-nginx:1
+9149745197df413f7966181f6ca517b68713edd32ff7c35cea6e958d549a7553</code></pre></div></div>
+<div class="paragraph fragment"><p>Utilisons maintenant docker cp pour récupérer le fichier HTML.</p></div>
+<div class="paragraph fragment"><p>Quel est le répertoire où nginx s&#8217;attend à trouver ses fichiers HTML à servir?</p></div>
+<div class="paragraph fragment"><p><code>/usr/share/nginx/html</code></p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">mkdir /tmp/html &amp;&amp; cd /tmp/html
+docker cp temp_container:/usr/share/nginx/html .</code></pre></div></div></div></section><section id="solution_travaux_pratiques_14_13" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">head html/index.html</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"&gt;
+
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"&gt;
+    &lt;head&gt;
+        &lt;title&gt;Test Page for the Nginx HTTP Server on Red Hat Enterprise Linux&lt;/title&gt;
+        &lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /&gt;
+        &lt;style type="text/css"&gt;
+            /*&lt;![CDATA[*/
+            body {
+                background-color: #fff;</code></pre></div></div>
+<div class="paragraph fragment"><p>Jean-Michel n&#8217;avait même pas fini de remplir son fichier HTML&#8230;&#8203;
+C&#8217;est encore le fichier de base de nginx sous CentOs.
+😞</p></div>
+<div class="paragraph fragment"><p>Jean-Michel, t&#8217;assures pas une 🥜, là&#8230;&#8203;</p></div></div></section><section id="solution_travaux_pratiques_14_14" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Ce Dockerfile met en place un serveur web simple en utilisant Nginx sur Alpine Linux.
+
+# Utilise Alpine Linux comme image de base. Alpine Linux est une distribution Linux légère et orientée sécurité.
+FROM alpine
+
+# Met à jour la liste des paquets du système et installe Nginx.
+# Nginx est un serveur web populaire qui peut également être utilisé comme proxy inverse, équilibreur de charge et cache HTTP.
+RUN apk update &amp;&amp; apk add nginx &amp;&amp; rm -rf /var/cache/apk/*
+
+# Expose le port 80 au monde extérieur. C'est le port standard pour le trafic HTTP.
+EXPOSE 80
+
+# Ajoute un fichier HTML à la racine du document Nginx.
+# Remplacez /chemin/vers/votre/fichier.html par le chemin réel vers votre fichier HTML.
+ADD /chemin/vers/votre/fichier.html /usr/share/nginx/html
+
+# Définit le point d'entrée pour le conteneur. Cette commande sera exécutée lorsque le conteneur démarre.
+# La commande "nginx" démarre le serveur Nginx.
+# Le flag "-g" nous permet de définir des directives globales. Dans ce cas, nous disons à Nginx de fonctionner au premier plan (daemon off;).
+ENTRYPOINT ["nginx", "-g", "daemon off;"]</code></pre></div></div>
+<div class="paragraph fragment"><p>Finalement, le 💀 de notre <code>Dockerfile</code> était déjà bon&#8230;&#8203;</p></div>
+<div class="paragraph fragment"><p>Ou presque&#8230;&#8203; Rien ne vous gêne dans ce Dockerfile?</p></div>
+<div class="paragraph fragment"><p>👫 don&#8217;t let 👫&#8230;&#8203;</p></div></div></section><section id="lazy_docker" data-auto-animate><h2>🐳😴 Lazy Docker</h2><div class="slide-content"><div class="paragraph"><p><a href="https://blog.stephane-robert.info/docs/conteneurs/moteurs-conteneurs/lazydocker/" class="bare">https://blog.stephane-robert.info/docs/conteneurs/moteurs-conteneurs/lazydocker/</a></p></div></div></section><section id="conseils_pour_léval" class="columns" data-auto-animate><h2>Conseils pour l&#8217;éval'</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="imageblock"><img src="media/final%20answer.png" alt="final answer" height="500px"></div></div></div>
+<div class="openblock column"><div class="content"><div class="ulist"><ul><li><p><a href="https://moodle.univ-artois.fr/mod/resource/view.php?id=39414" class="bare">https://moodle.univ-artois.fr/mod/resource/view.php?id=39414</a></p></li><li><p><a href="https://moodle.univ-artois.fr/mod/choicegroup/view.php?id=39415" class="bare">https://moodle.univ-artois.fr/mod/choicegroup/view.php?id=39415</a></p></li><li><p><a href="https://moodle.univ-artois.fr/mod/assign/view.php?id=39416" class="bare">https://moodle.univ-artois.fr/mod/assign/view.php?id=39416</a></p></li></ul></div></div></div></div></section><section id="conseils_pour_leval" data-auto-animate><h2>Conseils pour l&#8217;eval'</h2><div class="slide-content"><div class="imageblock"><img src="media/dont%20panic.png" alt="dont panic" height="500px"></div></div></section><section id="vous_devez_avoir_les_compétences_suivantes"><h2>Vous devez avoir les compétences suivantes:</h2><div class="slide-content"><div class="paragraph"><p>Savoir lancer un container avec toutes les options</p></div>
 <div class="ulist"><ul><li><p><code>-v, -p, -w, -e, --rm, etc.</code></p></li></ul></div>
 <div class="paragraph"><p>Écrire un Dockerfile optimisé pour "dockeriser" une application</p></div>
 <div class="ulist"><ul><li><p>pas trop gourmand, facile à modifier, paramétrable.</p></li></ul></div>
@@ -3798,6 +3975,8 @@ Reveal.addEventListener('resize', function () {
 <script src="highlightjs/languages/markdown.min.js"></script>
 <script src="highlightjs/languages/plaintext.min.js"></script>
 <script src="highlightjs/languages/diff.min.js"></script>
+<script src="highlightjs/languages/http.min.js"></script>
+<script src="highlightjs/languages/apache.min.js"></script>
 
 <script>
 
