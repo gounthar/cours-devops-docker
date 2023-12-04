@@ -1059,10 +1059,10 @@ docker container run --rm ubuntu:22.04 git --version
 # docker: Error response from daemon: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: "git": executable file not found in $PATH: unknown.
 
 # En interactif ?
-docker container run --rm --tty --interactive ubuntu:22.04 git --version</code></pre></div></div></div></section><section id="fabriquer_sa_première_image"><h2>🎓 Fabriquer sa première image</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> fabriquer une image Docker qui contient <code>git</code></p></li><li><p>Dans votre workspace Gitpod, créez un dossier nommé <code>docker-git/</code></p></li><li><p>Dans ce dossier, créer un fichier <code>Dockerfile</code> avec le contenu ci-dessous :</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-noescape="true" data-lang="Dockerfile">FROM alpine:3.18.5
+docker container run --rm --tty --interactive ubuntu:22.04 git --version</code></pre></div></div></div></section><section id="fabriquer_sa_première_image"><h2>🎓 Fabriquer sa première image</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> fabriquer une image Docker qui contient <code>git</code></p></li><li><p>Dans votre workspace Gitpod, créez un dossier nommé <code>docker-git/</code></p></li><li><p>Dans ce dossier, créer un fichier <code>Dockerfile</code> avec le contenu ci-dessous :</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-noescape="true" data-lang="Dockerfile">FROM alpine:3.18.4
 
 RUN apk update &amp;&amp; apk add --no-cache git</code></pre></div></div></li><li><p>Fabriquez votre image avec la commande <code>docker image build --tag=docker-git chemin/vers/docker-git/</code></p></li><li><p>Testez l&#8217;image fraîchement fabriquée</p><div class="ulist"><ul><li><p>💡 <code>docker image ls</code></p></li></ul></div></li></ul></div></div></section><section id="fabriquer_sa_première_image_2"><h2>✅ Fabriquer sa première image</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cat &lt;&lt;EOF &gt;Dockerfile
-FROM alpine:3.18.5
+FROM alpine:3.18.4
 
 RUN apk update &amp;&amp; apk add --no-cache git
 EOF
@@ -1312,7 +1312,7 @@ app.js</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run --workdir /customdir --entrypoint ls node
 &lt;0 fichiers présents !&gt;</code></pre></div></div>
 <div class="paragraph fragment"><p>Comment fournir des fichiers à mes containers ?</p></div></div></section><section id="embarquer_des_fichiers_2" data-auto-animate><h2>📁 Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Copie de fichiers.</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM node:21.3.0-alpine3.18
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM node:21.2.0-alpine3.18
 WORKDIR /app
 COPY ./* /app</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-node .
