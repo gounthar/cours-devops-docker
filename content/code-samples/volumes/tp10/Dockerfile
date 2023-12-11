@@ -1,4 +1,4 @@
-FROM alpine:3.18
+FROM alpine:3.19
 
 # Ajoutez des fichiers dans un dossier
 RUN mkdir /mon-dossier
