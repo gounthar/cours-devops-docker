@@ -1257,7 +1257,7 @@ google blahblahblah [...]
 docker container run --rm my-curl:2.0 http://facebook.com
 docker container run --rm my-curl:2.0 http://twitter.com</code></pre></div></div></div></section><section id="cmd_vs_entrypoint_6" class="columns" data-auto-animate><h2>CMD vs ENTRYPOINT</h2><div class="slide-content"><div class="openblock column is-one-fifth"><div class="content"><div class="paragraph"><p>Cas d&#8217;usage, un cran plus loin</p></div>
 <div class="paragraph"><p>Paramétrable, et hop!</p></div></div></div>
-<div class="openblock column is-half"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18
+<div class="openblock column is-half"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.19
 LABEL maintainer="John Doe"
 RUN apk update &amp;&amp; apk add curl
 # Si vous utilisez le proxy de l'Université
@@ -1270,7 +1270,7 @@ ENTRYPOINT ["curl","-x", "http://prx:3128", "-L", "--connect-timeout", "60"]
 google blahblahblah [...]
 &lt;/html&gt;</code></pre></div></div></div></div></div></section><section id="cmd_vs_entrypoint_7" class="columns" data-auto-animate><h2>CMD vs ENTRYPOINT</h2><div class="slide-content"><div class="openblock column is-one-fifth"><div class="content"><div class="paragraph"><p>Cas d&#8217;usage, un cran plus loin</p></div>
 <div class="paragraph"><p>Paramétrable, et hop!</p></div></div></div>
-<div class="openblock column is-half"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18
+<div class="openblock column is-half"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.19
 LABEL maintainer="John Doe"
 RUN apk update &amp;&amp; apk add curl
 # Si vous utilisez le proxy de l'Université
@@ -1929,7 +1929,7 @@ RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="ulist"><ul><li class="fragment"><p>Ajoute des fichiers dans un dossier</p></li><li class="fragment"><p>Déclare ce dossier comme volume anonyme</p></li><li class="fragment"><p>Ajoute d&#8217;autres fichiers dans ce dossier</p></li></ul></div>
 <div class="paragraph fragment"><p><strong>Que verra-ton dans ce dossier au sein de nos containers ?</strong></p></div></div></section><section id="solution_travaux_pratiques_10" data-auto-animate><h2>✅ Solution travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Tout d&#8217;abord, créez un répertoire pour votre projet et placez-vous dedans.</p></div>
 <div class="paragraph fragment"><p>Créez un Dockerfile avec le contenu suivant :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.19
 
 # Ajoutez des fichiers dans un dossier
 RUN mkdir /mon-dossier
