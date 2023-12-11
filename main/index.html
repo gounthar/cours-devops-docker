@@ -1234,7 +1234,7 @@ http_access allow all</code></pre></div></div>
 <div class="paragraph"><p>Puis changer la commande en:</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm curlimages/curl curl -x http://host.docker.internal:3128 -L --connect-timeout 60  "http://google.com"</code></pre></div></div></aside></div></section><section id="cmd_vs_entrypoint_2" class="columns" data-auto-animate><h2>CMD vs ENTRYPOINT</h2><div class="slide-content"><div class="openblock column is-one-fifth"><div class="content"><div class="paragraph"><p>Cas d&#8217;usage.
 On va s&#8217;outiller!</p></div></div></div>
-<div class="openblock column is-half"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.18
+<div class="openblock column is-half"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.19
 LABEL maintainer="John Doe"
 RUN apk update &amp;&amp; apk add curl
 # Si vous utilisez le proxy de l'Université
