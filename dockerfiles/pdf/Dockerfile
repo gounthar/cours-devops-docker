@@ -1,5 +1,5 @@
 
-FROM ghcr.io/astefanutti/decktape:3.10.0 AS pdf-generator
+FROM ghcr.io/astefanutti/decktape:3.11.0 AS pdf-generator
 
 USER root
 RUN apk add --no-cache ghostscript
