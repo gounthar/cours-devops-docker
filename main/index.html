@@ -1753,9 +1753,9 @@ COPY app    .
 
 CMD ["./app"]</code></pre></div></div>
 <aside class="notes"><div class="paragraph"><p>De base, j&#8217;avais plutôt</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">link:https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile.build[role=include]</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">link:https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile.build[]</code></pre></div></div>
 <div class="paragraph fragment"><p>Une image pour faire tourner l&#8217;appli</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">link:https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile[role=include]</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">link:https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile[]</code></pre></div></div>
 <div class="paragraph"><p>À bosser pour pouvoir rester à jour</p></div></aside></div></section><section id="une_première_solution_2" data-auto-animate><h2>🧩 Une première solution</h2><div class="slide-content"><div class="paragraph"><p>Avec un autre exemple</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">#!/bin/sh
 echo Building alexellis2/href-counter:build
@@ -1793,7 +1793,7 @@ COPY --from=0 /go/src/github.com/alexellis/href-counter/app    .
 
 CMD ["./app"]</code></pre></div></div>
 <aside class="notes"><div class="paragraph"><p>J&#8217;aurais préféré:</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">link:https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile.multi[role=include]</code></pre></div></div></aside></div></section><section id="multistage_build_2" data-auto-animate><h2>🪜 Multistage build</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM golang:1.19
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">link:https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile.multi[]</code></pre></div></div></aside></div></section><section id="multistage_build_2" data-auto-animate><h2>🪜 Multistage build</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM golang:1.19
 
 WORKDIR /go/src/github.com/alexellis/href-counter/
 
