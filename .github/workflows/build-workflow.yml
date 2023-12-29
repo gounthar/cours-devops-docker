@@ -35,7 +35,7 @@ jobs:
       - name: 'Verify'
         run: make verify
       - name: 'Upload dist/ as artefact'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: dist
           path: dist/
@@ -47,7 +47,7 @@ jobs:
     if: github.event_name == 'push'
     steps:
     - name: 'Download dist/ Artefacts'
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v3
       with:
         name: dist
         path: ./dist
