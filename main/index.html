@@ -1059,10 +1059,10 @@ docker container run --rm ubuntu:22.04 git --version
 # docker: Error response from daemon: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: "git": executable file not found in $PATH: unknown.
 
 # En interactif ?
-docker container run --rm --tty --interactive ubuntu:22.04 git --version</code></pre></div></div></div></section><section id="fabriquer_sa_première_image"><h2>🎓 Fabriquer sa première image</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> fabriquer une image Docker qui contient <code>git</code></p></li><li><p>Dans votre workspace Gitpod, créez un dossier nommé <code>docker-git/</code></p></li><li><p>Dans ce dossier, créer un fichier <code>Dockerfile</code> avec le contenu ci-dessous :</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-noescape="true" data-lang="Dockerfile">FROM alpine:3.19.0
+docker container run --rm --tty --interactive ubuntu:22.04 git --version</code></pre></div></div></div></section><section id="fabriquer_sa_première_image"><h2>🎓 Fabriquer sa première image</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> fabriquer une image Docker qui contient <code>git</code></p></li><li><p>Dans votre workspace Gitpod, créez un dossier nommé <code>docker-git/</code></p></li><li><p>Dans ce dossier, créer un fichier <code>Dockerfile</code> avec le contenu ci-dessous :</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-noescape="true" data-lang="Dockerfile">FROM alpine:3.19.1
 
 RUN apk update &amp;&amp; apk add --no-cache git</code></pre></div></div></li><li><p>Fabriquez votre image avec la commande <code>docker image build --tag=docker-git chemin/vers/docker-git/</code></p></li><li><p>Testez l&#8217;image fraîchement fabriquée</p><div class="ulist"><ul><li><p>💡 <code>docker image ls</code></p></li></ul></div></li></ul></div></div></section><section id="fabriquer_sa_première_image_2"><h2>✅ Fabriquer sa première image</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cat &lt;&lt;EOF &gt;Dockerfile
-FROM alpine:3.19.0
+FROM alpine:3.19.1
 
 RUN apk update &amp;&amp; apk add --no-cache git
 EOF
@@ -1722,7 +1722,7 @@ WORKDIR /app/gs-spring-boot/complete
 RUN mvn package
 
 # Use a lightweight Java image for running the application
-FROM eclipse-temurin:21.0.1_12-jre-alpine
+FROM eclipse-temurin:21.0.2_13-jre-alpine
 WORKDIR /app
 
 # Copy the built JAR file from the previous build stage
