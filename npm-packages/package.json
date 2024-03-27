@@ -4,9 +4,9 @@
     "description": "https://github.com/gounthar/cours-devops-docker",
     "repository": "https://github.com/gounthar/cours-devops-docker",
     "devDependencies": {
-        "@asciidoctor/reveal.js": "5.1.0",
-        "asciidoctor": "^3.0.4",
-        "browser-sync": "^3.0.2",
+        "@asciidoctor/reveal.js": "5.0.1",
+        "asciidoctor": "^3.0.2",
+        "browser-sync": "^2.29.3",
         "clipboard": "2.0.11",
         "gulp": "4.0.2",
         "gulp-autoprefixer": "8.0.0",
