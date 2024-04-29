@@ -12,7 +12,7 @@ WORKDIR /app/gs-spring-boot/complete
 RUN mvn package
 
 # Use a lightweight Java image for running the application
-FROM eclipse-temurin:21.0.2_13-jre-alpine
+FROM eclipse-temurin:22.0.1_8-jre-alpine
 WORKDIR /app
 
 # Copy the built JAR file from the previous build stage
