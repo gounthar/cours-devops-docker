@@ -1,4 +1,4 @@
-FROM alpine:3.19
+FROM alpine:3.20
 LABEL maintainer="John Doe"
 RUN apk update && apk add curl
 # Si vous utilisez le proxy de l'Université
