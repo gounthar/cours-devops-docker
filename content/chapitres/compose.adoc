@@ -445,7 +445,7 @@ services:
 
 Un exemple de fichier docker-compose.yml utilisé dans Jenkins:
 
-https://raw.githubusercontent.com/ash-sxn/GSoC-2023-docker-based-quickstart/main/docker-compose.yaml
+https://raw.githubusercontent.com/jenkins-docs/quickstart-tutorials/refs/heads/main/docker-compose.yaml
 
 [source,yaml]
 ----
@@ -1080,8 +1080,7 @@ services:
 [%step]
 😏 Non, et bien, c'est parti quand même.
 [%step]
-
-https://raw.githubusercontent.com/ash-sxn/GSoC-2023-docker-based-quickstart/main/build-docker-compose.yaml
+https://raw.githubusercontent.com/jenkins-docs/quickstart-tutorials/refs/heads/main/docker-compose.yaml
 [%step]
 [source,yaml]
 ----
@@ -1130,7 +1129,7 @@ include::../code-samples/compose/GSoC/python/Dockerfile[]
 
 [source,bash]
 ----
-git clone https://github.com/ash-sxn/GSoC-2023-docker-based-quickstart.git
+git clone https://github.com/jenkins-docs/quickstart-tutorials.git
 ----
 [%step]
 À vous de modifier les sources de façon à passer par le cache ILI
