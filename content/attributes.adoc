@@ -3,10 +3,8 @@
 :highlightjsdir: highlightjs
 :highlightjs-languages: groovy, dockerfile, yaml, json, bash, java, javascript, xml, sql, properties, markdown, plaintext, diff, http, apache
 :icons: font
-:iconfont-remote!:
 :sectids:
 :allow-uri-read:
-:safe-mode-level: safe
 :linkattrs:
 :idprefix:
 :imagesdir: media/
