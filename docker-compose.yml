@@ -38,11 +38,14 @@ services:
       -t png -o /app/content/media/qrcode.png ${PRESENTATION_URL}
 
   pdf:
-    build:
-      context: ./dockerfiles/pdf
+    image: ghcr.io/astefanutti/decktape:3.7.0
+    # build:
+    #   context: ./dockerfiles/pdf
     depends_on:
       build:
         condition: service_completed_successfully # PDF is generated from the dist/index.html
     user: ${CURRENT_UID}
     volumes:
       - ${DIST_DIR}:/slides
+    command: >
+      /slides/index.html /slides/slides.pdf --size='2048x1536' --pause 0
