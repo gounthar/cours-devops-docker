@@ -42,7 +42,7 @@ services:
       context: ./dockerfiles/pdf
     depends_on:
       build:
-        condition: service_completed_successfully
+        condition: service_completed_successfully # PDF is generated from the dist/index.html
     user: ${CURRENT_UID}
     volumes:
       - ${DIST_DIR}:/slides
