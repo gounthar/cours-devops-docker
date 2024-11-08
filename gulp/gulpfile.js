@@ -26,43 +26,51 @@ var current_config = {
 
 function prepare_revealjs() {
     return src(current_config.nodeModulesDir + '/reveal.js/dist/**/*')
-        .pipe(dest(current_config.buildDir + '/reveal.js/dist/'));
+        .pipe(dest(current_config.buildDir + '/reveal.js/dist/'))
+        .pipe(browserSync.stream());;
 }
 
 function prepare_revealjs_core_plugins() {
-    return src(current_config.nodeModulesDir + '/reveal.js/plugin/**/*')
-        .pipe(dest(current_config.buildDir + '/reveal.js/plugin/'));
+    return src(current_config.nodeModulesDir + '/reveal.js/plugin/**/*', { encoding: false })
+        .pipe(dest(current_config.buildDir + '/reveal.js/plugin/'))
+        .pipe(browserSync.stream());
 }
 
 function prepare_revealjs_external_plugins() {
-    return src(current_config.nodeModulesDir + '/reveal.js-plugins/**/*')
-        .pipe(dest(current_config.buildDir + '/reveal.js/reveal.js-plugins/'));
+    return src(current_config.nodeModulesDir + '/reveal.js-plugins/**/*', { encoding: false })
+        .pipe(dest(current_config.buildDir + '/reveal.js/reveal.js-plugins/'))
+        .pipe(browserSync.stream());
 }
 
 function prepare_revealjs_menu_plugin() {
-    return src(current_config.nodeModulesDir + '/reveal.js-menu/**/*')
-        .pipe(dest(current_config.buildDir + '/reveal.js/reveal.js-plugins/menu/'));
+    return src(current_config.nodeModulesDir + '/reveal.js-menu/**/*', { encoding: false })
+        .pipe(dest(current_config.buildDir + '/reveal.js/reveal.js-plugins/menu/'))
+        .pipe(browserSync.stream());
 }
 
 function prepare_plugin_copycode() {
-    return src(current_config.nodeModulesDir + '/reveal.js-copycode/plugin/copycode/**/*')
-        .pipe(dest(current_config.buildDir + '/reveal.js/plugin/reveal.js-copycode/'));
+    return src(current_config.nodeModulesDir + '/reveal.js-copycode/plugin/copycode/**/*', { encoding: false })
+        .pipe(dest(current_config.buildDir + '/reveal.js/plugin/reveal.js-copycode/'))
+        .pipe(browserSync.stream());
 }
 
 function prepare_highlightjs_min() {
     return src(current_config.nodeModulesDir + '/@highlightjs/cdn-assets/highlight.min.js')
-        .pipe(dest(current_config.buildDir + '/highlightjs/'));
+        .pipe(dest(current_config.buildDir + '/highlightjs/'))
+        .pipe(browserSync.stream());
 }
 
 function prepare_highlightjs_languages() {
     return src(current_config.nodeModulesDir + '/@highlightjs/cdn-assets/languages**/*')
-        .pipe(dest(current_config.buildDir + '/highlightjs/'));
+        .pipe(dest(current_config.buildDir + '/highlightjs/'))
+        .pipe(browserSync.stream());
 }
 
 
 function prepare_plugin_clipboardjs() {
-    return src(current_config.nodeModulesDir + '/clipboard/dist/clipboard.min.js')
-        .pipe(dest(current_config.buildDir + '/scripts/'));
+    return src(current_config.nodeModulesDir + '/clipboard/dist/clipboard.min.js', { encoding: false })
+        .pipe(dest(current_config.buildDir + '/scripts/'))
+        .pipe(browserSync.stream());
 }
 
 function styles() {
@@ -70,7 +78,8 @@ function styles() {
         .pipe(sass().on('error', sass.logError))
         .pipe(rename('build.css'))
         .pipe(csso())
-        .pipe(dest(current_config.buildDir + '/styles/'));
+        .pipe(dest(current_config.buildDir + '/styles/'))
+        .pipe(browserSync.stream());
 }
 
 function html() {
@@ -94,12 +103,14 @@ function html() {
 
 function media() {
     return src(current_config.mediaSrcPath + '/*', { encoding: false })
-        .pipe(dest(current_config.buildDir + '/media/'));
+        .pipe(dest(current_config.buildDir + '/media/'))
+        .pipe(browserSync.stream());
 }
 
 function favicon() {
-    return src(current_config.faviconPath)
-        .pipe(dest(current_config.buildDir + '/'));
+    return src(current_config.faviconPath, { encoding: false })
+        .pipe(dest(current_config.buildDir + '/'))
+        .pipe(browserSync.stream());
 }
 
 function serve(cb) {
@@ -132,7 +143,7 @@ const watchFiles = function () {
         current_config.stylesSrcPath + '/**/*.scss',
     ], series(styles));
 
-    watch("./*.html").on('change', browserSync.reload);
+    watch(current_config.buildDir + '/*.html').on('change', browserSync.reload);
 }
 
 function clean() {
