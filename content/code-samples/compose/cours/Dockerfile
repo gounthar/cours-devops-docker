@@ -1,5 +1,5 @@
 # Ce Dockerfile met en place un environnement Node.js avec des outils et dépendances supplémentaires.
-# Il est basé sur l'image Docker officielle de Node.js (version 18, variante Alpine).
+# Il est basé sur l'image Docker officielle de Node.js (version 22, variante Alpine).
 
 FROM node:22-alpine
 
@@ -43,7 +43,7 @@ RUN npm link gulp
 
 # Copier les tâches gulp et la configuration dans l'image Docker
 COPY ./gulp/tasks /app/tasks
-COPY ./gulp/gulpfile.js /app/gulpfile.js
+COPY ./gulp/gulpfile.mjs /app/gulpfile.mjs
 
 # Définir un volume pour le répertoire /app
 VOLUME ["/app"]
