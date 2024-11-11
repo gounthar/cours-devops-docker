@@ -38,9 +38,7 @@ services:
       -t png -o /app/content/media/qrcode.png ${PRESENTATION_URL}
 
   pdf:
-    image: ghcr.io/astefanutti/decktape:3.7.0
-    # build:
-    #   context: ./dockerfiles/pdf
+    image: ghcr.io/astefanutti/decktape:3.14.0
     depends_on:
       build:
         condition: service_completed_successfully # PDF is generated from the dist/index.html

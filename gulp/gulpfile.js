@@ -2,12 +2,12 @@
 
 const { series, parallel, src, dest, watch } = require('gulp');
 const { exec } = require('child_process');
-var rename = require("gulp-rename");
-var browserSync = require('browser-sync').create();
+const rename = require("gulp-rename");
+const browserSync = require('browser-sync').create();
 const sass = require('gulp-sass')(require('sass'));
 const csso = require('gulp-csso');
-var asciidoctor = require('@asciidoctor/core')();
-var asciidoctorRevealjs = require('@asciidoctor/reveal.js');
+const asciidoctor = require('@asciidoctor/core')();
+const asciidoctorRevealjs = require('@asciidoctor/reveal.js');
 
 asciidoctorRevealjs.register();
 
@@ -26,43 +26,51 @@ var current_config = {
 
 function prepare_revealjs() {
     return src(current_config.nodeModulesDir + '/reveal.js/dist/**/*')
-        .pipe(dest(current_config.buildDir + '/reveal.js/dist/'));
+        .pipe(dest(current_config.buildDir + '/reveal.js/dist/'))
+        .pipe(browserSync.stream());;
 }
 
 function prepare_revealjs_core_plugins() {
-    return src(current_config.nodeModulesDir + '/reveal.js/plugin/**/*')
-        .pipe(dest(current_config.buildDir + '/reveal.js/plugin/'));
+    return src(current_config.nodeModulesDir + '/reveal.js/plugin/**/*', { encoding: false })
+        .pipe(dest(current_config.buildDir + '/reveal.js/plugin/'))
+        .pipe(browserSync.stream());
 }
 
 function prepare_revealjs_external_plugins() {
-    return src(current_config.nodeModulesDir + '/reveal.js-plugins/**/*')
-        .pipe(dest(current_config.buildDir + '/reveal.js/reveal.js-plugins/'));
+    return src(current_config.nodeModulesDir + '/reveal.js-plugins/**/*', { encoding: false })
+        .pipe(dest(current_config.buildDir + '/reveal.js/reveal.js-plugins/'))
+        .pipe(browserSync.stream());
 }
 
 function prepare_revealjs_menu_plugin() {
-    return src(current_config.nodeModulesDir + '/reveal.js-menu/**/*')
-        .pipe(dest(current_config.buildDir + '/reveal.js/reveal.js-plugins/menu/'));
+    return src(current_config.nodeModulesDir + '/reveal.js-menu/**/*', { encoding: false })
+        .pipe(dest(current_config.buildDir + '/reveal.js/reveal.js-plugins/menu/'))
+        .pipe(browserSync.stream());
 }
 
 function prepare_plugin_copycode() {
-    return src(current_config.nodeModulesDir + '/reveal.js-copycode/plugin/copycode/**/*')
-        .pipe(dest(current_config.buildDir + '/reveal.js/plugin/reveal.js-copycode/'));
+    return src(current_config.nodeModulesDir + '/reveal.js-copycode/plugin/copycode/**/*', { encoding: false })
+        .pipe(dest(current_config.buildDir + '/reveal.js/plugin/reveal.js-copycode/'))
+        .pipe(browserSync.stream());
 }
 
 function prepare_highlightjs_min() {
     return src(current_config.nodeModulesDir + '/@highlightjs/cdn-assets/highlight.min.js')
-        .pipe(dest(current_config.buildDir + '/highlightjs/'));
+        .pipe(dest(current_config.buildDir + '/highlightjs/'))
+        .pipe(browserSync.stream());
 }
 
 function prepare_highlightjs_languages() {
     return src(current_config.nodeModulesDir + '/@highlightjs/cdn-assets/languages**/*')
-        .pipe(dest(current_config.buildDir + '/highlightjs/'));
+        .pipe(dest(current_config.buildDir + '/highlightjs/'))
+        .pipe(browserSync.stream());
 }
 
 
 function prepare_plugin_clipboardjs() {
-    return src(current_config.nodeModulesDir + '/clipboard/dist/clipboard.min.js')
-        .pipe(dest(current_config.buildDir + '/scripts/'));
+    return src(current_config.nodeModulesDir + '/clipboard/dist/clipboard.min.js', { encoding: false })
+        .pipe(dest(current_config.buildDir + '/scripts/'))
+        .pipe(browserSync.stream());
 }
 
 function styles() {
@@ -70,36 +78,37 @@ function styles() {
         .pipe(sass().on('error', sass.logError))
         .pipe(rename('build.css'))
         .pipe(csso())
-        .pipe(dest(current_config.buildDir + '/styles/'));
+        .pipe(dest(current_config.buildDir + '/styles/'))
+        .pipe(browserSync.stream());
 }
 
-function html() {
-    return src(current_config.sourcesDir + '/**/*.adoc', { read: false })
-        .on('end', function () {
-            asciidoctor.convertFile(
-                current_config.sourcesDir + '/index.adoc',
-                {
-                    safe: 'unsafe',
-                    backend: 'revealjs',
-                    attributes: {
-                        'revealjsdir': 'node_modules/reveal.js@',
-                        'presentationUrl': process.env.PRESENTATION_URL,
-                        'repositoryUrl': process.env.REPOSITORY_URL,
-                    },
-                    to_dir: current_config.buildDir,
-                }
-            );
-        });
+function html(cb) {
+    asciidoctor.convertFile(
+        current_config.sourcesDir + '/index.adoc',
+        {
+            safe: 'unsafe',
+            backend: 'revealjs',
+            attributes: {
+                'revealjsdir': 'node_modules/reveal.js@',
+                'presentationUrl': process.env.PRESENTATION_URL,
+                'repositoryUrl': process.env.REPOSITORY_URL,
+            },
+            to_dir: current_config.buildDir,
+        }
+    );
+    cb();
 }
 
 function media() {
     return src(current_config.mediaSrcPath + '/*', { encoding: false })
-        .pipe(dest(current_config.buildDir + '/media/'));
+        .pipe(dest(current_config.buildDir + '/media/'))
+        .pipe(browserSync.stream());
 }
 
 function favicon() {
-    return src(current_config.faviconPath)
-        .pipe(dest(current_config.buildDir + '/'));
+    return src(current_config.faviconPath, { encoding: false })
+        .pipe(dest(current_config.buildDir + '/'))
+        .pipe(browserSync.stream());
 }
 
 function serve(cb) {
@@ -132,7 +141,7 @@ const watchFiles = function () {
         current_config.stylesSrcPath + '/**/*.scss',
     ], series(styles));
 
-    watch("./*.html").on('change', browserSync.reload);
+    watch(current_config.buildDir + '/*.html').on('change', browserSync.reload);
 }
 
 function clean() {
@@ -158,4 +167,4 @@ const build = series(
 );
 
 exports.build = build;
-exports.default = series(clean, serve, build, watchFiles)
+exports.default = series(clean, build, serve, watchFiles)
