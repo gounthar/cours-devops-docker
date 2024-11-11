@@ -43,7 +43,7 @@ RUN npm link gulp
 
 # Copier les tâches gulp et la configuration dans l'image Docker
 COPY ./gulp/tasks /app/tasks
-COPY ./gulp/gulpfile.mjs /app/gulpfile.mjs
+COPY ./gulp/gulpfile.mjs /app/gulpfile.js
 
 # Définir un volume pour le répertoire /app
 VOLUME ["/app"]
