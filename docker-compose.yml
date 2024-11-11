@@ -13,7 +13,7 @@ x-slides-base: &slides-base
     - ./content:/app/content
     - ./assets:/app/assets
     - ${DIST_DIR}:/app/dist
-    - ./gulp/gulpfile.mjs:/app/gulpfile.mjs
+    - ./gulp/gulpfile.js:/app/gulpfile.js
     - ./gulp/tasks:/app/tasks
     - ./npm-packages:/app/npm-packages
 
