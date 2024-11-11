@@ -2930,7 +2930,7 @@ x-slides-base: &amp;slides-base
     - ./content:/app/content
     - ./assets:/app/assets
     - ${DIST_DIR}:/app/dist
-    - ./gulp/gulpfile.mjs:/app/gulpfile.mjs
+    - ./gulp/gulpfile.js:/app/gulpfile.js
     - ./gulp/tasks:/app/tasks
     - ./npm-packages:/app/npm-packages
 
@@ -3010,7 +3010,7 @@ x-slides-base: &amp;slides-base
     - ./content:/app/content
     - ./assets:/app/assets
     - ${DIST_DIR}:/app/dist
-    - ./gulp/gulpfile.mjs:/app/gulpfile.mjs
+    - ./gulp/gulpfile.js:/app/gulpfile.js
     - ./gulp/tasks:/app/tasks
     - ./npm-packages:/app/npm-packages</code></pre></div></div></div></section><section id="les_ancres_dans_docker_compose" data-auto-animate><h2>➡️🔄 Les ancres dans <code>docker compose</code> ⚓</h2><div class="slide-content"><div class="paragraph"><p>Docker Compose permet de définir et de gérer plusieurs services Docker dans un seul fichier YAML.</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Les ancres (<code>&amp;</code>) et les alias (<code>*</code>) sont des fonctionnalités YAML qui peuvent être utilisées dans Docker Compose pour réutiliser des configurations.</p></li><li class="fragment"><p>Une ancre est une référence à un objet ou à une valeur dans un fichier YAML.
@@ -3089,7 +3089,7 @@ x-slides-base: &amp;slides-base
     - ./content:/app/content
     - ./assets:/app/assets
     - ${DIST_DIR}:/app/dist
-    - ./gulp/gulpfile.mjs:/app/gulpfile.mjs
+    - ./gulp/gulpfile.js:/app/gulpfile.js
     - ./gulp/tasks:/app/tasks
     - ./npm-packages:/app/npm-packages</code></pre></div></div></div></section><section id="build_quoi" class="columns" data-auto-animate><h2>➡️🔄 Build quoi? 🛠️📦</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="ulist"><ul><li class="fragment"><p>Docker BuildKit est un outil de construction de Docker qui apporte de nombreuses améliorations par rapport à l&#8217;ancien système de construction.</p></li><li class="fragment"><p>L&#8217;une de ces améliorations est la mise en cache en ligne.</p></li><li class="fragment"><p>La mise en cache en ligne est une fonctionnalité de Docker BuildKit qui permet de réutiliser les couches de cache existantes lors de la construction d&#8217;une image Docker.</p></li></ul></div>
 <div class="imageblock fragment"><img src="media/multi-layered-cake-removebg-preview.png" alt="multi layered cake removebg preview" height="100px"></div></div></div>
@@ -3156,7 +3156,7 @@ RUN npm link gulp
 
 # Copier les tâches gulp et la configuration dans l'image Docker
 COPY ./gulp/tasks /app/tasks
-COPY ./gulp/gulpfile.mjs /app/gulpfile.js
+COPY ./gulp/gulpfile.js /app/gulpfile.js
 
 # Définir un volume pour le répertoire /app
 VOLUME ["/app"]
@@ -3189,7 +3189,7 @@ RUN { npm install-clean &amp;&amp; npx update-browserslist-db@latest; } || npm i
 RUN npm link gulp</code></pre></div></div>
 <div class="ulist"><ul><li class="fragment"><p>Il installe les dépendances <code>npm</code> en utilisant le <code>package-lock.json</code> (en revenant à une installation <code>npm</code> régulière si nécessaire), et lie la commande <code>gulp</code> pour qu&#8217;elle soit disponible dans le <code>PATH</code>.</p></li></ul></div></div></section><section id="autre_étude_de_cas_14" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Copier les tâches gulp et la configuration dans l'image Docker
 COPY ./gulp/tasks /app/tasks
-COPY ./gulp/gulpfile.mjs /app/gulpfile.js
+COPY ./gulp/gulpfile.js /app/gulpfile.js
 
 # Définir un volume pour le répertoire /app
 VOLUME ["/app"]
