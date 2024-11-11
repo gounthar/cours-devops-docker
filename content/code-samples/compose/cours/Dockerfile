@@ -1,5 +1,5 @@
 # Ce Dockerfile met en place un environnement Node.js avec des outils et dépendances supplémentaires.
-# Il est basé sur l'image Docker officielle de Node.js (version 18, variante Alpine).
+# Il est basé sur l'image Docker officielle de Node.js (version 22, variante Alpine).
 
 FROM node:23-alpine
 
