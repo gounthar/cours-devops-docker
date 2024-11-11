@@ -1,5 +1,7 @@
-/*jslint node: true, stupid: true */
+import autoprefixer from 'gulp-autoprefixer';
 
+/*jslint node: true, stupid: true */
+var autoprefixer = require('gulp-autoprefixer');
 var tasks_dir_path = './tasks',
     fs = require('fs'),
     path = require('path'),
@@ -7,7 +9,6 @@ var tasks_dir_path = './tasks',
     plugins = {
         asciidoctor: require('@asciidoctor/core')(),
         asciidoctorRevealjs: require('@asciidoctor/reveal.js'),
-        autoprefixer: require('gulp-autoprefixer'),
         browserSync: require('browser-sync').create(),
         csso: require('gulp-csso'),
         exec: require('gulp-exec'),

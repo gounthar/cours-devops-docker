@@ -37,7 +37,7 @@ RUN { npm install-clean && npx update-browserslist-db@latest; } || npm install
 RUN npm link gulp
 
 COPY ./gulp/tasks /app/tasks
-COPY ./gulp/gulpfile.js /app/gulpfile.js
+COPY ./gulp/gulpfile.mjs /app/gulpfile.mjs
 
 VOLUME ["/app"]
 
