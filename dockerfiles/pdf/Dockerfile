@@ -1,4 +1,4 @@
-FROM ghcr.io/astefanutti/decktape:3.14.0 AS pdf-generator
+FROM ghcr.io/astefanutti/decktape:3.15.0 AS pdf-generator
 
 # Define build-time variables
 ARG CURRENT_UID
