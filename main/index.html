@@ -1878,7 +1878,7 @@ Les données n&#8217;existent que tant que le conteneur est en cours d&#8217;ex�
 <div class="paragraph fragment"><p>Supprimer un volume</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume rm my-data</code></pre></div></div>
 <div class="paragraph fragment"><p>Inspecter un volume</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume inspect my-data</code></pre></div></div></div></section><section id="les_volumes_anonymes"><h2>📦📁🕶️ Les volumes "anonymes"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.21
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume inspect my-data</code></pre></div></div></div></section><section id="les_volumes_anonymes"><h2>📦📁🕶️ Les volumes "anonymes"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.22
 WORKDIR /repertoire/travail
 VOLUME ["/data"]
 RUN echo hello &gt; ./world.txt</code></pre></div></div>
