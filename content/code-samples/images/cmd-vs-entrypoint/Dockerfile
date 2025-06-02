@@ -1,4 +1,4 @@
-FROM alpine:3.21
+FROM alpine:3.22
 LABEL maintainer="John Doe"
 
 RUN apk add curl
