@@ -1059,10 +1059,10 @@ docker container run --rm ubuntu:22.04 git --version
 # docker: Error response from daemon: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: "git": executable file not found in $PATH: unknown.
 
 # En interactif ?
-docker container run --rm --tty --interactive ubuntu:22.04 git --version</code></pre></div></div></div></section><section id="fabriquer_sa_première_image"><h2>🎓 Fabriquer sa première image</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> fabriquer une image Docker qui contient <code>git</code></p></li><li><p>Dans votre workspace Gitpod, créez un dossier nommé <code>docker-git/</code></p></li><li><p>Dans ce dossier, créer un fichier <code>Dockerfile</code> avec le contenu ci-dessous :</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-noescape="true" data-lang="Dockerfile">FROM alpine:3.22.0
+docker container run --rm --tty --interactive ubuntu:22.04 git --version</code></pre></div></div></div></section><section id="fabriquer_sa_première_image"><h2>🎓 Fabriquer sa première image</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> fabriquer une image Docker qui contient <code>git</code></p></li><li><p>Dans votre workspace Gitpod, créez un dossier nommé <code>docker-git/</code></p></li><li><p>Dans ce dossier, créer un fichier <code>Dockerfile</code> avec le contenu ci-dessous :</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-noescape="true" data-lang="Dockerfile">FROM alpine:3.22.1
 
 RUN apk update &amp;&amp; apk add --no-cache git</code></pre></div></div></li><li><p>Fabriquez votre image avec la commande <code>docker image build --tag=docker-git chemin/vers/docker-git/</code></p></li><li><p>Testez l&#8217;image fraîchement fabriquée</p><div class="ulist"><ul><li><p>💡 <code>docker image ls</code></p></li></ul></div></li></ul></div></div></section><section id="fabriquer_sa_première_image_2"><h2>✅ Fabriquer sa première image</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cat &lt;&lt;EOF &gt;Dockerfile
-FROM alpine:3.22.0
+FROM alpine:3.22.1
 
 RUN apk update &amp;&amp; apk add --no-cache git
 EOF
@@ -1078,7 +1078,7 @@ docker container run --rm docker-git:latest git --version</code></pre></div></di
 <div class="paragraph fragment"><p><strong>📖🍳 RECETTE</strong></p></div>
 <div class="ulist"><ul><li class="fragment"><p>On part d&#8217;une image Alpine</p></li><li class="fragment"><p>On installe un JRE</p></li></ul></div></div></section><section data-background-image="media/images-output52_with_transparency.png" data-background-size="contain" data-auto-animate></section><section data-background-image="media/images-output53_with_transparency.png" data-background-size="contain" data-auto-animate></section><section data-background-image="media/images-output54_with_transparency.png" data-background-size="contain" data-auto-animate></section><section data-background-image="media/images-output56_with_transparency.png" data-background-size="contain" data-auto-animate><div class="slide-content">
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {52..56}; do convert Diapositive${i}.PNG -crop 9580x5224+1879+1795 -transparent white -resize x1080 images-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="fabriquer_son_image_3" class="columns" data-auto-animate><h2>🐋 📖🍳 Fabriquer son image</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="imageblock"><img src="media/images-output56_with_transparency.png" alt="images output56 with transparency"></div></div></div>
-<div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.22.0
+<div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.22.1
 LABEL maintainer="Tony Stark"
 
 RUN apk update
@@ -1687,7 +1687,7 @@ docker run -d -p 8080:8080 -p 9990:9990 --name wildfly-container -v /fully/quali
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">java -jar target/spring-boot-complete-0.0.1-SNAPSHOT.jar</code></pre></div></div>
 <div class="paragraph fragment"><p>Ok, il y a de l&#8217;idée&#8230;&#8203;</p></div></div></section><section id="solution_travaux_pratiques_7_4" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="paragraph"><p>Assemblons tout ça dans un <code>Dockerfile</code>.</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Use a Maven image for building the application
-FROM maven:3.9.8-eclipse-temurin-22-alpine
+FROM maven:3.9-eclipse-temurin-11-alpine
 WORKDIR /app
 
 # Clone the Spring Boot application repository
@@ -1709,7 +1709,7 @@ CMD ["java", "-jar", "spring-boot-complete-0.0.1-SNAPSHOT.jar"]</code></pre></di
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker run -d -p 8080:8080 --name spring-boot-container spring-boot-app</code></pre></div></div></div></section><section id="attends_un_peu"><h2>⏳ Attends un peu…</h2><div class="slide-content"><div class="imageblock"><img src="media/1779074283-image19.gif" alt="1779074283 image19"></div>
 <div class="paragraph"><p><em>Ça fonctionne, mais c&#8217;est comme si  je laissais la grue dans la chambre une fois que j&#8217;avais fini de construire ma maison !</em></p></div></div></section><section id="solution_travaux_pratiques_7_5" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="paragraph"><p>On essaye un <code>Dockerfile</code> moins BTP?</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Use a Maven image for building the application
-FROM maven:3.9.8-eclipse-temurin-22-alpine AS build
+FROM maven:3.9-eclipse-temurin-11-alpine AS build
 WORKDIR /app
 
 # Clone the Spring Boot application repository
@@ -1744,7 +1744,7 @@ COPY app.go	.
 
 RUN CGO_ENABLED=0 GOOS=linux go build  -ldflags "-s -w" -o app .</code></pre></div></div>
 <div class="paragraph fragment"><p>Une image pour faire tourner l&#8217;appli</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.22.0
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.22.1
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
@@ -2835,7 +2835,7 @@ volumes:
       retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
     volumes:
       - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_3" data-auto-animate><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph"><p>Maven</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM jenkins/ssh-agent:6.17.0-jdk17 as ssh-agent
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM jenkins/ssh-agent:6.24.0-jdk17 as ssh-agent
 
 # ca-certificates because curl will need it later on for the maven installation
 RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends ca-certificates curl &amp;&amp; apt-get clean &amp;&amp; \
