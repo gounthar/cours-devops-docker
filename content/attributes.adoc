@@ -33,3 +33,4 @@
 :invert2: state=invert,background-color="rgb(248, 228, 130)"
 :author_mail: {mail_icon} gounthar@gmail.com
 :gitpod_github_repo_url: https://github.com/gounthar/cours-devops-docker
+:academic_year: 2025/2026

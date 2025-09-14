@@ -3,7 +3,7 @@
 include::./attributes.adoc[]
 
 [.title]
-2024/2025
++{academic_year}
 
 image::qrcode.png["QRCode to this presentation",height=150]
 
