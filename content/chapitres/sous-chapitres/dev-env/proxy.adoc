@@ -1,10 +1,12 @@
 = Utiliser Docker derrière un proxy ou un cache universitaire
 
+[%auto-animate]
 == Pourquoi ? – Le Problème
 
 Lorsque nous sommes sur le réseau de l’université, Docker a du mal à télécharger directement les images depuis Docker Hub à cause des restrictions réseau. Nous sortons tous avec la même adresse IP, et en peu de temps, elle sera blacklistée pour un moment, ce qui nous pénalisera tous.
 Pour résoudre ce problème, l’université met à disposition un serveur de cache local.
 
+[%auto-animate]
 == 1. Concepts de base Docker
 
 Avant toute configuration, introduisons les notions essentielles, que nous verrons en détail par la suite :
@@ -24,6 +26,7 @@ ubuntu:22.04           # Identique à ci-dessus
 user/mon-app:latest    # Image personnalisée
 ----
 
+[%auto-animate]
 == 2. Le concept de cache de registre
 
 Au lieu de récupérer les images directement depuis Docker Hub, nous utilisons le cache fourni par l’université.
@@ -42,6 +45,7 @@ Après (solution) :
 docker pull cache-ili.univ-artois.fr:80/proxy_cache/library/ubuntu:22.04
 ----
 
+[%auto-animate]
 == 3. Approche simplifiée de configuration
 
 Option A : utiliser un *registry mirror*.
@@ -64,6 +68,7 @@ docker pull ubuntu:22.04   # Utilise automatiquement le cache !
 docker run gradle          # Fonctionne de manière transparente
 ----
 
+[%auto-animate]
 == 4. Script pédagogique étape par étape
 
 === Étape 1 – Comprendre le problème
@@ -124,6 +129,7 @@ newgrp docker   # Ou déconnectez-vous / reconnectez-vous
 docker pull cache-ili.univ-artois.fr:80/proxy_cache/library/hello-world
 ----
 
+[%auto-animate]
 == 5. Configurations avancées pour les proxys (au-delà du cache)
 
 Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d’images.
@@ -211,6 +217,7 @@ Créer ou modifier `~/.docker/config.json` :
 }
 ----
 
+[%auto-animate]
 == 6. Pourquoi ENV est préférable à RUN export
 
 * *Persistance* : `ENV` définit la variable pour toutes les commandes `RUN` suivantes.
