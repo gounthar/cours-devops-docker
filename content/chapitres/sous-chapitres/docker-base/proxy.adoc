@@ -102,8 +102,10 @@ Créer ou modifier `~/.docker/config.json` :
 * *Clarté* : rend explicite la dépendance au proxy dans le Dockerfile.
 * *Arguments de build* : permet de les surcharger au moment du build sans modifier le Dockerfile.
 
-=== Approches recommandées
-- Utilisez l’option *#1 (ENV dans le Dockerfile)* si le proxy est toujours requis.
-- Utilisez l’option *#3 (arguments de build)* si vous avez besoin de flexibilité.
+[%auto-animate]
+== Approches recommandées
 
-L’approche avec `RUN export` ne fonctionne que pour une seule commande, ce qui explique pourquoi `ENV` est plus fiable et plus conforme à l’esprit Docker !
+- Utilisez l'option *#1 (ENV dans le Dockerfile)* si le proxy est toujours requis.
+- Utilisez l'option *#3 (arguments de build)* si vous avez besoin de flexibilité.
+
+L'approche avec `RUN export` ne fonctionne que pour une seule commande, ce qui explique pourquoi `ENV` est plus fiable et plus conforme à l'esprit Docker !

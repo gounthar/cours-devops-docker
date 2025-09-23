@@ -3,7 +3,9 @@
 
 // Particularités de la fac
 == Particularités du réseau
-include::./sous-chapitres/docker-base/proxy.adoc[leveloffset=1]
+include::./sous-chapitres/dev-env/proxy.adoc[leveloffset=1]
+
+== Autre approche... Gitpod
 
 == Outils Nécessaires 🛠
 
