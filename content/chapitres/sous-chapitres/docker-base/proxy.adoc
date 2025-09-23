@@ -1,6 +1,10 @@
-[%auto-animate]
-= Utiliser ENV dans le Dockerfile plutôt que RUN export
 
+[%auto-animate]
+[source,dockerfile]
+----
+RUN export https_proxy=http://cache-etu.univ-artois.fr:3128/
+----
+Ceci fonctionne, mais...
 L’utilisation de `ENV` dans un Dockerfile est nettement plus conforme aux bonnes pratiques Docker que `RUN export` ! Voici les approches les plus adaptées :
 
 [%auto-animate]
