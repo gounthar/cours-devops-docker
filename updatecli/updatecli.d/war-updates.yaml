@@ -31,6 +31,7 @@ targets:
     name: "Update WAR file URL in AsciiDoc documentation"
     kind: "file"
     sourceid: "tp07-sample"
+    scmid: default
     spec:
       file: "content/chapitres/fichiers-nommage-inspect.adoc"
       matchpattern: 'https://github\.com/gounthar/tp07-sample/releases/download/v[^/]+/sample-[^)]+\.war'
