@@ -1,4 +1,4 @@
-= Utiliser Docker derrière un proxy ou un cache universitaire
+== Utiliser Docker derrière un proxy ou un cache universitaire
 
 [%auto-animate]
 == Pourquoi ? – Le Problème
@@ -29,7 +29,24 @@ user/mon-app:latest    # Image personnalisée
 [%auto-animate]
 == 2. Le concept de cache de registre
 
-Au lieu de récupérer les images directement depuis Docker Hub, nous utilisons le cache fourni par l’université.
+Au lieu de récupérer les images directement depuis Docker Hub, nous utilisons le cache fourni par l'université.
+
+[%auto-animate]
+== 2. Le concept de cache de registre
+
+Au lieu de récupérer les images directement depuis Docker Hub, nous utilisons le cache fourni par l'université.
+
+Avant (problème) :
+
+[source,bash]
+----
+docker pull ubuntu:22.04   # Échec sur le réseau universitaire, ou succès temporaire avant d'être blacklistés
+----
+
+[%auto-animate]
+== 2. Le concept de cache de registre
+
+Au lieu de récupérer les images directement depuis Docker Hub, nous utilisons le cache fourni par l'université.
 
 Avant (problème) :
 
@@ -43,6 +60,26 @@ Après (solution) :
 [source,bash]
 ----
 docker pull cache-ili.univ-artois.fr:80/proxy_cache/library/ubuntu:22.04
+----
+
+[%auto-animate]
+== 3. Approche simplifiée de configuration
+
+Option A : utiliser un *registry mirror*.
+
+[%auto-animate]
+== 3. Approche simplifiée de configuration
+
+Option A : utiliser un *registry mirror*.
+
+Modifier `/etc/docker/daemon.json` :
+
+[source,json]
+----
+{
+  "registry-mirrors": ["http://cache-ili.univ-artois.fr:80/proxy_cache/"],
+  "insecure-registries": ["cache-ili.univ-artois.fr:80"]
+}
 ----
 
 [%auto-animate]
@@ -69,7 +106,52 @@ docker run gradle          # Fonctionne de manière transparente
 ----
 
 [%auto-animate]
-== 4. Script pédagogique étape par étape
+== 4. Script étape par étape
+
+=== Étape 1 – Comprendre le problème
+- Docker Hub nous voit tous avec la même adresse IP, qui mène au blacklist
+- Nous devons utiliser le serveur de cache local.
+
+[%auto-animate]
+== 4. Script étape par étape
+
+=== Étape 1 – Comprendre le problème
+- Docker Hub nous voit tous avec la même adresse IP, qui mène au blacklist
+- Nous devons utiliser le serveur de cache local.
+
+=== Étape 2 – Configurer Docker une seule fois
+
+[source,bash]
+----
+sudo nano /etc/docker/daemon.json
+----
+
+[%auto-animate]
+== 4. Script étape par étape
+
+=== Étape 1 – Comprendre le problème
+- Docker Hub nous voit tous avec la même adresse IP, qui mène au blacklist
+- Nous devons utiliser le serveur de cache local.
+
+=== Étape 2 – Configurer Docker une seule fois
+
+[source,bash]
+----
+sudo nano /etc/docker/daemon.json
+----
+
+Ajouter :
+
+[source,json]
+----
+{
+  "registry-mirrors": ["http://cache-ili.univ-artois.fr:80/proxy_cache/"],
+  "insecure-registries": ["cache-ili.univ-artois.fr:80"]
+}
+----
+
+[%auto-animate]
+== 4. Script étape par étape
 
 === Étape 1 – Comprendre le problème
 - Docker Hub nous voit tous avec la même adresse IP, qui mène au blacklist
@@ -99,6 +181,16 @@ Ajouter :
 sudo systemctl restart docker
 ----
 
+[%auto-animate]
+== 4. Script étape par étape
+
+=== Étape 3 – Redémarrer Docker
+
+[source,bash]
+----
+sudo systemctl restart docker
+----
+
 === Étape 4 – Utiliser Docker normalement
 
 [source,bash]
@@ -106,6 +198,30 @@ sudo systemctl restart docker
 docker pull ubuntu:22.04    # Utilise automatiquement le cache
 docker run python:3.9       # Fonctionne sans problème
 ----
+
+[%auto-animate]
+== 4. Script étape par étape
+
+=== Étape 4 – Utiliser Docker normalement
+
+[source,bash]
+----
+docker pull ubuntu:22.04    # Utilise automatiquement le cache
+docker run python:3.9       # Fonctionne sans problème
+----
+
+=== Étape 5 – Explication visuelle
+
+Votre client Docker → Cache universitaire → Docker Hub (si nécessaire)
+(cache-ili.univ-artois.fr)
+
+*Avantages* :
+- Téléchargements plus rapides (images déjà en cache)
+- Fonctionne derrière le pare-feu universitaire
+- Pas besoin de changer vos commandes
+
+[%auto-animate]
+== 4. Script étape par étape
 
 === Étape 5 – Explication visuelle
 
@@ -132,7 +248,66 @@ docker pull cache-ili.univ-artois.fr:80/proxy_cache/library/hello-world
 [%auto-animate]
 == 5. Configurations avancées pour les proxys (au-delà du cache)
 
-Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d’images.
+Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d'images.
+
+[%auto-animate]
+== 5. Configurations avancées pour les proxys (au-delà du cache)
+
+Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d'images.
+
+=== Option 1 – Utiliser ENV dans le Dockerfile (Recommandé)
+
+[source,dockerfile]
+----
+ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+
+# Votre gestionnaire de paquets utilisera désormais le proxy
+RUN apk update && apk add your-package
+----
+
+[%auto-animate]
+== 5. Configurations avancées pour les proxys (au-delà du cache)
+
+=== Option 2 – Build multi-étapes (proxy uniquement quand nécessaire)
+
+[source,dockerfile]
+----
+# Étape de build avec proxy
+FROM alpine:latest as builder
+ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+RUN apk update && apk add build-dependencies
+
+# Étape finale sans proxy
+FROM alpine:latest
+COPY --from=builder /built-artifacts /app
+----
+
+[%auto-animate]
+== 5. Configurations avancées pour les proxys (au-delà du cache)
+
+=== Option 3 – Variables d'environnement passées au build
+
+[source,bash]
+----
+docker build --build-arg https_proxy=http://cache-etu.univ-artois.fr:3128/ .
+----
+
+Dockerfile correspondant :
+
+[source,dockerfile]
+----
+ARG https_proxy
+ARG http_proxy
+
+RUN apk update && apk add your-package
+----
+
+[%auto-animate]
+== 5. Configurations avancées pour les proxys (au-delà du cache)
+
+Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d'images.
 
 === Option 1 – Utiliser ENV dans le Dockerfile (Recommandé)
 
@@ -160,7 +335,7 @@ FROM alpine:latest
 COPY --from=builder /built-artifacts /app
 ----
 
-=== Option 3 – Variables d’environnement passées au build
+=== Option 3 – Variables d'environnement passées au build
 
 [source,bash]
 ----
@@ -201,7 +376,79 @@ Puis redémarrer Docker :
 sudo systemctl restart docker
 ----
 
-=== Option 5 – Configuration spécifique à l’utilisateur
+[%auto-animate]
+== 5. Configurations avancées pour les proxys (au-delà du cache)
+
+Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d'images.
+
+=== Option 1 – Utiliser ENV dans le Dockerfile (Recommandé)
+
+[source,dockerfile]
+----
+ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+
+# Votre gestionnaire de paquets utilisera désormais le proxy
+RUN apk update && apk add your-package
+----
+
+=== Option 2 – Build multi-étapes (proxy uniquement quand nécessaire)
+
+[source,dockerfile]
+----
+# Étape de build avec proxy
+FROM alpine:latest as builder
+ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+RUN apk update && apk add build-dependencies
+
+# Étape finale sans proxy
+FROM alpine:latest
+COPY --from=builder /built-artifacts /app
+----
+
+=== Option 3 – Variables d'environnement passées au build
+
+[source,bash]
+----
+docker build --build-arg https_proxy=http://cache-etu.univ-artois.fr:3128/ .
+----
+
+Dockerfile correspondant :
+
+[source,dockerfile]
+----
+ARG https_proxy
+ARG http_proxy
+
+RUN apk update && apk add your-package
+----
+
+=== Option 4 – Configuration du démon Docker (système entier)
+
+Ajouter dans `/etc/docker/daemon.json` :
+
+[source,json]
+----
+{
+  "proxies": {
+    "default": {
+      "httpProxy": "http://cache-etu.univ-artois.fr:3128",
+      "httpsProxy": "http://cache-etu.univ-artois.fr:3128",
+      "noProxy": "localhost,127.0.0.1"
+    }
+  }
+}
+----
+
+Puis redémarrer Docker :
+
+[source,bash]
+----
+sudo systemctl restart docker
+----
+
+=== Option 5 – Configuration spécifique à l'utilisateur
 
 Créer ou modifier `~/.docker/config.json` :
 
@@ -224,8 +471,26 @@ Créer ou modifier `~/.docker/config.json` :
 * *Clarté* : la dépendance au proxy est explicitement indiquée dans le Dockerfile.
 * *Arguments de build* : permettent de surcharger la configuration au moment du build.
 
-=== En résumé
-- Utilisez l’option *#1 (ENV dans Dockerfile)* si le proxy est toujours nécessaire.
-- Utilisez l’option *#3 (build args)* si vous souhaitez plus de flexibilité.
+[%auto-animate]
+== 6. Pourquoi ENV est préférable à RUN export
 
-L’approche `RUN export` ne fonctionne que pour une seule commande : c’est pourquoi `ENV` est plus fiable et conforme à l’esprit Docker.
+* *Persistance* : `ENV` définit la variable pour toutes les commandes `RUN` suivantes.
+* *Clarté* : la dépendance au proxy est explicitement indiquée dans le Dockerfile.
+* *Arguments de build* : permettent de surcharger la configuration au moment du build.
+
+=== En résumé
+- Utilisez l'option *#1 (ENV dans Dockerfile)* si le proxy est toujours nécessaire.
+- Utilisez l'option *#3 (build args)* si vous souhaitez plus de flexibilité.
+
+[%auto-animate]
+== 6. Pourquoi ENV est préférable à RUN export
+
+* *Persistance* : `ENV` définit la variable pour toutes les commandes `RUN` suivantes.
+* *Clarté* : la dépendance au proxy est explicitement indiquée dans le Dockerfile.
+* *Arguments de build* : permettent de surcharger la configuration au moment du build.
+
+=== En résumé
+- Utilisez l'option *#1 (ENV dans Dockerfile)* si le proxy est toujours nécessaire.
+- Utilisez l'option *#3 (build args)* si vous souhaitez plus de flexibilité.
+
+L'approche `RUN export` ne fonctionne que pour une seule commande : c'est pourquoi `ENV` est plus fiable et conforme à l'esprit Docker.
