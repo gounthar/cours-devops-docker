@@ -636,11 +636,9 @@ RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
 <h3>Option 4 – Configuration du démon Docker (système entier)</h3><div class="paragraph"><p>Ajouter dans <code>/etc/docker/daemon.json</code> :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">{
   "proxies": {
-    "default": {
-      "httpProxy": "http://cache-etu.univ-artois.fr:3128",
-      "httpsProxy": "http://cache-etu.univ-artois.fr:3128",
-      "noProxy": "localhost,127.0.0.1"
-    }
+    "http-proxy": "http://cache-etu.univ-artois.fr:3128",
+    "https-proxy": "http://cache-etu.univ-artois.fr:3128",
+    "no-proxy": "localhost,127.0.0.1"
   }
 }</code></pre></div></div>
 <div class="paragraph"><p>Puis redémarrer Docker :</p></div>
@@ -668,11 +666,9 @@ RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
 <h3>Option 4 – Configuration du démon Docker (système entier)</h3><div class="paragraph"><p>Ajouter dans <code>/etc/docker/daemon.json</code> :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">{
   "proxies": {
-    "default": {
-      "httpProxy": "http://cache-etu.univ-artois.fr:3128",
-      "httpsProxy": "http://cache-etu.univ-artois.fr:3128",
-      "noProxy": "localhost,127.0.0.1"
-    }
+    "http-proxy": "http://cache-etu.univ-artois.fr:3128",
+    "https-proxy": "http://cache-etu.univ-artois.fr:3128",
+    "no-proxy": "localhost,127.0.0.1"
   }
 }</code></pre></div></div>
 <div class="paragraph"><p>Puis redémarrer Docker :</p></div>
@@ -682,7 +678,8 @@ RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
   "proxies": {
     "default": {
       "httpProxy": "http://cache-etu.univ-artois.fr:3128",
-      "httpsProxy": "http://cache-etu.univ-artois.fr:3128"
+      "httpsProxy": "http://cache-etu.univ-artois.fr:3128",
+      "noProxy": "localhost,127.0.0.1"
     }
   }
 }</code></pre></div></div></div></section><section id="6_pourquoi_env_est_préférable_à_run_export" data-auto-animate><h2>6. Pourquoi ENV est préférable à RUN export</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>Persistance</strong> : <code>ENV</code> définit la variable pour toutes les commandes <code>RUN</code> suivantes.</p></li><li><p><strong>Clarté</strong> : la dépendance au proxy est explicitement indiquée dans le Dockerfile.</p></li><li><p><strong>Arguments de build</strong> : permettent de surcharger la configuration au moment du build.</p></li></ul></div></div></section><section id="6_pourquoi_env_est_préférable_à_run_export_2" data-auto-animate><h2>6. Pourquoi ENV est préférable à RUN export</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>Persistance</strong> : <code>ENV</code> définit la variable pour toutes les commandes <code>RUN</code> suivantes.</p></li><li><p><strong>Clarté</strong> : la dépendance au proxy est explicitement indiquée dans le Dockerfile.</p></li><li><p><strong>Arguments de build</strong> : permettent de surcharger la configuration au moment du build.</p></li></ul></div>
