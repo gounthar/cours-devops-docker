@@ -36,3 +36,12 @@ targets:
       file: "content/chapitres/fichiers-nommage-inspect.adoc"
       matchpattern: 'https://github\.com/gounthar/tp07-sample/releases/download/v[^/]+/sample-[^)]+\.war'
       replacepattern: 'https://github.com/gounthar/tp07-sample/releases/download/v{{ source "tp07-sample" }}/sample-{{ source "tp07-sample" }}.war'
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    title: '[TP07] Update WAR file URL to {{ source "tp07-sample" }}'
+    spec:
+      labels:
+        - dependencies
