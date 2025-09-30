@@ -61,24 +61,24 @@ conditions:
       image: "golang"
       tag: '{{ source "golangLatestVersion" }}-alpine{{ source "alpineLatestVersion" }}'
 
-targets:
-  updateHelloWorldTutorialGolangPipeline:
-    name: "Update the value of the golang docker image for pipelines in the 'Hello World!' tutorial"
-    kind: file
-    sourceid: golangLatestVersion
-    spec:
-      file: content/doc/pipeline/tour/hello-world.adoc
-      matchpattern: >-
-        (.*agent.*docker.*image.*\')golang:(.*)(\'.*)
-      replacepattern: >-
-        ${1}golang:{{ source "golangLatestVersion" }}-alpine{{ source "alpineLatestVersion" }}${3}
-    scmid: default
-
-actions:
-  default:
-    kind: github/pullrequest
-    scmid: default
-    title: '[Hello World Tutorial] Bump Golang alpine docker image version to {{ source "golangLatestVersion" }}-alpine{{ source "alpineLatestVersion" }}'
-    spec:
-      labels:
-        - dependencies
+#targets:
+#  updateHelloWorldTutorialGolangPipeline:
+#    name: "Update the value of the golang docker image for pipelines in the 'Hello World!' tutorial"
+#    kind: file
+#    sourceid: golangLatestVersion
+#    spec:
+#      file: content/doc/pipeline/tour/hello-world.adoc
+#      matchpattern: >-
+#        (.*agent.*docker.*image.*\')golang:(.*)(\'.*)
+#      replacepattern: >-
+#        ${1}golang:{{ source "golangLatestVersion" }}-alpine{{ source "alpineLatestVersion" }}${3}
+#    scmid: default
+#
+#actions:
+#  default:
+#    kind: github/pullrequest
+#    scmid: default
+#    title: '[Hello World Tutorial] Bump Golang alpine docker image version to {{ source "golangLatestVersion" }}-alpine{{ source "alpineLatestVersion" }}'
+#    spec:
+#      labels:
+#        - dependencies
