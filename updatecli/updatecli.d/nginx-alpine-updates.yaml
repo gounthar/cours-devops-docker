@@ -1,0 +1,43 @@
+---
+name: "Update nginx alpine Docker image to latest version"
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  nginx-alpine:
+    name: "Get latest nginx alpine Docker image tag"
+    kind: "dockerimage"
+    spec:
+      image: "nginx"
+      versionfilter:
+        kind: "regex"
+        pattern: "^\\d+\\.\\d+\\.\\d+-alpine\\d+\\.\\d+$"
+
+targets:
+  nginx-image:
+    name: "Update nginx Docker image in AsciiDoc documentation"
+    kind: "file"
+    sourceid: "nginx-alpine"
+    spec:
+      file: "content/chapitres/fichiers-nommage-inspect.adoc"
+      matchpattern: 'docker run --name my-nginx -v /fully/qualified/path/on/my/computer/:/usr/share/nginx/html:ro -d -p 8000:80 nginx(?::\d+\.\d+\.\d+-alpine\d*\.\d*)?'
+      replacepattern: 'docker run --name my-nginx -v /fully/qualified/path/on/my/computer/:/usr/share/nginx/html:ro -d -p 8000:80 nginx:{{ source "nginx-alpine" }}'
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    title: '[TP07] Update nginx alpine Docker image to {{ source "nginx-alpine" }}'
+    spec:
+      labels:
+        - dependencies
