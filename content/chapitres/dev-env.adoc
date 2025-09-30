@@ -1,6 +1,12 @@
 [{invert}]
 = Préparer votre environnement de travail
 
+// Particularités de la fac
+== Particularités du réseau
+include::./sous-chapitres/dev-env/proxy.adoc[leveloffset=1]
+
+== Autre approche... Gitpod
+
 == Outils Nécessaires 🛠
 
 * Un navigateur web récent (et décent)
