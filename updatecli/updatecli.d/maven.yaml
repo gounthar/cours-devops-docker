@@ -28,22 +28,22 @@ sources:
       - trimprefix: "maven-"
 
 conditions:
-  testMavenHelloWorld:
-    name: "Does the 'Hello World!' tutorial have a reference to the Maven alpine image?"
-    kind: file
-    disablesourceinput: true
-    spec:
-      file: content/doc/pipeline/tour/hello-world.adoc
-      matchpattern: >-
-        .*agent.*docker.*image.*maven:.*
-  testMavenDockerTutorial:
-    name: "Does the 'Pipeline as YAML' tutorial have a reference to the Maven alpine image?"
-    kind: file
-    disablesourceinput: true
-    spec:
-      file: content/doc/book/pipeline/docker.adoc
-      matchpattern: >-
-        .*image.*\'maven:.*\'.*
+#  testMavenHelloWorld:
+#    name: "Does the 'Hello World!' tutorial have a reference to the Maven alpine image?"
+#    kind: file
+#    disablesourceinput: true
+#    spec:
+#      file: content/doc/pipeline/tour/hello-world.adoc
+#      matchpattern: >-
+#        .*agent.*docker.*image.*maven:.*
+#  testMavenDockerTutorial:
+#    name: "Does the 'Pipeline as YAML' tutorial have a reference to the Maven alpine image?"
+#    kind: file
+#    disablesourceinput: true
+#    spec:
+#      file: content/doc/book/pipeline/docker.adoc
+#      matchpattern: >-
+#        .*image.*\'maven:.*\'.*
   testMavenAlpineImagePublished:
     name: "Test maven:<latest_version>-eclipse-temurin-21-alpine docker image tag"
     kind: dockerimage

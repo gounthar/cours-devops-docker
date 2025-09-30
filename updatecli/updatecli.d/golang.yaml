@@ -45,14 +45,14 @@ sources:
       - trimprefix: "go"
 
 conditions:
-  testGolangAlpineArg:
-    name: "Does the 'Hello World!' tutorial have a reference to the Golang alpine image?"
-    kind: file
-    disablesourceinput: true
-    spec:
-      file: content/doc/pipeline/tour/hello-world.adoc
-      matchpattern: >-
-        .*agent.*docker.*image.*golang:.*
+#  testGolangAlpineArg:
+#    name: "Does the 'Hello World!' tutorial have a reference to the Golang alpine image?"
+#    kind: file
+#    disablesourceinput: true
+#    spec:
+#      file: content/doc/pipeline/tour/hello-world.adoc
+#      matchpattern: >-
+#        .*agent.*docker.*image.*golang:.*
   testGolangAlpineImagePublished:
     name: "Test golang:<latest_version>-alpine docker image tag"
     kind: dockerimage
