@@ -23,15 +23,6 @@ sources:
       token: "{{ requiredEnv .github.token }}"
       versionfilter:
         kind: "latest"
-  tp07-sample-no-v:
-    name: "Get latest release version without v prefix"
-    kind: "githubrelease"
-    spec:
-      owner: "gounthar"
-      repository: "tp07-sample"
-      token: "{{ requiredEnv .github.token }}"
-      versionfilter:
-        kind: "latest"
     transformers:
       - trimprefix: "v"
 
@@ -43,4 +34,4 @@ targets:
     spec:
       file: "content/chapitres/fichiers-nommage-inspect.adoc"
       matchpattern: 'https://github\.com/gounthar/tp07-sample/releases/download/v[^/]+/sample-[^)]+\.war'
-      replacepattern: 'https://github.com/gounthar/tp07-sample/releases/download/{{ source "tp07-sample" }}/sample-{{ source "tp07-sample-no-v" }}.war'
+      replacepattern: 'https://github.com/gounthar/tp07-sample/releases/download/v{{ source "tp07-sample" }}/sample-{{ source "tp07-sample" }}.war'
