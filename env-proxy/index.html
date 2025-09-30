@@ -529,7 +529,166 @@ Cela permet une flexibilité accrue dans la gestion des ressources et des charge
 <div class="openblock column"><div class="content"><div class="paragraph"><p>On a la base, remplissons là maintenant de containers!</p></div>
 <div class="paragraph small"><small>La suite: vers la droite ➡️</small></div></div></div>
 <div class="openblock column"><div class="content"><div class="imageblock"><img src="media/empty_ship.png" alt="empty ship" height="720"></div></div></div></div></section></section>
-<section><section id="préparer_votre_environnement_de_travail" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Préparer votre environnement de travail</h2></section><section id="outils_nécessaires"><h2>Outils Nécessaires 🛠</h2><div class="slide-content"><div class="ulist"><ul><li><p>Un navigateur web récent (et décent)</p></li><li><p>Un compte sur <a href="https://github.com" target="_blank"><span class="icon"><i class="fab fa-github"></i></span> GitHub</a></p></li></ul></div></div></section><section id="gitpod"><h2>GitPod</h2><div class="slide-content"><div class="paragraph"><p><a href="https://gitpod.io" target="_blank">GitPod.io</a> : Environnement de développement dans le ☁️ "nuage"</p></div>
+<section><section id="préparer_votre_environnement_de_travail" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Préparer votre environnement de travail</h2></section><section id="particularités_du_réseau"><h2>Particularités du réseau</h2></section><section id="utiliser_docker_derrière_un_proxy_ou_un_cache_universitaire"><h2>Utiliser Docker derrière un proxy ou un cache universitaire</h2></section><section id="pourquoi_le_problème" data-auto-animate><h2>Pourquoi ? – Le Problème</h2><div class="slide-content"><div class="paragraph"><p>Lorsque nous sommes sur le réseau de l’université, Docker a du mal à télécharger directement les images depuis Docker Hub à cause des restrictions réseau. Nous sortons tous avec la même adresse IP, et en peu de temps, elle sera blacklistée pour un moment, ce qui nous pénalisera tous.
+Pour résoudre ce problème, l’université met à disposition un serveur de cache local.</p></div></div></section><section id="1_concepts_de_base_docker" data-auto-animate><h2>1. Concepts de base Docker</h2><div class="slide-content"><div class="paragraph"><p>Avant toute configuration, introduisons les notions essentielles, que nous verrons en détail par la suite :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Que sont les images Docker ?
+docker pull hello-world
+docker run hello-world
+
+# Comment les images Docker sont nommées ?
+[registry/][username/]image-name[:tag]
+
+# Exemples :
+library/ubuntu:22.04   # Image officielle (library est implicite)
+ubuntu:22.04           # Identique à ci-dessus
+user/mon-app:latest    # Image personnalisée</code></pre></div></div></div></section><section id="2_le_concept_de_cache_de_registre" data-auto-animate><h2>2. Le concept de cache de registre</h2><div class="slide-content"><div class="paragraph"><p>Au lieu de récupérer les images directement depuis Docker Hub, nous utilisons le cache fourni par l&#8217;université.</p></div></div></section><section id="2_le_concept_de_cache_de_registre_2" data-auto-animate><h2>2. Le concept de cache de registre</h2><div class="slide-content"><div class="paragraph"><p>Au lieu de récupérer les images directement depuis Docker Hub, nous utilisons le cache fourni par l&#8217;université.</p></div>
+<div class="paragraph"><p>Avant (problème) :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker pull ubuntu:22.04   # Échec sur le réseau universitaire, ou succès temporaire avant d'être blacklistés</code></pre></div></div></div></section><section id="2_le_concept_de_cache_de_registre_3" data-auto-animate><h2>2. Le concept de cache de registre</h2><div class="slide-content"><div class="paragraph"><p>Au lieu de récupérer les images directement depuis Docker Hub, nous utilisons le cache fourni par l&#8217;université.</p></div>
+<div class="paragraph"><p>Avant (problème) :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker pull ubuntu:22.04   # Échec sur le réseau universitaire, ou succès temporaire avant d'être blacklistés</code></pre></div></div>
+<div class="paragraph"><p>Après (solution) :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker pull cache-ili.univ-artois.fr:80/proxy_cache/library/ubuntu:22.04</code></pre></div></div></div></section><section id="3_approche_simplifiée_de_configuration" data-auto-animate><h2>3. Approche simplifiée de configuration</h2><div class="slide-content"><div class="paragraph"><p>Option A : utiliser un <strong>registry mirror</strong>.</p></div></div></section><section id="3_approche_simplifiée_de_configuration_2" data-auto-animate><h2>3. Approche simplifiée de configuration</h2><div class="slide-content"><div class="paragraph"><p>Option A : utiliser un <strong>registry mirror</strong>.</p></div>
+<div class="paragraph"><p>Modifier <code>/etc/docker/daemon.json</code> :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">{
+  "registry-mirrors": ["http://cache-ili.univ-artois.fr:80/proxy_cache/"],
+  "insecure-registries": ["cache-ili.univ-artois.fr:80"]
+}</code></pre></div></div></div></section><section id="3_approche_simplifiée_de_configuration_3" data-auto-animate><h2>3. Approche simplifiée de configuration</h2><div class="slide-content"><div class="paragraph"><p>Option A : utiliser un <strong>registry mirror</strong>.</p></div>
+<div class="paragraph"><p>Modifier <code>/etc/docker/daemon.json</code> :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">{
+  "registry-mirrors": ["http://cache-ili.univ-artois.fr:80/proxy_cache/"],
+  "insecure-registries": ["cache-ili.univ-artois.fr:80"]
+}</code></pre></div></div>
+<div class="paragraph"><p>Désormais, les commandes Docker standards fonctionnent :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker pull ubuntu:22.04   # Utilise automatiquement le cache !
+docker run gradle          # Fonctionne de manière transparente</code></pre></div></div></div></section><section id="4_script_étape_par_étape" data-auto-animate><h2>4. Script étape par étape</h2><div class="slide-content"><h3>Étape 1 – Comprendre le problème</h3><div class="ulist"><ul><li><p>Docker Hub nous voit tous avec la même adresse IP, qui mène au blacklist</p></li><li><p>Nous devons utiliser le serveur de cache local.</p></li></ul></div></div></section><section id="4_script_étape_par_étape_2" data-auto-animate><h2>4. Script étape par étape</h2><div class="slide-content"><h3>Étape 1 – Comprendre le problème</h3><div class="ulist"><ul><li><p>Docker Hub nous voit tous avec la même adresse IP, qui mène au blacklist</p></li><li><p>Nous devons utiliser le serveur de cache local.</p></li></ul></div>
+<h3>Étape 2 – Configurer Docker une seule fois</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo nano /etc/docker/daemon.json</code></pre></div></div></div></section><section id="4_script_étape_par_étape_3" data-auto-animate><h2>4. Script étape par étape</h2><div class="slide-content"><h3>Étape 1 – Comprendre le problème</h3><div class="ulist"><ul><li><p>Docker Hub nous voit tous avec la même adresse IP, qui mène au blacklist</p></li><li><p>Nous devons utiliser le serveur de cache local.</p></li></ul></div>
+<h3>Étape 2 – Configurer Docker une seule fois</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo nano /etc/docker/daemon.json</code></pre></div></div>
+<div class="paragraph"><p>Ajouter :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">{
+  "registry-mirrors": ["http://cache-ili.univ-artois.fr:80/proxy_cache/"],
+  "insecure-registries": ["cache-ili.univ-artois.fr:80"]
+}</code></pre></div></div></div></section><section id="4_script_étape_par_étape_4" data-auto-animate><h2>4. Script étape par étape</h2><div class="slide-content"><h3>Étape 1 – Comprendre le problème</h3><div class="ulist"><ul><li><p>Docker Hub nous voit tous avec la même adresse IP, qui mène au blacklist</p></li><li><p>Nous devons utiliser le serveur de cache local.</p></li></ul></div>
+<h3>Étape 2 – Configurer Docker une seule fois</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo nano /etc/docker/daemon.json</code></pre></div></div>
+<div class="paragraph"><p>Ajouter :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">{
+  "registry-mirrors": ["http://cache-ili.univ-artois.fr:80/proxy_cache/"],
+  "insecure-registries": ["cache-ili.univ-artois.fr:80"]
+}</code></pre></div></div>
+<h3>Étape 3 – Redémarrer Docker</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo systemctl restart docker</code></pre></div></div></div></section><section id="4_script_étape_par_étape_5" data-auto-animate><h2>4. Script étape par étape</h2><div class="slide-content"><h3>Étape 3 – Redémarrer Docker</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo systemctl restart docker</code></pre></div></div>
+<h3>Étape 4 – Utiliser Docker normalement</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker pull ubuntu:22.04    # Utilise automatiquement le cache
+docker run python:3.9       # Fonctionne sans problème</code></pre></div></div></div></section><section id="4_script_étape_par_étape_6" data-auto-animate><h2>4. Script étape par étape</h2><div class="slide-content"><h3>Étape 4 – Utiliser Docker normalement</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker pull ubuntu:22.04    # Utilise automatiquement le cache
+docker run python:3.9       # Fonctionne sans problème</code></pre></div></div>
+<h3>Étape 5 – Explication visuelle</h3><div class="paragraph"><p>Votre client Docker → Cache universitaire → Docker Hub (si nécessaire)
+(cache-ili.univ-artois.fr)</p></div>
+<div class="paragraph"><p><strong>Avantages</strong> :
+- Téléchargements plus rapides (images déjà en cache)
+- Fonctionne derrière le pare-feu universitaire
+- Pas besoin de changer vos commandes</p></div></div></section><section id="4_script_étape_par_étape_7" data-auto-animate><h2>4. Script étape par étape</h2><div class="slide-content"><h3>Étape 5 – Explication visuelle</h3><div class="paragraph"><p>Votre client Docker → Cache universitaire → Docker Hub (si nécessaire)
+(cache-ili.univ-artois.fr)</p></div>
+<div class="paragraph"><p><strong>Avantages</strong> :
+- Téléchargements plus rapides (images déjà en cache)
+- Fonctionne derrière le pare-feu universitaire
+- Pas besoin de changer vos commandes</p></div>
+<h3>Étape 6 – Problèmes courants</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Permission refusée ? Ajoutez votre utilisateur au groupe docker :
+sudo usermod -aG docker $USER
+newgrp docker   # Ou déconnectez-vous / reconnectez-vous
+
+# Toujours un souci ? Testez le cache :
+docker pull cache-ili.univ-artois.fr:80/proxy_cache/library/hello-world</code></pre></div></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><div class="paragraph"><p>Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d&#8217;images.</p></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache_2" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><div class="paragraph"><p>Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d&#8217;images.</p></div>
+<h3>Option 1 – Utiliser ENV dans le Dockerfile (Recommandé)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+
+# Votre gestionnaire de paquets utilisera désormais le proxy
+RUN apk update &amp;&amp; apk add your-package</code></pre></div></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache_3" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><h3>Option 2 – Build multi-étapes (proxy uniquement quand nécessaire)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Étape de build avec proxy
+FROM alpine:latest as builder
+ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+RUN apk update &amp;&amp; apk add build-dependencies
+
+# Étape finale sans proxy
+FROM alpine:latest
+COPY --from=builder /built-artifacts /app</code></pre></div></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache_4" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><h3>Option 3 – Variables d&#8217;environnement passées au build</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker build --build-arg https_proxy=http://cache-etu.univ-artois.fr:3128/ .</code></pre></div></div>
+<div class="paragraph"><p>Dockerfile correspondant :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">ARG https_proxy
+ARG http_proxy
+
+RUN apk update &amp;&amp; apk add your-package</code></pre></div></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache_5" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><div class="paragraph"><p>Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d&#8217;images.</p></div>
+<h3>Option 1 – Utiliser ENV dans le Dockerfile (Recommandé)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+
+# Votre gestionnaire de paquets utilisera désormais le proxy
+RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
+<h3>Option 2 – Build multi-étapes (proxy uniquement quand nécessaire)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Étape de build avec proxy
+FROM alpine:latest as builder
+ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+RUN apk update &amp;&amp; apk add build-dependencies
+
+# Étape finale sans proxy
+FROM alpine:latest
+COPY --from=builder /built-artifacts /app</code></pre></div></div>
+<h3>Option 3 – Variables d&#8217;environnement passées au build</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker build --build-arg https_proxy=http://cache-etu.univ-artois.fr:3128/ .</code></pre></div></div>
+<div class="paragraph"><p>Dockerfile correspondant :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">ARG https_proxy
+ARG http_proxy
+
+RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
+<h3>Option 4 – Configuration du démon Docker (système entier)</h3><div class="paragraph"><p>Ajouter dans <code>/etc/docker/daemon.json</code> :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">{
+  "proxies": {
+    "default": {
+      "httpProxy": "http://cache-etu.univ-artois.fr:3128",
+      "httpsProxy": "http://cache-etu.univ-artois.fr:3128",
+      "noProxy": "localhost,127.0.0.1"
+    }
+  }
+}</code></pre></div></div>
+<div class="paragraph"><p>Puis redémarrer Docker :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo systemctl restart docker</code></pre></div></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache_6" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><div class="paragraph"><p>Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d&#8217;images.</p></div>
+<h3>Option 1 – Utiliser ENV dans le Dockerfile (Recommandé)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+
+# Votre gestionnaire de paquets utilisera désormais le proxy
+RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
+<h3>Option 2 – Build multi-étapes (proxy uniquement quand nécessaire)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Étape de build avec proxy
+FROM alpine:latest as builder
+ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+RUN apk update &amp;&amp; apk add build-dependencies
+
+# Étape finale sans proxy
+FROM alpine:latest
+COPY --from=builder /built-artifacts /app</code></pre></div></div>
+<h3>Option 3 – Variables d&#8217;environnement passées au build</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker build --build-arg https_proxy=http://cache-etu.univ-artois.fr:3128/ .</code></pre></div></div>
+<div class="paragraph"><p>Dockerfile correspondant :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">ARG https_proxy
+ARG http_proxy
+
+RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
+<h3>Option 4 – Configuration du démon Docker (système entier)</h3><div class="paragraph"><p>Ajouter dans <code>/etc/docker/daemon.json</code> :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">{
+  "proxies": {
+    "default": {
+      "httpProxy": "http://cache-etu.univ-artois.fr:3128",
+      "httpsProxy": "http://cache-etu.univ-artois.fr:3128",
+      "noProxy": "localhost,127.0.0.1"
+    }
+  }
+}</code></pre></div></div>
+<div class="paragraph"><p>Puis redémarrer Docker :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo systemctl restart docker</code></pre></div></div>
+<h3>Option 5 – Configuration spécifique à l&#8217;utilisateur</h3><div class="paragraph"><p>Créer ou modifier <code>~/.docker/config.json</code> :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">{
+  "proxies": {
+    "default": {
+      "httpProxy": "http://cache-etu.univ-artois.fr:3128",
+      "httpsProxy": "http://cache-etu.univ-artois.fr:3128"
+    }
+  }
+}</code></pre></div></div></div></section><section id="6_pourquoi_env_est_préférable_à_run_export" data-auto-animate><h2>6. Pourquoi ENV est préférable à RUN export</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>Persistance</strong> : <code>ENV</code> définit la variable pour toutes les commandes <code>RUN</code> suivantes.</p></li><li><p><strong>Clarté</strong> : la dépendance au proxy est explicitement indiquée dans le Dockerfile.</p></li><li><p><strong>Arguments de build</strong> : permettent de surcharger la configuration au moment du build.</p></li></ul></div></div></section><section id="6_pourquoi_env_est_préférable_à_run_export_2" data-auto-animate><h2>6. Pourquoi ENV est préférable à RUN export</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>Persistance</strong> : <code>ENV</code> définit la variable pour toutes les commandes <code>RUN</code> suivantes.</p></li><li><p><strong>Clarté</strong> : la dépendance au proxy est explicitement indiquée dans le Dockerfile.</p></li><li><p><strong>Arguments de build</strong> : permettent de surcharger la configuration au moment du build.</p></li></ul></div>
+<h3>En résumé</h3><div class="ulist"><ul><li><p>Utilisez l&#8217;option <strong>#1 (ENV dans Dockerfile)</strong> si le proxy est toujours nécessaire.</p></li><li><p>Utilisez l&#8217;option <strong>#3 (build args)</strong> si vous souhaitez plus de flexibilité.</p></li></ul></div></div></section><section id="6_pourquoi_env_est_préférable_à_run_export_3" data-auto-animate><h2>6. Pourquoi ENV est préférable à RUN export</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>Persistance</strong> : <code>ENV</code> définit la variable pour toutes les commandes <code>RUN</code> suivantes.</p></li><li><p><strong>Clarté</strong> : la dépendance au proxy est explicitement indiquée dans le Dockerfile.</p></li><li><p><strong>Arguments de build</strong> : permettent de surcharger la configuration au moment du build.</p></li></ul></div>
+<h3>En résumé</h3><div class="ulist"><ul><li><p>Utilisez l&#8217;option <strong>#1 (ENV dans Dockerfile)</strong> si le proxy est toujours nécessaire.</p></li><li><p>Utilisez l&#8217;option <strong>#3 (build args)</strong> si vous souhaitez plus de flexibilité.</p></li></ul></div>
+<div class="paragraph"><p>L&#8217;approche <code>RUN export</code> ne fonctionne que pour une seule commande : c&#8217;est pourquoi <code>ENV</code> est plus fiable et conforme à l&#8217;esprit Docker.</p></div></div></section><section id="autre_approche_gitpod"><h2>Autre approche&#8230;&#8203; Gitpod</h2></section><section id="outils_nécessaires"><h2>Outils Nécessaires 🛠</h2><div class="slide-content"><div class="ulist"><ul><li><p>Un navigateur web récent (et décent)</p></li><li><p>Un compte sur <a href="https://github.com" target="_blank"><span class="icon"><i class="fab fa-github"></i></span> GitHub</a></p></li></ul></div></div></section><section id="gitpod"><h2>GitPod</h2><div class="slide-content"><div class="paragraph"><p><a href="https://gitpod.io" target="_blank">GitPod.io</a> : Environnement de développement dans le ☁️ "nuage"</p></div>
 <div class="ulist"><ul><li><p><strong>But:</strong> reproductible</p></li><li><p>Puissance de calcul sur un serveur distant</p></li><li><p>Éditeur de code VSCode dans le navigateur</p></li></ul></div>
 <div class="admonitionblock warning fragment"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Gratuit pour 50h par mois (⚠️)</td></tr></table></div>
 <div class="admonitionblock warning fragment"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Ça, c&#8217;était avant (⚠️)</td></tr></table></div>
