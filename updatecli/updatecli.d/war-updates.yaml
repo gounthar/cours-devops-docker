@@ -1,0 +1,46 @@
+---
+name: "Update WAR file URL to latest release"
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  tp07-sample:
+    name: "Get latest release version from tp07-sample repository"
+    kind: "githubrelease"
+    spec:
+      owner: "gounthar"
+      repository: "tp07-sample"
+      token: "{{ requiredEnv .github.token }}"
+      versionfilter:
+        kind: "latest"
+  tp07-sample-no-v:
+    name: "Get latest release version without v prefix"
+    kind: "githubrelease"
+    spec:
+      owner: "gounthar"
+      repository: "tp07-sample"
+      token: "{{ requiredEnv .github.token }}"
+      versionfilter:
+        kind: "latest"
+    transformers:
+      - trimprefix: "v"
+
+targets:
+  war-url:
+    name: "Update WAR file URL in AsciiDoc documentation"
+    kind: "file"
+    sourceid: "tp07-sample"
+    spec:
+      file: "content/chapitres/fichiers-nommage-inspect.adoc"
+      matchpattern: 'https://github\.com/gounthar/tp07-sample/releases/download/v[^/]+/sample-[^)]+\.war'
+      replacepattern: 'https://github.com/gounthar/tp07-sample/releases/download/{{ source "tp07-sample" }}/sample-{{ source "tp07-sample-no-v" }}.war'
