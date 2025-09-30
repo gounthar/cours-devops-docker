@@ -360,11 +360,9 @@ Ajouter dans `/etc/docker/daemon.json` :
 ----
 {
   "proxies": {
-    "default": {
-      "httpProxy": "http://cache-etu.univ-artois.fr:3128",
-      "httpsProxy": "http://cache-etu.univ-artois.fr:3128",
-      "noProxy": "localhost,127.0.0.1"
-    }
+    "http-proxy": "http://cache-etu.univ-artois.fr:3128",
+    "https-proxy": "http://cache-etu.univ-artois.fr:3128",
+    "no-proxy": "localhost,127.0.0.1"
   }
 }
 ----
@@ -432,11 +430,9 @@ Ajouter dans `/etc/docker/daemon.json` :
 ----
 {
   "proxies": {
-    "default": {
-      "httpProxy": "http://cache-etu.univ-artois.fr:3128",
-      "httpsProxy": "http://cache-etu.univ-artois.fr:3128",
-      "noProxy": "localhost,127.0.0.1"
-    }
+    "http-proxy": "http://cache-etu.univ-artois.fr:3128",
+    "https-proxy": "http://cache-etu.univ-artois.fr:3128",
+    "no-proxy": "localhost,127.0.0.1"
   }
 }
 ----
@@ -458,7 +454,8 @@ Créer ou modifier `~/.docker/config.json` :
   "proxies": {
     "default": {
       "httpProxy": "http://cache-etu.univ-artois.fr:3128",
-      "httpsProxy": "http://cache-etu.univ-artois.fr:3128"
+      "httpsProxy": "http://cache-etu.univ-artois.fr:3128",
+      "noProxy": "localhost,127.0.0.1"
     }
   }
 }
