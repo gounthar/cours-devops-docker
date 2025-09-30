@@ -967,7 +967,7 @@ for i in {71..73}; do convert Diapositive${i}.PNG -crop 10146x4801+2250+1833 -tr
 [%step]
 * Créer un fichier HTML et le distribuer à partir d'un container `nginx`
 [%step]
-* Récupérer un war sur Gitlab et le déployer dans un container `wildfly (https://github.com/gounthar/tp07-sample/releases/download/v2025.09.22-093157/sample-2025.09.22-093157.war)`
+* Récupérer un war sur Gitlab et le déployer dans un container `tomcat (https://github.com/gounthar/tp07-sample/releases/download/v2025.09.22-093157/sample-2025.09.22-093157.war)`
 [%step]
 * Récupérer le code sur https://spring.io/guides/gs/spring-boot/ et faire tourner l'appli (sous répertoire `complete`)
 
@@ -982,7 +982,7 @@ include::../code-samples/fichiers/reseau/index.html[]
 [%step]
 [source,bash]
 ----
-docker run --name my-nginx -v /fully/qualified/path/on/my/computer/:/usr/share/nginx/html:ro -d -p 8000:80 nginx
+docker run --name my-nginx -v /fully/qualified/path/on/my/computer/:/usr/share/nginx/html:ro -d -p 8000:80 nginx:1.28.0-alpine3.21
 ----
 
 [%step]
