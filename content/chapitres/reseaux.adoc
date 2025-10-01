@@ -78,6 +78,11 @@ Sauf que...
 
 image::reseaux-docker-desktop-2375-configuration.png[width=600]
 
+[.notes]
+--
+Par défaut, les installations de Docker n'ouvrent plus le port 2375 comme c'était le cas avant. C'est toutefois changeable dans le Docker Desktop.
+--
+
 == Les réseaux de containers
 
 image::1435904594-image8.png[]
