@@ -1,0 +1,64 @@
+---
+name: "Update Tomcat Docker image to latest version"
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  tomcat-temurin:
+    name: "Get latest Tomcat JDK Temurin Docker image tag"
+    kind: "dockerimage"
+    spec:
+      image: "tomcat"
+      versionfilter:
+        kind: "regex"
+        pattern: "^\\d+\\.\\d+\\.\\d+-jdk\\d+-temurin-noble$"
+
+targets:
+  tomcat-comment-image:
+    name: "Update Tomcat Docker image reference in comment"
+    kind: "file"
+    sourceid: "tomcat-temurin"
+    scmid: default
+    spec:
+      file: "content/chapitres/fichiers-nommage-inspect.adoc"
+      matchpattern: '# Used to run a Docker container with the name "tomcat-container" using the "tomcat:[^"]+" image'
+      replacepattern: '# Used to run a Docker container with the name "tomcat-container" using the "tomcat:{{ source "tomcat-temurin" }}" image'
+
+  tomcat-volume-path:
+    name: "Update Tomcat Docker image reference in volume path comment"
+    kind: "file"
+    sourceid: "tomcat-temurin"
+    scmid: default
+    spec:
+      file: "content/chapitres/fichiers-nommage-inspect.adoc"
+      matchpattern: '# "/fully/qualified/path/on/my/computer/sample.war" file to "/usr/local/tomcat/webapps/sample.war"'
+      replacepattern: '# "/fully/qualified/path/on/my/computer/sample.war" file to "/usr/local/tomcat/webapps/sample.war"'
+
+  tomcat-docker-command:
+    name: "Update Tomcat Docker image in docker run command"
+    kind: "file"
+    sourceid: "tomcat-temurin"
+    scmid: default
+    spec:
+      file: "content/chapitres/fichiers-nommage-inspect.adoc"
+      matchpattern: 'docker run -d -p 8080:8080 --name tomcat-container -v /fully/qualified/path/on/my/computer/sample.war:/usr/local/tomcat/webapps/sample.war tomcat:[^\s]+'
+      replacepattern: 'docker run -d -p 8080:8080 --name tomcat-container -v /fully/qualified/path/on/my/computer/sample.war:/usr/local/tomcat/webapps/sample.war tomcat:{{ source "tomcat-temurin" }}'
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    title: '[TP07] Update Tomcat Docker image to {{ source "tomcat-temurin" }}'
+    spec:
+      labels:
+        - dependencies
