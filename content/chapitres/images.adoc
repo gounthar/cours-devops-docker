@@ -385,36 +385,38 @@ Dans les registres Docker.
 [source,bash]
 ----
 $ docker images
-REPOSITORY                                  TAG                             IMAGE ID       CREATED         SIZE
-jenkinsciinfra/jenkins-agent-ubuntu-22.04   latest                          c87afa001ba1   25 hours ago    6.89GB
-cours-devops-docker-serve                   latest                          6b7b6a3145fd   27 hours ago    427MB
-cours-devops-docker-qrcode                  latest                          43f91abb9cfa   27 hours ago    427MB
-jenkins/jenkins                             2.419-rhel-ubi8-jdk11           9e2076ee44fa   3 days ago      507MB
-jenkins/jenkins                             2.419-slim                      b93a74bd73b4   3 days ago      394MB
-jenkins/jenkins                             2.419                           2193a96f254a   3 days ago      478MB
-jenkins/jenkins                             2.419-jdk11                     2193a96f254a   3 days ago      478MB
-jenkins/jenkins                             2.419-alpine                    f700f6333bf2   3 days ago      249MB
-jenkins/jenkins                             2.419-rhel-ubi9-jdk17           0dbee3b2c2fc   3 days ago      485MB
-jenkins/jenkins                             2.419-slim-jdk17                d9a360e0a9bf   3 days ago      393MB
-jenkins/jenkins                             2.419-jdk17                     1695080429f5   3 days ago      476MB
-jenkins/jenkins                             2.419-alpine-jdk17              2ea0017744c8   3 days ago      249MB
-jenkins/jenkins                             2.419-rhel-ubi9-jdk21-preview   66ee1f18309d   3 days ago      494MB
-jenkins/jenkins                             2.419-slim-jdk21-preview        e31d85782d2b   3 days ago      414MB
-jenkins/jenkins                             2.419-jdk21                     c1e6c123a3c7   3 days ago      485MB
-jenkins/jenkins                             2.419-alpine-jdk21-preview      97764348fde6   3 days ago      261MB
-jdk21                                       latest                          ba476a3f2cd9   5 days ago      218MB
-mycurl                                      1.0                             292bf6b4a4df   6 days ago      13.3MB
-myjava                                      1.42                            05b6d3da385e   6 days ago      198MB
-<none>                                      <none>                          7bc71c53e776   7 days ago      427MB
-<none>                                      <none>                          b45a84c7d06b   7 days ago      427MB
-jenkins/jenkins                             latest-jdk21-preview            5b5828e392bf   8 days ago      485MB
-moby/buildkit                               buildx-stable-1                 9291fad3b41c   4 weeks ago     172MB
-alpine                                      latest                          7e01a0d0a1dc   6 weeks ago     7.34MB
-busybox                                     latest                          a416a98b71e2   2 months ago    4.26MB
-docker/volumes-backup-extension             1.1.4                           6872a696b721   3 months ago    119MB
-portainer/portainer-docker-extension        2.18.3                          3d18fe6d6805   4 months ago    273MB
-felipecruz/alpine-tar-zstd                  latest                          31988344315d   12 months ago   6.99MB
-justincormack/nsenter1                      latest                          c81481184b1b   5 years ago     101kB
+REPOSITORY                            TAG                     IMAGE ID       CREATED         SIZE
+cours-devops-docker-serve             latest                  654fc65c0913   13 hours ago    668MB
+cours-devops-docker-qrcode            latest                  a3ff53e5d677   13 hours ago    668MB
+cours-devops-docker-build             latest                  a8b5055c6b8a   13 hours ago    668MB
+jenkins/jenkins                       2.504-slim-jdk17        2f264c295874   44 hours ago    669MB
+jenkins/jenkins                       2.504-slim              4db3d90f94da   44 hours ago    691MB
+jenkins/jenkins                       2.504-slim-jdk21        4db3d90f94da   44 hours ago    691MB
+jenkins/jenkins                       2.504                   c6458a4308c9   44 hours ago    807MB
+jenkins/jenkins                       2.504-jdk21             c6458a4308c9   44 hours ago    807MB
+jenkins/jenkins                       2.504-jdk17             a44b80b5278d   44 hours ago    785MB
+jenkins/jenkins                       2.504-jdk25             df290633b1b1   44 hours ago    709MB
+jenkins/jenkins                       2.504-slim-jdk25        1b3e857e0e80   44 hours ago    593MB
+jenkins/jenkins                       2.504-rhel-ubi9-jdk21   5bf47807e933   44 hours ago    807MB
+jenkins/jenkins                       2.504-rhel-ubi9-jdk17   7c663bf36a0b   44 hours ago    785MB
+jenkins/jenkins                       2.504-rhel-ubi9-jdk25   7ade79f2d5d6   44 hours ago    709MB
+jenkins/jenkins                       2.504-alpine-jdk17      f8bb1d21d3b3   44 hours ago    458MB
+jenkins/jenkins                       2.504-alpine            9796a49cd5ad   44 hours ago    480MB
+jenkins/jenkins                       2.504-alpine-jdk21      9796a49cd5ad   44 hours ago    480MB
+jenkins/jenkins                       2.504-alpine-jdk25      713be11d8079   44 hours ago    384MB
+tomcat                                9.0                     bfe8385d954f   4 days ago      608MB
+tomcat                                latest                  2b3894dce12e   4 days ago      607MB
+img1758726197                         latest                  69b8e1bd3710   6 days ago      259MB
+ubuntu                                latest                  9cbed7541129   6 weeks ago     117MB
+nginx                                 latest                  d5f28ef21aab   6 weeks ago     279MB
+hello-world                           latest                  54e66cc1dd1f   7 weeks ago     20.3kB
+alpine                                latest                  4bcff63911fc   2 months ago    12.8MB
+<none>                                <none>                  8feb4d8ca535   5 months ago    109MB
+moby/buildkit                         buildx-stable-1         14aa1b4dd92e   8 months ago    306MB
+ghcr.io/jenkinsci/ssh-agents-plugin   baseb2fb086             2bc6d82ca2b4   9 months ago    1.36GB
+<none>                                <none>                  dfa54ef35e43   21 months ago   6.89MB
+registry                              2                       a3d8aaa63ed8   24 months ago   37.2MB
+jboss/wildfly                         latest                  35320abafdec   3 years ago     1.17GB
 ----
 
 == Les registres Docker
