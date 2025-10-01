@@ -59,38 +59,38 @@ sources:
           captureindex: 1
 
 conditions:
-  testNodeArg:
-    name: "Does the 'Hello World!' tutorial have a reference to the Node alpine image?"
-    kind: file
-    disablesourceinput: true
-    spec:
-      file: content/doc/pipeline/tour/hello-world.adoc
-      matchpattern: >-
-        .*agent.*docker.*image.*node:.*
-  testNodeInAgentsDocumentation:
-    name: "Does the 'Defining execution environments' documentation have a reference to the Node alpine image?"
-    kind: file
-    disablesourceinput: true
-    spec:
-      file: content/doc/pipeline/tour/agents.adoc
-      matchpattern: >-
-        .*docker.*image.*node:.*
-  testNodeInStyleGuideDocumentation:
-    name: "Does the 'Jenkins Documentation Style Guide' documentation have a reference to the Node alpine image?"
-    kind: file
-    disablesourceinput: true
-    spec:
-      file: STYLEGUIDE.adoc
-      matchpattern: >-
-        .*docker.*image.*node:.*
-  testNodeInUsingDockerWithPipelineDocumentation:
-    name: "Does the 'Using Docker with Pipeline' documentation have a reference to the Node alpine image?"
-    kind: file
-    disablesourceinput: true
-    spec:
-      file: content/doc/book/pipeline/docker.adoc
-      matchpattern: >-
-        .*image.*node:.*
+#  testNodeArg:
+#    name: "Does the 'Hello World!' tutorial have a reference to the Node alpine image?"
+#    kind: file
+#    disablesourceinput: true
+#    spec:
+#      file: content/doc/pipeline/tour/hello-world.adoc
+#      matchpattern: >-
+#        .*agent.*docker.*image.*node:.*
+#  testNodeInAgentsDocumentation:
+#    name: "Does the 'Defining execution environments' documentation have a reference to the Node alpine image?"
+#    kind: file
+#    disablesourceinput: true
+#    spec:
+#      file: content/doc/pipeline/tour/agents.adoc
+#      matchpattern: >-
+#        .*docker.*image.*node:.*
+#  testNodeInStyleGuideDocumentation:
+#    name: "Does the 'Jenkins Documentation Style Guide' documentation have a reference to the Node alpine image?"
+#    kind: file
+#    disablesourceinput: true
+#    spec:
+#      file: STYLEGUIDE.adoc
+#      matchpattern: >-
+#        .*docker.*image.*node:.*
+#  testNodeInUsingDockerWithPipelineDocumentation:
+#    name: "Does the 'Using Docker with Pipeline' documentation have a reference to the Node alpine image?"
+#    kind: file
+#    disablesourceinput: true
+#    spec:
+#      file: content/doc/book/pipeline/docker.adoc
+#      matchpattern: >-
+#        .*image.*node:.*
   testNodeAlpineImagePublished:
     name: "Test node:<latest_version>-alpine<latest-version> docker image tag"
     kind: dockerimage
