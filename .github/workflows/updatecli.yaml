@@ -11,6 +11,9 @@ jobs:
   updatecli:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'gounthar'
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
