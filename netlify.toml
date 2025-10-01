@@ -1,0 +1,15 @@
+[build]
+  # This project uses Docker for builds which is not supported by Netlify
+  # Disable all builds and use GitHub Actions + GitHub Pages instead
+  ignore = "exit 1"
+
+[build.environment]
+  # Fail fast with clear message
+  NODE_VERSION = "18"
+
+# Disable deploy previews
+[context.deploy-preview]
+  ignore = "exit 1"
+
+[context.branch-deploy]
+  ignore = "exit 1"
