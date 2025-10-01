@@ -19,9 +19,10 @@ sources:
     kind: "dockerimage"
     spec:
       image: "tomcat"
+      tagfilter: '^1\d+\.\d+\.\d+-jdk(2[5-9]|[3-9]\d+)-temurin-noble$'
       versionfilter:
         kind: "regex"
-        pattern: "^11\\.\\d+\\.\\d+-jdk25-temurin-noble$"
+        pattern: '^\d+\.\d+\.\d+-jdk(2[5-9]|[3-9]\d+)-temurin-noble$'
 
 targets:
   tomcat-comment-image:
