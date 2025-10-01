@@ -967,7 +967,7 @@ for i in {71..73}; do convert Diapositive${i}.PNG -crop 10146x4801+2250+1833 -tr
 [%step]
 * Créer un fichier HTML et le distribuer à partir d'un container `nginx`
 [%step]
-* Récupérer un war sur GitHub et le déployer dans un container `tomcat (https://github.com/gounthar/tp07-sample/releases/download/v2025.09.22-093157/sample-2025.09.22-093157.war)`
+* Récupérer un war sur GitHub et le déployer dans un container `tomcat (https://github.com/gounthar/tp07-sample/releases/download/v2025.09.22-113613/sample-2025.09.22-113613.war)`
 [%step]
 * Récupérer le code sur https://spring.io/guides/gs/spring-boot/ et faire tourner l'appli (sous répertoire `complete`)
 
