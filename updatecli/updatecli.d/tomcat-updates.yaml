@@ -21,7 +21,7 @@ sources:
       image: "tomcat"
       versionfilter:
         kind: "regex"
-        pattern: "^\\d+\\.\\d+\\.\\d+-jdk\\d+-temurin-noble$"
+        pattern: "^11\\.\\d+\\.\\d+-jdk25-temurin-noble$"
 
 targets:
   tomcat-comment-image:
