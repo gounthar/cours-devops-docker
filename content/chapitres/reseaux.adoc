@@ -71,6 +71,12 @@ for i in {2..6}; do convert Diapositive${i}.PNG -crop 9004x5341+1968+1654 -trans
 
 image::intellij-docker.png[background, size=cover, position=left, opacity=0.1]
 
+[%auto-animate]
+== 🤝 Interagir avec le Docker Engine
+
+Sauf que...
+
+image::reseaux-docker-desktop-2375-configuration.png[width=600]
 
 == Les réseaux de containers
 
