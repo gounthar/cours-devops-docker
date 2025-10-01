@@ -34,16 +34,6 @@ targets:
       matchpattern: '# Used to run a Docker container with the name "tomcat-container" using the "tomcat:[^"]+" image'
       replacepattern: '# Used to run a Docker container with the name "tomcat-container" using the "tomcat:{{ source "tomcat-temurin" }}" image'
 
-  tomcat-volume-path:
-    name: "Update Tomcat Docker image reference in volume path comment"
-    kind: "file"
-    sourceid: "tomcat-temurin"
-    scmid: default
-    spec:
-      file: "content/chapitres/fichiers-nommage-inspect.adoc"
-      matchpattern: '# "/fully/qualified/path/on/my/computer/sample.war" file to "/usr/local/tomcat/webapps/sample.war"'
-      replacepattern: '# "/fully/qualified/path/on/my/computer/sample.war" file to "/usr/local/tomcat/webapps/sample.war"'
-
   tomcat-docker-command:
     name: "Update Tomcat Docker image in docker run command"
     kind: "file"
