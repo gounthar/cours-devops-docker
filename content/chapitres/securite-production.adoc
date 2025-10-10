@@ -1,0 +1,924 @@
+[background-color="Navy"]
+= Sécurité et Production Docker
+
+image::security-production-header.png[height=400px]
+
+[.notes]
+--
+Durée totale : 3 heures
+Session pratique avec projet fil rouge SecureVote
+--
+
+== Objectifs de la session
+
+[%step]
+* Comprendre et appliquer les bonnes pratiques de sécurité Docker
+* Optimiser les conteneurs pour la production
+* Gérer les registres d'images Docker
+* Déployer une application sécurisée et production-ready
+
+[.notes]
+--
+Cette session est entièrement basée sur un projet fil rouge : SecureVote
+Les étudiants partent d'une version fonctionnelle mais dangereuse
+Ils la transforment progressivement en déploiement production-ready
+--
+
+[background-color="MediumBlue"]
+== Projet Fil Rouge : SecureVote
+
+SecureVote : Une application de vote en ligne moderne
+
+[%step]
+* Frontend React (interface de vote)
+* Backend API Python Flask
+* Base de données PostgreSQL
+* Redis pour le cache
+* Nginx comme reverse proxy
+
+**Dépôt GitHub :** https://github.com/gounthar/securevote
+
+[.notes]
+--
+Cette application représente un cas d'usage réaliste : une stack web complète typique des applications modernes.
+L'aspect "vote" rend le projet concret et engageant.
+Les étudiants vont manipuler 5 technologies différentes, ce qui reflète la réalité du DevOps.
+Insister sur le fait que c'est LEUR projet pour les 3 heures : ils vont le faire évoluer eux-mêmes.
+
+**STACK TECHNIQUE EXPLIQUÉE :**
+
+• **Flask (Python)** : Framework web léger pour API REST. Alternative à Django (plus lourd), Express.js (Node), ou Spring (Java).
+  - Très utilisé pour des APIs rapides et microservices
+  - Langage : Python (facile à lire même sans le connaître)
+  - Port : 5000 par défaut
+  - Rôle ici : Gère les requêtes HTTP (GET /votes, POST /vote), connexion DB, logique métier
+
+• **React (JavaScript)** : Bibliothèque JavaScript pour interfaces utilisateur (pas un framework complet comme Angular ou Vue).
+  - Développé par Facebook, très populaire (Netflix, Airbnb, etc.)
+  - Langage : JavaScript/JSX
+  - Port : 3000 en développement (webpack dev server)
+  - Rôle ici : Affiche l'interface de vote, boutons, résultats en temps réel
+
+• **PostgreSQL** : Base de données relationnelle robuste (alternative open-source à Oracle, MySQL).
+  - Stockage persistant des données
+  - Port : 5432 par défaut
+  - Rôle ici : Stocke les votes, les options de vote, les résultats
+
+• **Redis** : Base de données en mémoire ultra-rapide, utilisée comme cache.
+  - Prononcé "RED-iss" (Remote Dictionary Server)
+  - Port : 6379 par défaut
+  - Rôle ici : Cache les résultats de vote pour éviter de requêter PostgreSQL à chaque fois (performance !)
+
+• **Nginx** : Serveur web et reverse proxy très performant (concurrent d'Apache).
+  - Prononcé "engine-x"
+  - Port : 80 (HTTP) / 443 (HTTPS)
+  - Rôle ici : Point d'entrée unique, route les requêtes vers frontend (/) ou backend (/api)
+
+**POURQUOI CETTE STACK ?** C'est une architecture moderne typique : frontend SPA (Single Page App) + API REST + DB + cache + reverse proxy.
+On la retrouve chez des entreprises comme Uber, Spotify, Instagram (avec des variations).
+--
+
+== Architecture de l'application
+
+[source,yaml]
+----
+services:
+  frontend:    # React app
+  backend:     # Flask API
+  database:    # PostgreSQL
+  cache:       # Redis
+  proxy:       # Nginx
+----
+
+Architecture multi-tiers classique pour DevOps
+
+[.notes]
+--
+Architecture en 5 services : c'est suffisamment complexe pour être intéressant, mais pas trop pour 3h.
+Proxy en point d'entrée unique : seul port exposé en prod, pattern essentiel à comprendre.
+Cache Redis : montre l'importance de la performance en production.
+Cette architecture se retrouve dans 80% des applications web modernes.
+
+**COMMENT LES COMPOSANTS COMMUNIQUENT :**
+
+1. **Utilisateur → Nginx (port 8080)** : L'utilisateur accède à http://localhost:8080
+   - Nginx reçoit TOUTES les requêtes (le "portier" de l'application)
+
+2. **Nginx → Frontend (port 3000)** : Pour les pages web (/, /index.html, /static/...)
+   - Nginx fait du "proxy_pass" : il redirige la requête vers React
+   - React retourne du HTML/CSS/JavaScript
+
+3. **Nginx → Backend (port 5000)** : Pour les requêtes API (/api/...)
+   - Exemple : POST /api/vote → Nginx redirige vers Flask
+   - Flask traite la logique et retourne du JSON
+
+4. **Backend → Database (port 5432)** : Flask se connecte à PostgreSQL
+   - Utilise le driver psycopg2 (bibliothèque Python pour PostgreSQL)
+   - Exemples : INSERT INTO votes, SELECT COUNT(*) FROM votes
+
+5. **Backend → Cache (port 6379)** : Flask interroge Redis en premier
+   - Si donnée en cache → retour immédiat (rapide !)
+   - Si pas en cache → requête PostgreSQL + mise en cache pour la prochaine fois
+
+**AVANTAGES DE CETTE ARCHITECTURE :**
+- **Séparation des responsabilités** : chaque service a un rôle clair
+- **Scalabilité** : on peut dupliquer frontend/backend indépendamment
+- **Sécurité** : seul Nginx est exposé, les autres services sont internes
+- **Performance** : Redis évite de surcharger PostgreSQL
+
+**EN PHASE 1** : Tous les ports sont exposés (5432, 6379, 5000, 3000, 8080) = VULNÉRABILITÉ !
+**EN PHASE 2/3** : Seul le port 8080 (Nginx) est exposé, le reste est interne.
+--
+
+== Votre mission
+
+[%step]
+* **Phase 1** (30 min) : Démarrer l'application "dangereuse"
+* **Phase 2** (1h15) : Sécuriser l'application
+* **Phase 3** (1h) : Optimiser pour la production
+
+[%step]
+WARNING: L'application initiale contient de nombreuses vulnérabilités volontaires !
+
+[background-color="DarkRed"]
+== Phase 1 : Découverte (30 min)
+
+[source,bash]
+----
+git clone https://github.com/gounthar/securevote.git
+cd securevote/phase1
+docker compose up -d
+
+# Vérifier l'état des services
+docker compose ps
+
+# Suivre les logs (Ctrl+C pour quitter)
+docker compose logs -f
+----
+
+[%step]
+* **Attendre** que tous les services soient UP (~30 secondes)
+* Accédez à http://localhost:8080
+* Testez l'application de vote
+
+[.notes]
+--
+Phase cruciale : les étudiants doivent DÉCOUVRIR eux-mêmes les vulnérabilités.
+IMPORTANT : Backend peut prendre 10-20s à démarrer → nginx redémarre automatiquement après.
+Si "host not found in upstream" dans logs nginx : c'est NORMAL, attendre 30s.
+Ne pas leur donner les réponses tout de suite - les laisser chercher 5-10 minutes.
+L'application FONCTIONNE : c'est volontaire, montrer qu'une app vulnérable peut sembler normale.
+Circuler entre les groupes : certains vont paniquer si nginx redémarre.
+--
+
+== Analyse des vulnérabilités
+
+Explorez les fichiers et identifiez les problèmes :
+
+[%step]
+* Qui exécute les conteneurs ?
+* Où sont stockés les secrets ?
+* Les images sont-elles à jour ?
+* Y a-t-il des ports exposés inutilement ?
+
+== Points d'attention
+
+**À vérifier :**
+
+[%step]
+* `docker compose ps`
+* `docker inspect <container>`
+* Contenu des Dockerfile
+* Variables d'environnement
+
+[%step]
+**Questions :** Quels risques identifiez-vous ? Comment exploiter ces failles ?
+
+[background-color="OrangeRed"]
+== Sécurité Docker : Les fondamentaux
+
+Les 3 piliers de la sécurité Docker :
+
+[%step]
+. **Images sûres** : Bases fiables, sans vulnérabilités
+. **Runtime sécurisé** : Isolation, utilisateurs non-root
+. **Secrets protégés** : Pas de mots de passe en clair
+
+[.notes]
+--
+Framework simple pour mémoriser : 3 piliers = 3 zones d'intervention.
+Images = la BASE, si elle est pourrie, tout le reste est compromis.
+Runtime = pendant l'exécution, principe du moindre privilège.
+Secrets = la donnée la plus sensible, jamais en clair.
+Cette structure va guider toute la Phase 2.
+--
+
+== Principe du moindre privilège
+
+[quote]
+____
+Un conteneur ne devrait avoir QUE les permissions nécessaires à son fonctionnement
+____
+
+[%step]
+* Pas d'exécution en tant que root
+* Capacités Linux minimales
+* Système de fichiers en lecture seule quand possible
+* Réseau isolé
+
+== Scan de vulnérabilités
+
+Les images Docker peuvent contenir des vulnérabilités connues (CVE)
+
+**Outils de scan :**
+
+[%step]
+* Docker Scout (intégré à Docker Desktop)
+* Trivy (open source, très populaire)
+* Snyk, Grype
+
+== Docker Scout en action
+
+[source,bash]
+----
+# Scanner une image locale
+docker scout cves python:3.11
+
+# Comparer deux images
+docker scout compare python:3.11 --to python:3.11-slim
+----
+
+TIP: Démonstration live recommandée
+
+[.notes]
+--
+DÉMONSTRATION LIVE ESSENTIELLE ici ! Les étudiants doivent VOIR les CVE en temps réel.
+Comparer python:3.11 vs python:3.11-slim : différence spectaculaire (150+ CVE vs 20-30).
+Si Docker Scout ne fonctionne pas, basculer sur Trivy : "docker run aquasec/trivy image python:3.11"
+Montrer que le scan prend 10-30 secondes : c'est acceptable pour un pipeline CI/CD.
+Insister : ce n'est pas paranoïaque, c'est STANDARD en 2025.
+--
+
+== Exemple de résultat Trivy
+
+[source,bash]
+----
+trivy image python:3.11
+
+Total: 145 vulnerabilities (52 HIGH, 93 MEDIUM)
+┌──────────┬──────────────┬──────────┬─────────┐
+│ Library  │ Vulnerability│ Severity │ Version │
+│ openssl  │ CVE-2023-XXX │ HIGH     │ 1.1.1n  │
+│ curl     │ CVE-2023-YYY │ MEDIUM   │ 7.68.0  │
+└──────────┴──────────────┴──────────┴─────────┘
+----
+
+[%step]
+**Action :** Mettre à jour, changer d'image de base, appliquer des patches
+
+== Utilisateurs non-root
+
+**Problème :** Par défaut, les processus s'exécutent en tant que root
+
+[source,dockerfile]
+----
+FROM python:3.11
+COPY app.py /app/
+CMD ["python", "/app/app.py"]  # Root !
+----
+
+WARNING: Si compromis, l'attaquant a les privilèges root !
+
+[.notes]
+--
+Erreur N°1 des débutants Docker : tout tourne en root par défaut.
+Analogie : c'est comme lancer toutes vos apps Windows en "Administrateur" en permanence.
+Si un attaquant exploite une faille dans votre app Python, il a root sur le conteneur.
+Avec root, il peut : installer des outils, scanner le réseau, pivoter vers d'autres conteneurs.
+Montrer docker exec <container> whoami → retourne "root" = MAUVAIS !
+--
+
+== Solution : Utilisateur dédié
+
+[source,dockerfile]
+----
+FROM python:3.11-slim
+
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+WORKDIR /app
+COPY app.py /app/
+RUN chown -R appuser:appuser /app
+
+USER appuser
+CMD ["python", "/app/app.py"]
+----
+
+== Bonnes pratiques utilisateur
+
+[%step]
+* Toujours créer un utilisateur dédié
+* UID > 1000 (éviter conflits système)
+* Ne jamais revenir à root après USER
+* Vérifier : `docker exec <container> whoami`
+
+== Gestion des secrets
+
+**Mauvaise pratique :**
+
+[source,yaml]
+----
+environment:
+  - POSTGRES_PASSWORD=super_secret_123  # NON !
+----
+
+WARNING: Visible dans `docker inspect`, logs, historique !
+
+[.notes]
+--
+Piège classique : secrets en clair dans docker-compose.yml = COMMITÉS sur Git = PUBLICS.
+Anecdote : chercher "removed password" sur GitHub = des millions de résultats.
+Les secrets restent dans l'historique Git même après suppression !
+docker inspect montre TOUTES les variables d'env = un attaquant peut lire.
+Les logs peuvent accidentellement afficher les secrets lors du démarrage.
+Message clé : les secrets ne doivent JAMAIS être versionnés.
+--
+
+== Bonne pratique : Fichiers .env
+
+[source,bash]
+----
+# .env (à ne JAMAIS commiter)
+DB_PASSWORD=super_secret_123
+
+# .gitignore
+.env
+secrets/
+----
+
+[source,yaml]
+----
+environment:
+  - POSTGRES_PASSWORD=${DB_PASSWORD}
+----
+
+== Alternatives pour les secrets
+
+[%step]
+* **Docker Secrets** (Swarm mode)
+* **Vault** (HashiCorp)
+* **AWS Secrets Manager**, Azure Key Vault
+* **Variables d'environnement** du shell
+
+[background-color="DarkOrange"]
+== Phase 2 : Sécurisation (1h15)
+
+Transformer SecureVote en application sécurisée
+
+[%step]
+* Images sûres et légères
+* Scanner les vulnérabilités avec Trivy
+* Utilisateurs non-root
+* Protéger les secrets
+* Isoler les réseaux
+
+[.notes]
+--
+Phase la plus longue et la plus importante : 1h15 de pratique intensive.
+Les étudiants doivent appliquer CONCRÈTEMENT tout ce qui vient d'être vu.
+Recommandé : travail en binôme pour favoriser l'entraide.
+Circuler activement : c'est ici qu'ils vont bloquer.
+Checkpoints réguliers toutes les 20-25 min pour synchroniser le groupe.
+Objectif : phase1/ ne doit PLUS être utilisée, tout le monde sur phase2/.
+--
+
+== Exercice 1 : Images sécurisées (20 min)
+
+**Mission :**
+
+[%step]
+. Scanner les images avec Docker Scout ou Trivy
+. Identifier les vulnérabilités critiques
+. Remplacer par des images `-slim` ou `-alpine`
+. Re-scanner et comparer
+
+[source,bash]
+----
+docker scout cves securevote-backend:latest
+# Modifier Dockerfile → python:3.11-slim
+docker compose build backend
+docker scout cves securevote-backend:latest
+----
+
+[.notes]
+--
+Premier exercice : relativement simple pour mettre en confiance.
+Résultat attendu : python:3.11 (150+ CVE) → python:3.11-slim (20-30 CVE) = 80-90% de réduction.
+Pour Node : node:20 → node:20-alpine = encore plus spectaculaire.
+Piège fréquent : oublier de rebuild après modification = image non scannée.
+Attention : alpine peut casser certaines dépendances (musl vs glibc) → préférer slim si problème.
+Montrer que le fichier phase2/INSTRUCTIONS.md contient des indices.
+--
+
+== Exercice 2 : Utilisateurs non-root (25 min)
+
+**Mission :**
+
+Modifier tous les Dockerfiles pour des utilisateurs non-root
+
+[%step]
+. Backend Python : créer `flaskuser`
+. Frontend React : créer `reactuser`
+. Nginx : utiliser `nginx-unprivileged`
+
+[source,dockerfile]
+----
+FROM python:3.11-slim
+RUN groupadd -r flaskuser && useradd -r -g flaskuser flaskuser
+USER flaskuser
+----
+
+== Vérification utilisateurs
+
+[source,bash]
+----
+docker compose exec backend whoami
+# Résultat attendu : flaskuser
+
+docker compose exec frontend whoami
+# Résultat attendu : reactuser
+----
+
+TIP: Si vous voyez UID 0 ou `root`, c'est à corriger !
+
+== Exercice 3 : Sécuriser les secrets (30 min)
+
+**Mission :**
+
+[%step]
+. Identifier les secrets en clair dans docker-compose.yml
+. Créer `.env` (sans le commiter !)
+. Ajouter `.env` au `.gitignore`
+. Utiliser les variables : `${DB_PASSWORD}`
+. Créer `.env.example` comme template
+
+== Checkpoint Phase 2
+
+Vérification collective :
+
+[%step]
+* Scans : moins de vulnérabilités ?
+* Aucun conteneur en root ?
+* Aucun secret en clair versionné ?
+* Application fonctionne ?
+
+[source,bash]
+----
+docker compose ps
+docker compose exec backend whoami
+trivy image securevote-backend:latest --severity HIGH,CRITICAL
+----
+
+[background-color="DarkGreen"]
+== Configuration Production
+
+[.columns]
+====
+[.column]
+--
+**Développement :**
+
+* Ressources illimitées
+* Logs verbeux
+* Redémarrages manuels
+--
+
+[.column]
+--
+**Production :**
+
+* Ressources limitées
+* Logs structurés
+* Auto-healing
+--
+====
+
+[.notes]
+--
+Transition importante : Phase 2 = sécurité, Phase 3 = production/fiabilité.
+En dev : on se fiche des ressources, on veut du confort (logs détaillés, restart manuel).
+En prod : on veut de la STABILITÉ, de la PRÉVISIBILITÉ, de l'AUTO-RÉPARATION.
+Analogie : dev = voiture de test, prod = avion de ligne (systèmes redondants, monitoring constant).
+Ces deux aspects (sécurité + prod) sont complémentaires et indissociables.
+--
+
+== Limites de ressources
+
+**Pourquoi limiter ?**
+
+[%step]
+* Empêcher monopolisation du serveur
+* Garantir stabilité
+* Prévoir capacité
+* Détecter fuites mémoire
+
+WARNING: Sans limites → 100% CPU/RAM !
+
+[.notes]
+--
+Histoire réelle : un conteneur mal configuré monopolise 100% CPU d'un serveur = TOUS les autres services ralentissent.
+Sans limites, Docker ne protège PAS : un conteneur peut tuer le serveur hôte.
+Les limites permettent de PLANIFIER : "j'ai 16 Go, je peux faire tourner 10 conteneurs à 1.5 Go chacun".
+Les limites révèlent les fuites mémoire : si votre app atteint systématiquement la limite, elle fuit.
+En prod, TOUJOURS définir des limites. C'est comme les ceintures de sécurité : obligatoire.
+--
+
+== Définir les limites
+
+[source,yaml]
+----
+services:
+  backend:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'      # Max 50% CPU
+          memory: 512M     # Max 512 Mo RAM
+        reservations:
+          cpus: '0.25'     # Min garanti
+          memory: 256M
+----
+
+== Choisir les bonnes valeurs
+
+[%step]
+. Démarrer sans limites
+. Observer : `docker stats`
+. Ajouter 20-30% de marge
+. Tester sous charge
+. Ajuster
+
+== Politiques de redémarrage
+
+[source,yaml]
+----
+services:
+  backend:
+    restart: no              # Jamais
+    restart: always          # Toujours
+    restart: on-failure      # Si erreur
+    restart: unless-stopped  # Sauf arrêt manuel
+----
+
+[%step]
+**Production :** Privilégier `unless-stopped` ou `on-failure`
+
+== Restart avec limite
+
+[source,yaml]
+----
+services:
+  backend:
+    restart: on-failure:5    # Max 5 tentatives
+----
+
+Évite les boucles infinies de redémarrage
+
+== Health checks
+
+[source,yaml]
+----
+services:
+  backend:
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+----
+
+[.notes]
+--
+Health check = le contrôle aérien de vos conteneurs.
+Un conteneur peut être "running" mais MORT à l'intérieur (app crashée, connexion DB perdue).
+docker ps montre "Up" mais healthcheck montre "unhealthy" = problème détecté !
+Exemple concret : backend démarre en 5s, mais connexion DB prend 30s → start_period: 40s.
+interval: 30s = vérifier toutes les 30s, c'est raisonnable (pas trop fréquent, pas trop lent).
+retries: 3 = tolérer 3 échecs avant de marquer "unhealthy" = évite les faux positifs.
+Le healthcheck doit être RAPIDE (<1s) et LÉGER (pas de requêtes DB lourdes).
+--
+
+== Endpoint de santé
+
+[source,python]
+----
+@app.route('/health')
+def health():
+    try:
+        db.ping()
+        return jsonify({"status": "healthy"}), 200
+    except:
+        return jsonify({"status": "unhealthy"}), 503
+----
+
+== Dépendances entre services
+
+[source,yaml]
+----
+services:
+  backend:
+    depends_on:
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_started
+----
+
+[%step]
+* `service_started` : Démarré (pas forcément prêt)
+* `service_healthy` : Healthcheck validé
+* `service_completed_successfully` : Terminé avec succès
+
+== Monitoring et logs
+
+**Observabilité :**
+
+[%step]
+* **Logs** : Que s'est-il passé ?
+* **Métriques** : Combien de CPU/RAM/requêtes ?
+* **Traces** : Quel chemin a pris une requête ?
+
+TIP: TP13 a déjà couvert ELK
+
+== Driver de logs
+
+[source,yaml]
+----
+services:
+  backend:
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"      # Max 10 Mo
+        max-file: "3"        # Garder 3 fichiers
+----
+
+WARNING: Sans limites, les logs remplissent le disque !
+
+== Logs structurés
+
+**Mauvais :** `Server started on port 5000`
+
+**Bon :**
+```json
+{"timestamp":"2025-01-15T10:30:00Z","level":"INFO",
+ "service":"backend","message":"Server started","port":5000}
+```
+
+[%step]
+Facilement parsables par ELK, Loki, etc.
+
+[background-color="ForestGreen"]
+== Phase 3 : Production (1h)
+
+Optimiser SecureVote pour la production
+
+[%step]
+* Limites de ressources
+* Politiques de redémarrage
+* Health checks
+* Optimiser les logs
+* Tester la résilience
+
+[.notes]
+--
+Phase finale : transformation en app production-ready.
+Les étudiants ont maintenant une app SÉCURISÉE (Phase 2), ils vont la rendre FIABLE.
+Cette phase inclut des TESTS de résilience : tuer des conteneurs, faire du load testing.
+C'est ici qu'on voit si l'auto-healing fonctionne vraiment !
+Les scripts load_test.sh et kill_test.sh sont fournis dans phase3/scripts/.
+Encourager l'expérimentation : "cassez votre app volontairement pour voir ce qui se passe".
+Temps : 1h = 3 exercices de 15-25 min chacun + checkpoint final.
+--
+
+== Exercice 4 : Limites de ressources (20 min)
+
+**Mission :**
+
+[%step]
+. Observer avec `docker stats`
+. Définir limites appropriées
+. Tester sous charge (script fourni)
+. Ajuster
+
+[source,bash]
+----
+docker stats --no-stream
+./load_test.sh
+docker stats
+----
+
+== Exercice 5 : Restart et Health (25 min)
+
+**Mission :**
+
+[%step]
+. Ajouter politiques de redémarrage
+. Créer endpoint `/health` dans backend
+. Configurer healthchecks
+. Tester en tuant un conteneur
+
+[source,bash]
+----
+docker compose kill backend
+docker compose ps
+docker compose logs backend
+----
+
+== Exercice 6 : Dépendances (15 min)
+
+**Mission :**
+
+[%step]
+. Configurer `depends_on` avec conditions
+. Tester ordre de démarrage
+. Simuler indisponibilité DB
+. Vérifier backend ne démarre pas sans DB
+
+== Checkpoint Phase 3
+
+Application production-ready :
+
+[%step]
+* Limites de ressources ✅
+* Auto-healing ✅
+* Health checks ✅
+* Dépendances ordonnées ✅
+* Logs optimisés ✅
+
+[source,bash]
+----
+docker compose config --services
+docker compose ps
+docker stats --no-stream
+----
+
+[background-color="Navy"]
+== Registres et Distribution
+
+[%step]
+* Serveur de stockage d'images Docker
+* Équivalent de npm pour Node, PyPI pour Python
+* Public (Docker Hub) ou privé (self-hosted)
+* Gestion des versions (tags)
+
+== Docker Hub
+
+[source,bash]
+----
+docker pull nginx:latest
+# Équivalent à :
+docker pull docker.io/library/nginx:latest
+----
+
+[%step]
+* Gratuit pour images publiques
+* Limites de rate (pull anonyme)
+
+== Registres privés
+
+**Pourquoi ?**
+
+[%step]
+* Images propriétaires
+* Contrôle d'accès
+* Compliance et sécurité
+* Pas de limite de rate
+
+== Solutions de registres
+
+[%step]
+* **Docker Registry** (open source)
+* **Harbor** (CNCF, avec scan)
+* **AWS ECR**, **Azure ACR**, **GCP GCR**
+* **GitLab / GitHub Container Registry**
+
+== Démarrer un registre local
+
+[source,bash]
+----
+docker run -d -p 5000:5000 --name registry registry:2
+docker tag securevote-backend:latest localhost:5000/securevote-backend:latest
+docker push localhost:5000/securevote-backend:latest
+----
+
+== Tags et versions
+
+[source,bash]
+----
+# Bonne pratique : versionner
+docker tag myapp:latest myregistry.com/myapp:1.2.3
+docker tag myapp:latest myregistry.com/myapp:1.2
+docker tag myapp:latest myregistry.com/myapp:latest
+----
+
+TIP: Plusieurs tags → même image
+
+== Exercice 7 : Registre local (Bonus)
+
+**Si le temps le permet :**
+
+[%step]
+. Démarrer registre local (port 5000)
+. Tagger images SecureVote
+. Pousser vers registre
+. Modifier docker-compose.yml
+. Re-déployer
+
+[background-color="MediumBlue"]
+== Récapitulatif et bonnes pratiques
+
+== Checklist sécurité
+
+[%step]
+* ✅ Images officielles et à jour
+* ✅ Scan régulier des vulnérabilités
+* ✅ Utilisateurs non-root systématiques
+* ✅ Secrets jamais en clair
+* ✅ Réseau isolé par défaut
+
+== Checklist production
+
+[%step]
+* ✅ Limites de ressources CPU/RAM
+* ✅ Politiques de redémarrage
+* ✅ Health checks implémentés
+* ✅ Dépendances ordonnées
+* ✅ Logs structurés et rotation
+
+== Ce qu'on a appris
+
+[%step]
+* Sécuriser une application Docker de bout en bout
+* Scanner et corriger les vulnérabilités
+* Gérer les secrets correctement
+* Configurer pour la production
+* Distribuer via registres
+
+== SecureVote : Avant/Après
+
+[.columns]
+====
+[.column]
+--
+**Avant :**
+
+* Images non scannées
+* Root partout
+* Secrets en clair
+* Pas de limites
+--
+
+[.column]
+--
+**Après :**
+
+* Images slim, scannées
+* Utilisateurs dédiés
+* Secrets protégés
+* Production-ready ✅
+--
+====
+
+== Aller plus loin
+
+[%step]
+* **Orchestration** : Kubernetes, Docker Swarm
+* **Secrets Management** : Vault, Sealed Secrets
+* **Image Signing** : Docker Content Trust, Cosign
+* **Runtime Security** : Falco, Aqua Security
+
+== Ressources utiles
+
+* Docker Security: https://docs.docker.com/engine/security/
+* CIS Docker Benchmark
+* Trivy: https://github.com/aquasecurity/trivy
+* OWASP Docker Security Cheat Sheet
+
+[{invert}]
+== Fin de la session
+
+Bravo, vous avez transformé SecureVote en application sécurisée et production-ready !
+
+[.notes]
+--
+Questions et discussion finale
+Retours sur expérience
+Difficultés rencontrées
+--
+
+== Questions ?
+
+image::questions-docker.png[height=400px]
+
+{author_mail}
