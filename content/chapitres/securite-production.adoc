@@ -441,14 +441,14 @@ USER flaskuser
 
 [source,bash]
 ----
-docker compose exec backend whoami
-# Résultat attendu : flaskuser
+docker compose exec backend ps aux
+# Le processus principal (PID 1) doit tourner en tant que flaskuser
 
-docker compose exec frontend whoami
-# Résultat attendu : reactuser
+docker compose exec frontend ps aux
+# Le processus principal (PID 1) doit tourner en tant que reactuser
 ----
 
-TIP: Si vous voyez UID 0 ou `root`, c'est à corriger !
+TIP: Si vous voyez UID 0 ou `root` pour le processus principal, c'est à corriger !
 
 == Exercice 3 : Sécuriser les secrets (30 min)
 
@@ -474,7 +474,7 @@ Vérification collective :
 [source,bash]
 ----
 docker compose ps
-docker compose exec backend whoami
+docker compose exec backend ps aux
 trivy image securevote-backend:latest --severity HIGH,CRITICAL
 ----
 
