@@ -670,10 +670,11 @@ WARNING: Sans limites, les logs remplissent le disque !
 **Mauvais :** `Server started on port 5000`
 
 **Bon :**
-```json
-{"timestamp":"2025-01-15T10:30:00Z","level":"INFO",
- "service":"backend","message":"Server started","port":5000}
-```
+
+[source,json]
+----
+{"timestamp":"2025-01-15T10:30:00Z","level":"INFO","service":"backend","message":"Server started","port":5000}
+----
 
 [%step]
 Facilement parsables par ELK, Loki, etc.
