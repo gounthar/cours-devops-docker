@@ -28,6 +28,20 @@ jobs:
           echo $PRESENTATION_URL
       - name: 'Checkout'
         uses: actions/checkout@master
+      - name: 'Validate package-lock.json sync'
+        run: |
+          cd npm-packages
+          # Check if package.json and package-lock.json are in sync
+          if ! npm ci --dry-run > /dev/null 2>&1; then
+            echo "❌ ERROR: package.json and package-lock.json are out of sync"
+            echo ""
+            echo "To fix this issue:"
+            echo "  1. Run: make dependencies-lock-update"
+            echo "  2. Commit the updated package-lock.json"
+            echo "  3. Push your changes"
+            exit 1
+          fi
+          echo "✅ package.json and package-lock.json are in sync"
       - name: Build HTML slides
         run: make build
       - name: Build PDF slides
