@@ -67,7 +67,10 @@ include::./chapitres/reseaux.adoc[leveloffset=1]
 // Docker compose
 include::./chapitres/compose.adoc[leveloffset=1]
 
-// Docker compose
+// Sécurité et Production
+include::./chapitres/securite-production.adoc[leveloffset=1]
+
+// Bonus
 include::./chapitres/bonus.adoc[leveloffset=1]
 
 // Bibliographie
