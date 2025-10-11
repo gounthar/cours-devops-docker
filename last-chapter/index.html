@@ -3647,7 +3647,8 @@ En prod, TOUJOURS définir des limites. C&#8217;est comme les ceintures de sécu
     restart: unless-stopped  # Sauf arrêt manuel</code></pre></div></div>
 <div class="paragraph fragment"><p><strong>Production :</strong> Privilégier <code>unless-stopped</code> ou <code>on-failure</code></p></div></div></section><section id="restart_avec_limite"><h2>Restart avec limite</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   backend:
-    restart: on-failure:5    # Max 5 tentatives</code></pre></div></div>
+    restart: on-failure</code></pre></div></div>
+<div class="admonitionblock note"><table><tr><td class="icon"><i class="fa fa-info-circle" title="Note"></i></td><td class="content">Pour limiter le nombre de tentatives en Docker Swarm, utilisez <code>deploy.restart_policy.max_attempts: 5</code></td></tr></table></div>
 <div class="paragraph"><p>Évite les boucles infinies de redémarrage</p></div></div></section><section id="health_checks"><h2>Health checks</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   backend:
     healthcheck:
