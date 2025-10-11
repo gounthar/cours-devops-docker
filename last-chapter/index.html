@@ -3605,16 +3605,16 @@ Montrer que le fichier phase2/INSTRUCTIONS.md contient des indices.</p></div></a
 <div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Backend Python : créer <code>flaskuser</code></p></li><li class="fragment"><p>Frontend React : créer <code>reactuser</code></p></li><li class="fragment"><p>Nginx : utiliser <code>nginx-unprivileged</code></p></li></ol></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM python:3.11-slim
 RUN groupadd -r flaskuser &amp;&amp; useradd -r -g flaskuser flaskuser
-USER flaskuser</code></pre></div></div></div></section><section id="vérification_utilisateurs"><h2>Vérification utilisateurs</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose exec backend whoami
-# Résultat attendu : flaskuser
+USER flaskuser</code></pre></div></div></div></section><section id="vérification_utilisateurs"><h2>Vérification utilisateurs</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose exec backend ps aux
+# Le processus principal (PID 1) doit tourner en tant que flaskuser
 
-docker compose exec frontend whoami
-# Résultat attendu : reactuser</code></pre></div></div>
-<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Si vous voyez UID 0 ou <code>root</code>, c&#8217;est à corriger !</td></tr></table></div></div></section><section id="exercice_3_sécuriser_les_secrets_30_min"><h2>Exercice 3 : Sécuriser les secrets (30 min)</h2><div class="slide-content"><div class="paragraph"><p><strong>Mission :</strong></p></div>
+docker compose exec frontend ps aux
+# Le processus principal (PID 1) doit tourner en tant que reactuser</code></pre></div></div>
+<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Si vous voyez UID 0 ou <code>root</code> pour le processus principal, c&#8217;est à corriger !</td></tr></table></div></div></section><section id="exercice_3_sécuriser_les_secrets_30_min"><h2>Exercice 3 : Sécuriser les secrets (30 min)</h2><div class="slide-content"><div class="paragraph"><p><strong>Mission :</strong></p></div>
 <div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Identifier les secrets en clair dans docker-compose.yml</p></li><li class="fragment"><p>Créer <code>.env</code> (sans le commiter !)</p></li><li class="fragment"><p>Ajouter <code>.env</code> au <code>.gitignore</code></p></li><li class="fragment"><p>Utiliser les variables : <code>${DB_PASSWORD}</code></p></li><li class="fragment"><p>Créer <code>.env.example</code> comme template</p></li></ol></div></div></section><section id="checkpoint_phase_2"><h2>Checkpoint Phase 2</h2><div class="slide-content"><div class="paragraph"><p>Vérification collective :</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Scans : moins de vulnérabilités ?</p></li><li class="fragment"><p>Aucun conteneur en root ?</p></li><li class="fragment"><p>Aucun secret en clair versionné ?</p></li><li class="fragment"><p>Application fonctionne ?</p></li></ul></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose ps
-docker compose exec backend whoami
+docker compose exec backend ps aux
 trivy image securevote-backend:latest --severity HIGH,CRITICAL</code></pre></div></div></div></section><section id="configuration_production" data-background-color="DarkGreen"><h2>Configuration Production</h2><div class="slide-content"><div class="exampleblock columns"><div class="content"><div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Développement :</strong></p></div>
 <div class="ulist"><ul><li><p>Ressources illimitées</p></li><li><p>Logs verbeux</p></li><li><p>Redémarrages manuels</p></li></ul></div></div></div>
 <div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Production :</strong></p></div>
