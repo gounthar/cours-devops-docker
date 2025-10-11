@@ -3686,8 +3686,7 @@ def health():
         max-file: "3"        # Garder 3 fichiers</code></pre></div></div>
 <div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Sans limites, les logs remplissent le disque !</td></tr></table></div></div></section><section id="logs_structurés"><h2>Logs structurés</h2><div class="slide-content"><div class="paragraph"><p><strong>Mauvais :</strong> <code>Server started on port 5000</code></p></div>
 <div class="paragraph"><p><strong>Bon :</strong></p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">{"timestamp":"2025-01-15T10:30:00Z","level":"INFO",
- "service":"backend","message":"Server started","port":5000}</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">{"timestamp":"2025-01-15T10:30:00Z","level":"INFO","service":"backend","message":"Server started","port":5000}</code></pre></div></div>
 <div class="paragraph fragment"><p>Facilement parsables par ELK, Loki, etc.</p></div></div></section><section id="phase_3_production_1h" data-background-color="ForestGreen"><h2>Phase 3 : Production (1h)</h2><div class="slide-content"><div class="paragraph"><p>Optimiser SecureVote pour la production</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Limites de ressources</p></li><li class="fragment"><p>Politiques de redémarrage</p></li><li class="fragment"><p>Health checks</p></li><li class="fragment"><p>Optimiser les logs</p></li><li class="fragment"><p>Tester la résilience</p></li></ul></div>
 <aside class="notes"><div class="paragraph"><p>Phase finale : transformation en app production-ready.
