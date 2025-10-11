@@ -578,8 +578,10 @@ services:
 ----
 services:
   backend:
-    restart: on-failure:5    # Max 5 tentatives
+    restart: on-failure
 ----
+
+NOTE: Pour limiter le nombre de tentatives en Docker Swarm, utilisez `deploy.restart_policy.max_attempts: 5`
 
 Évite les boucles infinies de redémarrage
 
