@@ -128,8 +128,13 @@ Bref, on ne l'a pas ici. `¯\_(ツ)_/¯`
 
 **Symptôme :** Erreur "Cannot connect to the Docker daemon"
 
+=== Solutions au conflit
+
 [.columns]
-=== Solution 1 : Variable DOCKER_HOST (rapide)
+--
+[.column]
+--
+==== Solution 1 : Variable DOCKER_HOST (rapide)
 
 **Pour une session :**
 [source,bash]
@@ -144,8 +149,10 @@ docker ps  # Devrait fonctionner
 echo 'export DOCKER_HOST=unix:///var/run/docker.sock' >> ~/.bashrc
 source ~/.bashrc
 ----
-
-=== Solution 2 : Désinstaller Podman (recommandé)
+--
+[.column]
+--
+==== Solution 2 : Désinstaller Podman (recommandé)
 
 **Si vous n'utilisez pas Podman :**
 [source,bash]
@@ -154,7 +161,15 @@ sudo apt remove podman podman-docker
 sudo apt install docker.io
 sudo systemctl start docker
 sudo systemctl enable docker
+# Ajouter l'utilisateur au groupe docker
+sudo usermod -aG docker $USER
 ----
+
+**⚠️ Attention :** Après `usermod`, vous devez fermer votre session (logout/login) ou redémarrer votre shell pour que le changement de groupe prenne effet.
+
+**Alternative :** Préfixer chaque commande avec `sudo` (ex: `sudo docker ps`) si vous ne voulez pas rejoindre le groupe.
+--
+--
 
 [.notes]
 --
@@ -192,9 +207,10 @@ Ubuntu 25.04 (Noble Numbat) marque un changement majeur : Podman devient le mote
 
 **Alternative bonus - Podman :**
 Si vous voulez enseigner Podman au lieu de Docker :
-```bash
+[source,bash]
+----
 alias docker=podman
-```
+----
 Podman est compatible avec la CLI Docker !
 
 **MESSAGE CLÉ :**
@@ -203,3 +219,4 @@ Podman est compatible avec la CLI Docker !
 
 [.small]
 On peut commencer !
+
