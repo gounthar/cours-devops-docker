@@ -316,60 +316,6 @@ RUN apk update && apk add your-package
 [%auto-animate]
 == 5. Configurations avancées pour les proxys (au-delà du cache)
 
-Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d'images.
-
-=== Option 1 – Utiliser ENV dans le Dockerfile (Recommandé)
-
-[source,dockerfile]
-----
-FROM alpine:latest
-
-# IMPORTANT: ENV doit être APRÈS FROM et AVANT RUN
-ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
-ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
-ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
-ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
-
-# Votre gestionnaire de paquets utilisera désormais le proxy
-RUN apk update && apk add your-package
-----
-
-⚠️ **Ordre crucial:** `FROM` → `ENV` → `RUN` (réseau)
-
-=== Option 2 – Build multi-étapes (proxy uniquement quand nécessaire)
-
-[source,dockerfile]
-----
-# Étape de build avec proxy
-FROM alpine:latest as builder
-ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
-ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
-ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
-ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
-RUN apk update && apk add build-dependencies
-
-# Étape finale sans proxy
-FROM alpine:latest
-COPY --from=builder /built-artifacts /app
-----
-
-=== Option 3 – Variables d'environnement passées au build
-
-[source,bash]
-----
-docker build --build-arg https_proxy=http://cache-etu.univ-artois.fr:3128/ .
-----
-
-Dockerfile correspondant :
-
-[source,dockerfile]
-----
-ARG https_proxy
-ARG http_proxy
-
-RUN apk update && apk add your-package
-----
-
 === Option 4 – Configuration du démon Docker (système entier)
 
 Ajouter dans `/etc/docker/daemon.json` :
@@ -394,60 +340,6 @@ sudo systemctl restart docker
 
 [%auto-animate]
 == 5. Configurations avancées pour les proxys (au-delà du cache)
-
-Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d'images.
-
-=== Option 1 – Utiliser ENV dans le Dockerfile (Recommandé)
-
-[source,dockerfile]
-----
-FROM alpine:latest
-
-# IMPORTANT: ENV doit être APRÈS FROM et AVANT RUN
-ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
-ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
-ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
-ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
-
-# Votre gestionnaire de paquets utilisera désormais le proxy
-RUN apk update && apk add your-package
-----
-
-⚠️ **Ordre crucial:** `FROM` → `ENV` → `RUN` (réseau)
-
-=== Option 2 – Build multi-étapes (proxy uniquement quand nécessaire)
-
-[source,dockerfile]
-----
-# Étape de build avec proxy
-FROM alpine:latest as builder
-ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
-ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
-ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
-ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
-RUN apk update && apk add build-dependencies
-
-# Étape finale sans proxy
-FROM alpine:latest
-COPY --from=builder /built-artifacts /app
-----
-
-=== Option 3 – Variables d'environnement passées au build
-
-[source,bash]
-----
-docker build --build-arg https_proxy=http://cache-etu.univ-artois.fr:3128/ .
-----
-
-Dockerfile correspondant :
-
-[source,dockerfile]
-----
-ARG https_proxy
-ARG http_proxy
-
-RUN apk update && apk add your-package
-----
 
 === Option 4 – Configuration du démon Docker (système entier)
 
