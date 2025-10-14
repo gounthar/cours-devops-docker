@@ -595,14 +595,22 @@ newgrp docker   # Ou déconnectez-vous / reconnectez-vous
 
 # Toujours un souci ? Testez le cache :
 docker pull cache-ili.univ-artois.fr:80/proxy_cache/library/hello-world</code></pre></div></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><div class="paragraph"><p>Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d&#8217;images.</p></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache_2" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><div class="paragraph"><p>Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d&#8217;images.</p></div>
-<h3>Option 1 – Utiliser ENV dans le Dockerfile (Recommandé)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
+<h3>Option 1 – Utiliser ENV dans le Dockerfile (Recommandé)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:latest
+
+# IMPORTANT: ENV doit être APRÈS FROM et AVANT RUN
+ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 
 # Votre gestionnaire de paquets utilisera désormais le proxy
-RUN apk update &amp;&amp; apk add your-package</code></pre></div></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache_3" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><h3>Option 2 – Build multi-étapes (proxy uniquement quand nécessaire)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Étape de build avec proxy
+RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
+<div class="paragraph"><p>⚠️ <strong>Ordre crucial:</strong> <code>FROM</code> → <code>ENV</code> → <code>RUN</code> (réseau)</p></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache_3" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><h3>Option 2 – Build multi-étapes (proxy uniquement quand nécessaire)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Étape de build avec proxy
 FROM alpine:latest as builder
 ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 RUN apk update &amp;&amp; apk add build-dependencies
 
 # Étape finale sans proxy
@@ -613,15 +621,23 @@ COPY --from=builder /built-artifacts /app</code></pre></div></div></div></sectio
 ARG http_proxy
 
 RUN apk update &amp;&amp; apk add your-package</code></pre></div></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache_5" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><div class="paragraph"><p>Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d&#8217;images.</p></div>
-<h3>Option 1 – Utiliser ENV dans le Dockerfile (Recommandé)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
+<h3>Option 1 – Utiliser ENV dans le Dockerfile (Recommandé)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:latest
+
+# IMPORTANT: ENV doit être APRÈS FROM et AVANT RUN
+ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 
 # Votre gestionnaire de paquets utilisera désormais le proxy
 RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
+<div class="paragraph"><p>⚠️ <strong>Ordre crucial:</strong> <code>FROM</code> → <code>ENV</code> → <code>RUN</code> (réseau)</p></div>
 <h3>Option 2 – Build multi-étapes (proxy uniquement quand nécessaire)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Étape de build avec proxy
 FROM alpine:latest as builder
 ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 RUN apk update &amp;&amp; apk add build-dependencies
 
 # Étape finale sans proxy
@@ -643,15 +659,23 @@ RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
 }</code></pre></div></div>
 <div class="paragraph"><p>Puis redémarrer Docker :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo systemctl restart docker</code></pre></div></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache_6" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><div class="paragraph"><p>Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d&#8217;images.</p></div>
-<h3>Option 1 – Utiliser ENV dans le Dockerfile (Recommandé)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
+<h3>Option 1 – Utiliser ENV dans le Dockerfile (Recommandé)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:latest
+
+# IMPORTANT: ENV doit être APRÈS FROM et AVANT RUN
+ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 
 # Votre gestionnaire de paquets utilisera désormais le proxy
 RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
+<div class="paragraph"><p>⚠️ <strong>Ordre crucial:</strong> <code>FROM</code> → <code>ENV</code> → <code>RUN</code> (réseau)</p></div>
 <h3>Option 2 – Build multi-étapes (proxy uniquement quand nécessaire)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Étape de build avec proxy
 FROM alpine:latest as builder
 ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 RUN apk update &amp;&amp; apk add build-dependencies
 
 # Étape finale sans proxy
@@ -708,21 +732,29 @@ Saisissez un numéro de téléphone valide pour recevoir par SMS un code de déb
 <div class="paragraph fragment"><p>Bref, on ne l&#8217;a pas ici. <code>¯_(ツ)_/¯</code></p></div></div></section><section id="installation_locale_de_docker"><h2>🐳 Installation locale de Docker</h2><div class="slide-content"><h3>Ubuntu 25.04 et le conflit Podman ⚠️</h3><div class="paragraph"><p><strong>Problème :</strong> Ubuntu 25.04+ est livré avec Podman par défaut, ce qui peut empêcher Docker de fonctionner correctement.</p></div>
 <div class="paragraph"><p><strong>Symptôme :</strong> Erreur "Cannot connect to the Docker daemon"</p></div>
 <h3>Solutions au conflit</h3><div class="openblock columns"><div class="content"></div></div>
-<h4>Solution 1 : Variable DOCKER_HOST (rapide)</h4><div class="paragraph"><p><strong>Pour une session :</strong></p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">export DOCKER_HOST=unix:///var/run/docker.sock
+<div class="paragraph"><div class="title">Solution 1 : Variable DOCKER_HOST (rapide)</div><p><strong>Pour une session :</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Vérifier que le service Docker tourne :
+systemctl is-active --quiet docker || echo "⚠️ Docker n'est pas démarré (voir Solution 2)"
+export DOCKER_HOST=unix:///var/run/docker.sock
 docker ps  # Devrait fonctionner</code></pre></div></div>
 <div class="paragraph"><p><strong>Permanent (ajouter à ~/.bashrc ou ~/.zshrc) :</strong></p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">echo 'export DOCKER_HOST=unix:///var/run/docker.sock' &gt;&gt; ~/.bashrc
-source ~/.bashrc</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">echo 'export DOCKER_HOST=unix:///var/run/docker.sock' &gt;&gt; ~/.bashrc &amp;&amp; source ~/.bashrc
+# ou pour zsh :
+echo 'export DOCKER_HOST=unix:///var/run/docker.sock' &gt;&gt; ~/.zshrc &amp;&amp; source ~/.zshrc</code></pre></div></div>
 <div class="openblock"><div class="content"></div></div>
-<h4>Solution 2 : Désinstaller Podman (recommandé)</h4><div class="paragraph"><p><strong>Si vous n&#8217;utilisez pas Podman :</strong></p></div>
+<div class="paragraph"><div class="title">Solution 2 : Désinstaller Podman (recommandé)</div><p><strong>Si vous n&#8217;utilisez pas Podman :</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo apt remove podman podman-docker
 sudo apt install docker.io
-sudo systemctl start docker
-sudo systemctl enable docker
+sudo systemctl enable --now docker
 # Ajouter l'utilisateur au groupe docker
-sudo usermod -aG docker $USER</code></pre></div></div>
+sudo usermod -aG docker $USER
+# (optionnel mais utile pour le cours)
+sudo apt install -y docker-compose-plugin
+newgrp docker &lt;&lt;'EOF'
+docker ps
+EOF</code></pre></div></div>
 <div class="paragraph"><p><strong>⚠️ Attention :</strong> Après <code>usermod</code>, vous devez fermer votre session (logout/login) ou redémarrer votre shell pour que le changement de groupe prenne effet.</p></div>
+<div class="paragraph"><p><strong>Astuce :</strong> Utilisez <code>newgrp docker</code> pour activer le groupe sans vous déconnecter.</p></div>
 <div class="paragraph"><p><strong>Alternative :</strong> Préfixer chaque commande avec <code>sudo</code> (ex: <code>sudo docker ps</code>) si vous ne voulez pas rejoindre le groupe.</p></div>
 <div class="openblock"><div class="content"></div></div>
 <aside class="notes"><div class="paragraph"><p><strong>CONTEXTE - UBUNTU 25.04 ET PODMAN :</strong></p></div>
@@ -733,7 +765,7 @@ sudo usermod -aG docker $USER</code></pre></div></div>
 - Compatible OCI (Open Container Initiative)
 - Plus sécurisé par défaut (rootless)</p></div>
 <div class="paragraph"><p><strong>Le conflit :</strong>
-- Podman crée un socket <code>/run/podman/podman.sock</code>
+- Podman crée un socket <code>/run/podman/podman.sock</code> (ou rootless: <code>/run/user/$UID/podman/podman.sock</code>)
 - Docker cherche <code>/var/run/docker.sock</code>
 - Si les deux sont installés : confusion entre les sockets</p></div>
 <div class="paragraph"><p><strong>Solution 1 - DOCKER_HOST :</strong>
