@@ -6,7 +6,7 @@
 include::./sous-chapitres/dev-env/proxy.adoc[leveloffset=1]
 
 // GitHub Codespaces - Environnement cloud
-include::./sous-chapitres/dev-env/github-codespaces.adoc[leveloffset=0]
+include::./sous-chapitres/dev-env/github-codespaces.adoc[leveloffset=+1]
 
 == 🐳 Installation locale de Docker
 
