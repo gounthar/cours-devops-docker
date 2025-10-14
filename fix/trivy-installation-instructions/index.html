@@ -3638,7 +3638,112 @@ secrets/</code></pre></div></div>
 <div class="paragraph"><p><strong>Étape 3 : Utiliser dans docker-compose.yml</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">environment:
   - POSTGRES_PASSWORD=${DB_PASSWORD}</code></pre></div></div>
-<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Docker Compose charge automatiquement le fichier .env</td></tr></table></div></div></section><section id="alternatives_pour_les_secrets"><h2>Alternatives pour les secrets</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p><strong>Docker Secrets</strong> (Swarm mode)</p></li><li class="fragment"><p><strong>Vault</strong> (HashiCorp)</p></li><li class="fragment"><p><strong>AWS Secrets Manager</strong>, Azure Key Vault</p></li><li class="fragment"><p><strong>Variables d&#8217;environnement</strong> du shell</p></li></ul></div></div></section><section id="phase_2_sécurisation_1h15" data-background-color="DarkOrange"><h2>Phase 2 : Sécurisation (1h15)</h2><div class="slide-content"><div class="paragraph"><p>Transformer SecureVote en application sécurisée</p></div>
+<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Docker Compose charge automatiquement le fichier .env</td></tr></table></div></div></section><section id="alternatives_pour_les_secrets"><h2>Alternatives pour les secrets</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p><strong>Docker Secrets</strong> (Swarm mode)</p></li><li class="fragment"><p><strong>Vault</strong> (HashiCorp)</p></li><li class="fragment"><p><strong>AWS Secrets Manager</strong>, Azure Key Vault</p></li><li class="fragment"><p><strong>Variables d&#8217;environnement</strong> du shell</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p><strong>ALTERNATIVES POUR LA GESTION DES SECRETS - GUIDE DÉTAILLÉ :</strong></p></div>
+<div class="paragraph"><p><strong>1. DOCKER SECRETS (Swarm mode)</strong></p></div>
+<div class="paragraph"><p>Qu&#8217;est-ce que c&#8217;est ?
+- Système de gestion de secrets intégré à Docker Swarm (orchestrateur Docker natif)
+- Secrets stockés cryptés dans le cluster Swarm
+- Montés comme fichiers dans /run/secrets/ (en RAM, jamais sur disque)</p></div>
+<div class="paragraph"><p>Avantages :
+- ✅ Natif Docker, pas de service externe
+- ✅ Crypté au repos et en transit
+- ✅ Accès contrôlé par service (seuls les services autorisés peuvent lire)
+- ✅ Rotation possible</p></div>
+<div class="paragraph"><p>Inconvénients :
+- ❌ Nécessite Docker Swarm (pas Compose standalone ou Kubernetes)
+- ❌ Moins de fonctionnalités que Vault</p></div>
+<div class="paragraph"><p>Exemple d&#8217;utilisation :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">echo "mon_secret_123" | docker secret create db_password -
+docker service create --secret db_password postgres
+# Le secret sera disponible dans /run/secrets/db_password</code></pre></div></div>
+<div class="paragraph"><p>Quand l&#8217;utiliser ?
+- Environnements Docker Swarm en production
+- Petites/moyennes infrastructures sans besoin d&#8217;orchestration complexe
+- Alternative simple à Vault pour débuter</p></div>
+<div class="paragraph"><p><strong>2. VAULT (HashiCorp)</strong></p></div>
+<div class="paragraph"><p>Qu&#8217;est-ce que c&#8217;est ?
+- Solution d&#8217;entreprise dédiée à la gestion de secrets
+- Serveur centralisé de secrets avec API REST
+- Audit complet, rotation automatique, durée de vie des secrets</p></div>
+<div class="paragraph"><p>Avantages :
+- ✅ Solution la plus complète du marché
+- ✅ Rotation automatique des secrets (DB credentials, API keys)
+- ✅ Audit trail complet (qui a accédé à quoi, quand)
+- ✅ Secrets dynamiques (génère des credentials temporaires)
+- ✅ Intégration avec cloud providers (AWS, Azure, GCP)
+- ✅ Fonctionne avec Docker Compose, Swarm, Kubernetes</p></div>
+<div class="paragraph"><p>Inconvénients :
+- ❌ Infrastructure supplémentaire à gérer (serveur Vault à maintenir)
+- ❌ Courbe d&#8217;apprentissage plus élevée
+- ❌ Coût (version enterprise pour features avancées)</p></div>
+<div class="paragraph"><p>Exemple d&#8217;utilisation :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Application lit le secret depuis Vault via API
+vault kv get -field=password secret/database/prod</code></pre></div></div>
+<div class="paragraph"><p>Quand l&#8217;utiliser ?
+- Grandes organisations avec de nombreux secrets
+- Exigences de compliance strictes (audit, rotation obligatoire)
+- Multi-cloud ou infrastructure hybride
+- Besoin de secrets dynamiques (ex: credentials DB temporaires)</p></div>
+<div class="paragraph"><p><strong>3. CLOUD PROVIDERS (AWS Secrets Manager, Azure Key Vault, GCP Secret Manager)</strong></p></div>
+<div class="paragraph"><p>Qu&#8217;est-ce que c&#8217;est ?
+- Services managés de gestion de secrets par les cloud providers
+- Intégration native avec les autres services du cloud</p></div>
+<div class="paragraph"><p>Avantages :
+- ✅ Entièrement managé (pas de serveur à maintenir)
+- ✅ Intégration native avec EC2, Lambda, AKS, etc.
+- ✅ Rotation automatique pour certains services (RDS, etc.)
+- ✅ Haute disponibilité garantie par le provider
+- ✅ Audit via CloudTrail / Azure Monitor / Cloud Logging</p></div>
+<div class="paragraph"><p>Inconvénients :
+- ❌ Vendor lock-in (dépendance au cloud provider)
+- ❌ Coût à l&#8217;usage (par secret, par requête)
+- ❌ Moins flexible que Vault pour du multi-cloud</p></div>
+<div class="paragraph"><p>Exemples :
+- <strong>AWS Secrets Manager</strong> : rotation auto des credentials RDS/Aurora
+- <strong>Azure Key Vault</strong> : intégration avec Azure AD, HSM hardware
+- <strong>GCP Secret Manager</strong> : intégration avec Cloud Run, GKE</p></div>
+<div class="paragraph"><p>Quand l&#8217;utiliser ?
+- Infrastructure déjà sur un cloud public (AWS, Azure, GCP)
+- Pas envie de gérer un serveur Vault
+- Budget pour services managés
+- Besoin d&#8217;intégration native avec services cloud</p></div>
+<div class="paragraph"><p><strong>4. VARIABLES D&#8217;ENVIRONNEMENT DU SHELL</strong></p></div>
+<div class="paragraph"><p>Qu&#8217;est-ce que c&#8217;est ?
+- Passer les secrets via variables d&#8217;environnement du shell au lancement
+- Exemple : <code>DB_PASSWORD=secret123 docker compose up</code></p></div>
+<div class="paragraph"><p>Avantages :
+- ✅ Très simple, pas de fichier .env à gérer
+- ✅ Secrets restent dans la session shell (pas versionnés)
+- ✅ Utile pour CI/CD (secrets injectés par le pipeline)</p></div>
+<div class="paragraph"><p>Inconvénients :
+- ❌ Visible dans <code>ps aux</code> (autres utilisateurs peuvent voir)
+- ❌ Reste dans l&#8217;historique shell (~/.bash_history)
+- ❌ Moins pratique pour plusieurs secrets</p></div>
+<div class="paragraph"><p>Exemple :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">export DB_PASSWORD="secret123"
+docker compose up -d
+# OU en une ligne :
+DB_PASSWORD="secret123" docker compose up -d</code></pre></div></div>
+<div class="paragraph"><p>Quand l&#8217;utiliser ?
+- Développement local rapide
+- CI/CD (GitLab CI, GitHub Actions injectent des variables)
+- Scripts d&#8217;automatisation ponctuels</p></div>
+<div class="paragraph"><p><strong>TABLEAU COMPARATIF POUR LES ÉTUDIANTS :</strong></p></div>
+<div class="paragraph"><p>| Solution              | Complexité | Coût      | Cas d&#8217;usage                |
+|-----------------------|------------|-----------|----------------------------|
+| Fichiers .env         | Faible     | Gratuit   | Dev, petits projets        |
+| Docker Secrets        | Moyenne    | Gratuit   | Docker Swarm prod          |
+| Vault                 | Élevée     | Variable  | Grandes organisations      |
+| Cloud Secrets Manager | Moyenne    | Payant    | Déjà sur AWS/Azure/GCP     |
+| Env variables shell   | Faible     | Gratuit   | Dev local, CI/CD           |</p></div>
+<div class="paragraph"><p><strong>POUR LE TP SECUREVOTE :</strong>
+- Phase 1-2-3 : fichiers .env (simple, pédagogique)
+- Si temps bonus : mentionner Docker Secrets comme évolution possible
+- Discussion : "Dans votre entreprise, qu&#8217;utiliseriez-vous pour 100+ secrets ?" → Vault ou cloud provider</p></div>
+<div class="paragraph"><p><strong>MESSAGE CLÉ :</strong>
+"Le fichier .env est parfait pour débuter et les petits projets.
+En entreprise, pour des secrets critiques et nombreux, investissez dans Vault ou les services cloud managés."</p></div></aside></div></section><section id="phase_2_sécurisation_1h15" data-background-color="DarkOrange"><h2>Phase 2 : Sécurisation (1h15)</h2><div class="slide-content"><div class="paragraph"><p>Transformer SecureVote en application sécurisée</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Images sûres et légères</p></li><li class="fragment"><p>Scanner les vulnérabilités avec Trivy</p></li><li class="fragment"><p>Utilisateurs non-root</p></li><li class="fragment"><p>Protéger les secrets</p></li><li class="fragment"><p>Isoler les réseaux</p></li></ul></div>
 <aside class="notes"><div class="paragraph"><p>Phase la plus longue et la plus importante : 1h15 de pratique intensive.
 Les étudiants doivent appliquer CONCRÈTEMENT tout ce qui vient d&#8217;être vu.
