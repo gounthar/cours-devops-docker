@@ -1015,14 +1015,14 @@ wget https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp07/-/raw/mast
 [%step]
 [source,bash]
 ----
-# Used to run a Docker container with the name "tomcat-container" using the "tomcat:11.0.12-jdk25-temurin-noble" image. The container is
+# Used to run a Docker container with the name "tomcat-container" using the "tomcat:11.0.13-jdk25-temurin-noble" image. The container is
 # configured to expose port 8080 on the host machine, which will be mapped to the corresponding port inside
 # the container. Additionally, a volume is mounted to the container, linking the
 # "/fully/qualified/path/on/my/computer/sample.war" file to "/usr/local/tomcat/webapps/sample.war"
 # path within the container. This allows the Tomcat server running inside the container to access and deploy the
 # "sample.war" file. The "-d" flag is used to run the container in detached mode, meaning it will run in the
 # background.
-docker run -d -p 8080:8080 --name tomcat-container -v /fully/qualified/path/on/my/computer/sample.war:/usr/local/tomcat/webapps/sample.war tomcat:11.0.12-jdk25-temurin-noble
+docker run -d -p 8080:8080 --name tomcat-container -v /fully/qualified/path/on/my/computer/sample.war:/usr/local/tomcat/webapps/sample.war tomcat:11.0.13-jdk25-temurin-noble
 ----
 
 [%step]
