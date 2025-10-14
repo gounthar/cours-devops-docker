@@ -381,6 +381,64 @@ CMD ["python", "/app/app.py"]
 * Ne jamais revenir à root après USER
 * Vérifier : `docker exec <container> whoami`
 
+[.notes]
+--
+**UID > 1000 : POURQUOI C'EST IMPORTANT**
+
+Sur les systèmes Linux/Unix, les UID (User IDentifiers) sont répartis ainsi :
+
+• **UID 0** : root (le super-utilisateur)
+• **UID 1-999** : comptes système (daemon, www-data, postgres, redis, etc.)
+  - Réservés par le système et les services système
+  - Exemples : www-data=33, postgres=999, mysql=27
+• **UID ≥ 1000** : utilisateurs "normaux" (humains ou applications)
+  - Premier utilisateur créé sur Ubuntu/Debian = UID 1000
+  - Zone "sûre" pour les applications conteneurisées
+
+**PROBLÈME SI UID < 1000 :**
+
+Imagine que tu crées un utilisateur dans ton Dockerfile avec UID 33 (www-data).
+Si ton conteneur monte un volume partagé avec l'hôte, et que l'hôte a AUSSI un utilisateur www-data (UID 33)...
+→ Le conteneur aura accès aux fichiers de www-data sur l'HÔTE = faille de sécurité !
+
+**EXEMPLE CONCRET :**
+
+```dockerfile
+# MAUVAIS : UID fixe < 1000
+RUN useradd -u 33 appuser
+# Si l'hôte a www-data (UID 33), conflit possible avec volumes montés !
+
+# BON : UID dynamique ≥ 1000 ou explicite > 1000
+RUN useradd -u 1001 appuser
+# OU laisser le système choisir automatiquement (sera >= 1000)
+RUN useradd appuser
+```
+
+**AVEC L'OPTION -r (comme dans useradd -r) :**
+
+L'option `-r` crée un "system user" avec UID < 1000.
+C'est acceptable DANS LE CONTENEUR car isolé, mais préférer UID > 1000 pour les volumes montés.
+
+**BONNE PRATIQUE GÉNÉRALE :**
+
+• Sans volumes montés : `-r` acceptable (UID système, < 1000)
+• Avec volumes montés : UID explicite > 1000 pour éviter collisions
+
+**VÉRIFICATION :**
+
+```bash
+docker exec <container> id appuser
+# Résultat : uid=1001(appuser) gid=1001(appuser) groups=1001(appuser)
+```
+
+**POUR LES ÉTUDIANTS :**
+
+Expliquer : "Linux numérote les utilisateurs. 0-999 = système, ≥1000 = utilisateurs.
+On évite < 1000 pour ne pas entrer en collision avec les comptes système de l'hôte."
+
+Dans SecureVote, utiliser `-r` est acceptable car pas de volumes montés critiques avec l'hôte.
+--
+
 == Gestion des secrets
 
 **Mauvaise pratique :**
