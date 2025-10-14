@@ -259,6 +259,66 @@ Montrer que le scan prend 10-30 secondes : c'est acceptable pour un pipeline CI/
 Insister : ce n'est pas paranoïaque, c'est STANDARD en 2025.
 --
 
+== Installation de Trivy
+
+**Méthode recommandée pour le TP :**
+
+[source,bash]
+----
+# Installation directe du binaire (fonctionne partout)
+curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
+
+# Vérifier l'installation
+trivy --version
+----
+
+[%step]
+TIP: Cette méthode fonctionne sur toutes les distributions Linux
+
+[.notes]
+--
+Script d'installation : télécharge et installe le binaire dans /usr/local/bin.
+Fonctionne sur toutes les distributions : Debian (y compris Trixie), Ubuntu, RHEL, etc.
+Toujours la dernière version stable.
+Sur Debian Trixie/Testing : c'est LA méthode à utiliser (le repo apt ne supporte pas encore trixie).
+--
+
+== Installation Trivy : Alternatives
+
+**Si vous n'avez pas les droits sudo :**
+
+[source,bash]
+----
+# Via Docker (aucune installation nécessaire)
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+  aquasec/trivy image python:3.11
+----
+
+**Autres systèmes :**
+
+[%step]
+* **macOS :** `brew install trivy`
+* **Debian/Ubuntu stable :** Via apt (voir documentation)
+
+[.notes]
+--
+**MÉTHODE DOCKER :**
+- Aucune installation nécessaire
+- Garantit que tout le monde a la même version
+- Peut être plus lent la première fois (télécharge l'image)
+- Syntaxe un peu plus longue
+
+**CHOIX POUR LE TP :**
+- Démonstration enseignant : script d'installation (rapide, propre)
+- Étudiants : script d'installation OU Docker selon permissions
+- Première utilisation : le scan sera lent (~30s) car télécharge la base CVE (~200 Mo)
+- Mise à jour de la base : `trivy image --download-db-only`
+
+**TROUBLESHOOTING :**
+- Permission denied → Ajouter sudo ou utiliser méthode Docker
+- Erreur "trixie Release not found" (si tentative apt) → Utiliser le script
+--
+
 == Exemple de résultat Trivy
 
 [source,bash]
