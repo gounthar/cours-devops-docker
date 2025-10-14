@@ -261,25 +261,58 @@ Insister : ce n'est pas paranoïaque, c'est STANDARD en 2025.
 
 == Installation de Trivy
 
-**Méthode recommandée pour le TP :**
+**Méthode rapide (pour le TP) :**
 
 [source,bash]
 ----
-# Installation directe du binaire (fonctionne partout)
+# Installation directe du binaire
 curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
-
-# Vérifier l'installation
 trivy --version
 ----
 
-[%step]
-TIP: Cette méthode fonctionne sur toutes les distributions Linux
+WARNING: `curl | sudo sh` est pratique MAIS dangereux en production !
+
+**Méthode sécurisée (recommandée) :**
+
+[source,bash]
+----
+# 1. Télécharger le script
+curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh -o /tmp/trivy-install.sh
+
+# 2. Inspecter le contenu
+less /tmp/trivy-install.sh
+
+# 3. Exécuter après vérification
+sudo sh /tmp/trivy-install.sh -b /usr/local/bin
+----
 
 [.notes]
 --
-Script d'installation : télécharge et installe le binaire dans /usr/local/bin.
+**IMPORTANT - PRATIQUE vs SÉCURITÉ :**
+
+Dans un chapitre sécurité, il est crucial de montrer LES DEUX approches :
+
+**Méthode rapide (curl | sudo sh) :**
+- ✅ Pratique pour le TP (gain de temps)
+- ✅ Recommandée par la doc officielle Trivy
+- ❌ DANGEREUX : exécute du code non vérifié en root
+- ❌ Attaque potentielle : script modifié = compromission totale
+
+**Méthode sécurisée (télécharger → inspecter → exécuter) :**
+- ✅ Permet de vérifier le contenu avant exécution
+- ✅ Bonne pratique sécurité (principe de précaution)
+- ❌ Plus long (3 étapes au lieu d'1)
+
+**POUR LE TP :**
+- Démonstration : montrer les DEUX approches
+- Insister : "Je fais rapide pour le TP, MAIS en production..."
+- Exercice pédagogique : comparer les deux = enseignement du compromis pratique/sécurité
+
+**MESSAGE CLÉ :**
+"En sécurité, il y a souvent un compromis entre praticité et sécurité.
+Pour un TP pédagogique, curl|sh est OK. En production sur serveur critique, TOUJOURS inspecter avant."
+
 Fonctionne sur toutes les distributions : Debian (y compris Trixie), Ubuntu, RHEL, etc.
-Toujours la dernière version stable.
 Sur Debian Trixie/Testing : c'est LA méthode à utiliser (le repo apt ne supporte pas encore trixie).
 --
 
@@ -484,7 +517,7 @@ secrets/
 [source,yaml]
 ----
 environment:
-  - POSTGRES_PASSWORD=${DB_PASSWORD}
+  POSTGRES_PASSWORD: ${DB_PASSWORD}
 ----
 
 TIP: Docker Compose charge automatiquement le fichier .env
@@ -586,14 +619,16 @@ Qu'est-ce que c'est ?
 ❌ Complexité opérationnelle (unsealing, backup, disaster recovery)
 
 **Exemple concret :**
-```bash
+
+[source,bash]
+----
 # Vault génère des credentials MySQL temporaires (valides 1h)
 vault read database/creds/myapp
 # Key            Value
 # lease_id       database/creds/myapp/abcd1234
 # username       v-myapp-abc123
 # password       A1b2C3d4...
-```
+----
 
 **Quand l'utiliser :**
 - Grandes organisations avec 100+ secrets à gérer
@@ -730,7 +765,8 @@ Qu'est-ce que c'est ?
 
 **Exemples d'utilisation :**
 
-```bash
+[source,bash]
+----
 # Méthode 1 : Inline (préférable)
 DB_PASSWORD="secret123" REDIS_PASSWORD="abc456" docker compose up -d
 
@@ -747,15 +783,16 @@ docker compose up -d
 # Les variables sont injectées par le runner
 script:
   - docker compose up -d  # $DB_PASSWORD déjà disponible
-```
+----
 
 **Problème de sécurité - ps aux :**
 
-```bash
+[source,bash]
+----
 # Autre utilisateur peut voir :
 ps aux | grep docker
 # user  1234  ... docker compose up -d  # DB_PASSWORD=secret123 visible !
-```
+----
 
 **Quand l'utiliser :**
 - Développement local rapide (test ponctuel)
