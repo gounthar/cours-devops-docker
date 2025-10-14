@@ -3541,16 +3541,39 @@ docker scout compare python:3.11 --to python:3.11-slim</code></pre></div></div>
 Comparer python:3.11 vs python:3.11-slim : différence spectaculaire (150+ CVE vs 20-30).
 Si Docker Scout ne fonctionne pas, basculer sur Trivy : "docker run aquasec/trivy image python:3.11"
 Montrer que le scan prend 10-30 secondes : c&#8217;est acceptable pour un pipeline CI/CD.
-Insister : ce n&#8217;est pas paranoïaque, c&#8217;est STANDARD en 2025.</p></div></aside></div></section><section id="installation_de_trivy"><h2>Installation de Trivy</h2><div class="slide-content"><div class="paragraph"><p><strong>Méthode recommandée pour le TP :</strong></p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Installation directe du binaire (fonctionne partout)
+Insister : ce n&#8217;est pas paranoïaque, c&#8217;est STANDARD en 2025.</p></div></aside></div></section><section id="installation_de_trivy"><h2>Installation de Trivy</h2><div class="slide-content"><div class="paragraph"><p><strong>Méthode rapide (pour le TP) :</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Installation directe du binaire
 curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
-
-# Vérifier l'installation
 trivy --version</code></pre></div></div>
-<div class="admonitionblock tip fragment"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Cette méthode fonctionne sur toutes les distributions Linux</td></tr></table></div>
-<aside class="notes"><div class="paragraph"><p>Script d&#8217;installation : télécharge et installe le binaire dans /usr/local/bin.
-Fonctionne sur toutes les distributions : Debian (y compris Trixie), Ubuntu, RHEL, etc.
-Toujours la dernière version stable.
+<div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content"><code>curl | sudo sh</code> est pratique MAIS dangereux en production !</td></tr></table></div>
+<div class="paragraph"><p><strong>Méthode sécurisée (recommandée) :</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># 1. Télécharger le script
+curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh -o /tmp/trivy-install.sh
+
+# 2. Inspecter le contenu
+less /tmp/trivy-install.sh
+
+# 3. Exécuter après vérification
+sudo sh /tmp/trivy-install.sh -b /usr/local/bin</code></pre></div></div>
+<aside class="notes"><div class="paragraph"><p><strong>IMPORTANT - PRATIQUE vs SÉCURITÉ :</strong></p></div>
+<div class="paragraph"><p>Dans un chapitre sécurité, il est crucial de montrer LES DEUX approches :</p></div>
+<div class="paragraph"><p><strong>Méthode rapide (curl | sudo sh) :</strong>
+- ✅ Pratique pour le TP (gain de temps)
+- ✅ Recommandée par la doc officielle Trivy
+- ❌ DANGEREUX : exécute du code non vérifié en root
+- ❌ Attaque potentielle : script modifié = compromission totale</p></div>
+<div class="paragraph"><p><strong>Méthode sécurisée (télécharger → inspecter → exécuter) :</strong>
+- ✅ Permet de vérifier le contenu avant exécution
+- ✅ Bonne pratique sécurité (principe de précaution)
+- ❌ Plus long (3 étapes au lieu d'1)</p></div>
+<div class="paragraph"><p><strong>POUR LE TP :</strong>
+- Démonstration : montrer les DEUX approches
+- Insister : "Je fais rapide pour le TP, MAIS en production&#8230;&#8203;"
+- Exercice pédagogique : comparer les deux = enseignement du compromis pratique/sécurité</p></div>
+<div class="paragraph"><p><strong>MESSAGE CLÉ :</strong>
+"En sécurité, il y a souvent un compromis entre praticité et sécurité.
+Pour un TP pédagogique, curl|sh est OK. En production sur serveur critique, TOUJOURS inspecter avant."</p></div>
+<div class="paragraph"><p>Fonctionne sur toutes les distributions : Debian (y compris Trixie), Ubuntu, RHEL, etc.
 Sur Debian Trixie/Testing : c&#8217;est LA méthode à utiliser (le repo apt ne supporte pas encore trixie).</p></div></aside></div></section><section id="installation_trivy_alternatives"><h2>Installation Trivy : Alternatives</h2><div class="slide-content"><div class="paragraph"><p><strong>Si vous n&#8217;avez pas les droits sudo :</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Via Docker (aucune installation nécessaire)
 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
@@ -3637,7 +3660,7 @@ DB_PASSWORD=super_secret_123</code></pre></div></div>
 secrets/</code></pre></div></div>
 <div class="paragraph"><p><strong>Étape 3 : Utiliser dans docker-compose.yml</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">environment:
-  - POSTGRES_PASSWORD=${DB_PASSWORD}</code></pre></div></div>
+  POSTGRES_PASSWORD: ${DB_PASSWORD}</code></pre></div></div>
 <div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Docker Compose charge automatiquement le fichier .env</td></tr></table></div></div></section><section id="alternative_1_docker_secrets"><h2>Alternative 1 : Docker Secrets</h2><div class="slide-content"><div class="paragraph"><p><strong>Gestion native dans Docker Swarm</strong></p></div>
 <div class="ulist"><ul><li class="fragment"><p>Secrets cryptés dans le cluster Swarm</p></li><li class="fragment"><p>Montés en RAM dans <code>/run/secrets/</code></p></li><li class="fragment"><p>Accès contrôlé par service</p></li></ul></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">echo "secret123" | docker secret create db_password -
