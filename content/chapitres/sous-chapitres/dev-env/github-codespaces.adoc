@@ -1,0 +1,1110 @@
+== Autre approche... GitHub Codespaces ☁️
+
+== Outils Nécessaires 🛠
+
+* Un navigateur web récent (et décent)
+* Un compte sur link:https://github.com[{github_icon} GitHub,window="_blank"]
+
+[.notes]
+--
+**Objectif de cette section :**
+Présenter GitHub Codespaces comme alternative moderne et gratuite pour développer avec Docker sans installation locale.
+
+**Points clés à souligner :**
+- Pas besoin d'installer Docker localement
+- Environnement cloud pré-configuré
+- Intégration native avec GitHub
+- Gratuit avec un quota généreux
+
+**Transition depuis la section précédente :**
+"Nous avons vu comment installer Docker localement, mais il existe une alternative encore plus simple : développer directement dans le cloud avec GitHub Codespaces."
+--
+
+== GitHub Codespaces
+
+link:https://github.com/features/codespaces[GitHub Codespaces,window="_blank"] : Environnement de développement dans le ☁️ "nuage"
+
+* **But:** reproductible et instantané
+* Puissance de calcul sur un serveur distant
+* Éditeur VSCode dans le navigateur
+* Docker **déjà installé et configuré** 🐳
+
+[%step]
+NOTE: Gratuit : 60h/mois pour compte GitHub standard 🎉
+
+[%step]
+NOTE: Gratuit : 120h/mois avec link:https://education.github.com/pack[GitHub Student Developer Pack,window="_blank"] 🎓
+
+[.notes]
+--
+**Pourquoi GitHub Codespaces est un excellent choix :**
+
+1. **Pas d'installation locale** : Docker et tous les outils sont pré-installés
+2. **Quota gratuit généreux** : 60h/mois suffit largement pour ce cours (environ 2-3h par semaine)
+3. **Intégration GitHub native** : Pas besoin d'authentification tierce (contrairement à GitPod)
+4. **VSCode familier** : Interface identique à VSCode Desktop
+5. **Performance** : Machines puissantes (2-4 cores, 4-8GB RAM selon la config)
+
+**Pour les étudiants :**
+Encouragez-les à demander le GitHub Student Developer Pack qui double le quota gratuit (120h/mois).
+
+**Comparaison avec GitPod :**
+- GitPod : Plus gratuit depuis 2023 (10h/mois uniquement)
+- Codespaces : 60h/mois gratuit, interface plus stable
+- Codespaces : Pas besoin de lier un compte LinkedIn ou téléphone
+
+**Message pédagogique :**
+"GitHub Codespaces vous offre un environnement de développement professionnel, identique à celui utilisé par de nombreuses équipes DevOps en entreprise. C'est l'occasion d'apprendre les bonnes pratiques dès maintenant."
+--
+
+== Pourquoi Codespaces ? 🤔
+
+[%step]
+* ✅ Pas d'installation locale nécessaire
+[%step]
+* ✅ Docker pré-configuré et prêt à l'emploi
+[%step]
+* ✅ Environnement identique pour tous les étudiants
+[%step]
+* ✅ Accessible depuis n'importe quel ordinateur
+[%step]
+* ✅ Sauvegarde automatique dans le cloud
+[%step]
+* ✅ Gratuit et généreux en ressources
+
+[.notes]
+--
+**Détails à expliquer oralement :**
+
+**Pas d'installation locale :**
+- Évite les problèmes de configuration spécifiques à chaque système (Windows, macOS, Linux)
+- Pas besoin de gérer les conflits Podman/Docker sur Ubuntu 25.04
+- Pas de problèmes de permissions ou de versions
+
+**Docker pré-configuré :**
+- `docker` command disponible immédiatement
+- `docker-compose` également installé
+- Pas besoin de configurer les groupes utilisateurs
+- Pas de problèmes de socket Docker
+
+**Environnement identique :**
+- Fini les "ça marche sur ma machine" 🙃
+- Tous les étudiants voient exactement la même chose
+- Facilite le support et le debugging pendant les TPs
+
+**Accessible partout :**
+- Depuis l'ordinateur de la fac
+- Depuis chez soi
+- Même depuis une tablette (moins confortable mais possible)
+- Continuité entre les différents lieux de travail
+
+**Sauvegarde automatique :**
+- Tout est sauvegardé dans votre dépôt GitHub
+- Pas de risque de perdre son travail
+- Historique Git intégré
+
+**Gratuit et généreux :**
+- 60h/mois = ~2h par semaine pendant 6 mois
+- Suffisant pour ce cours de 30h
+- Possibilité de stopper/redémarrer pour économiser les heures
+--
+
+== Prérequis 📋
+
+Vous avez déjà ce qu'il faut ! ✓
+
+[%step]
+* {github_icon} Compte GitHub (créé précédemment)
+[%step]
+* 🌐 Navigateur web moderne (Chrome, Firefox, Edge, Safari)
+[%step]
+* 📶 Connexion Internet stable
+
+[%step]
+[.small]
+💡 **Astuce** : Préférez Chrome ou Edge pour une meilleure compatibilité VSCode
+
+[.notes]
+--
+**Pas de prérequis techniques complexes :**
+
+C'est l'un des grands avantages de Codespaces : la simplicité d'accès.
+
+**Navigateur recommandé :**
+- Chrome/Chromium : Meilleure intégration VSCode
+- Edge : Basé sur Chromium, excellente compatibilité
+- Firefox : Fonctionne bien mais quelques petits bugs d'affichage occasionnels
+- Safari : Fonctionne mais moins testé par GitHub
+
+**Connexion Internet :**
+- Minimum : 5 Mbps (connexion mobile 4G suffit)
+- Recommandé : 10+ Mbps pour un confort optimal
+- Le code s'exécute côté serveur, donc pas besoin d'une machine puissante localement
+
+**Ce dont vous N'AVEZ PAS besoin :**
+- ❌ Installer Docker Desktop
+- ❌ Installer VSCode en local
+- ❌ Configurer Git
+- ❌ Installer Node.js, Python ou autres outils
+- ❌ Une machine puissante (un Chromebook suffit !)
+
+**Message rassurant :**
+"Si vous avez pu vous inscrire à ce cours et accéder à cette présentation, vous avez déjà tout ce qu'il faut pour utiliser GitHub Codespaces !"
+--
+
+== Démarrer avec Codespaces 🚀
+
+[%step]
+1. Rendez-vous sur un dépôt GitHub
+[%step]
+2. Cliquez sur le bouton vert **"Code"** ⬇️
+[%step]
+3. Sélectionnez l'onglet **"Codespaces"**
+[%step]
+4. Cliquez sur **"Create codespace on main"**
+
+[%step]
+[.small]
+⚠️ Patientez quelques secondes... ⏳
+
+[.small]
+⚠️ Passez à la slide suivante pour voir l'interface
+
+[.notes]
+--
+**Démonstration pratique à faire en live :**
+
+1. **Ouvrir un dépôt d'exemple** (par exemple le dépôt du cours)
+2. **Montrer le bouton "Code"** (vert, en haut à droite)
+3. **Expliquer les 3 onglets** : Local, Codespaces, GitHub CLI
+4. **Créer un Codespace** devant les étudiants
+
+**Temps de démarrage :**
+- Première fois : 1-3 minutes (construction de l'environnement)
+- Redémarrage : 10-30 secondes (environnement déjà construit)
+
+**Ce qui se passe en coulisse :**
+- GitHub provisionne une VM Linux (Ubuntu)
+- Installation de l'image de base avec VSCode Server
+- Clone du dépôt
+- Exécution des scripts de configuration (si `.devcontainer` présent)
+- Lancement de VSCode dans le navigateur
+
+**Point important à souligner :**
+"La première création prend un peu de temps car GitHub prépare votre environnement. Les redémarrages suivants seront beaucoup plus rapides !"
+
+**Erreurs courantes :**
+- "Failed to create codespace" : Vérifier le quota (Settings > Billing)
+- Timeout : Connexion Internet instable, réessayer
+- "Repository is too large" : Rarement un problème, mais limité à 2GB
+--
+
+== Interface Codespaces 💻
+
+image::codespaces-interface-placeholder.png[width=800]
+
+[.columns]
+--
+[.column]
+--
+**Gauche** : Explorateur de fichiers
+
+* Arborescence du projet
+* Git (source control)
+--
+
+[.column]
+--
+**Centre** : Éditeur de code
+
+* Coloration syntaxique
+* Autocomplétion
+--
+
+[.column]
+--
+**Bas** : Terminal intégré
+
+* Bash/Zsh shell
+* Commandes Docker
+--
+--
+
+[%step]
+[.small]
+💡 C'est exactement comme VSCode Desktop !
+
+[.notes]
+--
+**Description détaillée de l'interface :**
+
+**Barre latérale gauche (Activity Bar) :**
+1. Explorer (fichiers) : Premier icône, affiche l'arborescence
+2. Search (recherche) : Loupe, recherche dans tout le projet
+3. Source Control (Git) : Icône branches, pour les commits
+4. Run & Debug : Icône play, pour debugger
+5. Extensions : Icône blocs, pour installer des extensions VSCode
+
+**Zone centrale (Editor) :**
+- Onglets pour plusieurs fichiers ouverts
+- Minimap sur la droite
+- Breadcrumb en haut (chemin du fichier)
+- Numéros de ligne
+- Highlighting syntax automatique
+
+**Panneau inférieur (Panel) :**
+- **Terminal** : Le plus important pour ce cours
+- Problems : Erreurs de syntaxe
+- Output : Logs des extensions
+- Debug Console : Pour le debugging
+
+**Barre supérieure :**
+- Menu "hamburger" ≡ : Toutes les commandes
+- Nom du fichier actif
+- Barre de recherche (Ctrl+Shift+F)
+
+**Barre inférieure (Status Bar) :**
+- Branche Git actuelle
+- Erreurs/warnings
+- Espaces/Tabs
+- Type de fichier
+- Position curseur (ligne:colonne)
+
+**Raccourcis clavier importants :**
+- Ctrl+` : Ouvrir/fermer terminal
+- Ctrl+Shift+P : Command Palette (toutes les commandes)
+- Ctrl+B : Toggle sidebar
+- Ctrl+P : Quick open (recherche de fichiers)
+
+**Message pédagogique :**
+"Si vous avez déjà utilisé VSCode, vous êtes en terrain familier. Si c'est votre première fois, ne vous inquiétez pas : nous allons surtout utiliser le terminal en bas pour nos commandes Docker."
+--
+
+== Terminal Codespaces 🖥️
+
+Le terminal est votre outil principal pour Docker !
+
+[source,bash]
+----
+# Vérifier l'utilisateur
+whoami
+# Résultat attendu : codespace
+
+# Vérifier Docker
+docker --version
+# Résultat attendu : Docker version XX.XX.X
+
+# Tester Docker
+docker run hello-world
+----
+
+[.small]
+⚠️ Passez à la slide suivante pour comprendre la configuration
+
+[.notes]
+--
+**Explication des commandes de vérification :**
+
+**`whoami` :**
+- Affiche l'utilisateur Linux actuel
+- Dans Codespaces : toujours `codespace`
+- Important de comprendre qu'on est dans un environnement Linux
+
+**`docker --version` :**
+- Vérifie que Docker CLI est installé
+- Version récente (généralement > 20.x)
+- Pas besoin d'installer quoi que ce soit !
+
+**`docker run hello-world` :**
+- Premier conteneur Docker classique
+- Télécharge l'image `hello-world` depuis Docker Hub
+- Exécute le conteneur qui affiche un message
+- Permet de vérifier que tout fonctionne
+
+**Résultat attendu de `docker run hello-world` :**
+```
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+...
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+...
+```
+
+**Différences avec installation locale :**
+- Pas besoin de `sudo` (utilisateur déjà dans le groupe docker)
+- Pas de problème de socket Docker
+- Pas de conflit Podman/Docker
+- Tout est pré-configuré !
+
+**Erreurs possibles (très rares) :**
+- "Cannot connect to Docker daemon" : Redémarrer le Codespace
+- "Permission denied" : Bug rare, contacter le support GitHub
+
+**Message rassurant :**
+"Si ces trois commandes fonctionnent, vous êtes prêt à suivre tout le reste du cours. Docker est déjà installé, configuré et fonctionnel !"
+--
+
+== Configuration Codespaces (Optionnelle) ⚙️
+
+Codespaces peut être personnalisé avec `.devcontainer/`
+
+[source,json]
+----
+// .devcontainer/devcontainer.json
+{
+  "name": "Docker DevOps Course",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  }
+}
+----
+
+[%step]
+[.small]
+💡 **Pour ce cours** : Pas besoin de configuration spéciale !
+
+[%step]
+[.small]
+Docker est déjà disponible par défaut 🎉
+
+[.notes]
+--
+**Qu'est-ce que `.devcontainer` ?**
+
+`.devcontainer` est un dossier spécial qui permet de définir la configuration de votre Codespace :
+- Image Docker à utiliser comme base
+- Extensions VSCode à installer automatiquement
+- Ports à exposer
+- Scripts de post-création à exécuter
+- Variables d'environnement
+
+**Structure type :**
+```
+.devcontainer/
+├── devcontainer.json      # Configuration principale
+├── Dockerfile            # (Optionnel) Image custom
+└── docker-compose.yml    # (Optionnel) Services multiples
+```
+
+**Pourquoi pas besoin pour ce cours ?**
+
+GitHub fournit déjà une image "Universal" qui contient :
+- Docker & Docker Compose
+- Git
+- Node.js, Python, Java, Go, etc.
+- Outils CLI communs (curl, wget, vim, etc.)
+
+**Quand utiliser `.devcontainer` ?**
+- Projet avec dépendances spécifiques
+- Extensions VSCode obligatoires pour l'équipe
+- Configuration d'entreprise standardisée
+- Services Docker à lancer au démarrage (BDD, Redis, etc.)
+
+**Exemple avancé pour un projet Node.js + PostgreSQL :**
+```json
+{
+  "name": "Node + PostgreSQL",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  },
+  "forwardPorts": [3000, 5432],
+  "postCreateCommand": "npm install"
+}
+```
+
+**Documentation officielle :**
+https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces
+
+**Message pédagogique :**
+"Pas besoin de vous préoccuper de la configuration pour ce cours. Mais sachez que dans un contexte professionnel, `.devcontainer` permet de garantir que toute l'équipe travaille dans exactement le même environnement, ce qui est une excellente pratique DevOps !"
+--
+
+== Checkpoint 🎯
+
+Vérifiez que tout fonctionne :
+
+[%step]
+1. ✓ Terminal ouvert (Ctrl+`)
+[%step]
+2. ✓ Commande `whoami` retourne `codespace`
+[%step]
+3. ✓ Commande `docker --version` affiche la version
+[%step]
+4. ✓ Commande `docker run hello-world` s'exécute avec succès
+
+[%step]
+[.small]
+✅ Si tout fonctionne : vous êtes prêt pour la suite ! 🚀
+
+[%step]
+[.small]
+❌ Si un problème : levez la main ou consultez la documentation
+
+[.notes]
+--
+**Pourquoi ces vérifications sont importantes :**
+
+Ce checkpoint permet de s'assurer que :
+1. L'étudiant sait ouvrir et utiliser le terminal
+2. L'environnement Linux est fonctionnel
+3. Docker est correctement installé et accessible
+4. La connexion réseau fonctionne (pour pull des images)
+
+**Aide au debugging pour chaque étape :**
+
+**1. Terminal ne s'ouvre pas :**
+- Essayer le menu : Terminal > New Terminal
+- Raccourci : Ctrl+` (accent grave)
+- Sur Mac : Cmd+`
+- Vérifier que le panneau n'est pas masqué (View > Terminal)
+
+**2. `whoami` ne retourne pas `codespace` :**
+- Très rare, mais si ça arrive : bug GitHub
+- Solution : Supprimer le Codespace et en recréer un
+- Vérifier qu'on est bien dans un Codespace (pas en local)
+
+**3. `docker --version` ne fonctionne pas :**
+- Erreur "command not found" : Le Codespace n'a pas Docker (très rare)
+- Solution : Créer un `.devcontainer/devcontainer.json` avec feature docker-in-docker
+- Ou utiliser l'image `mcr.microsoft.com/devcontainers/base:ubuntu`
+
+**4. `docker run hello-world` échoue :**
+- "Cannot connect to Docker daemon" :
+  - Le daemon Docker n'est pas démarré
+  - Essayer : `sudo service docker start`
+  - Ou redémarrer le Codespace
+- "Permission denied" :
+  - Vérifier : `groups` (devrait inclure 'docker')
+  - Si absent : `sudo usermod -aG docker $USER && newgrp docker`
+- Timeout réseau :
+  - Problème de connexion Internet
+  - Vérifier le pare-feu réseau
+
+**Actions pour le formateur :**
+1. Faire une pause pour permettre à chacun de vérifier
+2. Circuler dans la salle pour aider
+3. Noter les problèmes récurrents pour ajuster le cours
+4. Prendre le temps : mieux vaut 5 minutes maintenant que des problèmes tout le cours !
+
+**Message encourageant :**
+"Ce checkpoint est crucial. Si tout fonctionne maintenant, vous n'aurez aucun problème pour le reste du cours. Prenez le temps de bien vérifier chaque point !"
+--
+
+== Gestion de votre Codespace 🔧
+
+Optimisez votre quota gratuit de 60h/mois :
+
+[%step]
+* 🛑 **Arrêter** le Codespace quand vous ne l'utilisez pas
+[%step]
+* ♻️ **Réutiliser** le même Codespace (pas besoin d'en créer un nouveau)
+[%step]
+* 📊 **Surveiller** votre consommation : link:https://github.com/settings/billing[GitHub Settings > Billing,window="_blank"]
+[%step]
+* ⏱️ **Arrêt automatique** : Par défaut après 30 min d'inactivité
+
+[.small]
+💡 **Astuce** : 60h = 2h/semaine pendant 30 semaines (largement suffisant !)
+
+[.notes]
+--
+**Gestion intelligente des Codespaces :**
+
+**1. Arrêter le Codespace :**
+
+Trois façons d'arrêter un Codespace :
+- Depuis VSCode : Menu ≡ > Codespaces > Stop Current Codespace
+- Depuis GitHub : https://github.com/codespaces > Menu "..." > Stop
+- Automatiquement : Après 30 minutes d'inactivité (configurable)
+
+**Pourquoi c'est important :**
+- Le compteur tourne tant que le Codespace est actif
+- Même si vous ne faites rien, ça consomme du quota
+- Penser à arrêter = économiser des heures
+
+**2. Réutiliser vs Recréer :**
+
+**À FAIRE :**
+- Réutiliser le même Codespace pour tout le cours
+- Vos fichiers et configuration sont préservés
+- Le redémarrage est rapide (10-30 secondes)
+
+**À ÉVITER :**
+- Créer un nouveau Codespace à chaque session
+- Vous perdrez vos fichiers si vous supprimez l'ancien
+- Construction de l'environnement prend du temps
+
+**Comment redémarrer un Codespace existant :**
+- Aller sur https://github.com/codespaces
+- Cliquer sur le Codespace arrêté
+- Il redémarre en quelques secondes
+
+**3. Surveiller la consommation :**
+
+Page de billing : https://github.com/settings/billing
+- Onglet "Plans and usage"
+- Section "Codespaces"
+- Affiche : heures utilisées / heures totales
+- Historique d'utilisation par Codespace
+
+**Calcul du quota :**
+- Gratuit : 60h/mois (120 core-hours / 2 cores)
+- Machine 2-core : 60h d'utilisation
+- Machine 4-core : 30h d'utilisation
+- Machine 8-core : 15h d'utilisation
+
+**4. Configuration de l'arrêt automatique :**
+
+Par défaut : 30 minutes d'inactivité
+
+Personnalisation :
+- GitHub Settings > Codespaces
+- "Default idle timeout" : 5 min à 240 min
+- Recommandation cours : 30 min (équilibre)
+
+**Optimisation pour le cours :**
+
+Durée moyenne d'une session de TP : 1-2h
+Nombre de TPs dans le cours : ~15 sessions
+Total estimé : 15-30h sur tout le semestre
+**Conclusion : Largement dans le quota gratuit !**
+
+**Si vous dépassez le quota :**
+- Les Codespaces s'arrêtent automatiquement
+- Aucune facturation automatique
+- Options :
+  1. Attendre le mois suivant (quota réinitialisé)
+  2. Passer à un plan payant ($0.18/h pour 2-core)
+  3. Installer Docker localement en attendant
+
+**Message rassurant :**
+"Avec une utilisation normale pour ce cours, vous n'atteindrez jamais la limite de 60h. Mais prenez quand même l'habitude d'arrêter vos Codespaces, c'est une bonne pratique qui vous servira en entreprise où les quotas peuvent être plus stricts !"
+
+**Astuce bonus :**
+"Vous pouvez avoir plusieurs Codespaces actifs pour différents projets. Chacun compte dans votre quota, donc pensez à tous les arrêter quand vous avez fini !"
+--
+
+== Avantages de Codespaces 🌟
+
+[.columns]
+--
+[.column]
+--
+**Pour vous :**
+
+[%step]
+* 🚀 Démarrage instantané
+[%step]
+* 💾 Pas de configuration locale
+[%step]
+* 🔄 Environnement cohérent
+[%step]
+* 📱 Accessible partout
+--
+
+[.column]
+--
+**Pour le cours :**
+
+[%step]
+* ✅ Même environnement pour tous
+[%step]
+* 🐛 Debugging simplifié
+[%step]
+* 🎓 Focus sur Docker, pas sur l'installation
+[%step]
+* 🌐 Collaboration facile
+--
+--
+
+[.notes]
+--
+**Détails des avantages pour les étudiants :**
+
+**Démarrage instantané :**
+- Pas besoin d'installer Docker Desktop (30+ min)
+- Pas de redémarrage de machine
+- Pas de configuration réseau/proxy
+- En 30 secondes vous codez
+
+**Pas de configuration locale :**
+- Machine personnelle préservée
+- Pas de risque de "casser" son système
+- Pas de conflit avec d'autres outils
+- Pas besoin de droits administrateur
+
+**Environnement cohérent :**
+- Tout le monde a la même version de Docker
+- Pas de différences Windows/Mac/Linux
+- Les TPs fonctionnent pareil pour tous
+- Pas de "ça marche chez moi" frustrant
+
+**Accessible partout :**
+- Depuis la fac (même avec proxy réseau)
+- Depuis chez soi
+- Depuis un café (avec WiFi)
+- Même depuis un smartphone (déconseillé mais possible)
+
+**Détails des avantages pour le formateur :**
+
+**Même environnement :**
+- Support technique simplifié
+- Instructions identiques pour tous
+- Pas besoin de versions alternatives des TPs
+- Prévisibilité totale
+
+**Debugging simplifié :**
+- Problèmes reproductibles
+- Possibilité de "voir" l'environnement de l'étudiant
+- Moins de variables à gérer
+- Focus sur Docker, pas sur l'OS
+
+**Focus sur Docker :**
+- Pas de perte de temps sur les installations
+- Plus de temps pour la pédagie
+- Les étudiants apprennent Docker, pas comment installer Docker
+- Expérience moderne et professionnelle
+
+**Collaboration facile :**
+- Possibilité de partager un Codespace (feature beta)
+- Les étudiants peuvent s'entraider plus facilement
+- Code déjà sur GitHub = facile à partager
+- Pull requests et reviews naturelles
+
+**Avantages supplémentaires non mentionnés sur le slide :**
+
+**Pour l'institution :**
+- Pas besoin de maintenir des VM ou des labs
+- Réduit la charge IT
+- Évolutif automatiquement
+- Pas de coût d'infrastructure
+
+**Pour l'apprentissage long terme :**
+- Les étudiants apprennent un outil professionnel réel
+- Compétence valorisable en entretien
+- Préparation aux environnements cloud
+- Comprennent l'Infrastructure as Code (IaC)
+
+**Limitations à mentionner (honnêteté pédagogique) :**
+- Nécessite Internet (contrairement à installation locale)
+- Quota limité (mais suffisant)
+- Dépend de la disponibilité de GitHub
+- Légère latence si réseau lent
+
+**Message d'équilibre :**
+"Codespaces est excellent pour apprendre et pour ce cours. Mais dans votre carrière, vous rencontrerez aussi des environnements locaux et des serveurs distants. C'est pourquoi nous avons aussi montré l'installation locale : pour que vous soyez polyvalent !"
+--
+
+== Limites et Alternatives ⚠️
+
+**Limites de Codespaces :**
+
+[%step]
+* 📶 Nécessite une connexion Internet stable
+[%step]
+* ⏱️ Quota mensuel (60h gratuit)
+[%step]
+* 🔒 Dépendance à GitHub
+
+[%step]
+**Alternative :** Installation locale de Docker
+
+[%step]
+* ✅ Pas de limite de temps
+[%step]
+* ✅ Fonctionne hors-ligne
+[%step]
+* ❌ Configuration plus complexe
+
+[.small]
+💡 Vous pouvez combiner les deux approches !
+
+[.notes]
+--
+**Transparence pédagogique sur les limites :**
+
+Il est important d'être honnête avec les étudiants sur les limitations pour qu'ils puissent faire des choix éclairés.
+
+**1. Connexion Internet obligatoire :**
+
+**Problème :**
+- Codespaces est 100% cloud
+- Sans Internet : impossible de travailler
+- Latence réseau peut être frustrante (très rare)
+
+**Impact pour les étudiants :**
+- Étudiant sans Internet à la maison : problématique
+- Zones rurales avec mauvaise connexion : difficile
+- Pannes réseau : bloquage total
+
+**Solutions de contournement :**
+- Venir travailler à la fac (connexion stable)
+- Bibliothèque universitaire
+- Espaces de coworking
+- Installation locale en backup
+
+**2. Quota mensuel :**
+
+**60h gratuit = Suffisant mais pas illimité**
+
+**Scénarios de dépassement :**
+- Étudiant qui oublie d'arrêter ses Codespaces
+- Utilisation pour d'autres cours/projets
+- Sessions de coding marathon (>15h/semaine)
+
+**Solutions :**
+- Surveiller sa consommation régulièrement
+- Arrêter systématiquement après usage
+- Installer Docker localement si quota épuisé
+- Attendre renouvellement mensuel
+
+**3. Dépendance GitHub :**
+
+**Qu'est-ce que ça signifie ?**
+- Si GitHub down → Vous ne pouvez pas travailler
+- Changement de politique → Impact possible
+- Révocation de compte → Perte d'accès
+
+**Probabilité réelle :**
+- GitHub très fiable (99.9% uptime)
+- Changements de quota peu probables
+- Révocation de compte exceptionnelle (respect ToS)
+
+**Bonne pratique :**
+- Commiter et pusher régulièrement (sauvegarde)
+- Avoir un plan B (installation locale)
+- Pas critique pour un cours, mais à considérer en prod
+
+**4. Autres limitations non mentionnées :**
+
+**Performance :**
+- Machine 2-core/4GB par défaut
+- Peut être lent pour builds très lourds
+- Moins puissant qu'une machine locale récente
+
+**Stockage :**
+- 32GB par Codespace
+- Suffisant pour cours, limité pour gros projets
+- Images Docker comptent dans cette limite
+
+**Régionalisation :**
+- Serveurs pas toujours en France
+- Latence légèrement plus élevée
+- Conformité RGPD (OK pour cours)
+
+**Comparaison avec Installation locale :**
+
+**Installation locale - Avantages :**
+- Illimité en temps
+- Fonctionne hors-ligne
+- Contrôle total
+- Peut être plus rapide
+- Apprendre à installer (compétence utile)
+
+**Installation locale - Inconvénients :**
+- Configuration complexe (surtout Windows)
+- Problèmes de compatibilité
+- Consomme ressources locales
+- Risque de conflit avec autres outils
+- Nécessite droits admin
+
+**Recommandation équilibrée :**
+
+**Pour ce cours : Codespaces (recommandé)**
+- Simplicité
+- Gain de temps
+- Uniformité
+
+**Pour votre apprentissage : Les deux**
+- Codespaces pour le cours
+- Installation locale pendant les vacances
+- Comprendre les deux approches
+
+**Message pédagogique :**
+"Il n'y a pas de solution parfaite en informatique, seulement des compromis. Codespaces est excellent pour ce cours, mais comprendre comment installer Docker localement est aussi une compétence précieuse. Idéalement, faites les deux pour être à l'aise dans tous les contextes !"
+
+**Retour d'expérience à partager :**
+"En entreprise, vous rencontrerez des environnements variés : des développeurs sur laptop, des serveurs cloud, des CI/CD, des environnements containerisés. Plus vous êtes flexible et confortable avec différents setups, mieux vous vous adapterez."
+--
+
+== Ressources et Aide 📚
+
+**Documentation officielle :**
+
+* link:https://docs.github.com/en/codespaces[GitHub Codespaces Docs,window="_blank"]
+* link:https://code.visualstudio.com/docs[VSCode Documentation,window="_blank"]
+* link:https://docs.docker.com[Docker Documentation,window="_blank"]
+
+**Support :**
+
+* 🙋 Questions pendant le cours
+* 💬 Forum/Discord du cours (si disponible)
+* 🐛 GitHub Issues pour bugs
+
+[.small]
+💡 N'hésitez jamais à poser des questions !
+
+[.notes]
+--
+**Ressources détaillées pour aller plus loin :**
+
+**1. Documentation GitHub Codespaces :**
+URL : https://docs.github.com/en/codespaces
+
+**Sections importantes :**
+- Getting started with Codespaces
+- Setting up your project for Codespaces
+- Managing your Codespaces
+- Troubleshooting
+
+**Tutoriels recommandés :**
+- "Quickstart for GitHub Codespaces"
+- "Deep dive into Codespaces"
+- "Developing in a codespace"
+
+**2. Documentation VSCode :**
+URL : https://code.visualstudio.com/docs
+
+**Sections pertinentes :**
+- User Guide > Basic Editing
+- User Guide > Terminal
+- Tips and Tricks (très utile !)
+- Keyboard shortcuts (gagner en productivité)
+
+**Extension recommandées pour Docker :**
+- Docker (officielle Microsoft)
+- YAML (pour Docker Compose)
+- GitLens (pour Git avancé)
+
+**3. Documentation Docker :**
+URL : https://docs.docker.com
+
+**À lire absolument :**
+- Get started (tutorial officiel)
+- Develop with Docker (bonnes pratiques)
+- Reference (commandes complètes)
+
+**Ressources d'apprentissage Docker :**
+- Docker Labs : https://github.com/docker/labs
+- Play with Docker : https://labs.play-with-docker.com
+- Docker Curriculum : https://docker-curriculum.com
+
+**4. Support pendant le cours :**
+
+**Quand poser une question :**
+- ✅ Dès que vous bloquez plus de 5 minutes
+- ✅ Si une commande ne fonctionne pas
+- ✅ Si le résultat est différent de l'attendu
+- ✅ Si vous n'avez pas compris un concept
+
+**Comment poser une bonne question :**
+1. Décrire ce que vous essayez de faire
+2. Montrer la commande exacte utilisée
+3. Partager le message d'erreur complet
+4. Expliquer ce que vous avez déjà essayé
+
+**Exemple de mauvaise question :**
+"Ça marche pas, help !"
+
+**Exemple de bonne question :**
+"J'essaie de lancer `docker run nginx` mais j'obtiens l'erreur 'Cannot connect to the Docker daemon'. J'ai vérifié avec `docker --version` et ça fonctionne. Que dois-je faire ?"
+
+**5. Forum / Discord du cours :**
+
+Si un forum ou Discord est mis en place :
+
+**Avantages :**
+- Questions/réponses asynchrones
+- Les étudiants s'entraident
+- Archive consultable pour l'année suivante
+- Formateur peut répondre en différé
+
+**Bonnes pratiques forum :**
+- Chercher si la question a déjà été posée
+- Utiliser les tags appropriés (ex: [codespaces], [docker], [tp3])
+- Formater le code avec des code blocks
+- Marquer comme résolu une fois aidé
+
+**6. GitHub Issues :**
+
+Pour bugs spécifiques au matériel de cours :
+
+**Quand créer une issue :**
+- Erreur dans les instructions d'un TP
+- Lien cassé dans les slides
+- Exemple de code qui ne fonctionne pas
+- Suggestion d'amélioration
+
+**Template d'issue :**
+```markdown
+## Description
+Brève description du problème
+
+## Étapes pour reproduire
+1. Aller sur slide X
+2. Exécuter commande Y
+3. Observer erreur Z
+
+## Résultat attendu
+Ce qui devrait se passer
+
+## Résultat actuel
+Ce qui se passe réellement
+
+## Environnement
+- Codespace ou local
+- Version Docker
+- Navigateur (si pertinent)
+```
+
+**7. Communauté Docker :**
+
+**Forums communautaires :**
+- Docker Community Forums : https://forums.docker.com
+- Stack Overflow (tag `docker`)
+- Reddit : r/docker
+- Discord : Docker Community
+
+**Quand utiliser :**
+- Questions avancées hors cours
+- Curiosité sur pratiques pros
+- Partage d'expériences
+- Veille technologique
+
+**8. Ressources vidéo :**
+
+**YouTube recommandé :**
+- Docker (chaîne officielle)
+- TechWorld with Nana (excellent pour débutants)
+- NetworkChuck (fun et pédagogique)
+
+**Cours en ligne gratuits :**
+- Docker 101 (Docker.com)
+- Katacoda Docker scenarios (interactive)
+- freeCodeCamp Docker Course
+
+**9. Cheat Sheets :**
+
+**Docker Cheat Sheet :**
+- https://docs.docker.com/get-started/docker_cheatsheet.pdf
+- Liste des commandes essentielles
+- À garder sous la main pendant les TPs
+
+**Git Cheat Sheet :**
+- https://education.github.com/git-cheat-sheet-education.pdf
+- Utile car Codespaces = Git intégré
+
+**VSCode Shortcuts :**
+- https://code.visualstudio.com/shortcuts/keyboard-shortcuts-linux.pdf
+- (Versions Windows/Mac aussi disponibles)
+
+**10. Pratique et Projets :**
+
+**Après le cours, pour continuer à pratiquer :**
+
+**Projets personnels :**
+- Containeriser vos projets existants
+- Créer un environnement de dev pour vos hobbies
+- Contribuer à des projets open source
+
+**Challenges :**
+- Docker Challenges : https://www.docker.com/101-tutorial
+- Advent of Code avec Docker
+- Créer son propre registry Docker
+
+**Certifications (si intérêt professionnel) :**
+- Docker Certified Associate (DCA)
+- Certified Kubernetes Administrator (CKA)
+
+**Message final motivant :**
+"Apprendre Docker est un voyage, pas une destination. Ce cours vous donne les fondations, mais c'est en pratiquant que vous deviendrez vraiment à l'aise. N'hésitez jamais à expérimenter, à casser des choses (c'est pour ça que les conteneurs sont jetables !), et surtout : amusez-vous !"
+
+**Rappel important pour le formateur :**
+Insister sur le fait que les questions ne sont jamais stupides. Un étudiant qui pose une question aide souvent plusieurs autres qui n'osaient pas demander. Créer une atmosphère bienveillante est crucial pour l'apprentissage.
+--
+
+== Recap : GitHub Codespaces ✅
+
+Ce que vous devez retenir :
+
+[%step]
+* ☁️ Environnement de développement cloud
+[%step]
+* 🐳 Docker pré-installé et prêt
+[%step]
+* 🆓 60h/mois gratuit (largement suffisant)
+[%step]
+* 🚀 Démarrage en 30 secondes
+[%step]
+* 💻 Interface VSCode familière
+[%step]
+* 🛑 Penser à arrêter pour économiser
+
+[.small]
+➡️ Prêts pour commencer à utiliser Docker !
+
+[.notes]
+--
+**Points clés à marteler en conclusion :**
+
+**1. Simplicité :**
+GitHub Codespaces supprime toute la friction de l'installation et de la configuration. En quelques clics, vous avez un environnement professionnel prêt à l'emploi.
+
+**2. Gratuité :**
+Avec 60h/mois, vous avez largement de quoi suivre ce cours (et même d'autres projets). C'est un investissement zéro de GitHub dans votre formation.
+
+**3. Professionnalisme :**
+Ce n'est pas juste un "outil pour étudier". C'est exactement ce qu'utilisent de nombreuses entreprises tech. Vous apprenez avec les mêmes outils que les pros.
+
+**4. Focus :**
+Au lieu de passer 2h à installer et configurer, vous passez directement à l'apprentissage de Docker. Le temps gagné est consacré à la pratique.
+
+**5. Universalité :**
+Que vous soyez sur Windows, Mac, Linux, Chromebook, voire une tablette, vous avez la même expérience. C'est la magie du cloud computing.
+
+**Transition vers la suite du cours :**
+
+"Maintenant que votre environnement est prêt, nous allons pouvoir plonger dans Docker lui-même. Plus besoin de se soucier de l'installation, du système d'exploitation, ou de la configuration. Tout fonctionne, et nous pouvons nous concentrer sur ce qui compte vraiment : apprendre à utiliser Docker pour résoudre de vrais problèmes."
+
+**Message motivant :**
+
+"Vous venez de franchir la première étape, souvent la plus frustrante dans l'apprentissage d'une nouvelle technologie. Félicitations ! La suite va être plus amusante, je vous le promets. Nous allons créer des conteneurs, les faire communiquer, déployer des applications... Bref, faire de la vraie magie DevOps !"
+
+**Vérification finale avant de continuer :**
+
+"Avant de passer à la suite, assurez-vous une dernière fois que :
+- Votre Codespace est bien démarré
+- Le terminal est accessible
+- `docker --version` fonctionne
+- Vous savez comment arrêter votre Codespace
+
+Si tout est bon, on continue. Sinon, c'est le moment de poser vos questions !"
+
+**Note pour les sessions suivantes :**
+
+"Pour les prochains TPs, vous n'aurez qu'à rouvrir votre Codespace existant. Pas besoin de tout refaire. Vos fichiers seront toujours là, et Docker sera toujours prêt. C'est ça aussi, la beauté de Codespaces : une fois configuré, c'est configuré pour de bon."
+
+**Lien avec le reste du cours :**
+
+Cette section sur Codespaces fait le pont entre "j'ai rien installé" et "je peux commencer à apprendre Docker". C'est crucial pour éviter la frustration du "jour 1" où traditionnellement 50% du temps est perdu en problèmes techniques.
+
+**Statistiques à partager (si pertinent) :**
+
+"Dans les années précédentes, nous passions en moyenne 90 minutes à aider les étudiants avec l'installation. Cette année, avec Codespaces, tout le monde était prêt en 5 minutes. Ça, c'est 85 minutes de plus pour apprendre Docker !"
+
+**Ouverture vers l'autonomie :**
+
+"Vous avez maintenant accès à un environnement professionnel cloud. N'hésitez pas à l'utiliser pour d'autres projets, pour expérimenter, pour apprendre d'autres technologies. C'est votre laboratoire personnel, accessible 24/7. Profitez-en !"
+--
