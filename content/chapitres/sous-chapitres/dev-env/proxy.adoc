@@ -356,7 +356,7 @@ Ajouter dans `/etc/docker/daemon.json` :
 }
 ----
 
-=== !
+=== Option 4 – Suite : Redémarrer le service
 
 Puis redémarrer Docker :
 
@@ -366,7 +366,7 @@ sudo systemctl restart docker
 ----
 
 [%auto-animate]
-== 5. Configurations avancées pour les proxys (au-delà du cache)
+== 5. Configurations avancées pour les proxys (au-delà du cache) (suite)
 
 === Option 5 – Configuration spécifique à l'utilisateur
 
