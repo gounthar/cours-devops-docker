@@ -331,13 +331,6 @@ Ajouter dans `/etc/docker/daemon.json` :
 }
 ----
 
-Puis redémarrer Docker :
-
-[source,bash]
-----
-sudo systemctl restart docker
-----
-
 [%auto-animate]
 == 5. Configurations avancées pour les proxys (au-delà du cache)
 
@@ -355,8 +348,6 @@ Ajouter dans `/etc/docker/daemon.json` :
   }
 }
 ----
-
-=== Option 4 – Suite : Redémarrer le service
 
 Puis redémarrer Docker :
 
