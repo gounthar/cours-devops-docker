@@ -314,6 +314,22 @@ Pour un TP pédagogique, curl|sh est OK. En production sur serveur critique, TOU
 
 Fonctionne sur toutes les distributions : Debian (y compris Trixie), Ubuntu, RHEL, etc.
 Sur Debian Trixie/Testing : c'est LA méthode à utiliser (le repo apt ne supporte pas encore trixie).
+
+**PRODUCTION - VERSION PINNING ET INTÉGRITÉ :**
+
+Pour une sécurité maximale en production, deux améliorations essentielles :
+
+1. **Version pinning** : Pin une version spécifique au lieu de "latest"
+   - Évite les breaking changes inattendus
+   - Le script d'installation supporte la sélection de release
+   - Exemple : `curl -sfL ... | sudo sh -s -- -b /usr/local/bin v0.54.0`
+
+2. **Vérification d'intégrité** : Checksum ou signature avant exécution
+   - Télécharger le checksum depuis GitHub releases
+   - Vérifier avec `sha256sum --check`
+   - Garantit que le binaire n'a pas été altéré
+
+Ces étapes sont omises dans le TP pour simplicité, mais OBLIGATOIRES en production CI/CD.
 --
 
 == Installation Trivy : Alternatives
@@ -323,9 +339,13 @@ Sur Debian Trixie/Testing : c'est LA méthode à utiliser (le repo apt ne suppor
 [source,bash]
 ----
 # Via Docker (aucune installation nécessaire)
-docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-  aquasec/trivy image python:3.11
+docker run --rm \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v $HOME/.cache/trivy:/root/.cache \
+  aquasec/trivy:0.54.1 image python:3.11
 ----
+
+TIP: Pin la version (`:0.54.1`) et persist le cache (`-v $HOME/.cache`) pour performances
 
 **Autres systèmes :**
 
@@ -469,6 +489,22 @@ il faut éviter que deux personnes aient le même numéro !
 
 L'option `-r` dans `useradd -r` crée un "system user" avec UID < 1000.
 C'est historique : les services système (Apache, Nginx, PostgreSQL) utilisent des UID bas.
+
+**PRODUCTION - USER NUMÉRIQUE POUR PORTABILITÉ :**
+
+Pour maximiser la portabilité entre différentes images de base :
+- Préférer `USER 1001:1001` au lieu de `USER appuser`
+- Évite les lookups de noms d'utilisateurs qui peuvent échouer
+- Garantit cohérence même si `/etc/passwd` diffère entre images
+- Crucial avec volumes montés partagés entre plusieurs conteneurs
+
+Exemple robuste :
+```dockerfile
+RUN groupadd -g 1001 appgroup && useradd -u 1001 -g 1001 appuser
+USER 1001:1001
+```
+
+Cette approche numérique est LA meilleure pratique pour production/Kubernetes.
 --
 
 == Gestion des secrets
@@ -518,9 +554,18 @@ secrets/
 ----
 environment:
   POSTGRES_PASSWORD: ${DB_PASSWORD}
+  API_KEY: ${API_KEY:-default_key}     # Valeur par défaut si absent
+  DB_HOST: ${DB_HOST?required}          # Erreur si non défini
 ----
 
 TIP: Docker Compose charge automatiquement le fichier .env
+
+**Syntaxes avancées :**
+
+[%step]
+* `${VAR:-default}` : Utilise `default` si VAR n'est pas définie
+* `${VAR?error message}` : Échoue avec message si VAR manquante
+* Utile pour séparer config obligatoire vs optionnelle
 
 == Alternative 1 : Docker Secrets
 
