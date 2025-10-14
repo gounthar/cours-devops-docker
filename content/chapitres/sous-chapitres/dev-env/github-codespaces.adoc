@@ -1,5 +1,3 @@
-== Autre approche... GitHub Codespaces ☁️
-
 == Outils Nécessaires 🛠
 
 * Un navigateur web récent (et décent)
