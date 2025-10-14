@@ -707,17 +707,24 @@ Saisissez un numéro de téléphone valide pour recevoir par SMS un code de déb
 <div class="paragraph"><p>Bien, on peut maintenant fermer ce workspace, il ne s&#8217;agirait pas de gaspiller vos 50 heures.</p></div></div></section><section id="et_gitlab"><h2>📚 Et Gitlab?</h2><div class="slide-content"><div class="paragraph"><p>GitPod fonctionne aussi avec gitlab.com, mais pour les instances on premise, il faut l&#8217;installer, l&#8217;instancier, avoir un "inner cloud"</p></div>
 <div class="paragraph fragment"><p>Bref, on ne l&#8217;a pas ici. <code>¯_(ツ)_/¯</code></p></div></div></section><section id="installation_locale_de_docker"><h2>🐳 Installation locale de Docker</h2><div class="slide-content"><h3>Ubuntu 25.04 et le conflit Podman ⚠️</h3><div class="paragraph"><p><strong>Problème :</strong> Ubuntu 25.04+ est livré avec Podman par défaut, ce qui peut empêcher Docker de fonctionner correctement.</p></div>
 <div class="paragraph"><p><strong>Symptôme :</strong> Erreur "Cannot connect to the Docker daemon"</p></div>
-<h3>Solution 1 : Variable DOCKER_HOST (rapide)</h3><div class="paragraph"><p><strong>Pour une session :</strong></p></div>
+<h3>Solutions au conflit</h3><div class="openblock columns"><div class="content"></div></div>
+<h4>Solution 1 : Variable DOCKER_HOST (rapide)</h4><div class="paragraph"><p><strong>Pour une session :</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">export DOCKER_HOST=unix:///var/run/docker.sock
 docker ps  # Devrait fonctionner</code></pre></div></div>
 <div class="paragraph"><p><strong>Permanent (ajouter à ~/.bashrc ou ~/.zshrc) :</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">echo 'export DOCKER_HOST=unix:///var/run/docker.sock' &gt;&gt; ~/.bashrc
 source ~/.bashrc</code></pre></div></div>
-<h3>Solution 2 : Désinstaller Podman (recommandé)</h3><div class="paragraph"><p><strong>Si vous n&#8217;utilisez pas Podman :</strong></p></div>
+<div class="openblock"><div class="content"></div></div>
+<h4>Solution 2 : Désinstaller Podman (recommandé)</h4><div class="paragraph"><p><strong>Si vous n&#8217;utilisez pas Podman :</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo apt remove podman podman-docker
 sudo apt install docker.io
 sudo systemctl start docker
-sudo systemctl enable docker</code></pre></div></div>
+sudo systemctl enable docker
+# Ajouter l'utilisateur au groupe docker
+sudo usermod -aG docker $USER</code></pre></div></div>
+<div class="paragraph"><p><strong>⚠️ Attention :</strong> Après <code>usermod</code>, vous devez fermer votre session (logout/login) ou redémarrer votre shell pour que le changement de groupe prenne effet.</p></div>
+<div class="paragraph"><p><strong>Alternative :</strong> Préfixer chaque commande avec <code>sudo</code> (ex: <code>sudo docker ps</code>) si vous ne voulez pas rejoindre le groupe.</p></div>
+<div class="openblock"><div class="content"></div></div>
 <aside class="notes"><div class="paragraph"><p><strong>CONTEXTE - UBUNTU 25.04 ET PODMAN :</strong></p></div>
 <div class="paragraph"><p>Ubuntu 25.04 (Noble Numbat) marque un changement majeur : Podman devient le moteur de conteneurs par défaut à la place de Docker.</p></div>
 <div class="paragraph"><p><strong>Pourquoi ce changement ?</strong>
