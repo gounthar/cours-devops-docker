@@ -600,6 +600,8 @@ docker pull cache-ili.univ-artois.fr:80/proxy_cache/library/hello-world</code></
 # IMPORTANT: ENV doit être APRÈS FROM et AVANT RUN
 ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 
 # Votre gestionnaire de paquets utilisera désormais le proxy
 RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
@@ -607,6 +609,8 @@ RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
 FROM alpine:latest as builder
 ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 RUN apk update &amp;&amp; apk add build-dependencies
 
 # Étape finale sans proxy
@@ -622,6 +626,8 @@ RUN apk update &amp;&amp; apk add your-package</code></pre></div></div></div></s
 # IMPORTANT: ENV doit être APRÈS FROM et AVANT RUN
 ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 
 # Votre gestionnaire de paquets utilisera désormais le proxy
 RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
@@ -630,6 +636,8 @@ RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
 FROM alpine:latest as builder
 ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 RUN apk update &amp;&amp; apk add build-dependencies
 
 # Étape finale sans proxy
@@ -656,6 +664,8 @@ RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
 # IMPORTANT: ENV doit être APRÈS FROM et AVANT RUN
 ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 
 # Votre gestionnaire de paquets utilisera désormais le proxy
 RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
@@ -664,6 +674,8 @@ RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
 FROM alpine:latest as builder
 ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 RUN apk update &amp;&amp; apk add build-dependencies
 
 # Étape finale sans proxy
