@@ -259,12 +259,19 @@ Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge
 
 [source,dockerfile]
 ----
+FROM alpine:latest
+
+# IMPORTANT: ENV doit être APRÈS FROM et AVANT RUN
 ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 
 # Votre gestionnaire de paquets utilisera désormais le proxy
 RUN apk update && apk add your-package
 ----
+
+⚠️ **Ordre crucial:** `FROM` → `ENV` → `RUN` (réseau)
 
 [%auto-animate]
 == 5. Configurations avancées pour les proxys (au-delà du cache)
@@ -277,6 +284,8 @@ RUN apk update && apk add your-package
 FROM alpine:latest as builder
 ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 RUN apk update && apk add build-dependencies
 
 # Étape finale sans proxy
@@ -313,12 +322,19 @@ Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge
 
 [source,dockerfile]
 ----
+FROM alpine:latest
+
+# IMPORTANT: ENV doit être APRÈS FROM et AVANT RUN
 ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 
 # Votre gestionnaire de paquets utilisera désormais le proxy
 RUN apk update && apk add your-package
 ----
+
+⚠️ **Ordre crucial:** `FROM` → `ENV` → `RUN` (réseau)
 
 === Option 2 – Build multi-étapes (proxy uniquement quand nécessaire)
 
@@ -328,6 +344,8 @@ RUN apk update && apk add your-package
 FROM alpine:latest as builder
 ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 RUN apk update && apk add build-dependencies
 
 # Étape finale sans proxy
@@ -383,12 +401,19 @@ Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge
 
 [source,dockerfile]
 ----
+FROM alpine:latest
+
+# IMPORTANT: ENV doit être APRÈS FROM et AVANT RUN
 ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 
 # Votre gestionnaire de paquets utilisera désormais le proxy
 RUN apk update && apk add your-package
 ----
+
+⚠️ **Ordre crucial:** `FROM` → `ENV` → `RUN` (réseau)
 
 === Option 2 – Build multi-étapes (proxy uniquement quand nécessaire)
 
@@ -398,6 +423,8 @@ RUN apk update && apk add your-package
 FROM alpine:latest as builder
 ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
+ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 RUN apk update && apk add build-dependencies
 
 # Étape finale sans proxy
