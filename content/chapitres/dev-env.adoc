@@ -134,11 +134,13 @@ Bref, on ne l'a pas ici. `¯\_(ツ)_/¯`
 --
 [.column]
 --
-==== Solution 1 : Variable DOCKER_HOST (rapide)
+.Solution 1 : Variable DOCKER_HOST (rapide)
 
 **Pour une session :**
 [source,bash]
 ----
+# Vérifier que le service Docker tourne :
+systemctl is-active --quiet docker || echo "⚠️ Docker n'est pas démarré (voir Solution 2)"
 export DOCKER_HOST=unix:///var/run/docker.sock
 docker ps  # Devrait fonctionner
 ----
@@ -146,26 +148,33 @@ docker ps  # Devrait fonctionner
 **Permanent (ajouter à ~/.bashrc ou ~/.zshrc) :**
 [source,bash]
 ----
-echo 'export DOCKER_HOST=unix:///var/run/docker.sock' >> ~/.bashrc
-source ~/.bashrc
+echo 'export DOCKER_HOST=unix:///var/run/docker.sock' >> ~/.bashrc && source ~/.bashrc
+# ou pour zsh :
+echo 'export DOCKER_HOST=unix:///var/run/docker.sock' >> ~/.zshrc && source ~/.zshrc
 ----
 --
 [.column]
 --
-==== Solution 2 : Désinstaller Podman (recommandé)
+.Solution 2 : Désinstaller Podman (recommandé)
 
 **Si vous n'utilisez pas Podman :**
 [source,bash]
 ----
 sudo apt remove podman podman-docker
 sudo apt install docker.io
-sudo systemctl start docker
-sudo systemctl enable docker
+sudo systemctl enable --now docker
 # Ajouter l'utilisateur au groupe docker
 sudo usermod -aG docker $USER
+# (optionnel mais utile pour le cours)
+sudo apt install -y docker-compose-plugin
+newgrp docker <<'EOF'
+docker ps
+EOF
 ----
 
 **⚠️ Attention :** Après `usermod`, vous devez fermer votre session (logout/login) ou redémarrer votre shell pour que le changement de groupe prenne effet.
+
+**Astuce :** Utilisez `newgrp docker` pour activer le groupe sans vous déconnecter.
 
 **Alternative :** Préfixer chaque commande avec `sudo` (ex: `sudo docker ps`) si vous ne voulez pas rejoindre le groupe.
 --
@@ -184,7 +193,7 @@ Ubuntu 25.04 (Noble Numbat) marque un changement majeur : Podman devient le mote
 - Plus sécurisé par défaut (rootless)
 
 **Le conflit :**
-- Podman crée un socket `/run/podman/podman.sock`
+- Podman crée un socket `/run/podman/podman.sock` (ou rootless: `/run/user/$UID/podman/podman.sock`)
 - Docker cherche `/var/run/docker.sock`
 - Si les deux sont installés : confusion entre les sockets
 
