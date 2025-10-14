@@ -462,21 +462,32 @@ Message clé : les secrets ne doivent JAMAIS être versionnés.
 
 == Bonne pratique : Fichiers .env
 
+**Étape 1 : Créer le fichier .env**
+
 [source,bash]
 ----
 # .env (à ne JAMAIS commiter)
 DB_PASSWORD=super_secret_123
+----
 
+**Étape 2 : Protéger avec .gitignore**
+
+[source,bash]
+----
 # .gitignore
 .env
 secrets/
 ----
+
+**Étape 3 : Utiliser dans docker-compose.yml**
 
 [source,yaml]
 ----
 environment:
   - POSTGRES_PASSWORD=${DB_PASSWORD}
 ----
+
+TIP: Docker Compose charge automatiquement le fichier .env
 
 == Alternatives pour les secrets
 
