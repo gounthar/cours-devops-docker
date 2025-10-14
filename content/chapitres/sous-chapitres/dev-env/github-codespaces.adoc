@@ -1,3 +1,23 @@
+== Environnement Cloud : GitHub Codespaces ☁️
+
+Développer avec Docker directement dans le cloud.
+
+[%step]
+* Pas d'installation locale nécessaire
+[%step]
+* Docker pré-configuré et prêt à l'emploi
+[%step]
+* Gratuit : 60h/mois 🎉
+
+[.notes]
+--
+**Transition depuis la section précédente :**
+\"Nous avons vu comment installer Docker localement et gérer les problèmes de proxy. Mais il existe une alternative encore plus simple : développer directement dans le cloud avec GitHub Codespaces.\"
+
+**Message clé :**
+\"GitHub Codespaces vous permet d'avoir un environnement de développement Docker fonctionnel en 30 secondes, sans aucune installation sur votre machine.\"
+--
+
 == Outils Nécessaires 🛠
 
 * Un navigateur web récent (et décent)

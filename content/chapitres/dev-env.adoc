@@ -5,8 +5,8 @@
 == Particularités du réseau
 include::./sous-chapitres/dev-env/proxy.adoc[leveloffset=1]
 
-== Environnement Cloud : GitHub Codespaces ☁️
-include::./sous-chapitres/dev-env/github-codespaces.adoc[leveloffset=+1]
+// Environnement Cloud
+include::./sous-chapitres/dev-env/github-codespaces.adoc[leveloffset=0]
 
 == 🐳 Installation locale de Docker
 
