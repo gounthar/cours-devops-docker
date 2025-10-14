@@ -3574,10 +3574,17 @@ sudo sh /tmp/trivy-install.sh -b /usr/local/bin</code></pre></div></div>
 "En sécurité, il y a souvent un compromis entre praticité et sécurité.
 Pour un TP pédagogique, curl|sh est OK. En production sur serveur critique, TOUJOURS inspecter avant."</p></div>
 <div class="paragraph"><p>Fonctionne sur toutes les distributions : Debian (y compris Trixie), Ubuntu, RHEL, etc.
-Sur Debian Trixie/Testing : c&#8217;est LA méthode à utiliser (le repo apt ne supporte pas encore trixie).</p></div></aside></div></section><section id="installation_trivy_alternatives"><h2>Installation Trivy : Alternatives</h2><div class="slide-content"><div class="paragraph"><p><strong>Si vous n&#8217;avez pas les droits sudo :</strong></p></div>
+Sur Debian Trixie/Testing : c&#8217;est LA méthode à utiliser (le repo apt ne supporte pas encore trixie).</p></div>
+<div class="paragraph"><p><strong>PRODUCTION - VERSION PINNING ET INTÉGRITÉ :</strong></p></div>
+<div class="paragraph"><p>Pour une sécurité maximale en production, deux améliorations essentielles :</p></div>
+<div class="olist arabic"><ol class="arabic"><li><p><strong>Version pinning</strong> : Pin une version spécifique au lieu de "latest"</p><div class="ulist"><ul><li><p>Évite les breaking changes inattendus</p></li><li><p>Le script d&#8217;installation supporte la sélection de release</p></li><li><p>Exemple : <code>curl -sfL &#8230;&#8203; | sudo sh -s&#8201;&#8212;&#8201;-b /usr/local/bin v0.54.0</code></p></li></ul></div></li><li><p><strong>Vérification d&#8217;intégrité</strong> : Checksum ou signature avant exécution</p><div class="ulist"><ul><li><p>Télécharger le checksum depuis GitHub releases</p></li><li><p>Vérifier avec <code>sha256sum --check</code></p></li><li><p>Garantit que le binaire n&#8217;a pas été altéré</p></li></ul></div></li></ol></div>
+<div class="paragraph"><p>Ces étapes sont omises dans le TP pour simplicité, mais OBLIGATOIRES en production CI/CD.</p></div></aside></div></section><section id="installation_trivy_alternatives"><h2>Installation Trivy : Alternatives</h2><div class="slide-content"><div class="paragraph"><p><strong>Si vous n&#8217;avez pas les droits sudo :</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Via Docker (aucune installation nécessaire)
-docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-  aquasec/trivy image python:3.11</code></pre></div></div>
+docker run --rm \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v $HOME/.cache/trivy:/root/.cache \
+  aquasec/trivy:0.54.1 image python:3.11</code></pre></div></div>
+<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Pin la version (<code>:0.54.1</code>) et persist le cache (<code>-v $HOME/.cache</code>) pour performances</td></tr></table></div>
 <div class="paragraph"><p><strong>Autres systèmes :</strong></p></div>
 <div class="ulist"><ul><li class="fragment"><p><strong>macOS :</strong> <code>brew install trivy</code></p></li><li class="fragment"><p><strong>Debian/Ubuntu stable :</strong> Via apt (voir documentation)</p></li></ul></div>
 <aside class="notes"><div class="paragraph"><p><strong>MÉTHODE DOCKER :</strong>
@@ -3642,7 +3649,17 @@ Exemple de résultat : uid=1001(appuser) gid=1001(appuser) groups=1001(appuser)<
 <div class="paragraph"><p>Pour les étudiants : expliquer que c&#8217;est comme les numéros de téléphone -
 il faut éviter que deux personnes aient le même numéro !</p></div>
 <div class="paragraph"><p>L&#8217;option <code>-r</code> dans <code>useradd -r</code> crée un "system user" avec UID &lt; 1000.
-C&#8217;est historique : les services système (Apache, Nginx, PostgreSQL) utilisent des UID bas.</p></div></aside></div></section><section id="gestion_des_secrets"><h2>Gestion des secrets</h2><div class="slide-content"><div class="paragraph"><p><strong>Mauvaise pratique :</strong></p></div>
+C&#8217;est historique : les services système (Apache, Nginx, PostgreSQL) utilisent des UID bas.</p></div>
+<div class="paragraph"><p><strong>PRODUCTION - USER NUMÉRIQUE POUR PORTABILITÉ :</strong></p></div>
+<div class="paragraph"><p>Pour maximiser la portabilité entre différentes images de base :
+- Préférer <code>USER 1001:1001</code> au lieu de <code>USER appuser</code>
+- Évite les lookups de noms d&#8217;utilisateurs qui peuvent échouer
+- Garantit cohérence même si <code>/etc/passwd</code> diffère entre images
+- Crucial avec volumes montés partagés entre plusieurs conteneurs</p></div>
+<div class="paragraph"><p>Exemple robuste :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">RUN groupadd -g 1001 appgroup &amp;&amp; useradd -u 1001 -g 1001 appuser
+USER 1001:1001</code></pre></div></div>
+<div class="paragraph"><p>Cette approche numérique est LA meilleure pratique pour production/Kubernetes.</p></div></aside></div></section><section id="gestion_des_secrets"><h2>Gestion des secrets</h2><div class="slide-content"><div class="paragraph"><p><strong>Mauvaise pratique :</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">environment:
   - POSTGRES_PASSWORD=super_secret_123  # NON !</code></pre></div></div>
 <div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Visible dans <code>docker inspect</code>, logs, historique !</td></tr></table></div>
@@ -3660,8 +3677,12 @@ DB_PASSWORD=super_secret_123</code></pre></div></div>
 secrets/</code></pre></div></div>
 <div class="paragraph"><p><strong>Étape 3 : Utiliser dans docker-compose.yml</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">environment:
-  POSTGRES_PASSWORD: ${DB_PASSWORD}</code></pre></div></div>
-<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Docker Compose charge automatiquement le fichier .env</td></tr></table></div></div></section><section id="alternative_1_docker_secrets"><h2>Alternative 1 : Docker Secrets</h2><div class="slide-content"><div class="paragraph"><p><strong>Gestion native dans Docker Swarm</strong></p></div>
+  POSTGRES_PASSWORD: ${DB_PASSWORD}
+  API_KEY: ${API_KEY:-default_key}     # Valeur par défaut si absent
+  DB_HOST: ${DB_HOST?required}          # Erreur si non défini</code></pre></div></div>
+<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Docker Compose charge automatiquement le fichier .env</td></tr></table></div>
+<div class="paragraph"><p><strong>Syntaxes avancées :</strong></p></div>
+<div class="ulist"><ul><li class="fragment"><p><code>${VAR:-default}</code> : Utilise <code>default</code> si VAR n&#8217;est pas définie</p></li><li class="fragment"><p><code>${VAR?error message}</code> : Échoue avec message si VAR manquante</p></li><li class="fragment"><p>Utile pour séparer config obligatoire vs optionnelle</p></li></ul></div></div></section><section id="alternative_1_docker_secrets"><h2>Alternative 1 : Docker Secrets</h2><div class="slide-content"><div class="paragraph"><p><strong>Gestion native dans Docker Swarm</strong></p></div>
 <div class="ulist"><ul><li class="fragment"><p>Secrets cryptés dans le cluster Swarm</p></li><li class="fragment"><p>Montés en RAM dans <code>/run/secrets/</code></p></li><li class="fragment"><p>Accès contrôlé par service</p></li></ul></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">echo "secret123" | docker secret create db_password -
 docker service create --secret db_password postgres</code></pre></div></div>
