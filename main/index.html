@@ -3541,7 +3541,65 @@ docker scout compare python:3.11 --to python:3.11-slim</code></pre></div></div>
 Comparer python:3.11 vs python:3.11-slim : différence spectaculaire (150+ CVE vs 20-30).
 Si Docker Scout ne fonctionne pas, basculer sur Trivy : "docker run aquasec/trivy image python:3.11"
 Montrer que le scan prend 10-30 secondes : c&#8217;est acceptable pour un pipeline CI/CD.
-Insister : ce n&#8217;est pas paranoïaque, c&#8217;est STANDARD en 2025.</p></div></aside></div></section><section id="exemple_de_résultat_trivy"><h2>Exemple de résultat Trivy</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">trivy image python:3.11
+Insister : ce n&#8217;est pas paranoïaque, c&#8217;est STANDARD en 2025.</p></div></aside></div></section><section id="installation_de_trivy"><h2>Installation de Trivy</h2><div class="slide-content"><div class="paragraph"><p><strong>Méthode rapide (pour le TP) :</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Installation directe du binaire
+curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
+trivy --version</code></pre></div></div>
+<div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content"><code>curl | sudo sh</code> est pratique MAIS dangereux en production !</td></tr></table></div>
+<div class="paragraph"><p><strong>Méthode sécurisée (recommandée) :</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># 1. Télécharger le script
+curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh -o /tmp/trivy-install.sh
+
+# 2. Inspecter le contenu
+less /tmp/trivy-install.sh
+
+# 3. Exécuter après vérification
+sudo sh /tmp/trivy-install.sh -b /usr/local/bin</code></pre></div></div>
+<aside class="notes"><div class="paragraph"><p><strong>IMPORTANT - PRATIQUE vs SÉCURITÉ :</strong></p></div>
+<div class="paragraph"><p>Dans un chapitre sécurité, il est crucial de montrer LES DEUX approches :</p></div>
+<div class="paragraph"><p><strong>Méthode rapide (curl | sudo sh) :</strong>
+- ✅ Pratique pour le TP (gain de temps)
+- ✅ Recommandée par la doc officielle Trivy
+- ❌ DANGEREUX : exécute du code non vérifié en root
+- ❌ Attaque potentielle : script modifié = compromission totale</p></div>
+<div class="paragraph"><p><strong>Méthode sécurisée (télécharger → inspecter → exécuter) :</strong>
+- ✅ Permet de vérifier le contenu avant exécution
+- ✅ Bonne pratique sécurité (principe de précaution)
+- ❌ Plus long (3 étapes au lieu d'1)</p></div>
+<div class="paragraph"><p><strong>POUR LE TP :</strong>
+- Démonstration : montrer les DEUX approches
+- Insister : "Je fais rapide pour le TP, MAIS en production&#8230;&#8203;"
+- Exercice pédagogique : comparer les deux = enseignement du compromis pratique/sécurité</p></div>
+<div class="paragraph"><p><strong>MESSAGE CLÉ :</strong>
+"En sécurité, il y a souvent un compromis entre praticité et sécurité.
+Pour un TP pédagogique, curl|sh est OK. En production sur serveur critique, TOUJOURS inspecter avant."</p></div>
+<div class="paragraph"><p>Fonctionne sur toutes les distributions : Debian (y compris Trixie), Ubuntu, RHEL, etc.
+Sur Debian Trixie/Testing : c&#8217;est LA méthode à utiliser (le repo apt ne supporte pas encore trixie).</p></div>
+<div class="paragraph"><p><strong>PRODUCTION - VERSION PINNING ET INTÉGRITÉ :</strong></p></div>
+<div class="paragraph"><p>Pour une sécurité maximale en production, deux améliorations essentielles :</p></div>
+<div class="olist arabic"><ol class="arabic"><li><p><strong>Version pinning</strong> : Pin une version spécifique au lieu de "latest"</p><div class="ulist"><ul><li><p>Évite les breaking changes inattendus</p></li><li><p>Le script d&#8217;installation supporte la sélection de release</p></li><li><p>Exemple : <code>curl -sfL &#8230;&#8203; | sudo sh -s&#8201;&#8212;&#8201;-b /usr/local/bin v0.54.0</code></p></li></ul></div></li><li><p><strong>Vérification d&#8217;intégrité</strong> : Checksum ou signature avant exécution</p><div class="ulist"><ul><li><p>Télécharger le checksum depuis GitHub releases</p></li><li><p>Vérifier avec <code>sha256sum --check</code></p></li><li><p>Garantit que le binaire n&#8217;a pas été altéré</p></li></ul></div></li></ol></div>
+<div class="paragraph"><p>Ces étapes sont omises dans le TP pour simplicité, mais OBLIGATOIRES en production CI/CD.</p></div></aside></div></section><section id="installation_trivy_alternatives"><h2>Installation Trivy : Alternatives</h2><div class="slide-content"><div class="paragraph"><p><strong>Si vous n&#8217;avez pas les droits sudo :</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Via Docker (aucune installation nécessaire)
+docker run --rm \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v $HOME/.cache/trivy:/root/.cache \
+  aquasec/trivy:0.54.1 image python:3.11</code></pre></div></div>
+<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Pin la version (<code>:0.54.1</code>) et persist le cache (<code>-v $HOME/.cache</code>) pour performances</td></tr></table></div>
+<div class="paragraph"><p><strong>Autres systèmes :</strong></p></div>
+<div class="ulist"><ul><li class="fragment"><p><strong>macOS :</strong> <code>brew install trivy</code></p></li><li class="fragment"><p><strong>Debian/Ubuntu stable :</strong> Via apt (voir documentation)</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p><strong>MÉTHODE DOCKER :</strong>
+- Aucune installation nécessaire
+- Garantit que tout le monde a la même version
+- Peut être plus lent la première fois (télécharge l&#8217;image)
+- Syntaxe un peu plus longue</p></div>
+<div class="paragraph"><p><strong>CHOIX POUR LE TP :</strong>
+- Démonstration enseignant : script d&#8217;installation (rapide, propre)
+- Étudiants : script d&#8217;installation OU Docker selon permissions
+- Première utilisation : le scan sera lent (~30s) car télécharge la base CVE (~200 Mo)
+- Mise à jour de la base : <code>trivy image --download-db-only</code></p></div>
+<div class="paragraph"><p><strong>TROUBLESHOOTING :</strong>
+- Permission denied → Ajouter sudo ou utiliser méthode Docker
+- Erreur "trixie Release not found" (si tentative apt) → Utiliser le script</p></div></aside></div></section><section id="exemple_de_résultat_trivy"><h2>Exemple de résultat Trivy</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">trivy image python:3.11
 
 Total: 145 vulnerabilities (52 HIGH, 93 MEDIUM)
 ┌──────────┬──────────────┬──────────┬─────────┐
@@ -3566,7 +3624,42 @@ COPY app.py /app/
 RUN chown -R appuser:appuser /app
 
 USER appuser
-CMD ["python", "/app/app.py"]</code></pre></div></div></div></section><section id="bonnes_pratiques_utilisateur"><h2>Bonnes pratiques utilisateur</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Toujours créer un utilisateur dédié</p></li><li class="fragment"><p>UID &gt; 1000 (éviter conflits système)</p></li><li class="fragment"><p>Ne jamais revenir à root après USER</p></li><li class="fragment"><p>Vérifier : <code>docker exec &lt;container&gt; whoami</code></p></li></ul></div></div></section><section id="gestion_des_secrets"><h2>Gestion des secrets</h2><div class="slide-content"><div class="paragraph"><p><strong>Mauvaise pratique :</strong></p></div>
+CMD ["python", "/app/app.py"]</code></pre></div></div></div></section><section id="bonnes_pratiques_utilisateur"><h2>Bonnes pratiques utilisateur</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Toujours créer un utilisateur dédié</p></li><li class="fragment"><p>UID &gt; 1000 (éviter conflits système)</p></li><li class="fragment"><p>Ne jamais revenir à root après USER</p></li><li class="fragment"><p>Vérifier : <code>docker exec &lt;container&gt; whoami</code></p></li></ul></div></div></section><section id="comprendre_les_uid_linux"><h2>Comprendre les UID Linux</h2><div class="slide-content"><div class="paragraph"><p>Linux numérote les utilisateurs (User ID) :</p></div>
+<div class="ulist"><ul><li class="fragment"><p><strong>UID 0</strong> : root (super-utilisateur)</p></li><li class="fragment"><p><strong>UID 1-999</strong> : comptes système (www-data, postgres, redis&#8230;&#8203;)</p></li><li class="fragment"><p><strong>UID ≥ 1000</strong> : utilisateurs normaux et applications</p></li></ul></div>
+<div class="admonitionblock warning fragment"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Avec volumes montés, UID &lt; 1000 peut créer des conflits de sécurité !</td></tr></table></div>
+<aside class="notes"><div class="paragraph"><p><strong>POURQUOI C&#8217;EST IMPORTANT :</strong></p></div>
+<div class="paragraph"><p>Si vous créez un utilisateur avec UID 33 (www-data) dans votre conteneur,
+et que l&#8217;hôte a AUSSI www-data (UID 33), le conteneur pourra accéder aux fichiers
+de www-data sur l&#8217;HÔTE via les volumes montés = faille de sécurité !</p></div>
+<div class="paragraph"><p><strong>BONNE PRATIQUE :</strong>
+- Sans volumes montés : <code>useradd -r</code> acceptable (crée UID système &lt; 1000)
+- Avec volumes montés : <code>useradd -u 1001</code> ou laisser le système choisir (≥ 1000)</p></div>
+<div class="paragraph"><p>Dans SecureVote, <code>-r</code> est acceptable car pas de volumes montés critiques avec l&#8217;hôte.</p></div></aside></div></section><section id="uid_exemple_pratique"><h2>UID : Exemple pratique</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># RISQUÉ : UID fixe &lt; 1000
+RUN useradd -u 33 appuser
+# Conflit possible si l'hôte a www-data (UID 33) !
+
+# SÛR : UID &gt; 1000
+RUN useradd -u 1001 appuser
+
+# OU laisser le système choisir (sera ≥ 1000)
+RUN useradd appuser</code></pre></div></div>
+<div class="paragraph fragment"><p>Vérifier : <code>docker exec &lt;container&gt; id appuser</code></p></div>
+<aside class="notes"><div class="paragraph"><p>Montrer la commande <code>id</code> dans un conteneur pour voir l&#8217;UID assigné.
+Exemple de résultat : uid=1001(appuser) gid=1001(appuser) groups=1001(appuser)</p></div>
+<div class="paragraph"><p>Pour les étudiants : expliquer que c&#8217;est comme les numéros de téléphone -
+il faut éviter que deux personnes aient le même numéro !</p></div>
+<div class="paragraph"><p>L&#8217;option <code>-r</code> dans <code>useradd -r</code> crée un "system user" avec UID &lt; 1000.
+C&#8217;est historique : les services système (Apache, Nginx, PostgreSQL) utilisent des UID bas.</p></div>
+<div class="paragraph"><p><strong>PRODUCTION - USER NUMÉRIQUE POUR PORTABILITÉ :</strong></p></div>
+<div class="paragraph"><p>Pour maximiser la portabilité entre différentes images de base :
+- Préférer <code>USER 1001:1001</code> au lieu de <code>USER appuser</code>
+- Évite les lookups de noms d&#8217;utilisateurs qui peuvent échouer
+- Garantit cohérence même si <code>/etc/passwd</code> diffère entre images
+- Crucial avec volumes montés partagés entre plusieurs conteneurs</p></div>
+<div class="paragraph"><p>Exemple robuste :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">RUN groupadd -g 1001 appgroup &amp;&amp; useradd -u 1001 -g 1001 appuser
+USER 1001:1001</code></pre></div></div>
+<div class="paragraph"><p>Cette approche numérique est LA meilleure pratique pour production/Kubernetes.</p></div></aside></div></section><section id="gestion_des_secrets"><h2>Gestion des secrets</h2><div class="slide-content"><div class="paragraph"><p><strong>Mauvaise pratique :</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">environment:
   - POSTGRES_PASSWORD=super_secret_123  # NON !</code></pre></div></div>
 <div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Visible dans <code>docker inspect</code>, logs, historique !</td></tr></table></div>
@@ -3575,14 +3668,233 @@ Anecdote : chercher "removed password" sur GitHub = des millions de résultats.
 Les secrets restent dans l&#8217;historique Git même après suppression !
 docker inspect montre TOUTES les variables d&#8217;env = un attaquant peut lire.
 Les logs peuvent accidentellement afficher les secrets lors du démarrage.
-Message clé : les secrets ne doivent JAMAIS être versionnés.</p></div></aside></div></section><section id="bonne_pratique_fichiers_env"><h2>Bonne pratique : Fichiers .env</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># .env (à ne JAMAIS commiter)
-DB_PASSWORD=super_secret_123
-
-# .gitignore
+Message clé : les secrets ne doivent JAMAIS être versionnés.</p></div></aside></div></section><section id="bonne_pratique_fichiers_env"><h2>Bonne pratique : Fichiers .env</h2><div class="slide-content"><div class="paragraph"><p><strong>Étape 1 : Créer le fichier .env</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># .env (à ne JAMAIS commiter)
+DB_PASSWORD=super_secret_123</code></pre></div></div>
+<div class="paragraph"><p><strong>Étape 2 : Protéger avec .gitignore</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># .gitignore
 .env
 secrets/</code></pre></div></div>
+<div class="paragraph"><p><strong>Étape 3 : Utiliser dans docker-compose.yml</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">environment:
-  - POSTGRES_PASSWORD=${DB_PASSWORD}</code></pre></div></div></div></section><section id="alternatives_pour_les_secrets"><h2>Alternatives pour les secrets</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p><strong>Docker Secrets</strong> (Swarm mode)</p></li><li class="fragment"><p><strong>Vault</strong> (HashiCorp)</p></li><li class="fragment"><p><strong>AWS Secrets Manager</strong>, Azure Key Vault</p></li><li class="fragment"><p><strong>Variables d&#8217;environnement</strong> du shell</p></li></ul></div></div></section><section id="phase_2_sécurisation_1h15" data-background-color="DarkOrange"><h2>Phase 2 : Sécurisation (1h15)</h2><div class="slide-content"><div class="paragraph"><p>Transformer SecureVote en application sécurisée</p></div>
+  POSTGRES_PASSWORD: ${DB_PASSWORD}
+  API_KEY: ${API_KEY:-default_key}     # Valeur par défaut si absent
+  DB_HOST: ${DB_HOST?required}          # Erreur si non défini</code></pre></div></div>
+<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Docker Compose charge automatiquement le fichier .env</td></tr></table></div>
+<div class="paragraph"><p><strong>Syntaxes avancées :</strong></p></div>
+<div class="ulist"><ul><li class="fragment"><p><code>${VAR:-default}</code> : Utilise <code>default</code> si VAR n&#8217;est pas définie</p></li><li class="fragment"><p><code>${VAR?error message}</code> : Échoue avec message si VAR manquante</p></li><li class="fragment"><p>Utile pour séparer config obligatoire vs optionnelle</p></li></ul></div></div></section><section id="alternative_1_docker_secrets"><h2>Alternative 1 : Docker Secrets</h2><div class="slide-content"><div class="paragraph"><p><strong>Gestion native dans Docker Swarm</strong></p></div>
+<div class="ulist"><ul><li class="fragment"><p>Secrets cryptés dans le cluster Swarm</p></li><li class="fragment"><p>Montés en RAM dans <code>/run/secrets/</code></p></li><li class="fragment"><p>Accès contrôlé par service</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">echo "secret123" | docker secret create db_password -
+docker service create --secret db_password postgres</code></pre></div></div>
+<aside class="notes"><div class="paragraph"><p><strong>DOCKER SECRETS - GUIDE DÉTAILLÉ</strong></p></div>
+<div class="paragraph"><p>Qu&#8217;est-ce que c&#8217;est ?
+- Système de gestion de secrets intégré à Docker Swarm (orchestrateur Docker natif)
+- Secrets stockés cryptés dans le cluster Swarm
+- Montés comme fichiers dans /run/secrets/ (en RAM, jamais sur disque)
+- Les secrets ne transitent JAMAIS sur le disque dur, toujours en mémoire</p></div>
+<div class="paragraph"><p><strong>Avantages :</strong>
+✅ Natif Docker, pas de service externe à installer
+✅ Crypté au repos et en transit (TLS mutuel entre nœuds)
+✅ Accès contrôlé par service (seuls les services autorisés peuvent lire)
+✅ Rotation possible (créer nouveau secret, redéployer service)
+✅ Gratuit, inclus dans Docker</p></div>
+<div class="paragraph"><p><strong>Inconvénients :</strong>
+❌ Nécessite Docker Swarm (pas Compose standalone ou Kubernetes)
+❌ Moins de fonctionnalités que Vault (pas de rotation automatique, audit limité)
+❌ Courbe d&#8217;apprentissage Swarm si vous utilisez Compose</p></div>
+<div class="paragraph"><p><strong>Comment ça fonctionne :</strong>
+1. Créer le secret : <code>docker secret create db_password secret.txt</code>
+2. Attribuer au service : <code>docker service create --secret db_password myapp</code>
+3. Application lit <code>/run/secrets/db_password</code> (fichier en RAM)</p></div>
+<div class="paragraph"><p><strong>Quand l&#8217;utiliser :</strong>
+- Environnements Docker Swarm en production
+- Petites/moyennes infrastructures (5-50 conteneurs)
+- Alternative simple à Vault pour débuter
+- Besoin de secrets cryptés sans infrastructure externe</p></div>
+<div class="paragraph"><p><strong>Pour SecureVote :</strong>
+Non utilisé dans le TP (on reste sur Compose), mais évolution possible si migration vers Swarm.</p></div></aside></div></section><section id="alternative_2_hashicorp_vault"><h2>Alternative 2 : HashiCorp Vault</h2><div class="slide-content"><div class="paragraph"><p><strong>Solution d&#8217;entreprise pour secrets</strong></p></div>
+<div class="ulist"><ul><li class="fragment"><p>Serveur centralisé avec API REST</p></li><li class="fragment"><p>Rotation automatique des credentials</p></li><li class="fragment"><p>Audit complet et secrets dynamiques</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Application interroge Vault via API
+vault kv get -field=password secret/database/prod</code></pre></div></div>
+<div class="admonitionblock warning fragment"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Nécessite infrastructure dédiée (serveur Vault)</td></tr></table></div>
+<aside class="notes"><div class="paragraph"><p><strong>VAULT - SOLUTION ENTERPRISE</strong></p></div>
+<div class="paragraph"><p>Qu&#8217;est-ce que c&#8217;est ?
+- Solution d&#8217;entreprise dédiée à la gestion de secrets (HashiCorp)
+- Serveur centralisé de secrets avec API REST
+- Audit complet, rotation automatique, durée de vie des secrets
+- "Fort Knox" des secrets : le standard de l&#8217;industrie</p></div>
+<div class="paragraph"><p><strong>Avantages :</strong>
+✅ Solution la plus complète du marché
+✅ Rotation automatique des secrets (DB credentials, API keys, certificats)
+✅ Audit trail complet (qui a accédé à quoi, quand, depuis où)
+✅ Secrets dynamiques (génère des credentials temporaires à la demande)
+✅ Intégration avec cloud providers (AWS, Azure, GCP)
+✅ Fonctionne avec Docker Compose, Swarm, Kubernetes, VMs
+✅ Versioning des secrets (rollback possible)
+✅ Policies granulaires (contrôle d&#8217;accès fin)</p></div>
+<div class="paragraph"><p><strong>Inconvénients :</strong>
+❌ Infrastructure supplémentaire à gérer (serveur Vault à maintenir, haute dispo)
+❌ Courbe d&#8217;apprentissage élevée (concepts : policies, auth methods, engines)
+❌ Coût version enterprise pour features avancées (namespaces, réplication)
+❌ Complexité opérationnelle (unsealing, backup, disaster recovery)</p></div>
+<div class="paragraph"><p><strong>Exemple concret :</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Vault génère des credentials MySQL temporaires (valides 1h)
+vault read database/creds/myapp
+# Key            Value
+# lease_id       database/creds/myapp/abcd1234
+# username       v-myapp-abc123
+# password       A1b2C3d4...</code></pre></div></div>
+<div class="paragraph"><p><strong>Quand l&#8217;utiliser :</strong>
+- Grandes organisations avec 100+ secrets à gérer
+- Exigences de compliance strictes (SOC2, ISO27001, PCI-DSS)
+- Multi-cloud ou infrastructure hybride (secrets partagés)
+- Besoin de secrets dynamiques (ex: credentials DB temporaires pour chaque déploiement)
+- Équipe dédiée à la sécurité/infrastructure</p></div>
+<div class="paragraph"><p><strong>Coût/Ressources :</strong>
+- Open source : gratuit mais features limitées
+- Enterprise : $$$ (à partir de 15k$/an pour petite org)
+- Nécessite : 1-2 personnes dédiées pour l&#8217;opérationnel</p></div>
+<div class="paragraph"><p><strong>Pour SecureVote :</strong>
+Overkill pour le TP. Mentionner comme évolution si l&#8217;application devient un service SaaS avec 1000+ clients.</p></div></aside></div></section><section id="alternative_3_cloud_providers"><h2>Alternative 3 : Cloud Providers</h2><div class="slide-content"><div class="paragraph"><p><strong>Services managés AWS / Azure / GCP</strong></p></div>
+<div class="ulist"><ul><li class="fragment"><p><strong>AWS Secrets Manager</strong> : intégration RDS/Aurora</p></li><li class="fragment"><p><strong>Azure Key Vault</strong> : intégration Azure AD, HSM</p></li><li class="fragment"><p><strong>GCP Secret Manager</strong> : intégration Cloud Run/GKE</p></li></ul></div>
+<div class="paragraph fragment"><p>✅ Entièrement managé, haute disponibilité
+❌ Vendor lock-in, coût à l&#8217;usage</p></div>
+<aside class="notes"><div class="paragraph"><p><strong>CLOUD PROVIDERS - SERVICES MANAGÉS</strong></p></div>
+<div class="paragraph"><p>Qu&#8217;est-ce que c&#8217;est ?
+- Services managés de gestion de secrets par les cloud providers
+- Intégration native avec les autres services du cloud
+- Zéro maintenance, facturation à l&#8217;usage</p></div>
+<div class="paragraph"><p><strong>Les 3 grands providers :</strong></p></div>
+<div class="paragraph"><p><strong>1. AWS Secrets Manager</strong>
+- Rotation automatique pour RDS, Aurora, Redshift, DocumentDB
+- Intégration native avec Lambda, ECS, EC2 via IAM roles
+- Versioning automatique des secrets
+- Coût : ~0.40$/secret/mois + 0.05$/10k requêtes</p></div>
+<div class="paragraph"><p><strong>2. Azure Key Vault</strong>
+- Intégration avec Azure AD pour l&#8217;authentification
+- HSM hardware optionnel (clés stockées dans modules cryptographiques certifiés)
+- Managed identities pour AKS, App Service, Functions
+- Coût : ~0.03$/secret/mois + 0.03$/10k opérations</p></div>
+<div class="paragraph"><p><strong>3. GCP Secret Manager</strong>
+- Intégration native avec Cloud Run, GKE, Cloud Functions
+- Réplication multi-région automatique
+- Audit via Cloud Logging
+- Coût : ~0.06$/secret/mois + 0.03$/10k accès</p></div>
+<div class="paragraph"><p><strong>Avantages :</strong>
+✅ Entièrement managé (pas de serveur à maintenir, pas de patching)
+✅ Intégration native avec services cloud (IAM, load balancers, etc.)
+✅ Rotation automatique pour certains services (RDS sur AWS, etc.)
+✅ Haute disponibilité garantie par le provider (SLA 99.9%+)
+✅ Audit via CloudTrail / Azure Monitor / Cloud Logging
+✅ Facile à démarrer (quelques clics dans la console)</p></div>
+<div class="paragraph"><p><strong>Inconvénients :</strong>
+❌ Vendor lock-in (difficile de migrer vers autre cloud)
+❌ Coût à l&#8217;usage (peut devenir cher avec 1000+ secrets)
+❌ Moins flexible que Vault pour du multi-cloud
+❌ Features variables selon provider (AWS plus complet que GCP)</p></div>
+<div class="paragraph"><p><strong>Comparaison des coûts (exemple 100 secrets, 1M requêtes/mois) :</strong>
+- AWS : ~40$ + 5$ = 45$/mois
+- Azure : ~3$ + 3$ = 6$/mois
+- GCP : ~6$ + 30$ = 36$/mois
+- Vault self-hosted : ~200$/mois (serveur) + temps équipe</p></div>
+<div class="paragraph"><p><strong>Quand l&#8217;utiliser :</strong>
+- Infrastructure déjà sur un cloud public (AWS, Azure, GCP)
+- Pas d&#8217;équipe dédiée pour gérer un Vault
+- Budget pour services managés
+- Besoin d&#8217;intégration native avec services cloud
+- Startup/PME qui veut se concentrer sur le produit, pas l&#8217;infra</p></div>
+<div class="paragraph"><p><strong>Pour SecureVote :</strong>
+Si déploiement sur AWS/Azure/GCP → excellent choix. Plus simple que Vault, pas de maintenance.</p></div></aside></div></section><section id="alternative_4_variables_shell"><h2>Alternative 4 : Variables shell</h2><div class="slide-content"><div class="paragraph"><p><strong>Passage direct via environnement</strong></p></div>
+<div class="ulist"><ul><li class="fragment"><p>Simple pour dev et CI/CD</p></li><li class="fragment"><p>Secrets injectés au runtime</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># En une ligne
+DB_PASSWORD="secret123" docker compose up -d
+
+# Ou via export
+export DB_PASSWORD="secret123"
+docker compose up -d</code></pre></div></div>
+<div class="admonitionblock warning fragment"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Visible dans <code>ps aux</code> et historique shell !</td></tr></table></div>
+<aside class="notes"><div class="paragraph"><p><strong>VARIABLES D&#8217;ENVIRONNEMENT SHELL</strong></p></div>
+<div class="paragraph"><p>Qu&#8217;est-ce que c&#8217;est ?
+- Passer les secrets via variables d&#8217;environnement du shell au lancement
+- Les secrets restent en mémoire du processus shell
+- Méthode la plus simple, mais limitations importantes</p></div>
+<div class="paragraph"><p><strong>Avantages :</strong>
+✅ Très simple, pas de fichier .env à gérer
+✅ Secrets restent dans la session shell (pas versionnés)
+✅ Utile pour CI/CD (GitLab CI, GitHub Actions injectent des variables)
+✅ Pas de dépendance externe
+✅ Idéal pour scripts one-shot</p></div>
+<div class="paragraph"><p><strong>Inconvénients :</strong>
+❌ Visible dans <code>ps aux</code> (autres utilisateurs de la machine peuvent voir)
+❌ Reste dans l&#8217;historique shell (~/.bash_history) si export
+❌ Moins pratique pour plusieurs secrets (commande très longue)
+❌ Perd les secrets si session shell se ferme (pas persistant)
+❌ Difficile à gérer en équipe (chacun doit set ses variables)</p></div>
+<div class="paragraph"><p><strong>Exemples d&#8217;utilisation :</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Méthode 1 : Inline (préférable)
+DB_PASSWORD="secret123" REDIS_PASSWORD="abc456" docker compose up -d
+
+# Méthode 2 : Export (reste en mémoire shell)
+export DB_PASSWORD="secret123"
+export REDIS_PASSWORD="abc456"
+docker compose up -d
+
+# Méthode 3 : Depuis fichier non versionné
+source ~/secrets.sh  # contient les exports
+docker compose up -d
+
+# Méthode 4 : CI/CD (GitLab CI exemple)
+# Les variables sont injectées par le runner
+script:
+  - docker compose up -d  # $DB_PASSWORD déjà disponible</code></pre></div></div>
+<div class="paragraph"><p><strong>Problème de sécurité - ps aux :</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Autre utilisateur peut voir :
+ps aux | grep docker
+# user  1234  ... docker compose up -d  # DB_PASSWORD=secret123 visible !</code></pre></div></div>
+<div class="paragraph"><p><strong>Quand l&#8217;utiliser :</strong>
+- Développement local rapide (test ponctuel)
+- CI/CD pipelines (GitLab CI, GitHub Actions, Jenkins)
+  - Les secrets sont injectés par le système CI/CD
+  - Ne restent pas dans l&#8217;historique du runner
+- Scripts d&#8217;automatisation ponctuels
+- Environnements éphémères (conteneurs CI qui sont détruits après)</p></div>
+<div class="paragraph"><p><strong>Quand NE PAS l&#8217;utiliser :</strong>
+- Production (trop risqué, pas d&#8217;audit)
+- Serveurs partagés (autres users peuvent voir)
+- Secrets critiques (passwords DB prod, API keys sensibles)</p></div>
+<div class="paragraph"><p><strong>Pour SecureVote :</strong>
+Acceptable pour tests locaux rapides. Mais préférer .env pour le TP (plus pédagogique, plus réaliste).
+CI/CD bonus : montrer comment GitLab CI/GitHub Actions injectent les secrets.</p></div></aside></div></section><section id="comparaison_des_solutions"><h2>Comparaison des solutions</h2><div class="slide-content"><table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:20%"><col style="width:20%"><col style="width:20%"><col style="width:40%"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Solution</th><th class="tableblock halign-left valign-top">Complexité</th><th class="tableblock halign-left valign-top">Coût</th><th class="tableblock halign-left valign-top">Cas d&#8217;usage</th></tr><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Fichiers .env</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">⚪ Faible</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">💰 Gratuit</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Dev, petits projets</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Docker Secrets</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">🟡 Moyenne</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">💰 Gratuit</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Docker Swarm prod</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Vault</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">🔴 Élevée</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">💰💰 Variable</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Grandes organisations</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Cloud Secrets</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">🟡 Moyenne</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">💰💰 Payant</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Déjà sur cloud</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Variables shell</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">⚪ Faible</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">💰 Gratuit</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Dev local, CI/CD</p></td></tr></table>
+<aside class="notes"><div class="paragraph"><p><strong>GUIDE DE DÉCISION - Quelle solution choisir ?</strong></p></div>
+<div class="paragraph"><p><strong>Arbre de décision simple :</strong></p></div>
+<div class="olist arabic"><ol class="arabic"><li><p><strong>Vous êtes en développement local ?</strong>
+→ Fichiers .env (simple, rapide)</p></li><li><p><strong>Vous êtes en production avec Docker Swarm ?</strong>
+→ Docker Secrets (natif, crypté, gratuit)</p></li><li><p><strong>Vous êtes sur AWS/Azure/GCP ?</strong>
+→ Cloud Secrets Manager (managé, intégration native)</p></li><li><p><strong>Vous avez 100+ secrets, multi-cloud, compliance stricte ?</strong>
+→ Vault (solution complète mais complexe)</p></li><li><p><strong>Vous êtes en CI/CD ?</strong>
+→ Variables shell (injectées par le pipeline)</p></li></ol></div>
+<div class="paragraph"><p><strong>Évolution typique d&#8217;une startup :</strong></p></div>
+<div class="paragraph"><p>Phase 1 (MVP) : .env files
+- Simple, rapide à mettre en place
+- OK pour 5-10 secrets</p></div>
+<div class="paragraph"><p>Phase 2 (Croissance) : Cloud Secrets Manager
+- Migration vers AWS/Azure/GCP
+- 20-50 secrets
+- Besoin de rotation automatique pour RDS</p></div>
+<div class="paragraph"><p>Phase 3 (Scale-up) : Vault
+- Multi-cloud (AWS + GCP)
+- 100+ secrets
+- Équipe sécurité dédiée
+- Compliance SOC2/ISO27001</p></div>
+<div class="paragraph"><p><strong>MESSAGE CLÉ POUR LES ÉTUDIANTS :</strong></p></div>
+<div class="paragraph"><p>"Commencez simple avec .env, mais pensez déjà à l&#8217;échelle.
+Si vous rejoignez une entreprise avec 500 microservices, vous utiliserez Vault ou cloud secrets.
+Le principe reste le même : JAMAIS de secrets en clair dans Git !"</p></div>
+<div class="paragraph"><p><strong>POUR LE TP SECUREVOTE :</strong>
+- On utilise .env (pédagogique, simple)
+- Discussion bonus : "Et si SecureVote devenait le prochain Doodle, avec 10M d&#8217;utilisateurs ?"
+  → Besoin de Vault ou AWS Secrets Manager
+- Exercice bonus si temps : migrer vers Docker Secrets (Phase 3+)</p></div></aside></div></section><section id="phase_2_sécurisation_1h15" data-background-color="DarkOrange"><h2>Phase 2 : Sécurisation (1h15)</h2><div class="slide-content"><div class="paragraph"><p>Transformer SecureVote en application sécurisée</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Images sûres et légères</p></li><li class="fragment"><p>Scanner les vulnérabilités avec Trivy</p></li><li class="fragment"><p>Utilisateurs non-root</p></li><li class="fragment"><p>Protéger les secrets</p></li><li class="fragment"><p>Isoler les réseaux</p></li></ul></div>
 <aside class="notes"><div class="paragraph"><p>Phase la plus longue et la plus importante : 1h15 de pratique intensive.
 Les étudiants doivent appliquer CONCRÈTEMENT tout ce qui vient d&#8217;être vu.
