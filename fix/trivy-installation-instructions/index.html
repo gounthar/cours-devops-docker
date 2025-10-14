@@ -3594,35 +3594,32 @@ COPY app.py /app/
 RUN chown -R appuser:appuser /app
 
 USER appuser
-CMD ["python", "/app/app.py"]</code></pre></div></div></div></section><section id="bonnes_pratiques_utilisateur"><h2>Bonnes pratiques utilisateur</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Toujours créer un utilisateur dédié</p></li><li class="fragment"><p>UID &gt; 1000 (éviter conflits système)</p></li><li class="fragment"><p>Ne jamais revenir à root après USER</p></li><li class="fragment"><p>Vérifier : <code>docker exec &lt;container&gt; whoami</code></p></li></ul></div>
-<aside class="notes"><div class="paragraph"><p><strong>UID &gt; 1000 : POURQUOI C&#8217;EST IMPORTANT</strong></p></div>
-<div class="paragraph"><p>Sur les systèmes Linux/Unix, les UID (User IDentifiers) sont répartis ainsi :</p></div>
-<div class="ulist"><ul><li><p><strong>UID 0</strong> : root (le super-utilisateur)</p></li><li><p><strong>UID 1-999</strong> : comptes système (daemon, www-data, postgres, redis, etc.)</p><div class="ulist"><ul><li><p>Réservés par le système et les services système</p></li><li><p>Exemples : www-data=33, postgres=999, mysql=27</p></li></ul></div></li><li><p><strong>UID ≥ 1000</strong> : utilisateurs "normaux" (humains ou applications)</p><div class="ulist"><ul><li><p>Premier utilisateur créé sur Ubuntu/Debian = UID 1000</p></li><li><p>Zone "sûre" pour les applications conteneurisées</p></li></ul></div></li></ul></div>
-<div class="paragraph"><p><strong>PROBLÈME SI UID &lt; 1000 :</strong></p></div>
-<div class="paragraph"><p>Imagine que tu crées un utilisateur dans ton Dockerfile avec UID 33 (www-data).
-Si ton conteneur monte un volume partagé avec l&#8217;hôte, et que l&#8217;hôte a AUSSI un utilisateur www-data (UID 33)&#8230;&#8203;
-→ Le conteneur aura accès aux fichiers de www-data sur l&#8217;HÔTE = faille de sécurité !</p></div>
-<div class="paragraph"><p><strong>EXEMPLE CONCRET :</strong></p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># MAUVAIS : UID fixe &lt; 1000
+CMD ["python", "/app/app.py"]</code></pre></div></div></div></section><section id="bonnes_pratiques_utilisateur"><h2>Bonnes pratiques utilisateur</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Toujours créer un utilisateur dédié</p></li><li class="fragment"><p>UID &gt; 1000 (éviter conflits système)</p></li><li class="fragment"><p>Ne jamais revenir à root après USER</p></li><li class="fragment"><p>Vérifier : <code>docker exec &lt;container&gt; whoami</code></p></li></ul></div></div></section><section id="comprendre_les_uid_linux"><h2>Comprendre les UID Linux</h2><div class="slide-content"><div class="paragraph"><p>Linux numérote les utilisateurs (User ID) :</p></div>
+<div class="ulist"><ul><li class="fragment"><p><strong>UID 0</strong> : root (super-utilisateur)</p></li><li class="fragment"><p><strong>UID 1-999</strong> : comptes système (www-data, postgres, redis&#8230;&#8203;)</p></li><li class="fragment"><p><strong>UID ≥ 1000</strong> : utilisateurs normaux et applications</p></li></ul></div>
+<div class="admonitionblock warning fragment"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Avec volumes montés, UID &lt; 1000 peut créer des conflits de sécurité !</td></tr></table></div>
+<aside class="notes"><div class="paragraph"><p><strong>POURQUOI C&#8217;EST IMPORTANT :</strong></p></div>
+<div class="paragraph"><p>Si vous créez un utilisateur avec UID 33 (www-data) dans votre conteneur,
+et que l&#8217;hôte a AUSSI www-data (UID 33), le conteneur pourra accéder aux fichiers
+de www-data sur l&#8217;HÔTE via les volumes montés = faille de sécurité !</p></div>
+<div class="paragraph"><p><strong>BONNE PRATIQUE :</strong>
+- Sans volumes montés : <code>useradd -r</code> acceptable (crée UID système &lt; 1000)
+- Avec volumes montés : <code>useradd -u 1001</code> ou laisser le système choisir (≥ 1000)</p></div>
+<div class="paragraph"><p>Dans SecureVote, <code>-r</code> est acceptable car pas de volumes montés critiques avec l&#8217;hôte.</p></div></aside></div></section><section id="uid_exemple_pratique"><h2>UID : Exemple pratique</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># RISQUÉ : UID fixe &lt; 1000
 RUN useradd -u 33 appuser
-# Si l'hôte a www-data (UID 33), conflit possible avec volumes montés !
+# Conflit possible si l'hôte a www-data (UID 33) !
 
-# BON : UID dynamique ≥ 1000 ou explicite &gt; 1000
+# SÛR : UID &gt; 1000
 RUN useradd -u 1001 appuser
-# OU laisser le système choisir automatiquement (sera &gt;= 1000)
+
+# OU laisser le système choisir (sera ≥ 1000)
 RUN useradd appuser</code></pre></div></div>
-<div class="paragraph"><p><strong>AVEC L&#8217;OPTION -r (comme dans useradd -r) :</strong></p></div>
-<div class="paragraph"><p>L&#8217;option <code>-r</code> crée un "system user" avec UID &lt; 1000.
-C&#8217;est acceptable DANS LE CONTENEUR car isolé, mais préférer UID &gt; 1000 pour les volumes montés.</p></div>
-<div class="paragraph"><p><strong>BONNE PRATIQUE GÉNÉRALE :</strong></p></div>
-<div class="ulist"><ul><li><p>Sans volumes montés : <code>-r</code> acceptable (UID système, &lt; 1000)</p></li><li><p>Avec volumes montés : UID explicite &gt; 1000 pour éviter collisions</p></li></ul></div>
-<div class="paragraph"><p><strong>VÉRIFICATION :</strong></p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker exec &lt;container&gt; id appuser
-# Résultat : uid=1001(appuser) gid=1001(appuser) groups=1001(appuser)</code></pre></div></div>
-<div class="paragraph"><p><strong>POUR LES ÉTUDIANTS :</strong></p></div>
-<div class="paragraph"><p>Expliquer : "Linux numérote les utilisateurs. 0-999 = système, ≥1000 = utilisateurs.
-On évite &lt; 1000 pour ne pas entrer en collision avec les comptes système de l&#8217;hôte."</p></div>
-<div class="paragraph"><p>Dans SecureVote, utiliser <code>-r</code> est acceptable car pas de volumes montés critiques avec l&#8217;hôte.</p></div></aside></div></section><section id="gestion_des_secrets"><h2>Gestion des secrets</h2><div class="slide-content"><div class="paragraph"><p><strong>Mauvaise pratique :</strong></p></div>
+<div class="paragraph fragment"><p>Vérifier : <code>docker exec &lt;container&gt; id appuser</code></p></div>
+<aside class="notes"><div class="paragraph"><p>Montrer la commande <code>id</code> dans un conteneur pour voir l&#8217;UID assigné.
+Exemple de résultat : uid=1001(appuser) gid=1001(appuser) groups=1001(appuser)</p></div>
+<div class="paragraph"><p>Pour les étudiants : expliquer que c&#8217;est comme les numéros de téléphone -
+il faut éviter que deux personnes aient le même numéro !</p></div>
+<div class="paragraph"><p>L&#8217;option <code>-r</code> dans <code>useradd -r</code> crée un "system user" avec UID &lt; 1000.
+C&#8217;est historique : les services système (Apache, Nginx, PostgreSQL) utilisent des UID bas.</p></div></aside></div></section><section id="gestion_des_secrets"><h2>Gestion des secrets</h2><div class="slide-content"><div class="paragraph"><p><strong>Mauvaise pratique :</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">environment:
   - POSTGRES_PASSWORD=super_secret_123  # NON !</code></pre></div></div>
 <div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Visible dans <code>docker inspect</code>, logs, historique !</td></tr></table></div>
