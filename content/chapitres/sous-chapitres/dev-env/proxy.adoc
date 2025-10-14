@@ -471,6 +471,9 @@ Puis redémarrer Docker :
 sudo systemctl restart docker
 ----
 
+[%auto-animate]
+== 5. Configurations avancées pour les proxys (au-delà du cache)
+
 === Option 5 – Configuration spécifique à l'utilisateur
 
 Créer ou modifier `~/.docker/config.json` :
