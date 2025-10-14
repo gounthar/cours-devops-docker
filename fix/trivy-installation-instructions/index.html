@@ -3628,14 +3628,17 @@ Anecdote : chercher "removed password" sur GitHub = des millions de résultats.
 Les secrets restent dans l&#8217;historique Git même après suppression !
 docker inspect montre TOUTES les variables d&#8217;env = un attaquant peut lire.
 Les logs peuvent accidentellement afficher les secrets lors du démarrage.
-Message clé : les secrets ne doivent JAMAIS être versionnés.</p></div></aside></div></section><section id="bonne_pratique_fichiers_env"><h2>Bonne pratique : Fichiers .env</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># .env (à ne JAMAIS commiter)
-DB_PASSWORD=super_secret_123
-
-# .gitignore
+Message clé : les secrets ne doivent JAMAIS être versionnés.</p></div></aside></div></section><section id="bonne_pratique_fichiers_env"><h2>Bonne pratique : Fichiers .env</h2><div class="slide-content"><div class="paragraph"><p><strong>Étape 1 : Créer le fichier .env</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># .env (à ne JAMAIS commiter)
+DB_PASSWORD=super_secret_123</code></pre></div></div>
+<div class="paragraph"><p><strong>Étape 2 : Protéger avec .gitignore</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># .gitignore
 .env
 secrets/</code></pre></div></div>
+<div class="paragraph"><p><strong>Étape 3 : Utiliser dans docker-compose.yml</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">environment:
-  - POSTGRES_PASSWORD=${DB_PASSWORD}</code></pre></div></div></div></section><section id="alternatives_pour_les_secrets"><h2>Alternatives pour les secrets</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p><strong>Docker Secrets</strong> (Swarm mode)</p></li><li class="fragment"><p><strong>Vault</strong> (HashiCorp)</p></li><li class="fragment"><p><strong>AWS Secrets Manager</strong>, Azure Key Vault</p></li><li class="fragment"><p><strong>Variables d&#8217;environnement</strong> du shell</p></li></ul></div></div></section><section id="phase_2_sécurisation_1h15" data-background-color="DarkOrange"><h2>Phase 2 : Sécurisation (1h15)</h2><div class="slide-content"><div class="paragraph"><p>Transformer SecureVote en application sécurisée</p></div>
+  - POSTGRES_PASSWORD=${DB_PASSWORD}</code></pre></div></div>
+<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Docker Compose charge automatiquement le fichier .env</td></tr></table></div></div></section><section id="alternatives_pour_les_secrets"><h2>Alternatives pour les secrets</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p><strong>Docker Secrets</strong> (Swarm mode)</p></li><li class="fragment"><p><strong>Vault</strong> (HashiCorp)</p></li><li class="fragment"><p><strong>AWS Secrets Manager</strong>, Azure Key Vault</p></li><li class="fragment"><p><strong>Variables d&#8217;environnement</strong> du shell</p></li></ul></div></div></section><section id="phase_2_sécurisation_1h15" data-background-color="DarkOrange"><h2>Phase 2 : Sécurisation (1h15)</h2><div class="slide-content"><div class="paragraph"><p>Transformer SecureVote en application sécurisée</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Images sûres et légères</p></li><li class="fragment"><p>Scanner les vulnérabilités avec Trivy</p></li><li class="fragment"><p>Utilisateurs non-root</p></li><li class="fragment"><p>Protéger les secrets</p></li><li class="fragment"><p>Isoler les réseaux</p></li></ul></div>
 <aside class="notes"><div class="paragraph"><p>Phase la plus longue et la plus importante : 1h15 de pratique intensive.
 Les étudiants doivent appliquer CONCRÈTEMENT tout ce qui vient d&#8217;être vu.
