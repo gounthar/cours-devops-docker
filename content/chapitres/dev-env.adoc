@@ -55,16 +55,28 @@ sudo apt install docker.io
 
 Votre environnement Docker est maintenant configuré 🎉
 
-[%step]
+[.small]
 * ✅ GitHub Codespaces : Docker déjà installé
-[%step]
 * ✅ Ubuntu 25.04 : Conflit Podman résolu
+* ✅ Prêt pour la suite !
+
+=== Prochaine étape 🚀
+
+Avant de découvrir Docker, un détour essentiel...
+
 [%step]
-* ✅ Prêt pour la suite : Découvrir Docker !
+**La ligne de commande (CLI)**
 
 [%step]
 [.small]
-➡️ Passons aux commandes Docker de base...
+* 🖥️ Interface fondamentale pour Docker
+[%step]
+* 🔧 Base de tous les outils DevOps
+[%step]
+* 💪 Compétence indispensable
+
+[%step]
+➡️ Guide de survie de la ligne de commande
 
 [.notes]
 --
