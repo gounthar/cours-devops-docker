@@ -111,7 +111,3 @@ Podman est compatible avec la CLI Docker !
 **MESSAGE CLÉ :**
 "Ubuntu 25.04 privilégie Podman, mais pour ce cours Docker, choisissez une solution claire : soit Docker seul, soit Podman avec alias. Évitez d'avoir les deux installés simultanément sans configuration."
 --
-
-[.small]
-On peut commencer !
-
