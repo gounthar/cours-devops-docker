@@ -1,24 +1,4 @@
-== Environnement Cloud : GitHub Codespaces ☁️
-
-Développer avec Docker directement dans le cloud.
-
-[%step]
-* Pas d'installation locale nécessaire
-[%step]
-* Docker pré-configuré et prêt à l'emploi
-[%step]
-* Gratuit : 60h/mois 🎉
-
-[.notes]
---
-**Transition depuis la section précédente :**
-\"Nous avons vu comment installer Docker localement et gérer les problèmes de proxy. Mais il existe une alternative encore plus simple : développer directement dans le cloud avec GitHub Codespaces.\"
-
-**Message clé :**
-\"GitHub Codespaces vous permet d'avoir un environnement de développement Docker fonctionnel en 30 secondes, sans aucune installation sur votre machine.\"
---
-
-== Outils Nécessaires 🛠
+=== Outils Nécessaires 🛠
 
 * Un navigateur web récent (et décent)
 * Un compte sur link:https://github.com[{github_icon} GitHub,window="_blank"]
@@ -38,7 +18,7 @@ Présenter GitHub Codespaces comme alternative moderne et gratuite pour dévelop
 "Nous avons vu comment installer Docker localement, mais il existe une alternative encore plus simple : développer directement dans le cloud avec GitHub Codespaces."
 --
 
-== GitHub Codespaces
+=== GitHub Codespaces
 
 link:https://github.com/features/codespaces[GitHub Codespaces,window="_blank"] : Environnement de développement dans le ☁️ "nuage"
 
@@ -75,7 +55,7 @@ Encouragez-les à demander le GitHub Student Developer Pack qui double le quota 
 "GitHub Codespaces vous offre un environnement de développement professionnel, identique à celui utilisé par de nombreuses équipes DevOps en entreprise. C'est l'occasion d'apprendre les bonnes pratiques dès maintenant."
 --
 
-== Pourquoi Codespaces ? 🤔
+=== Pourquoi Codespaces ? 🤔
 
 [%step]
 * ✅ Pas d'installation locale nécessaire
@@ -127,7 +107,7 @@ Encouragez-les à demander le GitHub Student Developer Pack qui double le quota 
 - Possibilité de stopper/redémarrer pour économiser les heures
 --
 
-== Prérequis 📋
+=== Prérequis 📋
 
 Vous avez déjà ce qu'il faut ! ✓
 
@@ -170,12 +150,12 @@ C'est l'un des grands avantages de Codespaces : la simplicité d'accès.
 "Si vous avez pu vous inscrire à ce cours et accéder à cette présentation, vous avez déjà tout ce qu'il faut pour utiliser GitHub Codespaces !"
 --
 
-== Démarrer avec Codespaces 🚀
+=== Démarrer avec Codespaces 🚀
 
 [%step]
 1. Rendez-vous sur un dépôt GitHub
 [%step]
-2. Cliquez sur le bouton vert **"Code"** ⬇️
+2. Cliquez sur le bouton **"Code"** (en haut à droite) ⬇️
 [%step]
 3. Sélectionnez l'onglet **"Codespaces"**
 [%step]
@@ -217,7 +197,7 @@ C'est l'un des grands avantages de Codespaces : la simplicité d'accès.
 - "Repository is too large" : Rarement un problème, mais limité à 2GB
 --
 
-== Interface Codespaces 💻
+=== Interface Codespaces 💻
 
 image::codespaces-interface-placeholder.png[width=800]
 
@@ -298,7 +278,7 @@ image::codespaces-interface-placeholder.png[width=800]
 "Si vous avez déjà utilisé VSCode, vous êtes en terrain familier. Si c'est votre première fois, ne vous inquiétez pas : nous allons surtout utiliser le terminal en bas pour nos commandes Docker."
 --
 
-== Terminal Codespaces 🖥️
+=== Terminal Codespaces 🖥️
 
 Le terminal est votre outil principal pour Docker !
 
@@ -365,7 +345,7 @@ This message shows that your installation appears to be working correctly.
 "Si ces trois commandes fonctionnent, vous êtes prêt à suivre tout le reste du cours. Docker est déjà installé, configuré et fonctionnel !"
 --
 
-== Configuration Codespaces (Optionnelle) ⚙️
+=== Configuration Codespaces (Optionnelle) ⚙️
 
 Codespaces peut être personnalisé avec `.devcontainer/`
 
@@ -449,7 +429,7 @@ https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces
 "Pas besoin de vous préoccuper de la configuration pour ce cours. Mais sachez que dans un contexte professionnel, `.devcontainer` permet de garantir que toute l'équipe travaille dans exactement le même environnement, ce qui est une excellente pratique DevOps !"
 --
 
-== Checkpoint 🎯
+=== Checkpoint 🎯
 
 Vérifiez que tout fonctionne :
 
@@ -520,7 +500,7 @@ Ce checkpoint permet de s'assurer que :
 "Ce checkpoint est crucial. Si tout fonctionne maintenant, vous n'aurez aucun problème pour le reste du cours. Prenez le temps de bien vérifier chaque point !"
 --
 
-== Gestion de votre Codespace 🔧
+=== Gestion de votre Codespace 🔧
 
 Optimisez votre quota gratuit de 60h/mois :
 
@@ -614,7 +594,7 @@ Total estimé : 15-30h sur tout le semestre
 "Vous pouvez avoir plusieurs Codespaces actifs pour différents projets. Chacun compte dans votre quota, donc pensez à tous les arrêter quand vous avez fini !"
 --
 
-== Avantages de Codespaces 🌟
+=== Avantages de Codespaces 🌟
 
 [.columns]
 --
@@ -725,7 +705,7 @@ Total estimé : 15-30h sur tout le semestre
 "Codespaces est excellent pour apprendre et pour ce cours. Mais dans votre carrière, vous rencontrerez aussi des environnements locaux et des serveurs distants. C'est pourquoi nous avons aussi montré l'installation locale : pour que vous soyez polyvalent !"
 --
 
-== Limites et Alternatives ⚠️
+=== Limites et Alternatives ⚠️
 
 **Limites de Codespaces :**
 
@@ -857,7 +837,7 @@ Il est important d'être honnête avec les étudiants sur les limitations pour q
 "En entreprise, vous rencontrerez des environnements variés : des développeurs sur laptop, des serveurs cloud, des CI/CD, des environnements containerisés. Plus vous êtes flexible et confortable avec différents setups, mieux vous vous adapterez."
 --
 
-== Ressources et Aide 📚
+=== Ressources et Aide 📚
 
 **Documentation officielle :**
 
@@ -1053,7 +1033,7 @@ Ce qui se passe réellement
 Insister sur le fait que les questions ne sont jamais stupides. Un étudiant qui pose une question aide souvent plusieurs autres qui n'osaient pas demander. Créer une atmosphère bienveillante est crucial pour l'apprentissage.
 --
 
-== Recap : GitHub Codespaces ✅
+=== Recap : GitHub Codespaces ✅
 
 Ce que vous devez retenir :
 
