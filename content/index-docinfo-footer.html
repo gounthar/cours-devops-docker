@@ -6,7 +6,8 @@
 <script src="reveal.js/reveal.js-plugins/chalkboard/plugin.js"></script>
 <script src="reveal.js/reveal.js-plugins/customcontrols/plugin.js"></script>
 <script>
-  Reveal.configure({
+  Reveal.initialize({
+    plugins: [ CopyCode, RevealMenu, RevealSearch, RevealChalkboard, RevealCustomControls ],
     copycode: {
       button: "hover", // Allow not showing button when exporting to PDF
       display: "both",
@@ -28,9 +29,4 @@
       ]
     },
   })
-  Reveal.registerPlugin(CopyCode)
-  Reveal.registerPlugin(RevealMenu)
-  Reveal.registerPlugin(RevealSearch)
-  Reveal.registerPlugin(RevealChalkboard)
-  Reveal.registerPlugin(RevealCustomControls)
 </script>
