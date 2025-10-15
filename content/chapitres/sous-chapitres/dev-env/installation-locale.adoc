@@ -1,0 +1,149 @@
+=== Ubuntu 25.04 et le conflit Podman ⚠️
+
+**Problème :** Ubuntu 25.04+ est livré avec Podman par défaut
+
+**Symptôme :** `Cannot connect to the Docker daemon`
+
+[.small]
+⚠️ Conflit entre `/var/run/docker.sock` et `/run/podman/podman.sock`
+
+[.columns]
+=== Solutions au conflit
+
+[.column]
+--
+**Solution 1 : Installer Docker**
+
+[source,bash]
+----
+sudo apt install docker.io
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER
+----
+
+[.small]
+⚠️ Logout/login requis pour groupe docker
+--
+
+[.column]
+--
+**Solution 2 : Désinstaller Podman** ✅
+
+[source,bash]
+----
+sudo apt remove podman
+sudo apt install docker.io
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER
+----
+
+[.small]
+⚠️ Logout/login requis
+--
+
+=== Environnement prêt ! ✅
+
+Votre environnement Docker est maintenant configuré 🎉
+
+[.small]
+* ✅ GitHub Codespaces : Docker déjà installé
+* ✅ Ubuntu 25.04 : Conflit Podman résolu
+* ✅ Prêt pour la suite !
+
+=== Prochaine étape 🚀
+
+Avant de découvrir Docker, un détour essentiel...
+
+[%step]
+**La ligne de commande (CLI)**
+
+[%step]
+[.small]
+Docker s'utilise exclusivement en ligne de commande !
+
+=== Pourquoi la CLI ? 💻
+
+[%step]
+* 🖥️ Interface fondamentale pour Docker
+[%step]
+* 🔧 Base de tous les outils DevOps
+[%step]
+* 💪 Compétence indispensable pour automatiser
+
+[%step]
+[.small]
+➡️ **Prochain chapitre :** Guide de survie de la ligne de commande
+
+[.notes]
+--
+**CONTEXTE - UBUNTU 25.04 ET PODMAN :**
+
+Ubuntu 25.04 (Noble Numbat) marque un changement majeur : Podman devient le moteur de conteneurs par défaut à la place de Docker.
+
+**Pourquoi ce changement ?**
+- Podman est "daemonless" (pas de daemon en root)
+- Mieux intégré avec systemd
+- Compatible OCI (Open Container Initiative)
+- Plus sécurisé par défaut (rootless)
+
+**Le conflit :**
+- Podman crée un socket `/run/podman/podman.sock` (ou rootless: `/run/user/$UID/podman/podman.sock`)
+- Docker cherche `/var/run/docker.sock`
+- Si les deux sont installés : confusion entre les sockets
+
+**Solution 1 - Installer Docker :**
+✅ Installation complète et propre
+✅ Docker démarre automatiquement au boot (systemctl enable)
+✅ Utilisateur ajouté au groupe docker
+❌ Nécessite logout/login pour activer le groupe
+❌ Garde Podman installé (peut causer confusion)
+
+**Explication des commandes Solution 1 :**
+- `apt install docker.io` : Installe Docker Engine
+- `systemctl enable --now docker` : Active et démarre le service Docker
+- `usermod -aG docker $USER` : Ajoute l'utilisateur au groupe docker
+- **Important** : Re-login requis pour que le groupe s'applique
+
+**Solution 2 - Désinstaller Podman :**
+✅ Solution la plus propre et définitive
+✅ Pas de configuration supplémentaire
+✅ Recommandé pour un cours Docker
+✅ Évite confusion entre Docker et Podman
+❌ Supprime Podman (si vous en avez besoin)
+
+**Pour le TP :**
+- Recommander Solution 2 si les étudiants ne connaissent pas Podman
+- Solution 1 si vous voulez garder Podman pour d'autres usages
+- Dans GitHub Codespaces : aucun problème, Docker préconfiguré
+
+**Vérification post-installation :**
+[source,bash]
+----
+# Vérifier que Docker tourne
+sudo systemctl status docker
+
+# Vérifier l'appartenance au groupe (après re-login)
+groups | grep docker
+
+# Tester Docker (sans sudo)
+docker run hello-world
+----
+
+**Note Docker Compose :**
+- `docker.io` sur Ubuntu inclut `docker compose` (v2, plugin)
+- Commande : `docker compose` (pas `docker-compose`)
+- Si vous utilisez Podman : installer `podman-compose` séparément
+
+**Alternative bonus - Podman :**
+Si vous voulez enseigner Podman au lieu de Docker :
+[source,bash]
+----
+alias docker=podman
+----
+⚠️ Attention : L'alias ne fournit PAS `docker compose`
+- Utilisez `podman-compose` à la place
+- Podman est compatible CLI Docker mais pas 100% identique
+
+**MESSAGE CLÉ :**
+"Ubuntu 25.04 privilégie Podman, mais pour ce cours Docker, choisissez une solution claire : soit Docker seul, soit Podman avec alias. Évitez d'avoir les deux installés simultanément sans configuration."
+--
