@@ -208,28 +208,22 @@ image::codespaces-create-button.png[width=500]
 === Interface Codespaces 💻
 
 [.column]
-image::codespaces-interface-placeholder.png[width=800]
+image::codespaces-interface-placeholder.png[width=600]
 
 [.column]
 --
-**Gauche** : Explorateur de fichiers
+[.small]
+**Gauche** : Explorateur de fichiers +
+→ Arborescence, Git
 
-* Arborescence du projet
-* Git (source control)
+**Centre** : Éditeur de code +
+→ Coloration, autocomplétion
 
-**Centre** : Éditeur de code
-
-* Coloration syntaxique
-* Autocomplétion
-
-**Bas** : Terminal intégré
-
-* Bash/Zsh shell
-* Commandes Docker
+**Bas** : Terminal intégré +
+→ Bash/Zsh, Docker
 
 [%step]
-[.small]
-💡 C'est exactement comme VSCode Desktop !
+💡 Identique à VSCode Desktop !
 --
 
 [.notes]
