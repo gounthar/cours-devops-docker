@@ -70,6 +70,97 @@ image::example.png[width=500]
   - Du contenu délimité par `--` pour les paragraphes/listes
 - Les délimiteurs `--` encadrent le contenu de chaque colonne si nécessaire
 
+#### Séparation des slides : Problème CRITIQUE avec include et leveloffset
+
+**PROBLÈME** : Quand des slides `===` sont placés directement dans le même fichier qu'un titre de section `==`, AsciiDoctor Reveal.js fusionne TOUS les slides `===` dans une SEULE section HTML avec `<div class="slide-content">` au lieu de créer des `<section>` séparées.
+
+**Symptôme** : Plusieurs slides apparaissent sur la même page au lieu d'être navigables avec les flèches.
+
+**Exemple problématique** (dans le même fichier) :
+```asciidoc
+== Installation locale de Docker
+
+=== Slide 1
+Contenu...
+
+=== Slide 2
+Contenu...
+
+=== Slide 3
+Contenu...
+```
+
+**Résultat HTML incorrect** :
+```html
+<section id="installation_locale_de_docker">
+  <h2>Installation locale de Docker</h2>
+  <div class="slide-content">
+    <h3>Slide 1</h3>
+    ...
+    <h3>Slide 2</h3>
+    ...
+    <h3>Slide 3</h3>
+  </div>
+</section>
+```
+☝️ Tous les contenus fusionnés dans UNE SEULE section !
+
+**SOLUTION** : Extraire les slides `===` dans un fichier séparé et l'inclure avec `leveloffset=0`
+
+**Structure correcte** :
+
+Fichier principal (`chapitres/dev-env.adoc`) :
+```asciidoc
+== Installation locale de Docker
+
+include::./sous-chapitres/dev-env/installation-locale.adoc[leveloffset=0]
+```
+
+Fichier inclus (`sous-chapitres/dev-env/installation-locale.adoc`) :
+```asciidoc
+=== Slide 1
+Contenu...
+
+=== Slide 2
+Contenu...
+
+=== Slide 3
+Contenu...
+```
+
+**Résultat HTML correct** :
+```html
+<section id="installation_locale_de_docker">
+  <h2>Installation locale de Docker</h2>
+</section>
+<section id="slide_1">
+  <h2>Slide 1</h2>
+  <div class="slide-content">...</div>
+</section>
+<section id="slide_2">
+  <h2>Slide 2</h2>
+  <div class="slide-content">...</div>
+</section>
+<section id="slide_3">
+  <h2>Slide 3</h2>
+  <div class="slide-content">...</div>
+</section>
+```
+☝️ Chaque slide dans sa propre `<section>` !
+
+**Règles à respecter** :
+1. **TOUJOURS** créer un fichier séparé dans `sous-chapitres/` pour les groupes de slides
+2. Utiliser `include::` avec `leveloffset=0` (JAMAIS `-1` ou autre valeur)
+3. Le fichier principal ne contient que le titre `==` et l'include
+4. Le fichier inclus contient uniquement les slides `===`
+5. Suivre le modèle de `github-codespaces.adoc` qui fonctionne correctement
+
+**Pourquoi `leveloffset=0` ?** :
+- `leveloffset=-1` décale les niveaux : `===` devient `==`, créant des sections au lieu de slides
+- `leveloffset=0` conserve les niveaux originaux : `===` reste `===` (slides individuels)
+
+Cette séparation en fichiers garantit que Reveal.js peut naviguer entre les slides avec les flèches !
+
 ## Structure du projet
 
 - Chapitres principaux : `content/chapitres/`

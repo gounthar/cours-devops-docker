@@ -1,0 +1,117 @@
+=== Ubuntu 25.04 et le conflit Podman ⚠️
+
+**Problème :** Ubuntu 25.04+ est livré avec Podman par défaut
+
+**Symptôme :** `Cannot connect to the Docker daemon`
+
+[.small]
+⚠️ Conflit entre `/var/run/docker.sock` et `/run/podman/podman.sock`
+
+[.columns]
+=== Solutions au conflit
+
+[.column]
+--
+**Solution 1 : Variable DOCKER_HOST**
+
+[source,bash]
+----
+export DOCKER_HOST=unix:///var/run/docker.sock
+----
+
+[.small]
+Permanent : Ajouter à `~/.bashrc`
+--
+
+[.column]
+--
+**Solution 2 : Désinstaller Podman** ✅
+
+[source,bash]
+----
+sudo apt remove podman
+sudo apt install docker.io
+----
+
+[.small]
+⚠️ Logout/login requis
+--
+
+=== Environnement prêt ! ✅
+
+Votre environnement Docker est maintenant configuré 🎉
+
+[.small]
+* ✅ GitHub Codespaces : Docker déjà installé
+* ✅ Ubuntu 25.04 : Conflit Podman résolu
+* ✅ Prêt pour la suite !
+
+=== Prochaine étape 🚀
+
+Avant de découvrir Docker, un détour essentiel...
+
+[%step]
+**La ligne de commande (CLI)**
+
+[%step]
+[.small]
+Docker s'utilise exclusivement en ligne de commande !
+
+=== Pourquoi la CLI ? 💻
+
+[%step]
+* 🖥️ Interface fondamentale pour Docker
+[%step]
+* 🔧 Base de tous les outils DevOps
+[%step]
+* 💪 Compétence indispensable pour automatiser
+
+[%step]
+[.small]
+➡️ **Prochain chapitre :** Guide de survie de la ligne de commande
+
+[.notes]
+--
+**CONTEXTE - UBUNTU 25.04 ET PODMAN :**
+
+Ubuntu 25.04 (Noble Numbat) marque un changement majeur : Podman devient le moteur de conteneurs par défaut à la place de Docker.
+
+**Pourquoi ce changement ?**
+- Podman est "daemonless" (pas de daemon en root)
+- Mieux intégré avec systemd
+- Compatible OCI (Open Container Initiative)
+- Plus sécurisé par défaut (rootless)
+
+**Le conflit :**
+- Podman crée un socket `/run/podman/podman.sock` (ou rootless: `/run/user/$UID/podman/podman.sock`)
+- Docker cherche `/var/run/docker.sock`
+- Si les deux sont installés : confusion entre les sockets
+
+**Solution 1 - DOCKER_HOST :**
+✅ Rapide, non-destructif
+✅ Permet de garder Podman installé
+❌ Doit être configuré pour chaque session/utilisateur
+❌ Peut causer confusion si oublié
+
+**Solution 2 - Désinstaller Podman :**
+✅ Solution propre et définitive
+✅ Pas de configuration supplémentaire
+✅ Recommandé pour un cours Docker
+❌ Supprime Podman si vous en avez besoin
+
+**Pour le TP :**
+- Recommander Solution 2 si les étudiants ne connaissent pas Podman
+- Solution 1 acceptable pour tests rapides
+- Dans GitHub Codespaces : aucun problème, Docker préconfiguré
+
+**Alternative bonus - Podman :**
+Si vous voulez enseigner Podman au lieu de Docker :
+[source,bash]
+----
+alias docker=podman
+----
+Podman est compatible avec la CLI Docker !
+
+**MESSAGE CLÉ :**
+"Ubuntu 25.04 privilégie Podman, mais pour ce cours Docker, choisissez une solution claire : soit Docker seul, soit Podman avec alias. Évitez d'avoir les deux installés simultanément sans configuration."
+--
