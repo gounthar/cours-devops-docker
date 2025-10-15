@@ -1297,34 +1297,22 @@ Que vous soyez sur Windows, Mac, Linux, Chromebook, voire une tablette, vous ave
 <div class="paragraph"><p><strong>Statistiques à partager (si pertinent) :</strong></p></div>
 <div class="paragraph"><p>"Dans les années précédentes, nous passions en moyenne 90 minutes à aider les étudiants avec l&#8217;installation. Cette année, avec Codespaces, tout le monde était prêt en 5 minutes. Ça, c&#8217;est 85 minutes de plus pour apprendre Docker !"</p></div>
 <div class="paragraph"><p><strong>Ouverture vers l&#8217;autonomie :</strong></p></div>
-<div class="paragraph"><p>"Vous avez maintenant accès à un environnement professionnel cloud. N&#8217;hésitez pas à l&#8217;utiliser pour d&#8217;autres projets, pour expérimenter, pour apprendre d&#8217;autres technologies. C&#8217;est votre laboratoire personnel, accessible 24/7. Profitez-en !"</p></div></aside></div></section><section id="installation_locale_de_docker"><h2>🐳 Installation locale de Docker</h2><div class="slide-content"><h3>Ubuntu 25.04 et le conflit Podman ⚠️</h3><div class="paragraph"><p><strong>Problème :</strong> Ubuntu 25.04+ est livré avec Podman par défaut, ce qui peut empêcher Docker de fonctionner correctement.</p></div>
-<div class="paragraph"><p><strong>Symptôme :</strong> Erreur "Cannot connect to the Docker daemon"</p></div>
-<h3>Solutions au conflit</h3><div class="openblock columns"><div class="content"></div></div>
-<div class="paragraph"><div class="title">Solution 1 : Variable DOCKER_HOST (rapide)</div><p><strong>Pour une session :</strong></p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Vérifier que le service Docker tourne :
-systemctl is-active --quiet docker || echo "⚠️ Docker n'est pas démarré (voir Solution 2)"
-export DOCKER_HOST=unix:///var/run/docker.sock
-docker ps  # Devrait fonctionner</code></pre></div></div>
-<div class="paragraph"><p><strong>Permanent (ajouter à ~/.bashrc ou ~/.zshrc) :</strong></p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">echo 'export DOCKER_HOST=unix:///var/run/docker.sock' &gt;&gt; ~/.bashrc &amp;&amp; source ~/.bashrc
-# ou pour zsh :
-echo 'export DOCKER_HOST=unix:///var/run/docker.sock' &gt;&gt; ~/.zshrc &amp;&amp; source ~/.zshrc</code></pre></div></div>
-<div class="openblock"><div class="content"></div></div>
-<div class="paragraph"><div class="title">Solution 2 : Désinstaller Podman (recommandé)</div><p><strong>Si vous n&#8217;utilisez pas Podman :</strong></p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo apt remove podman podman-docker
-sudo apt install docker.io
-sudo systemctl enable --now docker
-# Ajouter l'utilisateur au groupe docker
-sudo usermod -aG docker $USER
-# (optionnel mais utile pour le cours)
-sudo apt install -y docker-compose-plugin
-newgrp docker &lt;&lt;'EOF'
-docker ps
-EOF</code></pre></div></div>
-<div class="paragraph"><p><strong>⚠️ Attention :</strong> Après <code>usermod</code>, vous devez fermer votre session (logout/login) ou redémarrer votre shell pour que le changement de groupe prenne effet.</p></div>
-<div class="paragraph"><p><strong>Astuce :</strong> Utilisez <code>newgrp docker</code> pour activer le groupe sans vous déconnecter.</p></div>
-<div class="paragraph"><p><strong>Alternative :</strong> Préfixer chaque commande avec <code>sudo</code> (ex: <code>sudo docker ps</code>) si vous ne voulez pas rejoindre le groupe.</p></div>
-<div class="openblock"><div class="content"></div></div>
+<div class="paragraph"><p>"Vous avez maintenant accès à un environnement professionnel cloud. N&#8217;hésitez pas à l&#8217;utiliser pour d&#8217;autres projets, pour expérimenter, pour apprendre d&#8217;autres technologies. C&#8217;est votre laboratoire personnel, accessible 24/7. Profitez-en !"</p></div></aside></div></section><section id="installation_locale_de_docker"><h2>🐳 Installation locale de Docker</h2><div class="slide-content"><h3>Ubuntu 25.04 et le conflit Podman ⚠️</h3><div class="paragraph"><p><strong>Problème :</strong> Ubuntu 25.04+ est livré avec Podman par défaut</p></div>
+<div class="paragraph"><p><strong>Symptôme :</strong> <code>Cannot connect to the Docker daemon</code></p></div>
+<div class="paragraph small"><small>⚠️ Conflit entre <code>/var/run/docker.sock</code> et <code>/run/podman/podman.sock</code></small></div>
+<h3>Solutions au conflit</h3><div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Solution 1 : Variable DOCKER_HOST</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">export DOCKER_HOST=unix:///var/run/docker.sock</code></pre></div></div>
+<div class="paragraph small"><small>Permanent : Ajouter à <code>~/.bashrc</code></small></div></div></div>
+<div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Solution 2 : Désinstaller Podman</strong> ✅</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo apt remove podman
+sudo apt install docker.io</code></pre></div></div>
+<div class="paragraph small"><small>⚠️ Logout/login requis</small></div></div></div>
+<h3>Environnement prêt ! ✅</h3><div class="paragraph"><p>Votre environnement Docker est maintenant configuré 🎉</p></div>
+<div class="ulist small"><ul><li><p>✅ GitHub Codespaces : Docker déjà installé</p></li><li><p>✅ Ubuntu 25.04 : Conflit Podman résolu</p></li><li><p>✅ Prêt pour la suite !</p></li></ul></div>
+<h3>Prochaine étape 🚀</h3><div class="paragraph"><p>Avant de découvrir Docker, un détour essentiel&#8230;&#8203;</p></div>
+<div class="paragraph fragment"><p><strong>La ligne de commande (CLI)</strong></p></div>
+<div class="ulist small"><ul><li class="fragment"><p>🖥️ Interface fondamentale pour Docker</p></li><li class="fragment"><p>🔧 Base de tous les outils DevOps</p></li><li class="fragment"><p>💪 Compétence indispensable</p></li></ul></div>
+<div class="paragraph fragment"><p>➡️ Guide de survie de la ligne de commande</p></div>
 <aside class="notes"><div class="paragraph"><p><strong>CONTEXTE - UBUNTU 25.04 ET PODMAN :</strong></p></div>
 <div class="paragraph"><p>Ubuntu 25.04 (Noble Numbat) marque un changement majeur : Podman devient le moteur de conteneurs par défaut à la place de Docker.</p></div>
 <div class="paragraph"><p><strong>Pourquoi ce changement ?</strong>
@@ -1355,8 +1343,7 @@ Si vous voulez enseigner Podman au lieu de Docker :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">alias docker=podman</code></pre></div></div>
 <div class="paragraph"><p>Podman est compatible avec la CLI Docker !</p></div>
 <div class="paragraph"><p><strong>MESSAGE CLÉ :</strong>
-"Ubuntu 25.04 privilégie Podman, mais pour ce cours Docker, choisissez une solution claire : soit Docker seul, soit Podman avec alias. Évitez d&#8217;avoir les deux installés simultanément sans configuration."</p></div></aside>
-<div class="paragraph small"><small>On peut commencer !</small></div></div></section></section>
+"Ubuntu 25.04 privilégie Podman, mais pour ce cours Docker, choisissez une solution claire : soit Docker seul, soit Podman avec alias. Évitez d&#8217;avoir les deux installés simultanément sans configuration."</p></div></aside></div></section></section>
 <section><section id="ligne_de_commande" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Ligne de commande</h2><div class="slide-content"><div class="paragraph"><p>Guide de survie</p></div></div></section><section id="problématique"><h2>🤔 Problématique</h2><div class="slide-content"><div class="ulist"><ul><li><p>Communication Humain &lt;&#8594; Machine</p></li><li><p>Base commune de TOUS les outils</p></li></ul></div></div></section><section id="cli" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>CLI</h2><div class="slide-content"><div class="ulist"><ul><li><p>🇬🇧 CLI == "Command Line Interface"</p></li><li><p>🇫🇷 "Interface de Ligne de Commande"</p></li></ul></div></div></section><section id="repl"><h2>REPL</h2><div class="slide-content"><div class="paragraph"><p>Pour les théoriciens et curieux :</p></div>
 <div class="ulist"><ul><li><p>🇬🇧 REPL == "Read–eval–print loop"</p></li></ul></div>
 <div class="paragraph"><p><a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop" class="bare">https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop</a></p></div></div></section><section id="anatomie_dune_commande"><h2>Anatomie d&#8217;une commande</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">ls --color=always -l /bin</code></pre></div></div>
@@ -5802,31 +5789,35 @@ hljs.highlightAll();
 <script src="reveal.js/reveal.js-plugins/chalkboard/plugin.js"></script>
 <script src="reveal.js/reveal.js-plugins/customcontrols/plugin.js"></script>
 <script>
-  Reveal.configure({
-    copycode: {
-      button: "hover", // Allow not showing button when exporting to PDF
-      display: "both",
-      clipboardjspath: "scripts/clipboard.min.js",
-      style: {
-        scale: 0.7,
-      },
-    },
-    customcontrols: {
-      controls: [
-        { icon: '<i class="fa fa-pen-square"></i>',
-          title: 'Toggle chalkboard (B)',
-          action: 'RevealChalkboard.toggleChalkboard();'
+  // Wait for Reveal to be initialized by AsciiDoctor, then add our plugins
+  Reveal.on('ready', function() {
+    Reveal.registerPlugin(CopyCode);
+    Reveal.registerPlugin(RevealMenu);
+    Reveal.registerPlugin(RevealSearch);
+    Reveal.registerPlugin(RevealChalkboard);
+    Reveal.registerPlugin(RevealCustomControls);
+
+    Reveal.configure({
+      copycode: {
+        button: "hover",
+        display: "both",
+        clipboardjspath: "scripts/clipboard.min.js",
+        style: {
+          scale: 0.7,
         },
-        { icon: '<i class="fa fa-pen"></i>',
-          title: 'Toggle notes canvas (C)',
-          action: 'RevealChalkboard.toggleNotesCanvas();'
-        }
-      ]
-    },
-  })
-  Reveal.registerPlugin(CopyCode)
-  Reveal.registerPlugin(RevealMenu)
-  Reveal.registerPlugin(RevealSearch)
-  Reveal.registerPlugin(RevealChalkboard)
-  Reveal.registerPlugin(RevealCustomControls)
+      },
+      customcontrols: {
+        controls: [
+          { icon: '<i class="fa fa-pen-square"></i>',
+            title: 'Toggle chalkboard (B)',
+            action: 'RevealChalkboard.toggleChalkboard();'
+          },
+          { icon: '<i class="fa fa-pen"></i>',
+            title: 'Toggle notes canvas (C)',
+            action: 'RevealChalkboard.toggleNotesCanvas();'
+          }
+        ]
+      },
+    });
+  });
 </script></body></html>
