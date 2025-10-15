@@ -6,27 +6,35 @@
 <script src="reveal.js/reveal.js-plugins/chalkboard/plugin.js"></script>
 <script src="reveal.js/reveal.js-plugins/customcontrols/plugin.js"></script>
 <script>
-  Reveal.initialize({
-    plugins: [ CopyCode, RevealMenu, RevealSearch, RevealChalkboard, RevealCustomControls ],
-    copycode: {
-      button: "hover", // Allow not showing button when exporting to PDF
-      display: "both",
-      clipboardjspath: "scripts/clipboard.min.js",
-      style: {
-        scale: 0.7,
-      },
-    },
-    customcontrols: {
-      controls: [
-        { icon: '<i class="fa fa-pen-square"></i>',
-          title: 'Toggle chalkboard (B)',
-          action: 'RevealChalkboard.toggleChalkboard();'
+  // Wait for Reveal to be initialized by AsciiDoctor, then add our plugins
+  Reveal.on('ready', function() {
+    Reveal.registerPlugin(CopyCode);
+    Reveal.registerPlugin(RevealMenu);
+    Reveal.registerPlugin(RevealSearch);
+    Reveal.registerPlugin(RevealChalkboard);
+    Reveal.registerPlugin(RevealCustomControls);
+
+    Reveal.configure({
+      copycode: {
+        button: "hover",
+        display: "both",
+        clipboardjspath: "scripts/clipboard.min.js",
+        style: {
+          scale: 0.7,
         },
-        { icon: '<i class="fa fa-pen"></i>',
-          title: 'Toggle notes canvas (C)',
-          action: 'RevealChalkboard.toggleNotesCanvas();'
-        }
-      ]
-    },
-  })
+      },
+      customcontrols: {
+        controls: [
+          { icon: '<i class="fa fa-pen-square"></i>',
+            title: 'Toggle chalkboard (B)',
+            action: 'RevealChalkboard.toggleChalkboard();'
+          },
+          { icon: '<i class="fa fa-pen"></i>',
+            title: 'Toggle notes canvas (C)',
+            action: 'RevealChalkboard.toggleNotesCanvas();'
+          }
+        ]
+      },
+    });
+  });
 </script>
