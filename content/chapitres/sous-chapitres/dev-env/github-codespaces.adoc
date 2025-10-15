@@ -152,6 +152,15 @@ C'est l'un des grands avantages de Codespaces : la simplicité d'accès.
 
 === Démarrer avec Codespaces 🚀
 
+[.columns]
+--
+[.column]
+--
+image::codespaces-create-button.png[width=500]
+--
+
+[.column]
+--
 [%step]
 1. Rendez-vous sur un dépôt GitHub
 [%step]
@@ -167,6 +176,8 @@ C'est l'un des grands avantages de Codespaces : la simplicité d'accès.
 
 [.small]
 ⚠️ Passez à la slide suivante pour voir l'interface
+--
+--
 
 [.notes]
 --
@@ -282,6 +293,10 @@ image::codespaces-interface-placeholder.png[width=800]
 
 Le terminal est votre outil principal pour Docker !
 
+[.columns]
+--
+[.column]
+--
 [source,bash]
 ----
 # Vérifier l'utilisateur
@@ -298,6 +313,13 @@ docker run hello-world
 
 [.small]
 ⚠️ Passez à la slide suivante pour comprendre la configuration
+--
+
+[.column]
+--
+image::codespaces-terminal-output.png[width=550]
+--
+--
 
 [.notes]
 --
