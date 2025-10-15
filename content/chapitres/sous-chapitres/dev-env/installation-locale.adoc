@@ -12,15 +12,17 @@
 
 [.column]
 --
-**Solution 1 : Variable DOCKER_HOST**
+**Solution 1 : Installer Docker**
 
 [source,bash]
 ----
-export DOCKER_HOST=unix:///var/run/docker.sock
+sudo apt install docker.io
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER
 ----
 
 [.small]
-Permanent : Ajouter à `~/.bashrc`
+⚠️ Logout/login requis pour groupe docker
 --
 
 [.column]
@@ -31,6 +33,8 @@ Permanent : Ajouter à `~/.bashrc`
 ----
 sudo apt remove podman
 sudo apt install docker.io
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER
 ----
 
 [.small]
@@ -87,22 +91,48 @@ Ubuntu 25.04 (Noble Numbat) marque un changement majeur : Podman devient le mote
 - Docker cherche `/var/run/docker.sock`
 - Si les deux sont installés : confusion entre les sockets
 
-**Solution 1 - DOCKER_HOST :**
-✅ Rapide, non-destructif
-✅ Permet de garder Podman installé
-❌ Doit être configuré pour chaque session/utilisateur
-❌ Peut causer confusion si oublié
+**Solution 1 - Installer Docker :**
+✅ Installation complète et propre
+✅ Docker démarre automatiquement au boot (systemctl enable)
+✅ Utilisateur ajouté au groupe docker
+❌ Nécessite logout/login pour activer le groupe
+❌ Garde Podman installé (peut causer confusion)
+
+**Explication des commandes Solution 1 :**
+- `apt install docker.io` : Installe Docker Engine
+- `systemctl enable --now docker` : Active et démarre le service Docker
+- `usermod -aG docker $USER` : Ajoute l'utilisateur au groupe docker
+- **Important** : Re-login requis pour que le groupe s'applique
 
 **Solution 2 - Désinstaller Podman :**
-✅ Solution propre et définitive
+✅ Solution la plus propre et définitive
 ✅ Pas de configuration supplémentaire
 ✅ Recommandé pour un cours Docker
-❌ Supprime Podman si vous en avez besoin
+✅ Évite confusion entre Docker et Podman
+❌ Supprime Podman (si vous en avez besoin)
 
 **Pour le TP :**
 - Recommander Solution 2 si les étudiants ne connaissent pas Podman
-- Solution 1 acceptable pour tests rapides
+- Solution 1 si vous voulez garder Podman pour d'autres usages
 - Dans GitHub Codespaces : aucun problème, Docker préconfiguré
+
+**Vérification post-installation :**
+[source,bash]
+----
+# Vérifier que Docker tourne
+sudo systemctl status docker
+
+# Vérifier l'appartenance au groupe (après re-login)
+groups | grep docker
+
+# Tester Docker (sans sudo)
+docker run hello-world
+----
+
+**Note Docker Compose :**
+- `docker.io` sur Ubuntu inclut `docker compose` (v2, plugin)
+- Commande : `docker compose` (pas `docker-compose`)
+- Si vous utilisez Podman : installer `podman-compose` séparément
 
 **Alternative bonus - Podman :**
 Si vous voulez enseigner Podman au lieu de Docker :
@@ -110,7 +140,9 @@ Si vous voulez enseigner Podman au lieu de Docker :
 ----
 alias docker=podman
 ----
-Podman est compatible avec la CLI Docker !
+⚠️ Attention : L'alias ne fournit PAS `docker compose`
+- Utilisez `podman-compose` à la place
+- Podman est compatible CLI Docker mais pas 100% identique
 
 **MESSAGE CLÉ :**
 "Ubuntu 25.04 privilégie Podman, mais pour ce cours Docker, choisissez une solution claire : soit Docker seul, soit Podman avec alias. Évitez d'avoir les deux installés simultanément sans configuration."
