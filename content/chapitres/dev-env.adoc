@@ -14,42 +14,57 @@ include::./sous-chapitres/dev-env/github-codespaces.adoc[leveloffset=-1]
 
 === Ubuntu 25.04 et le conflit Podman ⚠️
 
-**Problème :** Ubuntu 25.04+ est livré avec Podman par défaut, ce qui peut empêcher Docker de fonctionner correctement.
+**Problème :** Ubuntu 25.04+ est livré avec Podman par défaut
 
-**Symptôme :** Erreur "Cannot connect to the Docker daemon"
+**Symptôme :** `Cannot connect to the Docker daemon`
+
+[.small]
+⚠️ Conflit entre `/var/run/docker.sock` et `/run/podman/podman.sock`
 
 [.columns]
 === Solutions au conflit
 
 [.column]
 --
-[.small]
 **Solution 1 : Variable DOCKER_HOST**
 
 [source,bash]
 ----
 export DOCKER_HOST=unix:///var/run/docker.sock
-docker ps
 ----
 
+[.small]
 Permanent : Ajouter à `~/.bashrc`
 --
 
 [.column]
 --
-[.small]
 **Solution 2 : Désinstaller Podman** ✅
 
 [source,bash]
 ----
 sudo apt remove podman
 sudo apt install docker.io
-sudo systemctl enable --now docker
-sudo usermod -aG docker $USER
 ----
 
-⚠️ Logout/login requis après `usermod`
+[.small]
+⚠️ Logout/login requis
 --
+
+=== Environnement prêt ! ✅
+
+Votre environnement Docker est maintenant configuré 🎉
+
+[%step]
+* ✅ GitHub Codespaces : Docker déjà installé
+[%step]
+* ✅ Ubuntu 25.04 : Conflit Podman résolu
+[%step]
+* ✅ Prêt pour la suite : Découvrir Docker !
+
+[%step]
+[.small]
+➡️ Passons aux commandes Docker de base...
 
 [.notes]
 --
