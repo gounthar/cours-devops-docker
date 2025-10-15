@@ -1299,12 +1299,16 @@ Que vous soyez sur Windows, Mac, Linux, Chromebook, voire une tablette, vous ave
 <div class="paragraph"><p><strong>Ouverture vers l&#8217;autonomie :</strong></p></div>
 <div class="paragraph"><p>"Vous avez maintenant accès à un environnement professionnel cloud. N&#8217;hésitez pas à l&#8217;utiliser pour d&#8217;autres projets, pour expérimenter, pour apprendre d&#8217;autres technologies. C&#8217;est votre laboratoire personnel, accessible 24/7. Profitez-en !"</p></div></aside></div></section><section id="installation_locale_de_docker"><h2>🐳 Installation locale de Docker</h2></section><section id="ubuntu_25_04_et_le_conflit_podman"><h2>Ubuntu 25.04 et le conflit Podman ⚠️</h2><div class="slide-content"><div class="paragraph"><p><strong>Problème :</strong> Ubuntu 25.04+ est livré avec Podman par défaut</p></div>
 <div class="paragraph"><p><strong>Symptôme :</strong> <code>Cannot connect to the Docker daemon</code></p></div>
-<div class="paragraph small"><small>⚠️ Conflit entre <code>/var/run/docker.sock</code> et <code>/run/podman/podman.sock</code></small></div></div></section><section id="solutions_au_conflit" class="columns"><h2>Solutions au conflit</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Solution 1 : Variable DOCKER_HOST</strong></p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">export DOCKER_HOST=unix:///var/run/docker.sock</code></pre></div></div>
-<div class="paragraph small"><small>Permanent : Ajouter à <code>~/.bashrc</code></small></div></div></div>
+<div class="paragraph small"><small>⚠️ Conflit entre <code>/var/run/docker.sock</code> et <code>/run/podman/podman.sock</code></small></div></div></section><section id="solutions_au_conflit" class="columns"><h2>Solutions au conflit</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Solution 1 : Installer Docker</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo apt install docker.io
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER</code></pre></div></div>
+<div class="paragraph small"><small>⚠️ Logout/login requis pour groupe docker</small></div></div></div>
 <div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Solution 2 : Désinstaller Podman</strong> ✅</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo apt remove podman
-sudo apt install docker.io</code></pre></div></div>
+sudo apt install docker.io
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER</code></pre></div></div>
 <div class="paragraph small"><small>⚠️ Logout/login requis</small></div></div></div></div></section><section id="environnement_prêt"><h2>Environnement prêt ! ✅</h2><div class="slide-content"><div class="paragraph"><p>Votre environnement Docker est maintenant configuré 🎉</p></div>
 <div class="ulist small"><ul><li><p>✅ GitHub Codespaces : Docker déjà installé</p></li><li><p>✅ Ubuntu 25.04 : Conflit Podman résolu</p></li><li><p>✅ Prêt pour la suite !</p></li></ul></div></div></section><section id="prochaine_étape"><h2>Prochaine étape 🚀</h2><div class="slide-content"><div class="paragraph"><p>Avant de découvrir Docker, un détour essentiel&#8230;&#8203;</p></div>
 <div class="paragraph fragment"><p><strong>La ligne de commande (CLI)</strong></p></div>
@@ -1321,24 +1325,46 @@ sudo apt install docker.io</code></pre></div></div>
 - Podman crée un socket <code>/run/podman/podman.sock</code> (ou rootless: <code>/run/user/$UID/podman/podman.sock</code>)
 - Docker cherche <code>/var/run/docker.sock</code>
 - Si les deux sont installés : confusion entre les sockets</p></div>
-<div class="paragraph"><p><strong>Solution 1 - DOCKER_HOST :</strong>
-✅ Rapide, non-destructif
-✅ Permet de garder Podman installé
-❌ Doit être configuré pour chaque session/utilisateur
-❌ Peut causer confusion si oublié</p></div>
+<div class="paragraph"><p><strong>Solution 1 - Installer Docker :</strong>
+✅ Installation complète et propre
+✅ Docker démarre automatiquement au boot (systemctl enable)
+✅ Utilisateur ajouté au groupe docker
+❌ Nécessite logout/login pour activer le groupe
+❌ Garde Podman installé (peut causer confusion)</p></div>
+<div class="paragraph"><p><strong>Explication des commandes Solution 1 :</strong>
+- <code>apt install docker.io</code> : Installe Docker Engine
+- <code>systemctl enable --now docker</code> : Active et démarre le service Docker
+- <code>usermod -aG docker $USER</code> : Ajoute l&#8217;utilisateur au groupe docker
+- <strong>Important</strong> : Re-login requis pour que le groupe s&#8217;applique</p></div>
 <div class="paragraph"><p><strong>Solution 2 - Désinstaller Podman :</strong>
-✅ Solution propre et définitive
+✅ Solution la plus propre et définitive
 ✅ Pas de configuration supplémentaire
 ✅ Recommandé pour un cours Docker
-❌ Supprime Podman si vous en avez besoin</p></div>
+✅ Évite confusion entre Docker et Podman
+❌ Supprime Podman (si vous en avez besoin)</p></div>
 <div class="paragraph"><p><strong>Pour le TP :</strong>
 - Recommander Solution 2 si les étudiants ne connaissent pas Podman
-- Solution 1 acceptable pour tests rapides
+- Solution 1 si vous voulez garder Podman pour d&#8217;autres usages
 - Dans GitHub Codespaces : aucun problème, Docker préconfiguré</p></div>
+<div class="paragraph"><p><strong>Vérification post-installation :</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Vérifier que Docker tourne
+sudo systemctl status docker
+
+# Vérifier l'appartenance au groupe (après re-login)
+groups | grep docker
+
+# Tester Docker (sans sudo)
+docker run hello-world</code></pre></div></div>
+<div class="paragraph"><p><strong>Note Docker Compose :</strong>
+- <code>docker.io</code> sur Ubuntu inclut <code>docker compose</code> (v2, plugin)
+- Commande : <code>docker compose</code> (pas <code>docker-compose</code>)
+- Si vous utilisez Podman : installer <code>podman-compose</code> séparément</p></div>
 <div class="paragraph"><p><strong>Alternative bonus - Podman :</strong>
 Si vous voulez enseigner Podman au lieu de Docker :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">alias docker=podman</code></pre></div></div>
-<div class="paragraph"><p>Podman est compatible avec la CLI Docker !</p></div>
+<div class="paragraph"><p>⚠️ Attention : L&#8217;alias ne fournit PAS <code>docker compose</code>
+- Utilisez <code>podman-compose</code> à la place
+- Podman est compatible CLI Docker mais pas 100% identique</p></div>
 <div class="paragraph"><p><strong>MESSAGE CLÉ :</strong>
 "Ubuntu 25.04 privilégie Podman, mais pour ce cours Docker, choisissez une solution claire : soit Docker seul, soit Podman avec alias. Évitez d&#8217;avoir les deux installés simultanément sans configuration."</p></div></aside></div></section></section>
 <section><section id="ligne_de_commande" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Ligne de commande</h2><div class="slide-content"><div class="paragraph"><p>Guide de survie</p></div></div></section><section id="problématique"><h2>🤔 Problématique</h2><div class="slide-content"><div class="ulist"><ul><li><p>Communication Humain &lt;&#8594; Machine</p></li><li><p>Base commune de TOUS les outils</p></li></ul></div></div></section><section id="cli" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>CLI</h2><div class="slide-content"><div class="ulist"><ul><li><p>🇬🇧 CLI == "Command Line Interface"</p></li><li><p>🇫🇷 "Interface de Ligne de Commande"</p></li></ul></div></div></section><section id="repl"><h2>REPL</h2><div class="slide-content"><div class="paragraph"><p>Pour les théoriciens et curieux :</p></div>
