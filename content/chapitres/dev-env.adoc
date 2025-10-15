@@ -18,56 +18,37 @@ include::./sous-chapitres/dev-env/github-codespaces.adoc[leveloffset=-1]
 
 **Symptôme :** Erreur "Cannot connect to the Docker daemon"
 
+[.columns]
 === Solutions au conflit
 
-[.columns]
---
 [.column]
 --
-.Solution 1 : Variable DOCKER_HOST (rapide)
+[.small]
+**Solution 1 : Variable DOCKER_HOST**
 
-**Pour une session :**
 [source,bash]
 ----
-# Vérifier que le service Docker tourne :
-systemctl is-active --quiet docker || echo "⚠️ Docker n'est pas démarré (voir Solution 2)"
 export DOCKER_HOST=unix:///var/run/docker.sock
-docker ps  # Devrait fonctionner
+docker ps
 ----
 
-**Permanent (ajouter à ~/.bashrc ou ~/.zshrc) :**
-[source,bash]
-----
-echo 'export DOCKER_HOST=unix:///var/run/docker.sock' >> ~/.bashrc && source ~/.bashrc
-# ou pour zsh :
-echo 'export DOCKER_HOST=unix:///var/run/docker.sock' >> ~/.zshrc && source ~/.zshrc
-----
+Permanent : Ajouter à `~/.bashrc`
 --
+
 [.column]
 --
-.Solution 2 : Désinstaller Podman (recommandé)
+[.small]
+**Solution 2 : Désinstaller Podman** ✅
 
-**Si vous n'utilisez pas Podman :**
 [source,bash]
 ----
-sudo apt remove podman podman-docker
+sudo apt remove podman
 sudo apt install docker.io
 sudo systemctl enable --now docker
-# Ajouter l'utilisateur au groupe docker
 sudo usermod -aG docker $USER
-# (optionnel mais utile pour le cours)
-sudo apt install -y docker-compose-plugin
-newgrp docker <<'EOF'
-docker ps
-EOF
 ----
 
-**⚠️ Attention :** Après `usermod`, vous devez fermer votre session (logout/login) ou redémarrer votre shell pour que le changement de groupe prenne effet.
-
-**Astuce :** Utilisez `newgrp docker` pour activer le groupe sans vous déconnecter.
-
-**Alternative :** Préfixer chaque commande avec `sudo` (ex: `sudo docker ps`) si vous ne voulez pas rejoindre le groupe.
---
+⚠️ Logout/login requis après `usermod`
 --
 
 [.notes]
