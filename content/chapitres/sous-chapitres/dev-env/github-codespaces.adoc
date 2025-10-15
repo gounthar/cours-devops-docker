@@ -150,14 +150,11 @@ C'est l'un des grands avantages de Codespaces : la simplicité d'accès.
 "Si vous avez pu vous inscrire à ce cours et accéder à cette présentation, vous avez déjà tout ce qu'il faut pour utiliser GitHub Codespaces !"
 --
 
+[.columns]
 === Démarrer avec Codespaces 🚀
 
-[.columns]
---
 [.column]
---
 image::codespaces-create-button.png[width=500]
---
 
 [.column]
 --
@@ -176,7 +173,6 @@ image::codespaces-create-button.png[width=500]
 
 [.small]
 ⚠️ Passez à la slide suivante pour voir l'interface
---
 --
 
 [.notes]
@@ -208,40 +204,33 @@ image::codespaces-create-button.png[width=500]
 - "Repository is too large" : Rarement un problème, mais limité à 2GB
 --
 
+[.columns]
 === Interface Codespaces 💻
 
+[.column]
 image::codespaces-interface-placeholder.png[width=800]
 
-[.columns]
---
 [.column]
 --
 **Gauche** : Explorateur de fichiers
 
 * Arborescence du projet
 * Git (source control)
---
 
-[.column]
---
 **Centre** : Éditeur de code
 
 * Coloration syntaxique
 * Autocomplétion
---
 
-[.column]
---
 **Bas** : Terminal intégré
 
 * Bash/Zsh shell
 * Commandes Docker
---
---
 
 [%step]
 [.small]
 💡 C'est exactement comme VSCode Desktop !
+--
 
 [.notes]
 --
@@ -289,14 +278,13 @@ image::codespaces-interface-placeholder.png[width=800]
 "Si vous avez déjà utilisé VSCode, vous êtes en terrain familier. Si c'est votre première fois, ne vous inquiétez pas : nous allons surtout utiliser le terminal en bas pour nos commandes Docker."
 --
 
+[.columns]
 === Terminal Codespaces 🖥️
 
-Le terminal est votre outil principal pour Docker !
-
-[.columns]
---
 [.column]
 --
+Le terminal est votre outil principal pour Docker !
+
 [source,bash]
 ----
 # Vérifier l'utilisateur
@@ -316,10 +304,7 @@ docker run hello-world
 --
 
 [.column]
---
 image::codespaces-terminal-output.png[width=550]
---
---
 
 [.notes]
 --
