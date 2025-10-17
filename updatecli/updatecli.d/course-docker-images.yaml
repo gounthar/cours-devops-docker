@@ -1,0 +1,121 @@
+name: Update Docker images in course content
+
+sources:
+  ubuntu_latest:
+    kind: dockerimage
+    spec:
+      image: ubuntu
+      tagfilter: '^\d+\.\d+$' # 22.04, 24.04, etc.
+      versionfilter:
+        kind: semver
+
+  python_latest:
+    kind: dockerimage
+    spec:
+      image: python
+      tagfilter: '^3\.\d+$' # 3.11, 3.12, 3.13, etc.
+      versionfilter:
+        kind: semver
+
+  alpine_latest:
+    kind: dockerimage
+    spec:
+      image: alpine
+      tagfilter: '^\d+\.\d+\.\d+$'
+      versionfilter:
+        kind: semver
+
+  nginx_alpine_latest:
+    kind: dockerimage
+    spec:
+      image: nginx
+      tagfilter: '^\d+\.\d+\.\d+(-alpine\d+\.\d+)?(-slim)?$'
+      versionfilter:
+        kind: semver
+
+targets:
+  update_ubuntu_images:
+    name: "Update Ubuntu version in images.adoc"
+    kind: file
+    scmid: default
+    sourceid: "ubuntu_latest"
+    spec:
+      file: content/chapitres/images.adoc
+      matchpattern: 'ubuntu:22\.04'
+      replacepattern: 'ubuntu:{{ source "ubuntu_latest" }}'
+
+  update_ubuntu_proxy:
+    name: "Update Ubuntu version in proxy.adoc"
+    kind: file
+    scmid: default
+    sourceid: "ubuntu_latest"
+    spec:
+      file: content/chapitres/sous-chapitres/dev-env/proxy.adoc
+      matchpattern: 'ubuntu:22\.04'
+      replacepattern: 'ubuntu:{{ source "ubuntu_latest" }}'
+
+  update_python_proxy:
+    name: "Update Python version in proxy.adoc"
+    kind: file
+    scmid: default
+    sourceid: "python_latest"
+    spec:
+      file: content/chapitres/sous-chapitres/dev-env/proxy.adoc
+      matchpattern: 'python:3\.9'
+      replacepattern: 'python:{{ source "python_latest" }}'
+
+  update_python_security:
+    name: "Update Python version in securite-production.adoc"
+    kind: file
+    scmid: default
+    sourceid: "python_latest"
+    spec:
+      file: content/chapitres/securite-production.adoc
+      matchpattern: 'python:3\.11'
+      replacepattern: 'python:{{ source "python_latest" }}'
+
+  update_alpine_interactive:
+    name: "Update Alpine version in interactif.adoc"
+    kind: file
+    scmid: default
+    sourceid: "alpine_latest"
+    spec:
+      file: content/chapitres/sous-chapitres/docker-base/interactif.adoc
+      matchpattern: 'alpine:3\.18\.3'
+      replacepattern: 'alpine:{{ source "alpine_latest" }}'
+
+  update_nginx:
+    name: "Update Nginx version in fichiers-nommage-inspect.adoc"
+    kind: file
+    scmid: default
+    sourceid: "nginx_alpine_latest"
+    spec:
+      file: content/chapitres/fichiers-nommage-inspect.adoc
+      matchpattern: 'nginx:1\.28\.0-alpine3\.21'
+      replacepattern: 'nginx:{{ source "nginx_alpine_latest" }}'
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: gounthar
+      repository: cours-devops-docker
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: "{{ .github.user }}"
+      branch: main
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    spec:
+      title: "[updatecli] Update Docker image versions in course content"
+      description: |
+        Automatic update of Docker image versions used in course examples.
+
+        Updated images:
+        {{- range $key, $value := .sources }}
+        - {{ $key }}: {{ source $key }}
+        {{- end }}
