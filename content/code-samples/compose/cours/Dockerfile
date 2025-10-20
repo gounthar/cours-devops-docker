@@ -1,7 +1,7 @@
 # Ce Dockerfile met en place un environnement Node.js avec des outils et dépendances supplémentaires.
 # Il est basé sur l'image Docker officielle de Node.js (version 22, variante Alpine).
 
-FROM node:24-alpine
+FROM node:25-alpine
 
 # Installer la dernière version des dépendances requises
 # hadolint ignore=DL3018
