@@ -3655,7 +3655,7 @@ volumes:
       retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
     volumes:
       - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_3" data-auto-animate><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph"><p>Maven</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM jenkins/ssh-agent:7.2.0-jdk17 as ssh-agent
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM jenkins/ssh-agent:7.3.0-jdk17 as ssh-agent
 
 # ca-certificates because curl will need it later on for the maven installation
 RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends ca-certificates curl &amp;&amp; apt-get clean &amp;&amp; \
@@ -3934,7 +3934,7 @@ x-slides-base: &amp;slides-base
 <div class="ulist"><ul><li class="fragment"><p>Dans Docker, chaque instruction dans le Dockerfile est exécutée par un utilisateur particulier.</p></li><li class="fragment"><p>Par défaut, cet utilisateur est root, mais pour des raisons de sécurité, il est souvent recommandé d&#8217;exécuter les processus en tant qu&#8217;utilisateur non root.</p></li><li class="fragment"><p>Cette ligne définit l&#8217;ID de l&#8217;utilisateur qui exécutera les commandes à l&#8217;intérieur du conteneur Docker à la valeur de la variable d&#8217;environnement <code>CURRENT_UID</code>.</p></li><li class="fragment"><p>La syntaxe <code>${CURRENT_UID}</code> est utilisée pour accéder à la valeur d&#8217;une variable d&#8217;environnement.</p></li><li class="fragment"><p>Dans ce cas, Docker Compose recherchera une variable d&#8217;environnement nommée <code>CURRENT_UID</code> et utilisera sa valeur.</p></li><li class="fragment"><p>Si <code>CURRENT_UID</code> n&#8217;est pas défini dans l&#8217;environnement où Docker Compose est exécuté, Docker Compose renverra une erreur.</p></li></ul></div></div></section><section id="autre_étude_de_cas_10" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># Ce Dockerfile met en place un environnement Node.js avec des outils et dépendances supplémentaires.
 # Il est basé sur l'image Docker officielle de Node.js (version 22, variante Alpine).
 
-FROM node:24-alpine
+FROM node:25-alpine
 
 # Installer la dernière version des dépendances requises
 # hadolint ignore=DL3018
