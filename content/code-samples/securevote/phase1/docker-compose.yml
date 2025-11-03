@@ -1,0 +1,80 @@
+
+services:
+  # Base de données PostgreSQL
+  database:
+    image: postgres:15
+    container_name: securevote-db
+    environment:
+      # VULNÉRABILITÉ : Secrets en clair !
+      POSTGRES_DB: securevote
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+    ports:
+      # VULNÉRABILITÉ : Port exposé inutilement !
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  # Cache Redis
+  cache:
+    image: redis:7
+    container_name: securevote-cache
+    ports:
+      # VULNÉRABILITÉ : Port exposé inutilement !
+      - "6379:6379"
+    # VULNÉRABILITÉ : Pas de mot de passe Redis !
+
+  # Backend API Flask
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: securevote-backend
+    environment:
+      # VULNÉRABILITÉ : Secrets en clair !
+      DATABASE_URL: postgresql://admin:admin123@database:5432/securevote
+      REDIS_URL: redis://cache:6379
+      FLASK_ENV: development
+      SECRET_KEY: super-secret-key-123
+    ports:
+      - "5000:5000"
+    depends_on:
+      - database
+      - cache
+    restart: on-failure:5  # Minimum pour que ça démarre (pas optimal!)
+    # VULNÉRABILITÉ : Pas de limites de ressources !
+    # VULNÉRABILITÉ : Pas de healthcheck !
+
+  # Frontend React
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: securevote-frontend
+    environment:
+      REACT_APP_API_URL: http://localhost:5000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    # VULNÉRABILITÉ : Pas de limites de ressources !
+
+  # Reverse Proxy Nginx
+  proxy:
+    image: nginx:latest
+    container_name: securevote-proxy
+    ports:
+      - "8080:80"
+    volumes:
+      - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    restart: on-failure:5  # Minimum pour que ça démarre (pas optimal!)
+    # VULNÉRABILITÉ : Tourne en root !
+    # VULNÉRABILITÉ : Image non scannée !
+
+volumes:
+  db_data:
+
+# VULNÉRABILITÉ : Pas de réseau personnalisé, tout sur le réseau par défaut !
