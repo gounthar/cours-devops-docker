@@ -1,4 +1,4 @@
-FROM node:24-alpine
+FROM node:25-alpine
 
 # Install latest version of required dependencies
 # hadolint ignore=DL3018
