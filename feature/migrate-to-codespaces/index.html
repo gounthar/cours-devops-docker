@@ -1875,10 +1875,10 @@ docker container run --rm ubuntu:22.04 git --version
 # docker: Error response from daemon: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: "git": executable file not found in $PATH: unknown.
 
 # En interactif ?
-docker container run --rm --tty --interactive ubuntu:22.04 git --version</code></pre></div></div></div></section><section id="fabriquer_sa_première_image"><h2>🎓 Fabriquer sa première image</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> fabriquer une image Docker qui contient <code>git</code></p></li><li><p>Dans votre workspace Gitpod, créez un dossier nommé <code>docker-git/</code></p></li><li><p>Dans ce dossier, créer un fichier <code>Dockerfile</code> avec le contenu ci-dessous :</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-noescape="true" data-lang="Dockerfile">FROM alpine:3.22.2
+docker container run --rm --tty --interactive ubuntu:22.04 git --version</code></pre></div></div></div></section><section id="fabriquer_sa_première_image"><h2>🎓 Fabriquer sa première image</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> fabriquer une image Docker qui contient <code>git</code></p></li><li><p>Dans votre workspace Gitpod, créez un dossier nommé <code>docker-git/</code></p></li><li><p>Dans ce dossier, créer un fichier <code>Dockerfile</code> avec le contenu ci-dessous :</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-noescape="true" data-lang="Dockerfile">FROM alpine:3.23.0
 
 RUN apk update &amp;&amp; apk add --no-cache git</code></pre></div></div></li><li><p>Fabriquez votre image avec la commande <code>docker image build --tag=docker-git chemin/vers/docker-git/</code></p></li><li><p>Testez l&#8217;image fraîchement fabriquée</p><div class="ulist"><ul><li><p>💡 <code>docker image ls</code></p></li></ul></div></li></ul></div></div></section><section id="fabriquer_sa_première_image_2"><h2>✅ Fabriquer sa première image</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cat &lt;&lt;EOF &gt;Dockerfile
-FROM alpine:3.22.2
+FROM alpine:3.23.0
 
 RUN apk update &amp;&amp; apk add --no-cache git
 EOF
@@ -1894,7 +1894,7 @@ docker container run --rm docker-git:latest git --version</code></pre></div></di
 <div class="paragraph fragment"><p><strong>📖🍳 RECETTE</strong></p></div>
 <div class="ulist"><ul><li class="fragment"><p>On part d&#8217;une image Alpine</p></li><li class="fragment"><p>On installe un JRE</p></li></ul></div></div></section><section data-background-image="media/images-output52_with_transparency.png" data-background-size="contain" data-auto-animate></section><section data-background-image="media/images-output53_with_transparency.png" data-background-size="contain" data-auto-animate></section><section data-background-image="media/images-output54_with_transparency.png" data-background-size="contain" data-auto-animate></section><section data-background-image="media/images-output56_with_transparency.png" data-background-size="contain" data-auto-animate><div class="slide-content">
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {52..56}; do convert Diapositive${i}.PNG -crop 9580x5224+1879+1795 -transparent white -resize x1080 images-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="fabriquer_son_image_3" class="columns" data-auto-animate><h2>🐋 📖🍳 Fabriquer son image</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="imageblock"><img src="media/images-output56_with_transparency.png" alt="images output56 with transparency"></div></div></div>
-<div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.22.2
+<div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.23.0
 LABEL maintainer="Tony Stark"
 
 RUN apk update
@@ -2052,7 +2052,7 @@ http_access allow all</code></pre></div></div>
 <div class="paragraph"><p>Puis changer la commande en:</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm curlimages/curl curl -x http://host.docker.internal:3128 -L --connect-timeout 60  "http://google.com"</code></pre></div></div></aside></div></section><section id="cmd_vs_entrypoint_2" class="columns" data-auto-animate><h2>CMD vs ENTRYPOINT</h2><div class="slide-content"><div class="openblock column is-one-fifth"><div class="content"><div class="paragraph"><p>Cas d&#8217;usage.
 On va s&#8217;outiller!</p></div></div></div>
-<div class="openblock column is-half"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.22
+<div class="openblock column is-half"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.23
 LABEL maintainer="John Doe"
 RUN apk update &amp;&amp; apk add curl
 # Si vous utilisez le proxy de l'Université
@@ -2075,7 +2075,7 @@ google blahblahblah [...]
 docker container run --rm my-curl:2.0 http://facebook.com
 docker container run --rm my-curl:2.0 http://twitter.com</code></pre></div></div></div></section><section id="cmd_vs_entrypoint_6" class="columns" data-auto-animate><h2>CMD vs ENTRYPOINT</h2><div class="slide-content"><div class="openblock column is-one-fifth"><div class="content"><div class="paragraph"><p>Cas d&#8217;usage, un cran plus loin</p></div>
 <div class="paragraph"><p>Paramétrable, et hop!</p></div></div></div>
-<div class="openblock column is-half"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.22
+<div class="openblock column is-half"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.23
 LABEL maintainer="John Doe"
 RUN apk update &amp;&amp; apk add curl
 # Si vous utilisez le proxy de l'Université
@@ -2088,7 +2088,7 @@ ENTRYPOINT ["curl","-x", "http://prx:3128", "-L", "--connect-timeout", "60"]
 google blahblahblah [...]
 &lt;/html&gt;</code></pre></div></div></div></div></div></section><section id="cmd_vs_entrypoint_7" class="columns" data-auto-animate><h2>CMD vs ENTRYPOINT</h2><div class="slide-content"><div class="openblock column is-one-fifth"><div class="content"><div class="paragraph"><p>Cas d&#8217;usage, un cran plus loin</p></div>
 <div class="paragraph"><p>Paramétrable, et hop!</p></div></div></div>
-<div class="openblock column is-half"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.22
+<div class="openblock column is-half"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.23
 LABEL maintainer="John Doe"
 RUN apk update &amp;&amp; apk add curl
 # Si vous utilisez le proxy de l'Université
@@ -2103,16 +2103,16 @@ google blahblahblah [...]
 &lt;/html&gt;</code></pre></div></div></div></div></div></section><section id="checkpoint_5"><h2>Checkpoint 🎯</h2><div class="slide-content"><div class="ulist"><ul><li><p>Une image Docker fournit un environnement de système de fichier auto-suffisant (application, dépendances, binaries, etc.) comme modèle de base d&#8217;un conteneur</p></li><li><p>Les images Docker ont une convention de nommage permettant d&#8217;identifier les images très précisément</p></li><li><p>On peut spécifier une recette de fabrication d&#8217;image à l&#8217;aide d&#8217;un <code>Dockerfile</code> et de la commande <code>docker image build</code></p></li></ul></div>
 <div class="paragraph"><p>&#8658; 🤔 et si on utilisait Docker pour nous aider dans l&#8217;intégration continue ?</p></div></div></section></section>
 <section><section id="nos_fichiers_dans_les_images" data-background-image="media/fichiers.png" data-background-size="cover" data-background-position="left"><h2>📁 Nos fichiers dans les images</h2><div class="slide-content"></div></section><section id="le_répertoire_de_travail"><h2>📂 Le répertoire de travail</h2><div class="slide-content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --interactive --tty httpd pwd /usr/local/apache2</code></pre></div></div>
-<div class="paragraph fragment"><p>Comment paramétrer le répertoire de travail de tous nos containers ?</p></div></div></section><section id="workdir" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.22
+<div class="paragraph fragment"><p>Comment paramétrer le répertoire de travail de tous nos containers ?</p></div></div></section><section id="workdir" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.23
 WORKDIR /repertoire/travail
-RUN echo hello &gt; ./world.txt</code></pre></div></div></div></section><section id="workdir_2" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.22
+RUN echo hello &gt; ./world.txt</code></pre></div></div></div></section><section id="workdir_2" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.23
 WORKDIR /repertoire/travail
 RUN echo hello &gt; ./world.txt</code></pre></div></div>
-<div class="imageblock"><img src="media/fichiers-output5_with_transparency.png" alt="fichiers output5 with transparency"></div></div></section><section id="workdir_3" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.22
+<div class="imageblock"><img src="media/fichiers-output5_with_transparency.png" alt="fichiers output5 with transparency"></div></div></section><section id="workdir_3" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.23
 WORKDIR /repertoire/travail
 RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="imageblock"><img src="media/fichiers-output6_with_transparency.png" alt="fichiers output6 with transparency"></div>
-<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {5..6}; do convert Diapositive${i}.PNG -crop 9667x3750+1833+3333 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="workdir_4" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.22
+<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {5..6}; do convert Diapositive${i}.PNG -crop 9667x3750+1833+3333 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="workdir_4" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.23
 WORKDIR /repertoire/travail
 RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-img .
@@ -2462,7 +2462,7 @@ Connection: keep-alive
 ETag: "65253f9d-4564d"
 Accept-Ranges: bytes</code></pre></div></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {71..73}; do convert Diapositive${i}.PNG -crop 10146x4801+2250+1833 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="travaux_pratiques_7"><h2>🎓 Travaux pratiques #7</h2><div class="slide-content"><div class="paragraph"><p>Étapes:</p></div>
-<div class="ulist"><ul><li class="fragment"><p>Créer un fichier HTML et le distribuer à partir d&#8217;un container <code>nginx</code></p></li><li class="fragment"><p>Récupérer un war sur GitHub et le déployer dans un container <code>tomcat (<a href="https://github.com/gounthar/tp07-sample/releases/download/v2025.09.22-113613/sample-2025.09.22-113613.war" class="bare">https://github.com/gounthar/tp07-sample/releases/download/v2025.09.22-113613/sample-2025.09.22-113613.war</a>)</code></p></li><li class="fragment"><p>Récupérer le code sur <a href="https://spring.io/guides/gs/spring-boot/" class="bare">https://spring.io/guides/gs/spring-boot/</a> et faire tourner l&#8217;appli (sous répertoire <code>complete</code>)</p></li></ul></div></div></section><section id="solution_travaux_pratiques_7" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-html hljs" data-noescape="true" data-lang="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;header&gt;
+<div class="ulist"><ul><li class="fragment"><p>Créer un fichier HTML et le distribuer à partir d&#8217;un container <code>nginx</code></p></li><li class="fragment"><p>Récupérer un war sur GitHub et le déployer dans un container <code>tomcat (<a href="https://github.com/gounthar/tp07-sample/releases/download/v2025.11.24-095931/sample-2025.11.24-095931.war" class="bare">https://github.com/gounthar/tp07-sample/releases/download/v2025.11.24-095931/sample-2025.11.24-095931.war</a>)</code></p></li><li class="fragment"><p>Récupérer le code sur <a href="https://spring.io/guides/gs/spring-boot/" class="bare">https://spring.io/guides/gs/spring-boot/</a> et faire tourner l&#8217;appli (sous répertoire <code>complete</code>)</p></li></ul></div></div></section><section id="solution_travaux_pratiques_7" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-html hljs" data-noescape="true" data-lang="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;header&gt;
 &lt;title&gt;http://info.cern.ch&lt;/title&gt;
 &lt;/header&gt;
 
@@ -2490,14 +2490,14 @@ Accept-Ranges: bytes</code></pre></div></div>
 &lt;li&gt;&lt;a href="http://home.web.cern.ch/about"&gt;Learn about CERN, the physics laboratory where the web was born&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</code></pre></div></div></div></section><section id="solution_travaux_pratiques_7_2" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">wget https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp07/-/raw/master/sample.war</code></pre></div></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Used to run a Docker container with the name "tomcat-container" using the "tomcat:11.0.13-jdk25-temurin-noble" image. The container is
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Used to run a Docker container with the name "tomcat-container" using the "tomcat:11.0.14-jdk25-temurin-noble" image. The container is
 # configured to expose port 8080 on the host machine, which will be mapped to the corresponding port inside
 # the container. Additionally, a volume is mounted to the container, linking the
 # "/fully/qualified/path/on/my/computer/sample.war" file to "/usr/local/tomcat/webapps/sample.war"
 # path within the container. This allows the Tomcat server running inside the container to access and deploy the
 # "sample.war" file. The "-d" flag is used to run the container in detached mode, meaning it will run in the
 # background.
-docker run -d -p 8080:8080 --name tomcat-container -v /fully/qualified/path/on/my/computer/sample.war:/usr/local/tomcat/webapps/sample.war tomcat:11.0.13-jdk25-temurin-noble</code></pre></div></div>
+docker run -d -p 8080:8080 --name tomcat-container -v /fully/qualified/path/on/my/computer/sample.war:/usr/local/tomcat/webapps/sample.war tomcat:11.0.14-jdk25-temurin-noble</code></pre></div></div>
 <div class="paragraph fragment"><p>Visitez avec votre navigateur <code><a href="http://localhost:8080/sample/" class="bare">http://localhost:8080/sample/</a></code>.</p></div></div></section><section id="solution_travaux_pratiques_7_3" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">git clone https://github.com/spring-guides/gs-spring-boot.git</code></pre></div></div>
 <div class="paragraph"><p>C&#8217;est un début&#8230;&#8203;</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cd gs-spring-boot/complete</code></pre></div></div>
@@ -2562,7 +2562,7 @@ COPY app.go	.
 
 RUN CGO_ENABLED=0 GOOS=linux go build  -ldflags "-s -w" -o app .</code></pre></div></div>
 <div class="paragraph fragment"><p>Une image pour faire tourner l&#8217;appli</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.22.2
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.23.0
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
@@ -2696,7 +2696,7 @@ Les données n&#8217;existent que tant que le conteneur est en cours d&#8217;ex�
 <div class="paragraph fragment"><p>Supprimer un volume</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume rm my-data</code></pre></div></div>
 <div class="paragraph fragment"><p>Inspecter un volume</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume inspect my-data</code></pre></div></div></div></section><section id="les_volumes_anonymes"><h2>📦📁🕶️ Les volumes "anonymes"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.22
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume inspect my-data</code></pre></div></div></div></section><section id="les_volumes_anonymes"><h2>📦📁🕶️ Les volumes "anonymes"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.23
 WORKDIR /repertoire/travail
 VOLUME ["/data"]
 RUN echo hello &gt; ./world.txt</code></pre></div></div>
@@ -2747,7 +2747,7 @@ RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="ulist"><ul><li class="fragment"><p>Ajoute des fichiers dans un dossier</p></li><li class="fragment"><p>Déclare ce dossier comme volume anonyme</p></li><li class="fragment"><p>Ajoute d&#8217;autres fichiers dans ce dossier</p></li></ul></div>
 <div class="paragraph fragment"><p><strong>Que verra-ton dans ce dossier au sein de nos containers ?</strong></p></div></div></section><section id="solution_travaux_pratiques_10" data-auto-animate><h2>✅ Solution travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Tout d&#8217;abord, créez un répertoire pour votre projet et placez-vous dedans.</p></div>
 <div class="paragraph fragment"><p>Créez un Dockerfile avec le contenu suivant :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.22
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.23
 
 # Ajoutez des fichiers dans un dossier
 RUN mkdir /mon-dossier
@@ -3655,7 +3655,7 @@ volumes:
       retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
     volumes:
       - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_3" data-auto-animate><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph"><p>Maven</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM jenkins/ssh-agent:7.2.0-jdk17 as ssh-agent
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM jenkins/ssh-agent:7.9.0-jdk17 as ssh-agent
 
 # ca-certificates because curl will need it later on for the maven installation
 RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends ca-certificates curl &amp;&amp; apt-get clean &amp;&amp; \
@@ -3934,7 +3934,7 @@ x-slides-base: &amp;slides-base
 <div class="ulist"><ul><li class="fragment"><p>Dans Docker, chaque instruction dans le Dockerfile est exécutée par un utilisateur particulier.</p></li><li class="fragment"><p>Par défaut, cet utilisateur est root, mais pour des raisons de sécurité, il est souvent recommandé d&#8217;exécuter les processus en tant qu&#8217;utilisateur non root.</p></li><li class="fragment"><p>Cette ligne définit l&#8217;ID de l&#8217;utilisateur qui exécutera les commandes à l&#8217;intérieur du conteneur Docker à la valeur de la variable d&#8217;environnement <code>CURRENT_UID</code>.</p></li><li class="fragment"><p>La syntaxe <code>${CURRENT_UID}</code> est utilisée pour accéder à la valeur d&#8217;une variable d&#8217;environnement.</p></li><li class="fragment"><p>Dans ce cas, Docker Compose recherchera une variable d&#8217;environnement nommée <code>CURRENT_UID</code> et utilisera sa valeur.</p></li><li class="fragment"><p>Si <code>CURRENT_UID</code> n&#8217;est pas défini dans l&#8217;environnement où Docker Compose est exécuté, Docker Compose renverra une erreur.</p></li></ul></div></div></section><section id="autre_étude_de_cas_10" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># Ce Dockerfile met en place un environnement Node.js avec des outils et dépendances supplémentaires.
 # Il est basé sur l'image Docker officielle de Node.js (version 22, variante Alpine).
 
-FROM node:24-alpine
+FROM node:25-alpine
 
 # Installer la dernière version des dépendances requises
 # hadolint ignore=DL3018
