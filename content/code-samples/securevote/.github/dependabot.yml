@@ -11,9 +11,22 @@ updates:
   # Python dependencies (Backend Flask)
   # Note: phase1/backend excluded - intentionally vulnerable for teaching
   - package-ecosystem: "pip"
-    directories:
-      - "/phase2/backend"
-      - "/phase3/backend"
+    directory: "/phase2/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "python"
+      - "security"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+
+  - package-ecosystem: "pip"
+    directory: "/phase3/backend"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -30,9 +43,22 @@ updates:
   # Node.js dependencies (Frontend React)
   # Note: phase1/frontend excluded - intentionally vulnerable for teaching
   - package-ecosystem: "npm"
-    directories:
-      - "/phase2/frontend"
-      - "/phase3/frontend"
+    directory: "/phase2/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "javascript"
+      - "security"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+
+  - package-ecosystem: "npm"
+    directory: "/phase3/frontend"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -49,11 +75,52 @@ updates:
   # Docker images
   # Note: phase1 excluded - intentionally vulnerable for teaching
   - package-ecosystem: "docker"
-    directories:
-      - "/phase2/backend"
-      - "/phase2/frontend"
-      - "/phase3/backend"
-      - "/phase3/frontend"
+    directory: "/phase2/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "docker"
+      - "security"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+
+  - package-ecosystem: "docker"
+    directory: "/phase2/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "docker"
+      - "security"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+
+  - package-ecosystem: "docker"
+    directory: "/phase3/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "docker"
+      - "security"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+
+  - package-ecosystem: "docker"
+    directory: "/phase3/frontend"
     schedule:
       interval: "weekly"
       day: "monday"
