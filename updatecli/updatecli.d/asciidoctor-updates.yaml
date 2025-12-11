@@ -20,9 +20,9 @@ sources:
     spec:
       image: "asciidoctor/docker-asciidoctor"
       versionfilter:
-        kind: "regex"
-        # Match semantic version tags like 1.100, 1.99, etc.
-        pattern: "^\\d+\\.\\d+$"
+        kind: "semver"
+        # Match any version >= 1.0 (excludes pre-releases and special tags)
+        pattern: ">=1.0"
 
 targets:
   makefile-asciidoctor:
