@@ -1015,7 +1015,7 @@ wget https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp07/-/raw/mast
 [%step]
 [source,bash]
 ----
-# Used to run a Docker container with the name "tomcat-container" using the "tomcat:11.0.14-jdk25-temurin-noble" image. The container is
+# Used to run a Docker container with the name "tomcat-container" using the "tomcat:11.0.15-jdk25-temurin-noble" image. The container is
 # configured to expose port 8080 on the host machine, which will be mapped to the corresponding port inside
 # the container. Additionally, a volume is mounted to the container, linking the
 # "/fully/qualified/path/on/my/computer/sample.war" file to "/usr/local/tomcat/webapps/sample.war"
