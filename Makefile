@@ -37,6 +37,24 @@ dependencies-update:
 pdf:
 	@$(call compose_up, --exit-code-from=pdf pdf)
 
+exam-pdf:
+	@echo "Generating detailed exam PDF with LaTeX-style formatting..."
+	@mkdir -p $(DIST_DIR)
+	@docker run --rm \
+		-v $(CURDIR)/content:/documents \
+		-v $(CURDIR)/resources:/resources:ro \
+		asciidoctor/docker-asciidoctor:latest \
+		asciidoctor-pdf \
+		-a pdf-theme=/resources/themes/latex-theme.yml \
+		-a pdf-fontsdir=/resources/fonts \
+		-a imagesdir=/documents/media \
+		-a source-highlighter=rouge \
+		-a icons=font \
+		/documents/examen-final-detaille.adoc \
+		-o /documents/examen-final-detaille.pdf
+	@mv $(CURDIR)/content/examen-final-detaille.pdf $(DIST_DIR)/
+	@echo "PDF generated: $(DIST_DIR)/examen-final-detaille.pdf"
+
 clean:
 	@$(call compose_cmd, down -v --remove-orphans)
 	@rm -rf $(DIST_DIR)
@@ -44,4 +62,4 @@ clean:
 qrcode:
 	@$(call compose_up, qrcode)
 
-.PHONY: all build verify serve qrcode pdf dependencies-update dependencies-lock-update
+.PHONY: all build verify serve qrcode pdf exam-pdf dependencies-update dependencies-lock-update
