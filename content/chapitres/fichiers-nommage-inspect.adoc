@@ -982,7 +982,7 @@ include::../code-samples/fichiers/reseau/index.html[]
 [%step]
 [source,bash]
 ----
-docker run --name my-nginx -v /fully/qualified/path/on/my/computer/:/usr/share/nginx/html:ro -d -p 8000:80 nginx:1.28.0-alpine3.21
+docker run --name my-nginx -v /fully/qualified/path/on/my/computer/:/usr/share/nginx/html:ro -d -p 8000:80 nginx:1.29.4-alpine3.23
 ----
 
 [%step]
