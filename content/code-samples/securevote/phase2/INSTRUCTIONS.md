@@ -222,7 +222,7 @@ EOF
 
 ```bash
 git status
-# .env ne doit PAS apparaître dans les fichiers à commiter
+# .env ne doit PAS apparaître dans les fichiers à committer
 ```
 
 3. **Modifier docker-compose.yml**
@@ -281,7 +281,7 @@ cat docker-compose.yml | grep -i password
 - ✅ Application démarre et fonctionne
 
 ### Points clés
-- **JAMAIS** commiter de secrets dans Git
+- **JAMAIS** committer de secrets dans Git
 - Utiliser `.env.example` comme template sans valeurs sensibles
 - Documenter les secrets requis
 - Utiliser des générateurs de secrets forts

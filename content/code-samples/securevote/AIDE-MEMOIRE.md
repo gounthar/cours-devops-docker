@@ -358,7 +358,7 @@ docker compose logs backend
 ## ✅ Points clés à retenir
 
 1. **Ne jamais exécuter en root** → Créer un user dédié
-2. **Ne jamais commiter de secrets** → .env + .gitignore
+2. **Ne jamais committer de secrets** → .env + .gitignore
 3. **Toujours scanner les images** → slim/alpine + Trivy
 4. **N'exposer que le nécessaire** → Réseaux isolés
 5. **Auto-healing en production** → restart + healthchecks

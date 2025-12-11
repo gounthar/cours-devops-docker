@@ -153,7 +153,7 @@ Faire travailler les étudiants en binômes avec les questions :
 - Exemple de Dockerfile avec USER
 
 **9h55-10h00 : Gestion des secrets (5 min)**
-- Ne JAMAIS commiter de secrets
+- Ne JAMAIS committer de secrets
 - .env + .gitignore
 - Démonstration d'un leak de secrets sur GitHub (screenshot anonymisé)
 - Alternatives : Docker Secrets, Vault
@@ -449,20 +449,20 @@ Si la session avance bien et qu'il reste du temps :
 
 | Critère | Points | Validation |
 |---------|--------|------------|
-| **Sécurité (40 pts)** | |
+| **Sécurité (40 pts)** | | |
 | Images scannées et optimisées | 10 | < 10 CVE critical |
 | Utilisateurs non-root | 10 | Aucun process UID 0 |
 | Secrets protégés | 10 | .env + .gitignore OK |
 | Réseau isolé | 10 | Services cloisonnés |
-| **Production (40 pts)** | |
+| **Production (40 pts)** | | |
 | Limites de ressources | 10 | Toutes définies |
 | Restart policies | 10 | Appropriées |
 | Health checks | 10 | Tous fonctionnels |
 | Dépendances | 10 | Ordre correct |
-| **Fonctionnement (20 pts)** | |
+| **Fonctionnement (20 pts)** | | |
 | Application opérationnelle | 10 | Vote et résultats OK |
 | Résilience | 10 | Récupération après kill |
-| **Total** | 100 | |
+| **Total** | **100** | |
 
 ### Questions de validation orale
 
