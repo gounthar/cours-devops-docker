@@ -28,6 +28,7 @@ targets:
     name: "Update nginx Docker image in AsciiDoc documentation"
     kind: "file"
     sourceid: "nginx-alpine"
+    scmid: default
     spec:
       file: "content/chapitres/fichiers-nommage-inspect.adoc"
       matchpattern: 'docker run --name my-nginx -v /fully/qualified/path/on/my/computer/:/usr/share/nginx/html:ro -d -p 8000:80 nginx(?::\d+\.\d+\.\d+-alpine\d*\.\d*)?'

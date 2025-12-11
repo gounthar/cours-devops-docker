@@ -58,7 +58,10 @@ sources:
             v(.*)(\.\d+)
           captureindex: 1
 
-conditions:
+# All conditions disabled - this pipeline has no active targets
+# The testNodeAlpineImagePublished condition was failing because the tag format
+# node:<lts_version>-alpine<alpine_version> doesn't always exist on Docker Hub
+#conditions:
 #  testNodeArg:
 #    name: "Does the 'Hello World!' tutorial have a reference to the Node alpine image?"
 #    kind: file
@@ -91,13 +94,13 @@ conditions:
 #      file: content/doc/book/pipeline/docker.adoc
 #      matchpattern: >-
 #        .*image.*node:.*
-  testNodeAlpineImagePublished:
-    name: "Test node:<latest_version>-alpine<latest-version> docker image tag"
-    kind: dockerimage
-    disablesourceinput: true
-    spec:
-      image: "node"
-      tag: '{{ source "nodeLatestVersion" }}-alpine{{ source "alpineLatestVersion" }}'
+#  testNodeAlpineImagePublished:
+#    name: "Test node:<latest_version>-alpine<latest-version> docker image tag"
+#    kind: dockerimage
+#    disablesourceinput: true
+#    spec:
+#      image: "node"
+#      tag: '{{ source "nodeLatestVersion" }}-alpine{{ source "alpineLatestVersion" }}'
 
 #targets:
 #  updateHelloWorldTutorialNodePipeline:
