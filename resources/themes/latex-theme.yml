@@ -14,9 +14,7 @@ font:
       bold: GEM_FONTS_DIR/mplus1mn-bold-subset.ttf
       italic: GEM_FONTS_DIR/mplus1mn-italic-subset.ttf
       bold_italic: GEM_FONTS_DIR/mplus1mn-bold_italic-subset.ttf
-  fallbacks:
-    - GEM_FONTS_DIR/notosanssymbols-regular-subset.ttf
-    - GEM_FONTS_DIR/notosanssymbols2-regular-subset.ttf
+  # Note: fallback fonts removed as they are not available in all asciidoctor-pdf versions
 
 page:
   background_color: FFFFFF
@@ -32,13 +30,15 @@ base:
   font_color: 000000
   font_family: Serif
   font_size: 11
+  font_size_large: 13
+  font_size_small: 9
   line_height_length: 14
   line_height: $base_line_height_length / $base_font_size
 
 link:
   font_color: 000080  # Dark blue like classic LaTeX hyperref
 
-literal:
+codespan:
   font_color: 333333
   font_family: Mono
   font_size: 9
@@ -153,7 +153,7 @@ admonition:
     font_style: bold
     text_transform: uppercase
 
-blockquote:
+quote:
   font_color: 333333
   font_size: $base_font_size
   border_color: CCCCCC
