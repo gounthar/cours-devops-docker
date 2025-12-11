@@ -1,0 +1,46 @@
+---
+name: "Update asciidoctor Docker image for exam PDF generation"
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  asciidoctor:
+    name: "Get latest asciidoctor Docker image tag"
+    kind: "dockerimage"
+    spec:
+      image: "asciidoctor/docker-asciidoctor"
+      versionfilter:
+        kind: "regex"
+        # Match semantic version tags like 1.100, 1.99, etc.
+        pattern: "^\\d+\\.\\d+$"
+
+targets:
+  makefile-asciidoctor:
+    name: "Update asciidoctor Docker image in Makefile"
+    kind: "file"
+    sourceid: "asciidoctor"
+    scmid: default
+    spec:
+      file: "Makefile"
+      matchpattern: 'ASCIIDOCTOR_IMAGE \?= asciidoctor/docker-asciidoctor:\d+\.\d+'
+      replacepattern: 'ASCIIDOCTOR_IMAGE ?= asciidoctor/docker-asciidoctor:{{ source "asciidoctor" }}'
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    title: 'chore(deps): update asciidoctor Docker image to {{ source "asciidoctor" }}'
+    spec:
+      labels:
+        - dependencies
+        - docker

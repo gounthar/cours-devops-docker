@@ -37,22 +37,26 @@ dependencies-update:
 pdf:
 	@$(call compose_up, --exit-code-from=pdf pdf)
 
+# Asciidoctor Docker image version - kept updated via updatecli
+ASCIIDOCTOR_IMAGE ?= asciidoctor/docker-asciidoctor:1.100
+
 exam-pdf:
 	@echo "Generating detailed exam PDF with LaTeX-style formatting..."
 	@mkdir -p $(DIST_DIR)
 	@docker run --rm \
-		-v $(CURDIR)/content:/documents \
+		-v $(CURDIR)/content:/documents:ro \
 		-v $(CURDIR)/resources:/resources:ro \
-		asciidoctor/docker-asciidoctor:latest \
+		-v $(DIST_DIR):/output \
+		$(ASCIIDOCTOR_IMAGE) \
 		asciidoctor-pdf \
 		-a pdf-theme=/resources/themes/latex-theme.yml \
-		-a pdf-fontsdir=/resources/fonts \
 		-a imagesdir=/documents/media \
 		-a source-highlighter=rouge \
 		-a icons=font \
 		/documents/examen-final-detaille.adoc \
-		-o /documents/examen-final-detaille.pdf
-	@mv $(CURDIR)/content/examen-final-detaille.pdf $(DIST_DIR)/
+		-o /output/examen-final-detaille.pdf \
+		|| { echo "ERROR: PDF generation failed"; exit 1; }
+	@test -f $(DIST_DIR)/examen-final-detaille.pdf || { echo "ERROR: PDF was not generated"; exit 1; }
 	@echo "PDF generated: $(DIST_DIR)/examen-final-detaille.pdf"
 
 clean:

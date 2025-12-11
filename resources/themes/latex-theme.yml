@@ -35,10 +35,6 @@ base:
   line_height_length: 14
   line_height: $base_line_height_length / $base_font_size
 
-role:
-  lead:
-    font_size: $base_font_size_large
-
 link:
   font_color: 000080  # Dark blue like classic LaTeX hyperref
 
