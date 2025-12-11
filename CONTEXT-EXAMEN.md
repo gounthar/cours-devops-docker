@@ -83,32 +83,32 @@ Refonte ambitieuse de l'énoncé de l'examen final du module Docker DevOps M2 IL
 ## Fichiers créés
 
 ### 1. Contenu AsciiDoc
-- **Fichier** : `/mnt/c/support/users/fac/cours-devops-docker/content/chapitres/examen-final.adoc`
+- **Fichier** : `content/chapitres/examen-final.adoc`
 - **Lignes** : 815
 - **Format** : AsciiDoc pour Reveal.js
 - **Encodage** : UTF-8 avec ligne vide finale
 
 ### 2. Fichier de test standalone
-- **Fichier** : `/mnt/c/support/users/fac/cours-devops-docker/content/index-examen.adoc`
+- **Fichier** : `content/index-examen.adoc`
 - **Usage** : Tester le rendu indépendamment du cours principal
 - **Build** : `SOURCE_FILE=index-examen.adoc make build`
 
 ### 3. Schémas
 
 #### Architecture cible
-- **Fichier** : `/mnt/c/support/users/fac/cours-devops-docker/content/media/exam-architecture-diagram.png`
+- **Fichier** : `content/media/exam-architecture-diagram.png`
 - **Format** : PNG (2075x267px)
 - **Générateur** : Graphviz DOT
 - **Contenu** : Client → Reverse Proxy → App Server → Database + ELK Stack (avec flux logs)
 
 #### Git-flow
-- **Fichier** : `/mnt/c/support/users/fac/cours-devops-docker/content/media/gitflow-diagram.png`
+- **Fichier** : `content/media/gitflow-diagram.png`
 - **Format** : PNG (303x1091px)
 - **Générateur** : Graphviz DOT
 - **Contenu** : Branches main/develop/feature/release/hotfix avec légende
 
 ### 4. Slides HTML générés
-- **Fichier** : `/mnt/c/support/users/fac/cours-devops-docker/dist/index-examen.html`
+- **Fichier** : `dist/index-examen.html`
 - **Taille** : 73 KB
 - **Framework** : Reveal.js
 - **Slides** : 102 au total
@@ -116,7 +116,7 @@ Refonte ambitieuse de l'énoncé de l'examen final du module Docker DevOps M2 IL
 ## Modifications du build system
 
 ### 1. Gulpfile.js
-**Fichier** : `/mnt/c/support/users/fac/cours-devops-docker/gulp/gulpfile.js`
+**Fichier** : `gulp/gulpfile.js`
 
 **Modification** : Ajout du support de SOURCE_FILE
 
@@ -134,7 +134,7 @@ function html(cb) {
 **Usage** : Permet de générer d'autres fichiers que index.adoc
 
 ### 2. Docker Compose
-**Fichier** : `/mnt/c/support/users/fac/cours-devops-docker/docker-compose.yml`
+**Fichier** : `docker-compose.yml`
 
 **Modification** : Ajout de la variable SOURCE_FILE dans l'environnement
 

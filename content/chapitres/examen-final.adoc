@@ -2,27 +2,39 @@
 == Projet de fin de module
 
 [.title]
-**DEVOPS M2 ILI - Année 2024-2025**
+**DEVOPS M2 ILI - Année 2025-2026**
 
-=== Modalités : Travail en binôme
+=== Vue d'ensemble
 
-* **Travail en binôme** obligatoire
-* **Choix de technologies** via vote Moodle
+* Projet en **binôme**
+* Deux parties : **Infrastructure + CI/CD**
+* Note finale : **/20**
 
-=== Modalités : Remise du projet
+[{invert}]
+== Modalités
 
-* **Remise** : Repository GitLab **privé**
-* Ajouter les enseignants comme **maintainers**
-* **Documentation** : Tout dans le `README.md`
+=== Travail en binôme
 
-=== Modalités : Date limite
+* **Binôme** obligatoire
+* Choix de technologies via **vote Moodle**
+
+=== Remise du projet
+
+* Repository GitLab **privé**
+* Enseignants en **maintainers**
+* Documentation dans le **README.md**
+
+=== Date limite
 
 [.title]
-**8 janvier 2025**
+**4 janvier 2026**
 
 Seuls les commits **avant cette date** seront évalués
 
-=== Technologies : Reverse-Proxy
+[{invert}]
+== Technologies imposées
+
+=== Reverse-Proxy
 
 **Choisir 1 parmi :**
 
@@ -32,7 +44,7 @@ Seuls les commits **avant cette date** seront évalués
 * HAProxy
 * Traefik
 
-=== Technologies : Serveur d'Application
+=== Serveur d'Application
 
 **Choisir 1 parmi :**
 
@@ -610,7 +622,9 @@ image::gitflow-diagram.png[Git-flow, 600]
 |🎁 BONUS
 |===
 
-Credentials : `m2ili` / `NexusM2ILI`
+[.small]
+Credentials : voir instructions fournies séparément +
+(ne jamais commiter de secrets !)
 
 [{invert}]
 == Communication
@@ -733,32 +747,39 @@ Puis addition → note finale /20
 |**10 pts**
 |===
 
-=== Partie 1 : Compléments valorisés
+=== Partie 1 : Compléments valorisés (1/2)
 
 [cols="2,1"]
 |===
 |Complément |Points
 
 |Observabilité
-|1 pt
+|+1 pt
 
 |Pipeline validation
-|1 pt
+|+1 pt
 
 |Dépendances auto
-|0.75 pt
+|+0.75 pt
 
 |Load Testing
-|1 pt
+|+1 pt
+|===
+
+=== Partie 1 : Compléments valorisés (2/2)
+
+[cols="2,1"]
+|===
+|Complément |Points
 
 |Haute disponibilité
-|1 pt
+|+1 pt
 
 |Multi-environnements
-|0.75 pt
+|+0.75 pt
 
 |GitLab auto-hébergé
-|1.5 pts
+|+1.5 pts
 |===
 
 === Partie 1 : Calcul de la note
