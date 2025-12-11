@@ -6,6 +6,7 @@ x-slides-base: &slides-base
   environment:
     - PRESENTATION_URL=${PRESENTATION_URL}
     - REPOSITORY_URL=${REPOSITORY_URL}
+    - SOURCE_FILE=${SOURCE_FILE}
   user: ${CURRENT_UID}
   tmpfs:
     - ${BUILD_DIR} # Faster gulp I/O operations

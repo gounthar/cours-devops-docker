@@ -1,0 +1,432 @@
+[{invert}]
+== Projet de fin de module
+
+[.title]
+**DEVOPS M2 ILI - Année 2025-2026**
+
+=== Vue d'ensemble
+
+* Projet en **binôme**
+* Deux parties : **Infrastructure + CI/CD**
+* Note finale : **/20**
+
+[{invert}]
+== Modalités
+
+[.title]
+**Organisation du projet**
+
+[{invert}]
+=== Binôme
+
+* Projet en **binôme** obligatoire
+* Choix de technologies via **vote Moodle**
+
+[{invert}]
+=== GitLab
+
+* Repository GitLab **privé**
+* Enseignants ajoutés en **maintainers**
+* Documentation dans le **README.md**
+
+[{invert}]
+=== Deadline
+
+[.title]
+**4 janvier 2026**
+
+Seuls les commits avant cette date seront corrigés
+
+[{invert}]
+== Reverse-Proxy
+
+**Choisir 1 parmi :**
+
+* Apache HTTPd
+* Nginx
+* Nginx Unit
+* HAProxy
+* Traefik
+* Caddy
+
+[{invert}]
+== Serveur d'Application
+
+**Choisir 1 parmi :**
+
+* Tomcat
+* Wildfly
+* Jetty
+
+[{invert}]
+== Partie 1 : Infrastructure
+
+[.title]
+**Notée sur 10 points**
+
+Critères principaux + Compléments valorisés
+
+[{invert}]
+== Architecture cible
+
+image::exam-architecture-diagram.png[Architecture, 800]
+
+[{invert}]
+== Architecture : Vue d'ensemble
+
+* Architecture **production-ready** conteneurisée
+* Support application Java EE
+* Stack complète : Reverse Proxy + App Server + Database + ELK
+* Démarrage : `docker compose up -d`
+
+[{invert}]
+== Exigences fonctionnelles
+
+[.title]
+**Partie obligatoire**
+
+[{invert}]
+== 1. Architecture multi-tiers
+
+* **Reverse-proxy** : load-balancing si plusieurs instances
+* **Serveur d'app** : WAR Java EE correctement configuré
+* **Base de données** : PostgreSQL ou MySQL, données persistantes
+* **Stack ELK** : Elasticsearch + Logstash + Kibana
+
+[{invert}]
+== 2. Docker Compose
+
+* Fichier `compose.yml` bien structuré
+* Variables dans `.env` (`.env.example` committé)
+* Networks : isolation des services
+* Volumes **nommés** pour la persistance
+
+[{invert}]
+== 3. Images Docker
+
+* **Multi-stage builds** quand pertinent
+* Taille : < 500 MB (app), < 200 MB (services)
+* `.dockerignore` bien configuré
+* **Pas de secrets** dans les images
+
+[{invert}]
+== 4. Health checks
+
+* Health checks sur **tous** les services
+* Restart policies : `on-failure` ou `unless-stopped`
+* `depends_on` avec `condition: service_healthy`
+* Temps de démarrage total < 2 minutes
+
+[{invert}]
+== 5. Resources & Logging
+
+* **Limites CPU/mémoire** sur chaque service
+* Logs au format **JSON** quand possible
+* Intégration **Logstash** → **Kibana**
+* Dashboards de base exploitables
+
+[{invert}]
+== 6. Sécurité
+
+* Conteneurs avec `USER` **non-root**
+* Secrets : Docker secrets ou env vars (jamais en clair)
+* **Trivy** : scanning de vulnérabilités
+
+[{invert}]
+== 7. Documentation
+
+**README.md complet :**
+
+* Architecture (schéma + explications)
+* Prérequis, installation, configuration
+* Utilisation et troubleshooting
+* **Justifications** des choix techniques
+
+[{invert}]
+== Grille d'évaluation Partie 1
+
+[cols="2,1"]
+|===
+|Critère |Points
+
+|Architecture fonctionnelle |3 pts
+|Qualité technique |3 pts
+|Documentation |2 pts
+|Bonnes pratiques |2 pts
+|**Total** |**10 pts**
+|===
+
+[{invert}]
+== Compléments valorisés
+
+[.title]
+**Permettent de compenser et d'atteindre 10/10**
+
+[{invert}]
+== Rôle des compléments
+
+* **Fonction** : Compenser les points manquants
+* **Formule** : Note = min(10, Critères + Compléments)
+* **Objectif** : Atteindre 10/10
+
+[{invert}]
+== Stratégie recommandée
+
+**Qualité > Quantité**
+
+* 1-2 compléments **de qualité**
+* Mieux que 4 compléments **bâclés**
+* Choisissez ce qui vous **intéresse** !
+
+[{invert}]
+== Complément 1 : Observabilité (+1 pt)
+
+**Prometheus + Grafana**
+
+* Stack de monitoring moderne
+* Métriques temps réel
+
+[{invert}]
+== Observabilité : Détails
+
+* Prometheus pour collecter
+* Grafana pour visualiser
+* Métriques custom via **Micrometer**
+
+[{invert}]
+== Observabilité : Livrables
+
+* **2 dashboards Grafana** (système + applicatif)
+* **1 alerte** Prometheus minimum
+* Ressources : cAdvisor, Micrometer
+
+[{invert}]
+== Complément 2 : Pipeline validation (+1 pt)
+
+**Tests automatiques du compose**
+
+* Pipeline CI de validation
+* Tests avec **Goss**
+
+[{invert}]
+== Pipeline : Détails
+
+* Lancer `docker compose up -d`
+* Vérifier santé de tous les services
+* Tester les endpoints critiques
+* Générer un rapport de tests
+
+[{invert}]
+== Complément 3 : Dépendances auto (+0.75 pt)
+
+**Updatecli / Renovate / Dependabot**
+
+* Mise à jour automatique
+* Pull requests auto
+
+[{invert}]
+== Dépendances : Configuration
+
+Surveiller :
+
+* Images Docker de base
+* Dépendances Maven/Gradle
+* Versions dans `compose.yml`
+
+[{invert}]
+== Complément 4 : Load Testing (+1 pt)
+
+**k6 ou Gatling**
+
+* Tests de charge
+* Optimisations prouvées
+
+[{invert}]
+== Load Testing : Scénarios
+
+* Connexion utilisateur
+* Opérations CRUD
+* Charge progressive
+
+[{invert}]
+== Load Testing : Rapport
+
+* Throughput (req/s)
+* Latence (p50, p95, p99)
+* Taux d'erreur
+* **Avant/après** optimisations
+
+[{invert}]
+== Complément 5 : Haute disponibilité (+1 pt)
+
+**Plusieurs instances + Load balancing**
+
+* Au moins 2 instances d'app
+* Zero-downtime deployment
+
+[{invert}]
+== HA : Démonstration
+
+* Multiple instances serveur d'app
+* Load balancing sur reverse-proxy
+* Script de rolling deployment
+* Aucune requête en erreur
+
+[{invert}]
+== Complément 6 : Multi-environnements (+0.75 pt)
+
+**Dev / Staging / Prod**
+
+* 3 configurations
+* Compose overrides
+
+[{invert}]
+== Multi-env : Fichiers
+
+* `compose.yml` (base commune)
+* `compose.override.yml` (dev)
+* `compose.prod.yml` (prod)
+* `.env.dev`, `.env.staging`, `.env.prod`
+
+[{invert}]
+== Communication
+
+[.title]
+**Bonnes pratiques**
+
+[{invert}]
+== Workflow : Merge Requests
+
+[quote]
+____
+"Faites des **Merge Requests** et **mettez-moi en reviewer**.
+
+Commit direct sur `main` → je ne suis pas notifié !"
+____
+
+[{invert}]
+== Ce qu'on attend
+
+* Communication via **MR et issues**
+* **Commits atomiques** (conventional commits)
+* Documentation **à jour** au fur et à mesure
+* Tests **avant** de merge
+* **Demander de l'aide** si besoin !
+
+[{invert}]
+== Conseils pratiques
+
+[.title]
+**Par où commencer ?**
+
+[{invert}]
+== 1. Choisir les technologies
+
+* Vote Moodle
+* Créer le repo GitLab
+
+[{invert}]
+== 2. Partie 1 - Itératif
+
+* Docker Compose basique qui marche
+* Puis health checks
+* Puis optimisations
+* Compléments si temps disponible
+
+[{invert}]
+== 3. Documentation
+
+* **Au fur et à mesure**
+* Pas à la fin !
+
+[{invert}]
+== Ressources
+
+* https://docs.docker.com/[Docker officiel]
+* https://github.com/docker/awesome-compose[Compose samples]
+* **Votre cours** : tout est dedans !
+
+[{invert}]
+== IA : OK pour apprendre
+
+* **ChatGPT/Claude** : OK pour comprendre
+
+[WARNING]
+====
+**Pas de plagiat !** On reconnaît le code IA.
+
+Utilisez pour **apprendre**, pas pour **éviter de réfléchir**.
+====
+
+[{invert}]
+== Erreurs courantes
+
+* ❌ Secrets dans Git (`.env`)
+* ❌ Images trop grosses
+* ❌ Pas de health checks
+* ❌ Volumes anonymes
+* ❌ Tout en `root`
+* ❌ Documentation absente
+
+[{invert}]
+== Grille d'évaluation
+
+**Note finale /20**
+
+* Partie 1 : /10
+* Partie 2 : /10
+
+[{invert}]
+== Critères principaux (10 pts)
+
+[cols="2,1"]
+|===
+|Critère |Points
+
+|Architecture fonctionnelle |3 pts
+|Qualité technique |3 pts
+|Documentation |2 pts
+|Bonnes pratiques |2 pts
+|**Total** |**10 pts**
+|===
+
+[{invert}]
+== Compléments valorisés (1/2)
+
+[cols="2,1"]
+|===
+|Complément |Points
+
+|Observabilité |+1 pt
+|Pipeline validation |+1 pt
+|Dépendances auto |+0.75 pt
+|Load Testing |+1 pt
+|===
+
+[{invert}]
+== Compléments valorisés (2/2)
+
+[cols="2,1"]
+|===
+|Complément |Points
+
+|Haute disponibilité |+1 pt
+|Multi-environnements |+0.75 pt
+|===
+
+[{invert}]
+== Calcul de la note
+
+**Formule :** Note = min(10, Critères + Compléments)
+
+* 7/10 critères + 2 pts compléments = **9/10**
+* 8/10 critères + 3 pts compléments = **10/10** (plafonné)
+
+[{invert}]
+== Bon courage ! 🚀
+
+L'objectif : vous **préparer** à l'entreprise
+
+Pas vous **piéger** !
+
+**Amusez-vous bien !**
