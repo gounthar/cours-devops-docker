@@ -13,28 +13,32 @@
 [{invert}]
 == Modalités
 
-=== Travail en binôme
+[.title]
+**Organisation du projet**
 
-* **Binôme** obligatoire
+[{invert}]
+=== Binôme
+
+* Projet en **binôme** obligatoire
 * Choix de technologies via **vote Moodle**
 
-=== Remise du projet
+[{invert}]
+=== GitLab
 
 * Repository GitLab **privé**
-* Enseignants en **maintainers**
+* Enseignants ajoutés en **maintainers**
 * Documentation dans le **README.md**
 
-=== Date limite
+[{invert}]
+=== Deadline
 
 [.title]
 **4 janvier 2026**
 
-Seuls les commits **avant cette date** seront évalués
+Seuls les commits avant cette date seront corrigés
 
 [{invert}]
-== Technologies imposées
-
-=== Reverse-Proxy
+== Reverse-Proxy
 
 **Choisir 1 parmi :**
 
@@ -43,8 +47,10 @@ Seuls les commits **avant cette date** seront évalués
 * Nginx Unit
 * HAProxy
 * Traefik
+* Caddy
 
-=== Serveur d'Application
+[{invert}]
+== Serveur d'Application
 
 **Choisir 1 parmi :**
 
@@ -53,18 +59,20 @@ Seuls les commits **avant cette date** seront évalués
 * Jetty
 
 [{invert}]
-== Partie 1 : Infrastructure & Containers
+== Partie 1 : Infrastructure
 
 [.title]
-**Votre partie - Notée sur 10 points**
+**Notée sur 10 points**
 
-**Critères principaux + Compléments valorisés**
+Critères principaux + Compléments valorisés
 
-=== Architecture cible
+[{invert}]
+== Architecture cible
 
 image::exam-architecture-diagram.png[Architecture, 800]
 
-=== Architecture : Vue d'ensemble
+[{invert}]
+== Architecture : Vue d'ensemble
 
 * Architecture **production-ready** conteneurisée
 * Support application Java EE
@@ -77,554 +85,208 @@ image::exam-architecture-diagram.png[Architecture, 800]
 [.title]
 **Partie obligatoire**
 
-=== 1. Architecture multi-tiers (1/4)
+[{invert}]
+== 1. Architecture multi-tiers
 
-**Reverse-proxy**
-
-* Configuré avec load-balancing
-* Si plusieurs instances d'app
-
-=== 1. Architecture multi-tiers (2/4)
-
-**Serveur d'application**
-
-* Hébergeant votre WAR Java EE
-* Correctement configuré
-
-=== 1. Architecture multi-tiers (3/4)
-
-**Base de données**
-
-* PostgreSQL **ou** MySQL
-* Données **persistantes**
-
-=== 1. Architecture multi-tiers (4/4)
-
-**Stack ELK**
-
-* Elasticsearch + Logstash + Kibana
-* Pour centralisation des logs
-
-=== 2. Docker Compose (1/4)
-
-**Fichier compose.yml**
-
-* Bien structuré
-* Lisible et maintenable
-
-=== 2. Docker Compose (2/4)
-
-**Variables d'environnement**
-
-* Fichier `.env` pour la config
-* `.env.example` committé (pas le .env!)
-
-=== 2. Docker Compose (3/4)
-
-**Networks Docker**
-
-* Isolation appropriée des services
-* Segmentation réseau
-
-=== 2. Docker Compose (4/4)
-
-**Volumes**
-
-* Volumes **nommés**
-* Persistance des données
-
-=== 3. Images Docker (1/4)
-
-**Multi-stage builds**
-
-* Quand c'est pertinent
-* Images optimisées
-
-=== 3. Images Docker (2/4)
-
-**Taille d'image**
-
-* < 500 MB pour l'app
-* < 200 MB pour les services
-
-=== 3. Images Docker (3/4)
-
-**.dockerignore**
-
-* Présents
-* Bien configurés
-
-=== 3. Images Docker (4/4)
-
-**Pas de secrets dans les images**
-
-* Utiliser build args
-* Ou secrets Docker
+* **Reverse-proxy** : load-balancing si plusieurs instances
+* **Serveur d'app** : WAR Java EE correctement configuré
+* **Base de données** : PostgreSQL ou MySQL, données persistantes
+* **Stack ELK** : Elasticsearch + Logstash + Kibana
 
 [{invert}]
-== Exigences qualité
+== 2. Docker Compose
 
-[.title]
-**Partie obligatoire**
+* Fichier `compose.yml` bien structuré
+* Variables dans `.env` (`.env.example` committé)
+* Networks : isolation des services
+* Volumes **nommés** pour la persistance
 
-=== 4. Health checks (1/3)
+[{invert}]
+== 3. Images Docker
 
-**Health checks Docker**
+* **Multi-stage builds** quand pertinent
+* Taille : < 500 MB (app), < 200 MB (services)
+* `.dockerignore` bien configuré
+* **Pas de secrets** dans les images
 
-* Sur **tous** les services
-* Correctement configurés
+[{invert}]
+== 4. Health checks
 
-=== 4. Health checks (2/3)
-
-**Restart policies**
-
-* `on-failure` ou `unless-stopped`
-* Selon le service
-
-=== 4. Health checks (3/3)
-
-**Dépendances de démarrage**
-
+* Health checks sur **tous** les services
+* Restart policies : `on-failure` ou `unless-stopped`
 * `depends_on` avec `condition: service_healthy`
-* Temps total < 2 minutes
+* Temps de démarrage total < 2 minutes
 
-=== 5. Resource management
+[{invert}]
+== 5. Resources & Logging
 
-**Limites CPU et mémoire**
+* **Limites CPU/mémoire** sur chaque service
+* Logs au format **JSON** quand possible
+* Intégration **Logstash** → **Kibana**
+* Dashboards de base exploitables
 
-* Définies sur chaque service
-* Adaptées à un environnement de développement
+[{invert}]
+== 6. Sécurité
 
-=== 6. Logging (1/2)
+* Conteneurs avec `USER` **non-root**
+* Secrets : Docker secrets ou env vars (jamais en clair)
+* **Trivy** : scanning de vulnérabilités
 
-**Format structuré**
+[{invert}]
+== 7. Documentation
 
-* Logs au format JSON quand possible
-* Intégration avec Logstash
-
-=== 6. Logging (2/2)
-
-**Exploitabilité**
-
-* Logs dans Kibana
-* Filtres et dashboards de base
-
-=== 7. Sécurité (1/3)
-
-**Pas de root**
-
-* Conteneurs applicatifs avec `USER` non-root
-* Principe du moindre privilège
-
-=== 7. Sécurité (2/3)
-
-**Gestion des secrets**
-
-* Docker secrets ou variables d'environnement
-* **Jamais** en clair dans le code
-
-=== 7. Sécurité (3/3)
-
-**Scanning de vulnérabilités**
-
-* Trivy sur l'image applicative
-* Rapport généré
-
-=== 8. Documentation (1/3)
-
-**README.md structuré**
+**README.md complet :**
 
 * Architecture (schéma + explications)
-* Prérequis et installation
-* Configuration (variables)
+* Prérequis, installation, configuration
+* Utilisation et troubleshooting
+* **Justifications** des choix techniques
 
-=== 8. Documentation (2/3)
+[{invert}]
+== Grille d'évaluation Partie 1
 
-**README.md (suite)**
-
-* Utilisation (commandes, URLs)
-* Résolution des problèmes courants
-
-=== 8. Documentation (3/3)
-
-**Justifications**
-
-* Pourquoi ce reverse-proxy ?
-* Pourquoi cette configuration ?
-* Schéma d'architecture (Mermaid/PlantUML/draw.io)
-
-=== Grille d'évaluation Partie 1
-
-[cols="3,1,6"]
+[cols="2,1"]
 |===
-|Critère |Points |Détails
+|Critère |Points
 
-|Architecture fonctionnelle
-|3 pts
-|Stack complète fonctionnelle, accessible
-
-|Qualité technique
-|3 pts
-|Multi-stage, health checks, resources, sécurité
-
-|Documentation
-|2 pts
-|README complet avec schéma et justifications
-
-|Bonnes pratiques
-|2 pts
-|Images optimisées, logs structurés, secrets gérés
-
-|**Total critères**
-|**10 pts**
-|
+|Architecture fonctionnelle |3 pts
+|Qualité technique |3 pts
+|Documentation |2 pts
+|Bonnes pratiques |2 pts
+|**Total** |**10 pts**
 |===
 
 [{invert}]
-== Compléments valorisés : Allez plus loin !
+== Compléments valorisés
 
 [.title]
 **Permettent de compenser et d'atteindre 10/10**
 
-=== Rôle des compléments valorisés
+[{invert}]
+== Rôle des compléments
 
-[IMPORTANT]
-====
-* **Fonction** : Compenser les points manquants sur les critères principaux
-* **Formule** : Note Partie 1 = min(10, Critères + Compléments)
-* **Objectif** : Atteindre 10/10 grâce à des approfondissements
-====
+* **Fonction** : Compenser les points manquants
+* **Formule** : Note = min(10, Critères + Compléments)
+* **Objectif** : Atteindre 10/10
 
-=== Stratégie recommandée
+[{invert}]
+== Stratégie recommandée
 
 **Qualité > Quantité**
 
-Il vaut mieux :
-
 * 1-2 compléments **de qualité**
-* Que 4 compléments **bâclés**
+* Mieux que 4 compléments **bâclés**
+* Choisissez ce qui vous **intéresse** !
 
-Choisissez ce qui vous **intéresse** !
-
-=== Complément 1 : Observabilité (+1 pt) - Vue
+[{invert}]
+== Complément 1 : Observabilité (+1 pt)
 
 **Prometheus + Grafana**
 
 * Stack de monitoring moderne
 * Métriques temps réel
 
-=== Complément 1 : Observabilité - Détails (1/3)
-
-**Intégration**
+[{invert}]
+== Observabilité : Détails
 
 * Prometheus pour collecter
 * Grafana pour visualiser
+* Métriques custom via **Micrometer**
 
-=== Complément 1 : Observabilité - Détails (2/3)
-
-**Métriques custom**
-
-* Exposées depuis votre application Java
-* Via Micrometer par exemple
-
-=== Complément 1 : Observabilité - Détails (3/3)
-
-**Livrables attendus**
+[{invert}]
+== Observabilité : Livrables
 
 * **2 dashboards Grafana** (système + applicatif)
 * **1 alerte** Prometheus minimum
+* Ressources : cAdvisor, Micrometer
 
-=== Complément 1 : Ressources
-
-* https://prometheus.io/docs/guides/cadvisor/[cAdvisor pour Docker]
-* https://micrometer.io/[Micrometer pour Java]
-
-=== Complément 2 : Pipeline validation (+1 pt) - Vue
+[{invert}]
+== Complément 2 : Pipeline validation (+1 pt)
 
 **Tests automatiques du compose**
 
 * Pipeline CI de validation
-* Tests avec Goss
+* Tests avec **Goss**
 
-=== Complément 2 : Pipeline - Détails (1/2)
-
-**Le pipeline doit :**
+[{invert}]
+== Pipeline : Détails
 
 * Lancer `docker compose up -d`
 * Vérifier santé de tous les services
 * Tester les endpoints critiques
-
-=== Complément 2 : Pipeline - Détails (2/2)
-
-**Objectif**
-
 * Générer un rapport de tests
-* Valider les mises à jour auto (Complément 3)
 
-=== Complément 2 : Ressources
-
-* https://github.com/goss-org/goss[Goss - Server testing]
-* https://github.com/jenkinsci/docker/tree/master/tests[Tests Jenkins Docker]
-
-=== Complément 3 : Dépendances auto (+0.75 pt) - Vue
+[{invert}]
+== Complément 3 : Dépendances auto (+0.75 pt)
 
 **Updatecli / Renovate / Dependabot**
 
-* Mise à jour automatique des dépendances
+* Mise à jour automatique
 * Pull requests auto
 
-=== Complément 3 : Dépendances - Détails
+[{invert}]
+== Dépendances : Configuration
 
-**Configuration pour surveiller :**
+Surveiller :
 
 * Images Docker de base
 * Dépendances Maven/Gradle
 * Versions dans `compose.yml`
 
-=== Complément 3 : Ressources
-
-* https://updatecli.io/[Updatecli]
-* https://docs.renovatebot.com/[Renovate]
-
-=== Complément 4 : Load Testing (+1 pt) - Vue
+[{invert}]
+== Complément 4 : Load Testing (+1 pt)
 
 **k6 ou Gatling**
 
 * Tests de charge
 * Optimisations prouvées
 
-=== Complément 4 : Load Testing - Détails (1/2)
-
-**Scénarios réalistes**
+[{invert}]
+== Load Testing : Scénarios
 
 * Connexion utilisateur
 * Opérations CRUD
 * Charge progressive
 
-=== Complément 4 : Load Testing - Détails (2/2)
-
-**Rapport de performance**
+[{invert}]
+== Load Testing : Rapport
 
 * Throughput (req/s)
 * Latence (p50, p95, p99)
 * Taux d'erreur
 * **Avant/après** optimisations
 
-=== Complément 4 : Ressources
-
-* https://k6.io/docs/[k6]
-* https://gatling.io/docs/gatling/[Gatling]
-
-=== Complément 5 : Haute disponibilité (+1 pt) - Vue
+[{invert}]
+== Complément 5 : Haute disponibilité (+1 pt)
 
 **Plusieurs instances + Load balancing**
 
 * Au moins 2 instances d'app
 * Zero-downtime deployment
 
-=== Complément 5 : HA - Détails (1/2)
+[{invert}]
+== HA : Démonstration
 
-**Configuration**
-
-* Multiple instances du serveur d'app
-* Load balancing sur le reverse-proxy
-
-=== Complément 5 : HA - Détails (2/2)
-
-**Démonstration**
-
+* Multiple instances serveur d'app
+* Load balancing sur reverse-proxy
 * Script de rolling deployment
 * Aucune requête en erreur
-* Optionnel : Chaos engineering (Pumba)
 
-=== Complément 5 : Ressources
-
-* https://github.com/alexei-led/pumba[Pumba - Chaos testing]
-
-=== Complément 6 : Multi-environnements (+0.75 pt) - Vue
+[{invert}]
+== Complément 6 : Multi-environnements (+0.75 pt)
 
 **Dev / Staging / Prod**
 
 * 3 configurations
 * Compose overrides
 
-=== Complément 6 : Multi-env - Détails (1/2)
-
-**Fichiers Compose**
+[{invert}]
+== Multi-env : Fichiers
 
 * `compose.yml` (base commune)
 * `compose.override.yml` (dev)
 * `compose.prod.yml` (prod)
-
-=== Complément 6 : Multi-env - Détails (2/2)
-
-**Variables par environnement**
-
 * `.env.dev`, `.env.staging`, `.env.prod`
-* Documentation des différences
-
-=== Complément 6 : Ressources
-
-* https://docs.docker.com/compose/multiple-compose-files/[Compose inheritance]
-
-=== Complément 7 : GitLab auto-hébergé (+1.5 pts) - Vue
-
-**Votre propre forge GitLab**
-
-* GitLab CE en Docker Compose
-* Maintenu à jour automatiquement
-
-=== Complément 7 : GitLab - Détails (1/2)
-
-**Configuration**
-
-* GitLab CE en Free-Tier
-* Infrastructure as Code
-* Updatecli pour les mises à jour
-
-=== Complément 7 : GitLab - Détails (2/2)
-
-**Utilisation**
-
-* Projet Partie 1 dans cette forge
-* Optionnel : GitLab Runner pour Partie 2
-
-=== Complément 7 : Ressources
-
-* https://docs.gitlab.com/ee/install/docker.html[GitLab Docker]
-* https://docs.gitlab.com/runner/install/docker.html[GitLab Runner]
-
-[{invert}]
-== Partie 2 : CI/CD avec GitLab
-
-[.title]
-**Partie de votre collègue - Notée sur 10 points**
-
-=== Code base
-
-* **Fork** de l'application starter (alpha ou beta)
-* Application **complète**
-* Enseignants en **maintainers**
-
-=== Infrastructure Univ. Artois
-
-[source,yaml]
-----
-nexus_mirror: http://nexus.etu-k8s.lan/repository/maven-public/
-runner: k8s-etu
-registry: registry.etu-k8s.lan/docker-hub/
-sonarqube: http://sonarqube.univ-artois.fr
-----
-
-=== Git-flow
-
-image::gitflow-diagram.png[Git-flow, 600]
-
-=== Branches Git-flow
-
-* `main` : production
-* `develop` : intégration
-* `feature/*` : nouvelles fonctionnalités
-* `release/*` : préparation release
-* `hotfix/*` : corrections urgentes
-
-=== Pipeline 1 : CI - Déclenchement
-
-**Push sur n'importe quelle branche**
-
-=== Pipeline 1 : CI - BUILD
-
-[cols="3,1,1"]
-|===
-|Job |Failure? |Artefact?
-
-|Build Java 21
-|❌ Non
-|❌ Non
-
-|Build Java 11
-|✅ Oui
-|❌ Non
-|===
-
-=== Pipeline 1 : CI - TEST
-
-[cols="3,1,1"]
-|===
-|Job |Failure? |Artefact?
-
-|Tests unitaires + Jacoco
-|❌ Non
-|✅ 5min
-
-|Analyse Trivy (HTML)
-|❌ Non
-|✅ 5min
-|===
-
-=== Pipeline 1 : CI - QUALITY
-
-[cols="3,1,1"]
-|===
-|Job |Failure? |Artefact?
-
-|SonarQube
-|✅ Oui
-|❌ Non
-
-|JavaDoc
-|✅ Oui
-|✅ 5min
-|===
-
-=== Pipeline 2 : CD - Déclenchement
-
-**Merge Request vers `develop`**
-
-=== Pipeline 2 : CD - BUILD-QUALIF
-
-[cols="3,1,1"]
-|===
-|Job |Failure? |Artefact?
-
-|Build Java 21
-|❌ Non
-|✅ 5min
-|===
-
-=== Pipeline 3 : Delivery - Déclenchement
-
-**MR validée : `develop` → `main`**
-
-=== Pipeline 3 : Delivery - Jobs (1/2)
-
-[cols="3,1,1"]
-|===
-|Job |Failure? |Artefact?
-
-|BUILD-PROD
-|❌ Non
-|✅ 5min
-
-|RELEASE-TAG
-|❌ Non
-|❌ Non
-|===
-
-=== Pipeline 3 : Delivery - Jobs (2/2)
-
-[cols="3,1,1"]
-|===
-|Job |Failure? |Artefact?
-
-|DELIVERY (Nexus) ⭐
-|❌ Non
-|🎁 BONUS
-|===
-
-[.small]
-Credentials : voir instructions fournies séparément +
-(ne jamais commiter de secrets !)
 
 [{invert}]
 == Communication
@@ -632,7 +294,8 @@ Credentials : voir instructions fournies séparément +
 [.title]
 **Bonnes pratiques**
 
-=== Workflow : Merge Requests
+[{invert}]
+== Workflow : Merge Requests
 
 [quote]
 ____
@@ -641,7 +304,8 @@ ____
 Commit direct sur `main` → je ne suis pas notifié !"
 ____
 
-=== Ce qu'on attend
+[{invert}]
+== Ce qu'on attend
 
 * Communication via **MR et issues**
 * **Commits atomiques** (conventional commits)
@@ -652,63 +316,54 @@ ____
 [{invert}]
 == Conseils pratiques
 
-=== Par où commencer ? (1/4)
+[.title]
+**Par où commencer ?**
 
-**1. Choisir les technologies**
+[{invert}]
+== 1. Choisir les technologies
 
 * Vote Moodle
 * Créer le repo GitLab
 
-=== Par où commencer ? (2/4)
-
-**2. Partie 1 - Itératif**
+[{invert}]
+== 2. Partie 1 - Itératif
 
 * Docker Compose basique qui marche
 * Puis health checks
 * Puis optimisations
-* Bonus si temps disponible
+* Compléments si temps disponible
 
-=== Par où commencer ? (3/4)
-
-**3. Partie 2 - Progressif**
-
-* Pipeline Integration d'abord
-* Puis Deployment
-* Puis Delivery
-
-=== Par où commencer ? (4/4)
-
-**4. Documentation**
+[{invert}]
+== 3. Documentation
 
 * **Au fur et à mesure**
 * Pas à la fin !
 
-=== Ressources (1/2)
+[{invert}]
+== Ressources
 
 * https://docs.docker.com/[Docker officiel]
 * https://github.com/docker/awesome-compose[Compose samples]
-* https://docs.gitlab.com/ee/ci/[GitLab CI/CD]
-
-=== Ressources (2/2)
-
 * **Votre cours** : tout est dedans !
-* **IA (ChatGPT/Claude)** : OK pour comprendre
+
+[{invert}]
+== IA : OK pour apprendre
+
+* **ChatGPT/Claude** : OK pour comprendre
 
 [WARNING]
 ====
-**Pas de plagiat !** On reconnaît le code IA sans compréhension.
+**Pas de plagiat !** On reconnaît le code IA.
 
 Utilisez pour **apprendre**, pas pour **éviter de réfléchir**.
 ====
 
-=== Erreurs courantes (1/2)
+[{invert}]
+== Erreurs courantes
 
 * ❌ Secrets dans Git (`.env`)
 * ❌ Images trop grosses
 * ❌ Pas de health checks
-
-=== Erreurs courantes (2/2)
-
 * ❌ Volumes anonymes
 * ❌ Tout en `root`
 * ❌ Documentation absente
@@ -716,113 +371,56 @@ Utilisez pour **apprendre**, pas pour **éviter de réfléchir**.
 [{invert}]
 == Grille d'évaluation
 
-=== Note finale : Vue d'ensemble
+**Note finale /20**
 
-**Chaque partie notée sur 10**
+* Partie 1 : /10
+* Partie 2 : /10
 
-* Partie 1 (vous) : /10
-* Partie 2 (collègue) : /10
-
-Puis addition → note finale /20
-
-=== Partie 1 : Critères principaux (10 pts)
+[{invert}]
+== Critères principaux (10 pts)
 
 [cols="2,1"]
 |===
 |Critère |Points
 
-|Architecture fonctionnelle
-|3 pts
-
-|Qualité technique
-|3 pts
-
-|Documentation
-|2 pts
-
-|Bonnes pratiques
-|2 pts
-
-|**Total**
-|**10 pts**
+|Architecture fonctionnelle |3 pts
+|Qualité technique |3 pts
+|Documentation |2 pts
+|Bonnes pratiques |2 pts
+|**Total** |**10 pts**
 |===
-
-=== Partie 1 : Compléments valorisés (1/2)
-
-[cols="2,1"]
-|===
-|Complément |Points
-
-|Observabilité
-|+1 pt
-
-|Pipeline validation
-|+1 pt
-
-|Dépendances auto
-|+0.75 pt
-
-|Load Testing
-|+1 pt
-|===
-
-=== Partie 1 : Compléments valorisés (2/2)
-
-[cols="2,1"]
-|===
-|Complément |Points
-
-|Haute disponibilité
-|+1 pt
-
-|Multi-environnements
-|+0.75 pt
-
-|GitLab auto-hébergé
-|+1.5 pts
-|===
-
-=== Partie 1 : Calcul de la note
-
-[IMPORTANT]
-====
-**Formule :** Note Partie 1 = min(10, Critères + Compléments)
-====
-
-[cols="2,1"]
-|===
-|Catégorie |Points
-
-|Critères principaux
-|10 pts max
-
-|Compléments valorisés
-|Compensent les points manquants
-
-|**TOTAL PARTIE 1**
-|**10/10**
-|===
-
-=== Explication du mécanisme
-
-**Rôle des compléments :** Compenser les points perdus sur les critères principaux
-
-**Exemple 1 :** 7/10 critères + 2 pts compléments = 9/10 final
-
-**Exemple 2 :** 8/10 critères + 3 pts compléments = 10/10 final (plafonné)
-
-→ Les compléments permettent d'atteindre 10/10
 
 [{invert}]
-== Vos contacts
+== Compléments valorisés (1/2)
 
-=== Enseignants
+[cols="2,1"]
+|===
+|Complément |Points
 
-**Daniel Le Berre** - Partie 2 (CI/CD)
+|Observabilité |+1 pt
+|Pipeline validation |+1 pt
+|Dépendances auto |+0.75 pt
+|Load Testing |+1 pt
+|===
 
-**Bruno Verachten** - Partie 1 (Infrastructure)
+[{invert}]
+== Compléments valorisés (2/2)
 
-**Farid Ait-Kara**
+[cols="2,1"]
+|===
+|Complément |Points
+
+|Haute disponibilité |+1 pt
+|Multi-environnements |+0.75 pt
+|===
+
+[{invert}]
+== Calcul de la note
+
+**Formule :** Note = min(10, Critères + Compléments)
+
+* 7/10 critères + 2 pts compléments = **9/10**
+* 8/10 critères + 3 pts compléments = **10/10** (plafonné)
 
 [{invert}]
 == Bon courage ! 🚀

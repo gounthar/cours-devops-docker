@@ -44,7 +44,7 @@ Refonte ambitieuse de l'énoncé de l'examen final du module Docker DevOps M2 IL
 
 ### 3. Compléments valorisés (Partie 1)
 
-**7 compléments au choix** (au lieu de 3 dans l'original) :
+**6 compléments au choix** (au lieu de 3 dans l'original) :
 
 | Complément | Points | Description |
 |-------|--------|-------------|
@@ -54,7 +54,6 @@ Refonte ambitieuse de l'énoncé de l'examen final du module Docker DevOps M2 IL
 | Performance & Load Testing (k6/Gatling) | +1 pt | Tests de charge + optimisations prouvées |
 | Haute disponibilité | +1 pt | Multi-instances + load balancing + zero-downtime |
 | Multi-environnements | +0.75 pt | Dev/Staging/Prod avec overrides |
-| Forge GitLab auto-hébergée | +1.5 pts | GitLab CE en Docker Compose + maintenu à jour |
 
 **Rôle** : Compenser les points manquants et atteindre 10/10 (Note = min(10, Critères + Compléments))
 
@@ -267,6 +266,56 @@ python3 -m http.server 8080
 
 ---
 
-**Dernière mise à jour** : 8 décembre 2025
+## Document détaillé de l'examen (11 décembre 2025)
+
+### Nouveau fichier créé
+
+**Fichier** : `content/examen-final-detaille.adoc`
+
+**Objectif** : Document de référence complet pour les étudiants (format article, pas slides)
+
+**Caractéristiques** :
+- **Longueur** : 2278 lignes (~45 pages PDF)
+- **Format** : AsciiDoc article optimisé pour conversion PDF
+- **Taille PDF** : 612 Ko
+- **Style** : Pédagogique et professionnel avec exemples complets
+
+**Contenu** :
+1. Introduction (modalités, objectifs pédagogiques)
+2. Architecture cible (composants obligatoires détaillés)
+3. Exigences techniques (Docker Compose, images, health checks, resources, logging, sécurité, documentation)
+4. Grille d'évaluation détaillée (critères + 6 compléments valorisés)
+5. Conseils pratiques (par où commencer, gestion du temps, workflow Git, communication)
+6. Ressources utiles (documentation, exemples, outils)
+7. FAQ complète
+
+**Différences avec les slides** :
+- Slides (`examen-final.adoc`) : 450 lignes, 102 slides, pour présentation en cours
+- Document détaillé : 2278 lignes, 45 pages, référence complète pour les étudiants
+
+**Génération du PDF** :
+```bash
+# Via Makefile (recommandé)
+make exam-pdf
+
+# Via Docker directement
+docker run --rm \
+  -v $(pwd)/content:/documents \
+  asciidoctor/docker-asciidoctor:latest \
+  asciidoctor-pdf \
+  -a pdf-theme=default-with-font-fallbacks \
+  -a imagesdir=/documents/media \
+  /documents/examen-final-detaille.adoc \
+  -o /documents/examen-final-detaille.pdf
+```
+
+**Fichiers associés** :
+- `content/EXAM-README.md` : Instructions de génération du PDF
+- `Makefile` : Ajout du target `exam-pdf`
+- `dist/examen-final-detaille.pdf` : PDF généré (45 pages)
+
+---
+
+**Dernière mise à jour** : 11 décembre 2025
 **Auteur** : Claude (avec Bruno Verachten)
 **Projet** : Cours DevOps Docker M2 ILI
