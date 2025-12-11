@@ -83,8 +83,9 @@ function styles() {
 }
 
 function html(cb) {
+    const sourceFile = process.env.SOURCE_FILE || 'index.adoc';
     asciidoctor.convertFile(
-        current_config.sourcesDir + '/index.adoc',
+        current_config.sourcesDir + '/' + sourceFile,
         {
             safe: 'unsafe',
             backend: 'revealjs',

@@ -1,0 +1,47 @@
+= 🇫🇷 Devops : Docker - Examen Final
+include::./attributes.adoc[]
+
+[.title]
+{academic_year}
+
+image::qrcode.png["QRCode to this presentation",height=150]
+
+[.small]
+* Présentation disponible à l'adresse: {presentationUrl}[{presentationUrl}]
+* Version PDF de la présentation : link:slides.pdf[{pdf_icon} Cliquez ici,window="_blank"]
+* Contenu sous licence link:https://creativecommons.org/licenses/by/4.0/[Creative Commons Attribution 4.0 International License,window="_blank"]
+* Code source de la présentation: link:{repositoryUrl}[{github_icon} {repositoryUrl},window="_blank"]
+
+[background-color="MediumBlue"]
+[.dark.background]
+[.columns]
+== Comment utiliser cette présentation ?
+
+[.column]
+--
+image::logo-t-shirt-transparent-1080.png[background, size=contain, position=left, opacity=0.1, "image générée par ideogram.ai avec un prompt créé par chatGPT]
+--
+
+[.column]
+--
+* Pour naviguer, utilisez les flèches en bas à droite (ou celles de votre clavier)
+** Gauche/Droite: changer de chapitre
+** Haut/Bas: naviguer dans un chapitre
+* Pour avoir une vue globale : utiliser la touche "o" (pour "*Overview*")
+--
+
+// Examen Final
+include::./chapitres/examen-final.adoc[leveloffset=1]
+
+[{invert}]
+== Merci !
+
+{author_mail}
+
+[.small]
+link:{presentationUrl}[Slides: {presentationUrl}]
+
+image::qrcode.png["QRCode to this presentation",height=150]
+
+[.small]
+link:{repositoryUrl}[Source on {github_icon} : {repositoryUrl},window="_blank"]
