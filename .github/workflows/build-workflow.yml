@@ -44,6 +44,8 @@ jobs:
           echo "✅ package.json and package-lock.json are in sync"
       - name: Build HTML slides
         run: make build
+      - name: Build exam HTML slides
+        run: SOURCE_FILE=index-examen.adoc make build
       - name: Build PDF slides
         run: make pdf # Reuses the 'make build' steps
       - name: 'Verify'
