@@ -48,6 +48,8 @@ jobs:
         run: SOURCE_FILE=index-examen.adoc make build
       - name: Build PDF slides
         run: make pdf # Reuses the 'make build' steps
+      - name: Build exam PDF document
+        run: make exam-pdf
       - name: 'Verify'
         run: make verify
       - name: 'Upload dist/ as artefact'

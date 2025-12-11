@@ -1,0 +1,246 @@
+# LaTeX-style theme for Asciidoctor PDF
+# Mimics the classic academic LaTeX document look
+
+font:
+  catalog:
+    # Use built-in fonts that resemble LaTeX's Computer Modern
+    Serif:
+      normal: GEM_FONTS_DIR/notoserif-regular-subset.ttf
+      bold: GEM_FONTS_DIR/notoserif-bold-subset.ttf
+      italic: GEM_FONTS_DIR/notoserif-italic-subset.ttf
+      bold_italic: GEM_FONTS_DIR/notoserif-bold_italic-subset.ttf
+    Mono:
+      normal: GEM_FONTS_DIR/mplus1mn-regular-subset.ttf
+      bold: GEM_FONTS_DIR/mplus1mn-bold-subset.ttf
+      italic: GEM_FONTS_DIR/mplus1mn-italic-subset.ttf
+      bold_italic: GEM_FONTS_DIR/mplus1mn-bold_italic-subset.ttf
+  fallbacks:
+    - GEM_FONTS_DIR/notosanssymbols-regular-subset.ttf
+    - GEM_FONTS_DIR/notosanssymbols2-regular-subset.ttf
+
+page:
+  background_color: FFFFFF
+  layout: portrait
+  initial_zoom: FitH
+  margin: [2.5cm, 2cm, 2.5cm, 2cm]  # LaTeX-like margins
+  margin_inner: 2.5cm
+  margin_outer: 2cm
+  size: A4
+
+base:
+  align: justify  # LaTeX default
+  font_color: 000000
+  font_family: Serif
+  font_size: 11
+  line_height_length: 14
+  line_height: $base_line_height_length / $base_font_size
+
+link:
+  font_color: 000080  # Dark blue like classic LaTeX hyperref
+
+literal:
+  font_color: 333333
+  font_family: Mono
+  font_size: 9
+
+heading:
+  align: left
+  font_color: 000000
+  font_family: Serif
+  font_style: bold
+  h1:
+    font_size: 24
+    margin_top: 0
+    margin_bottom: 12
+  h2:
+    font_size: 18
+    margin_top: 18
+    margin_bottom: 8
+  h3:
+    font_size: 14
+    font_style: bold
+    margin_top: 14
+    margin_bottom: 6
+  h4:
+    font_size: 12
+    font_style: bold_italic
+    margin_top: 10
+    margin_bottom: 4
+  line_height: 1.2
+
+title_page:
+  align: center
+  logo:
+    top: 10%
+  title:
+    top: 35%
+    font_size: 28
+    font_style: bold
+    font_color: 000000
+    line_height: 1.2
+  subtitle:
+    font_size: 18
+    font_style: italic
+    line_height: 1.5
+    margin_top: 12
+  authors:
+    font_size: 14
+    margin_top: 24
+  revision:
+    font_size: 12
+    margin_top: 12
+
+block:
+  margin_top: 0
+  margin_bottom: 12
+
+caption:
+  align: left
+  font_size: 10
+  font_style: italic
+  margin_inside: 4
+  margin_outside: 0
+
+code:
+  font_color: 000000
+  font_family: Mono
+  font_size: 9
+  padding: 8
+  line_height: 1.3
+  line_gap: 2
+  background_color: F5F5F5
+  border_color: CCCCCC
+  border_radius: 2
+  border_width: 0.5
+
+conum:
+  font_family: Mono
+  font_color: 000000
+  font_size: $base_font_size
+  line_height: 1.2
+
+example:
+  border_color: CCCCCC
+  border_radius: 2
+  border_width: 0.5
+  background_color: FFFFFF
+  padding: [8, 12, 8, 12]
+
+image:
+  align: center
+
+lead:
+  font_size: $base_font_size_large
+  line_height: 1.4
+
+abstract:
+  font_color: 333333
+  font_size: $base_font_size
+  line_height: 1.4
+  font_style: italic
+  first_line_font_style: bold
+  title:
+    align: center
+    font_color: 000000
+    font_size: $heading_h3_font_size
+    font_style: bold
+
+admonition:
+  column_rule_color: CCCCCC
+  column_rule_width: 0.5
+  padding: [8, 12, 8, 12]
+  label:
+    font_style: bold
+    text_transform: uppercase
+
+blockquote:
+  font_color: 333333
+  font_size: $base_font_size
+  border_color: CCCCCC
+  border_width: 2
+  padding: [0, 12, 0, 14]
+  cite:
+    font_size: $base_font_size_small
+    font_color: 666666
+
+sidebar:
+  background_color: F0F0F0
+  border_color: CCCCCC
+  border_radius: 2
+  border_width: 0.5
+  padding: [8, 12, 8, 12]
+  title:
+    align: center
+    font_color: 000000
+    font_style: bold
+
+thematic_break:
+  border_color: CCCCCC
+  border_style: solid
+  border_width: 0.5
+  margin_top: 12
+  margin_bottom: 12
+
+description_list:
+  term_font_style: bold
+  term_spacing: 4
+  description_indent: 20
+
+list:
+  indent: 20
+  item_spacing: 4
+  marker_font_color: 000000
+
+table:
+  background_color: FFFFFF
+  border_color: 000000
+  border_width: 0.5
+  cell_padding: 4
+  head:
+    font_style: bold
+    border_bottom_width: 1
+    background_color: F0F0F0
+  body:
+    stripe_background_color: FAFAFA
+  foot:
+    background_color: F0F0F0
+
+toc:
+  indent: 20
+  line_height: 1.4
+  dot_leader:
+    content: ". "
+    font_color: 999999
+    levels: 2 3 4 5
+
+header:
+  font_size: 9
+  font_color: 666666
+  border_color: CCCCCC
+  border_width: 0.25
+  height: 0.75in
+  line_height: 1
+  padding: [6, 1, 0, 1]
+  vertical_align: bottom
+  recto:
+    right:
+      content: '{document-title}'
+  verso:
+    left:
+      content: '{chapter-title}'
+
+footer:
+  font_size: 9
+  font_color: 666666
+  border_color: CCCCCC
+  border_width: 0.25
+  height: 0.75in
+  line_height: 1
+  padding: [6, 1, 0, 1]
+  vertical_align: top
+  recto:
+    right:
+      content: '{page-number}'
+  verso:
+    left:
+      content: '{page-number}'
