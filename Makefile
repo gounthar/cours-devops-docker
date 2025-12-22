@@ -38,7 +38,7 @@ pdf:
 	@$(call compose_up, --exit-code-from=pdf pdf)
 
 # Asciidoctor Docker image version - kept updated via updatecli
-ASCIIDOCTOR_IMAGE ?= asciidoctor/docker-asciidoctor:1.100
+ASCIIDOCTOR_IMAGE ?= asciidoctor/docker-asciidoctor:1.101
 
 exam-pdf:
 	@echo "Generating detailed exam PDF with LaTeX-style formatting..."
