@@ -53,7 +53,7 @@ jobs:
       - name: 'Verify'
         run: make verify
       - name: 'Upload dist/ as artefact'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: dist
           path: dist/
