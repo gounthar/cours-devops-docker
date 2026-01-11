@@ -431,6 +431,11 @@ healthcheck:
 
 === Solution 3 : Utiliser Python/Node Built-in
 
+[NOTE]
+====
+Cette solution s'applique **uniquement** aux images qui contiennent déjà Python ou Node.js (ex: `python:3.11-slim`, `node:18-alpine`, images d'applications Python/Node). N'installez pas Python/Node.js juste pour le health check - utilisez plutôt les Solutions 1 ou 2.
+====
+
 Si votre image contient **Python** ou **Node.js**, utilisez-les :
 
 **Health check avec Python** :
