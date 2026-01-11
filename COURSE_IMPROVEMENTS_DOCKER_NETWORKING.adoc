@@ -1,0 +1,930 @@
+= Améliorations du Cours : Pièges Courants Docker & Reverse Proxy
+:toc: left
+:toclevels: 3
+:sectnums:
+:icons: font
+:source-highlighter: rouge
+:experimental:
+:stem:
+
+== Contexte
+
+=== Origine de ce Document
+
+Suite à l'analyse des projets d'étudiants de l'examen final 2025-2026 (binômes avec reverse proxy + serveur d'application Java), **trois erreurs critiques** sont apparues de manière récurrente dans les projets les moins bien notés :
+
+1. **Résolution DNS NGINX manquante** : `resolver 127.0.0.11` absent dans nginx.conf
+2. **Outils manquants dans les images de base** : `curl` absent pour les health checks
+3. **Confusion localhost vs nom de service** : Utilisation de `localhost` au lieu du nom de service Docker
+
+Ces trois erreurs simples ont causé :
+
+* **Échec complet des tests fonctionnels** (0.0/2.0 points)
+* **Conteneurs qui ne démarrent jamais** (status: "Created" ou crash loops)
+* **Notes finales catastrophiques** : F (Insuffisant) alors que l'architecture était correcte
+
+[IMPORTANT]
+====
+**Pattern commun identifié** : Les étudiants démontrent une **forte compréhension architecturale** (docker-compose bien structuré, volumes, réseaux personnalisés, ELK stack) mais échouent sur des **détails techniques Docker/NGINX** qui ne sont pas explicitement couverts dans le cours.
+====
+
+=== Impact des Corrections
+
+[cols="1,2,1,2,1", options="header"]
+|===
+| Étudiant | Problème | Fix | Impact | Nouveau Grade
+
+| Étudiant A
+| NGINX DNS resolution failure
+| 1 ligne (`resolver 127.0.0.11`)
+| +1.20 pts
+| F → C
+
+| Étudiant B
+| Curl manquant pour health checks
+| 1 commande RUN
+| ~+1.5 pts
+| F → C/D
+
+| Étudiant C
+| GELF logging avec localhost
+| 2 mots changés
+| +1.30 pts
+| F → D
+|===
+
+**Conclusion** : Des changements minuscules (1 ligne de code) transforment des échecs en réussites. Le cours doit couvrir ces pièges.
+
+== Gaps Identifiés dans le Cours Actuel
+
+=== Gap #1 : Résolution DNS NGINX (`resolver 127.0.0.11`)
+
+==== Ce qui existe actuellement
+
+* **Chapitre 11 (reseaux.adoc)** :
+** Couvre Docker DNS et MicroDNS (lignes 313-350)
+** Montre que les conteneurs peuvent s'appeler par nom
+** Exemple : `docker container run --net mynet alpine ping web`
+
+* **SecureVote Phase 1 (proxy/nginx.conf)** :
+** Utilise des `upstream` blocks avec noms de service
+** **MAIS** : Pas de directive `resolver` !
+
+[source,nginx]
+----
+upstream frontend {
+    server frontend:3000;  # ← Fonctionne SEULEMENT si frontend démarre avant nginx
+}
+
+upstream backend {
+    server backend:5000;   # ← Fonctionne SEULEMENT si backend démarre avant nginx
+}
+----
+
+==== Ce qui manque
+
+[WARNING]
+====
+**Problème critique** : NGINX résout les hostnames des `upstream` blocks **au démarrage uniquement**, pas dynamiquement comme d'autres outils.
+
+Sans `resolver 127.0.0.11`, NGINX :
+
+1. Essaie de résoudre `frontend:3000` via `/etc/resolv.conf` (DNS système)
+2. Le DNS système ne connaît PAS les noms de service Docker
+3. NGINX affiche : `nginx: [emerg] host not found in upstream "frontend:3000"`
+4. Le conteneur ne démarre JAMAIS (status: "Created")
+====
+
+==== Ce qu'il faut ajouter au cours
+
+**Localisation suggérée** : Nouveau sous-chapitre dans `reseaux.adoc` après la section MicroDNS.
+
+**Titre suggéré** : "🚨 Piège NGINX : Résolution DNS dans upstream blocks"
+
+**Contenu proposé** :
+
+[source,asciidoc]
+----
+== 🚨 Piège NGINX : Résolution DNS dans upstream blocks
+
+=== Le Problème
+
+NGINX a un comportement **différent** des autres outils Docker concernant la résolution DNS :
+
+[%step]
+* La plupart des outils résolvent les noms de service **dynamiquement** (à chaque requête)
+* NGINX résout les hostnames dans `upstream` blocks **une seule fois au démarrage**
+* Sans configuration spéciale, NGINX utilise `/etc/resolv.conf` (DNS système)
+* Le DNS système Docker **ne connaît pas** les noms de service Docker
+
+=== Exemple de Configuration Défaillante
+
+[source,nginx]
+----
+events {}
+
+http {
+    upstream backend {
+        server app-server:8080;  # ❌ ÉCHEC au démarrage !
+    }
+
+    server {
+        listen 80;
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}
+----
+
+**Erreur au démarrage** :
+[source,bash]
+----
+nginx: [emerg] host not found in upstream "app-server:8080" in /etc/nginx/nginx.conf:5
+----
+
+**Le conteneur ne démarre jamais !**
+
+=== La Solution : Directive `resolver`
+
+Docker fournit un **serveur DNS interne** à l'adresse **127.0.0.11** qui connaît tous les noms de service.
+
+[source,nginx]
+----
+events {}
+
+http {
+    # ✅ Indique à NGINX d'utiliser le DNS interne Docker
+    resolver 127.0.0.11 valid=30s ipv6=off;
+
+    upstream backend {
+        server app-server:8080;  # ✅ Fonctionne maintenant !
+    }
+
+    server {
+        listen 80;
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}
+----
+
+**Explication des paramètres** :
+
+* `127.0.0.11` : Adresse du DNS interne Docker (fixe pour tous les réseaux)
+* `valid=30s` : Cache DNS pendant 30 secondes (évite trop de requêtes DNS)
+* `ipv6=off` : Désactive IPv6 (plus rapide, évite les problèmes IPv6 Docker)
+
+=== Quand est-ce nécessaire ?
+
+[cols="2,3,1", options="header"]
+|===
+| Situation | Directive `resolver` nécessaire ? | Raison
+
+| `upstream` avec noms de service Docker
+| ✅ **OUI**
+| NGINX doit résoudre via DNS Docker
+
+| `upstream` avec adresses IP
+| ❌ Non
+| Pas de résolution DNS nécessaire
+
+| `proxy_pass` direct sans upstream
+| ⚠️ Parfois
+| Requis SEULEMENT si utilisation de variables (ex: `$backend_host`). Pas nécessaire pour noms fixes.
+
+| Services démarrent dans le bon ordre
+| ✅ **OUI quand même**
+| Plus robuste, fonctionne toujours
+|===
+
+[WARNING]
+====
+**Même si vos services démarrent dans le bon ordre**, ajoutez TOUJOURS `resolver 127.0.0.11` dans vos configurations NGINX avec upstream blocks. C'est une **bonne pratique** qui garantit la robustesse.
+====
+
+=== 🎓 Exercice Pratique
+
+Créez un projet avec :
+
+1. Un service `nginx` avec upstream vers `webapp`
+2. Un service `webapp` (nginx ou autre)
+
+**Sans `resolver`** :
+* Démarrez : les services crashent
+* Regardez les logs : `host not found`
+
+**Avec `resolver 127.0.0.11`** :
+* Démarrez : tout fonctionne
+* Testez : `curl http://localhost/`
+
+=== 📊 En Résumé
+
+[TIP]
+====
+**Règle d'or NGINX + Docker** :
+
+Si votre nginx.conf contient :
+[source,nginx]
+----
+upstream nom_service {
+    server autre_service:port;
+}
+----
+
+Alors votre nginx.conf DOIT contenir :
+[source,nginx]
+----
+http {
+    resolver 127.0.0.11 valid=30s ipv6=off;
+    # ...
+}
+----
+====
+----
+
+=== Gap #2 : Outils Manquants dans Images de Base
+
+==== Ce qui existe actuellement
+
+* **Chapitre 12 (compose.adoc)** :
+** Couvre extensivement les health checks (lignes 269-542)
+** Montre des exemples avec `pg_isready`, test de fichier, etc.
+** Exemple Jenkins avec healthcheck sophistiqué
+
+[source,yaml]
+----
+healthcheck:
+  test: ["CMD-SHELL", "[ -f /ssh-dir/conductor_ok ] || exit 1"]
+  interval: 5s
+  timeout: 10s
+  retries: 5
+----
+
+==== Ce qui manque
+
+[WARNING]
+====
+**Problème critique** : Les exemples supposent que les commandes utilisées (`wget`, `curl`, `[ ]`) existent dans l'image de base.
+
+**Réalité** : Les images **slim** ou **Alpine** n'incluent PAS ces outils par défaut !
+
+Exemple typique d'échec :
+[source,bash]
+----
+healthcheck:
+  test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+----
+
+**Erreur** : `/bin/sh: curl: not found` → Health check toujours "unhealthy" !
+====
+
+==== Ce qu'il faut ajouter au cours
+
+**Localisation suggérée** : Section supplémentaire dans le chapitre health checks de `compose.adoc`
+
+**Titre suggéré** : "⚠️ Piège : Outils manquants dans les images de base"
+
+**Contenu proposé** :
+
+[source,asciidoc]
+----
+== ⚠️ Piège : Outils manquants dans les images de base
+
+=== Le Problème
+
+Les health checks utilisent des **commandes shell** exécutées **à l'intérieur du conteneur**.
+
+[IMPORTANT]
+====
+**Si la commande n'existe pas dans l'image, le health check échoue systématiquement !**
+====
+
+=== Exemples d'Images et Outils Disponibles
+
+[cols="2,2,3", options="header"]
+|===
+| Image de Base | Outils Inclus | Outils ABSENTS
+
+| `debian:12` (full)
+| bash, curl, wget, ps, netcat
+| (rare)
+
+| `debian:12-slim`
+| sh, ps
+| ❌ curl, wget, netcat, bash
+
+| `alpine:3.19`
+| sh, wget, ps
+| ❌ curl, bash, netcat
+
+| `ubuntu:22.04`
+| bash, curl, wget
+| (rare)
+
+| `nginx:alpine`
+| sh, wget
+| ❌ curl, bash
+
+| `python:3.11-slim`
+| python, ps
+| ❌ curl, wget, bash
+|===
+
+=== Symptômes d'un Health Check avec Outil Manquant
+
+**docker ps** affiche :
+[source,bash]
+----
+CONTAINER ID   STATUS
+abc123         Up 2 minutes (unhealthy)  # ← Health check échoue !
+----
+
+**docker inspect** montre :
+[source,json]
+----
+"Health": {
+    "Status": "unhealthy",
+    "FailingStreak": 15,
+    "Log": [
+        {
+            "ExitCode": 127,
+            "Output": "/bin/sh: curl: not found\n"
+        }
+    ]
+}
+----
+
+[TIP]
+====
+**ExitCode 127** = "Command not found" → L'outil n'existe pas dans l'image !
+====
+
+=== Solution 1 : Installer l'Outil dans le Dockerfile
+
+**Exemple : Ajouter curl dans une image Debian slim**
+
+[source,dockerfile]
+----
+FROM debian:12-slim
+
+# Installer curl pour les health checks
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# Reste de votre Dockerfile...
+COPY app.py /app/
+CMD ["python", "/app/app.py"]
+----
+
+**Exemple : Ajouter curl dans une image Alpine**
+
+[source,dockerfile]
+----
+FROM alpine:3.19
+
+# Installer curl pour les health checks
+RUN apk add --no-cache curl
+
+# Reste de votre Dockerfile...
+COPY app.py /app/
+CMD ["python", "/app/app.py"]
+----
+
+=== Solution 2 : Utiliser des Alternatives Natives
+
+Si vous ne voulez PAS ajouter de dépendances, utilisez des outils **déjà présents** :
+
+**Alternative à `curl` : Test de fichier**
+
+Au lieu de :
+[source,yaml]
+----
+healthcheck:
+  test: ["CMD", "curl", "-f", "http://localhost:8080/health"]  # ❌ curl absent
+----
+
+Utilisez :
+[source,yaml]
+----
+healthcheck:
+  test: ["CMD-SHELL", "[ -f /app/ready ] || exit 1"]  # ✅ [ ] toujours présent
+----
+
+**Alternative à `curl` : wget (présent dans Alpine)**
+
+[source,yaml]
+----
+healthcheck:
+  test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+----
+
+**Alternative à `curl` : netcat/nc**
+
+[source,yaml]
+----
+healthcheck:
+  test: ["CMD-SHELL", "nc -z localhost 8080 || exit 1"]  # Teste juste la connexion TCP
+----
+
+=== Solution 3 : Utiliser Python/Node Built-in
+
+[NOTE]
+====
+Cette solution s'applique **uniquement** aux images qui contiennent déjà Python ou Node.js (ex: `python:3.11-slim`, `node:18-alpine`, images d'applications Python/Node). N'installez pas Python/Node.js juste pour le health check - utilisez plutôt les Solutions 1 ou 2.
+====
+
+Si votre image contient **Python** ou **Node.js**, utilisez-les :
+
+**Health check avec Python** :
+[source,yaml]
+----
+healthcheck:
+  test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
+----
+
+**Health check avec Node.js** :
+[source,yaml]
+----
+healthcheck:
+  test: ["CMD", "node", "-e", "require('http').get('http://localhost:8080/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+----
+
+=== 🎓 Exercice Pratique
+
+1. Créez un Dockerfile basé sur `debian:12-slim`
+2. Ajoutez un health check avec `curl`
+3. Lancez : observez "unhealthy"
+4. Modifiez le Dockerfile pour installer `curl`
+5. Relancez : observez "healthy"
+
+=== 📊 En Résumé
+
+[TIP]
+====
+**Checklist Health Check** :
+
+☑️ Vérifiez que la commande existe dans l'image de base
+
+☑️ Si absent : installez-le dans le Dockerfile
+
+☑️ Ou utilisez une alternative native (wget, test fichier, etc.)
+
+☑️ Testez avec `docker exec -it container nom_commande`
+====
+----
+
+=== Gap #3 : Localhost vs Nom de Service Docker
+
+==== Ce qui existe actuellement
+
+* **Chapitre 11 (reseaux.adoc)** :
+** Montre les conteneurs s'appelant par nom (lignes 299-351)
+** Exemple ping : `docker container run --net mynet alpine ping web`
+** Explique le DNS interne Docker
+
+==== Ce qui manque
+
+[WARNING]
+====
+**Confusion critique** : Dans Docker, `localhost` ≠ nom de service.
+
+* `localhost` = le conteneur lui-même (127.0.0.1)
+* `nom_service` = un AUTRE conteneur dans le réseau Docker
+
+**Erreur fréquente** : Configuration de logging, monitoring, proxy avec `localhost` au lieu du nom de service.
+
+Exemple réel étudiant :
+[source,yaml]
+----
+logging:
+  driver: gelf
+  options:
+    gelf-address: "udp://localhost:12201"  # ❌ FAUX : localhost = conteneur actuel, pas logstash !
+----
+
+**Résultat** : Le conteneur essaie d'envoyer les logs au port 12201 de **lui-même**, échoue, et crash en boucle infinie.
+====
+
+==== Ce qu'il faut ajouter au cours
+
+**Localisation suggérée** : Nouvelle section dans `reseaux.adoc` après la section sur les réseaux personnalisés.
+
+**Titre suggéré** : "🚨 Piège : localhost vs nom de service dans Docker"
+
+**Contenu proposé** :
+
+[source,asciidoc]
+----
+== 🚨 Piège : localhost vs nom de service dans Docker
+
+=== La Confusion Fatale
+
+Dans un environnement **sans conteneurs**, `localhost` désigne **la machine locale**.
+
+Dans Docker, **chaque conteneur a son propre localhost** !
+
+[cols="2,3,3", options="header"]
+|===
+| Terme | Signification Hors Docker | Signification Dans Docker
+
+| `localhost`
+| La machine locale
+| **Le conteneur actuel** (pas les autres !)
+
+| `127.0.0.1`
+| Interface loopback locale
+| Interface loopback **du conteneur**
+
+| `nom_service`
+| (n'existe pas)
+| **Un autre conteneur** dans le réseau Docker
+|===
+
+=== Exemples d'Erreurs Réelles
+
+==== Erreur #1 : Logging GELF vers localhost
+
+[source,yaml]
+----
+services:
+  nginx:
+    image: nginx
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://localhost:12201"  # ❌ FAUX !
+        tag: "nginx"
+
+  logstash:
+    image: logstash
+    ports:
+      - "12201:12201/udp"
+----
+
+**Problème** :
+
+* NGINX essaie d'envoyer les logs à `localhost:12201` = **lui-même**
+* Logstash écoute sur **son propre** `localhost:12201` = inaccessible depuis NGINX
+* Résultat : NGINX crash car il ne peut pas se connecter à son port 12201
+
+**Solution** :
+
+[source,yaml]
+----
+services:
+  nginx:
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://logstash:12201"  # ✅ Nom du service !
+----
+
+==== Erreur #2 : Health Check avec localhost IPv6
+
+[source,yaml]
+----
+services:
+  webapp:
+    image: tomcat:9
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8080/"]  # ⚠️ Problème IPv6
+----
+
+**Problème subtil** :
+
+* `localhost` peut résoudre vers `::1` (IPv6) ou `127.0.0.1` (IPv4)
+* Tomcat écoute parfois SEULEMENT sur IPv4
+* Health check essaie IPv6 → échoue
+
+**Solution** :
+
+[source,yaml]
+----
+healthcheck:
+  test: ["CMD", "wget", "--spider", "http://127.0.0.1:8080/"]  # ✅ Force IPv4
+----
+
+==== Erreur #3 : Backend URL avec localhost
+
+[source,yaml]
+----
+services:
+  frontend:
+    environment:
+      API_URL: "http://localhost:5000"  # ❌ FAUX dans frontend !
+
+  backend:
+    ports:
+      - "5000:5000"
+----
+
+**Problème** :
+
+* Frontend essaie d'appeler `http://localhost:5000`
+* `localhost` dans frontend = le conteneur frontend lui-même
+* Backend n'est PAS sur localhost du frontend !
+
+**Solutions possibles** :
+
+[source,yaml]
+----
+# Solution 1 : Appel depuis le navigateur (client-side)
+frontend:
+  environment:
+    API_URL: "http://localhost:5000"  # ✅ Navigateur → hôte Docker → backend
+
+# Solution 2 : Appel depuis le frontend (server-side)
+frontend:
+  environment:
+    API_URL: "http://backend:5000"  # ✅ Frontend → réseau Docker → backend
+----
+
+=== Tableau de Référence
+
+[cols="3,2,3", options="header"]
+|===
+| Contexte | Utilisez | Exemple
+
+| Service A appelle service B (même réseau)
+| **Nom du service B**
+| `http://backend:5000`
+
+| Health check d'un service sur lui-même
+| `localhost` ou `127.0.0.1`
+| `http://127.0.0.1:8080`
+
+| Logging vers un autre service
+| **Nom du service**
+| `gelf-address: "udp://logstash:12201"`
+
+| Port exposé accessible depuis l'hôte
+| `localhost` (sur l'hôte)
+| `curl http://localhost:8080`
+
+| Configuration réseau interne
+| **Nom du service**
+| `REDIS_URL: redis://cache:6379`
+|===
+
+=== Règle Mnémotechnique
+
+[TIP]
+====
+**"localhost" dans Docker = "moi-même"**
+
+Si vous voulez parler à **un autre conteneur**, utilisez **son nom de service**.
+
+Si vous voulez parler à **vous-même** (votre propre conteneur), utilisez `localhost`.
+====
+
+=== 🎓 Exercice Pratique
+
+Créez deux services :
+
+[source,yaml]
+----
+services:
+  web:
+    image: nginx
+    networks:
+      - mynet
+
+  api:
+    image: httpbin/httpbin
+    networks:
+      - mynet
+
+networks:
+  mynet:
+----
+
+Depuis `web`, essayez :
+
+1. `curl http://localhost/get` → Qui répond ?
+2. `curl http://api/get` → Qui répond ?
+3. Comprenez la différence !
+
+=== 📊 En Résumé
+
+[IMPORTANT]
+====
+**Deux environnements réseau distincts** :
+
+1. **Réseau hôte** (votre machine) : `localhost` = votre PC
+2. **Réseau Docker** (conteneurs) :
+   * `localhost` = le conteneur actuel
+   * `nom_service` = un autre conteneur
+====
+----
+
+== Améliorations du Projet SecureVote
+
+=== Problème Actuel
+
+Le projet **SecureVote Phase 1** est utilisé comme référence pédagogique mais contient des configurations **qui fonctionnent par chance** sans être robustes.
+
+=== Changements à Apporter
+
+==== Fichier : `content/code-samples/securevote/phase1/proxy/nginx.conf`
+
+**Ligne 5 : Ajouter la directive resolver**
+
+[source,diff]
+----
+events {
+    worker_connections 1024;
+}
+
+http {
++    # DNS interne Docker pour résolution dynamique des services
++    resolver 127.0.0.11 valid=30s ipv6=off;
++
+    # VULNÉRABILITÉ : Pas de limite de taille de requête
+    # VULNÉRABILITÉ : Pas de rate limiting
+    # VULNÉRABILITÉ : Pas de headers de sécurité
+
+    upstream frontend {
+        server frontend:3000;
+    }
+----
+
+**Commentaire à ajouter** : Expliquer POURQUOI c'est nécessaire dans les commentaires.
+
+==== Fichier : `content/code-samples/securevote/phase1/docker-compose.yml`
+
+**Ajouter health checks avec outils appropriés**
+
+Pour PostgreSQL :
+[source,yaml]
+----
+database:
+  image: postgres:15
+  healthcheck:
+    test: ["CMD-SHELL", "pg_isready -U admin"]  # ✅ pg_isready inclus dans postgres
+    interval: 10s
+    timeout: 5s
+    retries: 5
+----
+
+Pour Redis :
+[source,yaml]
+----
+cache:
+  image: redis:7
+  healthcheck:
+    test: ["CMD", "redis-cli", "ping"]  # ✅ redis-cli inclus dans redis
+    interval: 10s
+    timeout: 5s
+    retries: 5
+----
+
+Pour Backend (Flask - si image custom) :
+[source,dockerfile]
+----
+# Dans backend/Dockerfile
+FROM python:3.11-slim
+
+# Installer curl pour health check
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# ... reste du Dockerfile
+----
+
+[source,yaml]
+----
+# Dans docker-compose.yml
+backend:
+  healthcheck:
+    test: ["CMD", "curl", "-f", "http://localhost:5000/health"]  # ✅ curl installé
+    interval: 10s
+    timeout: 5s
+    retries: 5
+----
+
+== Modifications Suggérées par Chapitre
+
+=== Chapitre 11 : Réseaux (reseaux.adoc)
+
+**Ajouts prioritaires** :
+
+1. Nouvelle section "🚨 Piège NGINX : Résolution DNS dans upstream blocks" (après ligne 351)
+2. Nouvelle section "🚨 Piège : localhost vs nom de service dans Docker" (après ligne 517)
+3. Modifier les exercices pratiques (#11) pour inclure un cas NGINX avec resolver
+
+**Temps estimé de présentation** : +10-15 minutes
+
+=== Chapitre 12 : Docker Compose (compose.adoc)
+
+**Ajouts prioritaires** :
+
+1. Nouvelle section "⚠️ Piège : Outils manquants dans les images de base" (après ligne 542)
+2. Ajouter un exemple Jenkins/GitLab avec installation de `curl` dans Dockerfile
+3. Modifier le TP #12 pour inclure un health check qui échoue puis réussit après fix
+
+**Temps estimé de présentation** : +10 minutes
+
+=== Chapitre 13 : Sécurité & Production (securite-production.adoc)
+
+**Ajouts prioritaires** :
+
+1. Section "Troubleshooting Production" avec cas réels :
+   * Conteneurs qui ne démarrent pas
+   * Health checks qui échouent
+   * Logs de debugging Docker
+2. Mettre à jour SecureVote Phase 1 avec les bonnes pratiques (resolver, health checks)
+
+**Temps estimé de présentation** : +5 minutes
+
+== Nouvel Exercice Pratique Suggéré
+
+=== TP #11-BIS : Debugging Docker Networking & NGINX
+
+**Objectifs pédagogiques** :
+
+* Comprendre la différence entre localhost et nom de service
+* Apprendre à diagnostiquer les erreurs NGINX DNS
+* Pratiquer le debugging de health checks
+
+**Énoncé** :
+
+Vous recevez un projet Docker avec NGINX + Application qui **ne fonctionne pas**. Le projet contient volontairement 3 erreurs :
+
+1. NGINX manque la directive `resolver`
+2. Health check utilise `curl` non installé
+3. Configuration de logging utilise `localhost` au lieu du nom de service
+
+**Étapes** :
+
+1. Clonez le projet : `git clone https://gitlab.univ-artois.fr/bruno.verachten/docker-debug-tp.git`
++
+[NOTE]
+====
+Pour une accessibilité maximale, envisagez de migrer ce projet vers GitHub/GitLab.com public pour les étudiants hors Université d'Artois.
+====
+2. Lancez : `docker compose up -d`
+3. Observez les échecs : `docker ps` montre "Created" ou "unhealthy"
+4. **Diagnostiquez** chaque problème :
+   * Utilisez `docker logs nginx`
+   * Utilisez `docker inspect nginx`
+   * Utilisez `docker events`
+5. **Corrigez** les 3 erreurs
+6. Vérifiez : `curl http://localhost/` doit fonctionner
+
+**Solution fournie** : Avec explications détaillées de chaque fix.
+
+== Priorités d'Implémentation
+
+[cols="1,3,2,1", options="header"]
+|===
+| Priorité | Modification | Chapitre | Impact
+
+| 🔴 P0 (Critique)
+| Ajouter section NGINX resolver
+| reseaux.adoc
+| Très élevé
+
+| 🔴 P0 (Critique)
+| Ajouter section localhost vs service name
+| reseaux.adoc
+| Très élevé
+
+| 🟡 P1 (Haute)
+| Ajouter section outils manquants health checks
+| compose.adoc
+| Élevé
+
+| 🟡 P1 (Haute)
+| Mettre à jour SecureVote Phase 1 nginx.conf
+| securite-production.adoc
+| Élevé
+
+| 🟢 P2 (Moyenne)
+| Ajouter TP debugging
+| Nouveau chapitre
+| Moyen
+
+| 🟢 P2 (Moyenne)
+| Section Troubleshooting production
+| securite-production.adoc
+| Moyen
+|===
+
+== Conclusion
+
+Ces améliorations combleront les **gaps critiques** identifiés dans l'examen 2025-2026 et permettront aux futurs étudiants d'éviter des échecs facilement prévenables.
+
+**Bénéfices attendus** :
+
+* ✅ Moins d'échecs sur des détails techniques
+* ✅ Meilleure compréhension du réseau Docker
+* ✅ Projets plus robustes et production-ready
+* ✅ Notes globales améliorées
+
+**Temps de cours additionnel** : ~30 minutes au total (réparti sur 3 chapitres)
+
+**ROI pédagogique** : Très élevé (transforme des F en C/D avec des changements minimes)
