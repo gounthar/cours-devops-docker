@@ -354,6 +354,174 @@ round-trip min/avg/max = 0.097/0.141/0.442 ms
 
 image::appeler_son_voisin.png[height=600]
 
+== 🚨 Piège NGINX : Résolution DNS dans upstream blocks
+
+[.notes]
+--
+Section duration: 7 minutes
+Problem: NGINX resolves DNS at startup only, not dynamically like other tools
+Impact: Common exam failure (+1.20 points average)
+--
+
+=== Le Problème
+
+NGINX, contrairement à d'autres outils (curl, wget, applications), **résout les noms DNS au démarrage uniquement**.
+
+[%step]
+* Si un service Docker n'est pas encore démarré → NGINX **échoue au démarrage**
+* Si un conteneur redémarre et change d'IP → NGINX continue d'utiliser l'**ancienne IP**
+* Erreur typique : `host not found in upstream "nom-service:port"`
+
+=== Exemple de Configuration Défaillante
+
+[source,nginx]
+----
+events {
+    worker_connections 1024;
+}
+
+http {
+    # ❌ AUCUNE directive resolver !
+
+    upstream backend {
+        server app-server:8080;  # ❌ ÉCHEC au démarrage !
+    }
+
+    server {
+        listen 80;
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}
+----
+
+**Résultat** : `nginx: [emerg] host not found in upstream "app-server"`
+
+=== La Solution : Directive `resolver`
+
+[source,nginx]
+----
+events {
+    worker_connections 1024;
+}
+
+http {
+    # ✅ DNS interne Docker pour résolution dynamique
+    resolver 127.0.0.11 valid=30s ipv6=off;
+
+    upstream backend {
+        server app-server:8080;  # ✅ Fonctionne !
+    }
+
+    server {
+        listen 80;
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}
+----
+
+[TIP]
+====
+**127.0.0.11** est l'adresse du **DNS interne Docker** dans tous les réseaux Docker.
+====
+
+=== Quand est-ce nécessaire ?
+
+[cols="2,3,1", options="header"]
+|===
+| Situation
+| Directive `resolver` nécessaire ?
+| Raison
+
+| upstream block avec noms Docker
+| ✅ OUI
+| NGINX résout au démarrage
+
+| upstream avec variables (`$backend_host`)
+| ✅ OUI
+| Résolution dynamique requise
+
+| upstream avec IP fixe
+| ❌ NON
+| Pas de résolution DNS
+
+| proxy_pass avec nom fixe (sans upstream)
+| ⚠️ RECOMMANDÉ
+| Évite erreurs au redémarrage
+
+| proxy_pass avec variable
+| ✅ OUI
+| Résolution dynamique obligatoire
+|===
+
+=== Paramètres de la Directive `resolver`
+
+[source,nginx]
+----
+resolver 127.0.0.11 valid=30s ipv6=off;
+#        ^^^^^^^^^^^ ^^^^^^^^^ ^^^^^^^^
+#        Adresse DNS  Cache TTL Désactiver IPv6
+----
+
+[%step]
+* **127.0.0.11** : DNS interne Docker (toujours cette adresse dans Docker)
+* **valid=30s** : Durée de cache des résolutions (30 secondes par défaut)
+* **ipv6=off** : Désactive IPv6 (optionnel, évite warnings)
+
+=== 🎓 Exercice Pratique
+
+Créez un projet avec :
+
+1. **NGINX** (proxy) utilisant upstream vers `webapp`
+2. **webapp** (serveur web simple sur port 8080)
+
+[source,yaml]
+----
+services:
+  webapp:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+
+  proxy:
+    image: nginx:latest
+    ports:
+      - "8000:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+----
+
+**Test 1** : Sans `resolver` → Observer l'échec NGINX
+
+**Test 2** : Avec `resolver 127.0.0.11` → Succès !
+
+=== 📊 En Résumé
+
+[TIP]
+====
+**Règle d'or** : upstream block avec noms Docker → **DOIT avoir resolver**
+
+[source,nginx]
+----
+http {
+    resolver 127.0.0.11 valid=30s ipv6=off;
+    # ...
+}
+----
+====
+
+[WARNING]
+====
+Sans cette directive, vous aurez :
+
+* ❌ Échecs au démarrage si services pas encore prêts
+* ❌ IPs obsolètes après redémarrage de conteneurs
+* ❌ Erreur : `host not found in upstream`
+====
+
 == 📶🔌 Se connecter à un réseau
 
 [source,bash]
@@ -539,3 +707,245 @@ curl web2
 <style>
 [...]
 ----
+
+== 🚨 Piège : localhost vs nom de service dans Docker
+
+[.notes]
+--
+Section duration: 8 minutes
+Real student error: GELF logging to localhost instead of service name
+Impact: Common exam failure (+1.30 points average)
+--
+
+=== La Confusion Fatale
+
+[cols="2,3,3", options="header"]
+|===
+| Terme
+| Hors Docker (machine locale)
+| Dans Docker (environnement conteneurisé)
+
+| `localhost`
+| Votre ordinateur
+| **Le conteneur actuel uniquement**
+
+| `127.0.0.1`
+| Votre ordinateur
+| **Le conteneur actuel uniquement**
+
+| `nom_service`
+| _(n'existe pas)_
+| **Un autre conteneur du même réseau**
+
+| `nom_service:port`
+| _(n'existe pas)_
+| **Communication inter-conteneurs**
+|===
+
+[WARNING]
+====
+**Dans Docker** : `localhost` ≠ autre conteneur
+
+`localhost` = seulement le conteneur où vous êtes !
+====
+
+=== Exemples d'Erreurs Réelles
+
+Ces erreurs proviennent d'examens réels (2025-2026).
+
+==== Erreur #1 : Logging GELF vers localhost
+
+**Code cassé** :
+
+[source,yaml]
+----
+services:
+  backend:
+    image: mon-app
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://localhost:12201"  # ❌ FAUX !
+        tag: "backend"
+
+  logstash:
+    image: logstash:latest
+    ports:
+      - "12201:12201/udp"
+----
+
+**Problème** : `localhost:12201` pointe vers le **conteneur backend**, pas vers logstash !
+
+**Solution** :
+
+[source,yaml]
+----
+services:
+  backend:
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://logstash:12201"  # ✅ Nom du service !
+----
+
+==== Erreur #2 : Health Check avec localhost IPv6
+
+**Code cassé** :
+
+[source,yaml]
+----
+services:
+  webapp:
+    image: node:18
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://[::1]:3000/health"]  # ❌ FAUX !
+----
+
+**Problème** : `[::1]` (localhost IPv6) pointe vers le conteneur webapp lui-même, mais si l'app écoute sur IPv4...
+
+**Solution** :
+
+[source,yaml]
+----
+healthcheck:
+  test: ["CMD", "curl", "-f", "http://localhost:3000/health"]  # ✅ OK (même conteneur)
+  # OU
+  test: ["CMD", "curl", "-f", "http://127.0.0.1:3000/health"]  # ✅ OK
+----
+
+[NOTE]
+====
+Health check = test **dans le même conteneur** → `localhost` est **correct** ici !
+
+C'est quand on veut **accéder à un autre service** qu'il faut utiliser le nom du service.
+====
+
+==== Erreur #3 : Backend URL avec localhost
+
+**Code cassé (frontend)** :
+
+[source,javascript]
+----
+// frontend/src/config.js
+const API_URL = "http://localhost:5000/api";  // ❌ FAUX !
+----
+
+**Problème** : Le navigateur du client exécute ce code → `localhost` pointe vers **l'ordinateur du client**, pas le backend Docker !
+
+**Solution 1** : Utiliser un reverse proxy (NGINX)
+
+[source,javascript]
+----
+const API_URL = "/api";  # ✅ Relatif → passe par NGINX
+----
+
+**Solution 2** : Variable d'environnement
+
+[source,javascript]
+----
+const API_URL = process.env.REACT_APP_API_URL || "http://backend:5000/api";
+----
+
+[source,yaml]
+----
+services:
+  frontend:
+    environment:
+      REACT_APP_API_URL: "http://backend:5000/api"  # ✅ Nom de service
+----
+
+=== Tableau de Référence Rapide
+
+[cols="3,2,2", options="header"]
+|===
+| Situation
+| Utiliser
+| Exemple
+
+| Health check (même conteneur)
+| `localhost` ou `127.0.0.1`
+| `curl http://localhost:8080/health`
+
+| Communication entre services Docker
+| **Nom du service**
+| `http://backend:5000`
+
+| Logging GELF vers Logstash
+| **Nom du service**
+| `gelf-address: "udp://logstash:12201"`
+
+| Adresse de connexion base de données
+| **Nom du service**
+| `DATABASE_URL=postgresql://db:5432/mydb`
+
+| API frontend → backend (même réseau Docker)
+| **Nom du service**
+| `API_URL=http://backend:5000`
+
+| API frontend → backend (navigateur client)
+| **Reverse proxy**
+| `API_URL=/api` (NGINX route vers backend)
+|===
+
+=== Règle Mnémotechnique
+
+[TIP]
+====
+**Localhost = Local Container**
+
+* `localhost` dans un conteneur = **ce conteneur uniquement**
+* Pour parler à un **autre conteneur** = utiliser son **nom de service**
+* Pour parler depuis le **navigateur** = utiliser **reverse proxy** ou **URL publique**
+====
+
+=== 🎓 Exercice Pratique
+
+Corrigez ce `docker-compose.yml` cassé :
+
+[source,yaml]
+----
+services:
+  webapp:
+    image: node:18
+    environment:
+      DATABASE_URL: "postgresql://localhost:5432/mydb"  # ❌ Erreur 1
+      REDIS_URL: "redis://127.0.0.1:6379"              # ❌ Erreur 2
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://localhost:12201"          # ❌ Erreur 3
+
+  database:
+    image: postgres:15
+
+  cache:
+    image: redis:7
+
+  logstash:
+    image: logstash:latest
+    ports:
+      - "12201:12201/udp"
+----
+
+**Solution** : Remplacer tous les `localhost` par les noms de services !
+
+=== 📊 En Résumé
+
+[WARNING]
+====
+**Erreurs fréquentes** :
+
+* ❌ `localhost:5432` pour PostgreSQL → **Utiliser** `database:5432`
+* ❌ `localhost:6379` pour Redis → **Utiliser** `cache:6379`
+* ❌ `localhost:12201` pour GELF logging → **Utiliser** `logstash:12201`
+* ❌ `localhost` dans variables d'environnement → **Utiliser nom de service**
+====
+
+[TIP]
+====
+**Règle d'or** :
+
+* Même conteneur → `localhost` ✅
+* Autre conteneur → **nom du service** ✅
+* Depuis navigateur → **reverse proxy** ✅
+====
