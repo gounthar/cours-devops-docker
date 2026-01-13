@@ -1464,6 +1464,180 @@ TIP: Plusieurs tags → même image
 --
 ====
 
+== 🔧 Troubleshooting Production
+
+[.notes]
+--
+Section duration: 5 minutes
+Practical debugging guide for common production issues
+--
+
+=== Conteneurs qui ne démarrent pas
+
+**Étape 1** : Vérifier les logs
+
+[source,bash]
+----
+docker logs nom-conteneur
+
+# OU pour suivre en temps réel
+docker logs -f nom-conteneur
+----
+
+**Étape 2** : Inspecter le conteneur
+
+[source,bash]
+----
+docker inspect nom-conteneur
+
+# Voir seulement l'état
+docker inspect --format='{{.State.Status}}' nom-conteneur
+
+# Voir le code de sortie
+docker inspect --format='{{.State.ExitCode}}' nom-conteneur
+----
+
+**Problèmes courants** :
+
+[cols="2,3,2", options="header"]
+|===
+| Symptôme
+| Cause probable
+| Solution
+
+| `host not found in upstream`
+| NGINX : résolution DNS statique
+| Utiliser variables : `set $backend "app:8080"` + `proxy_pass http://$backend`
+
+| `cannot assign requested address`
+| Port déjà utilisé
+| Changer port ou arrêter service conflictuel
+
+| `no such file or directory`
+| Volume mal configuré
+| Vérifier chemin absolu dans volumes
+
+| `permission denied`
+| Problème permissions fichier
+| Vérifier propriétaire et chmod
+|===
+
+=== Health Checks qui échouent
+
+**Étape 1** : Vérifier le status des services
+
+[source,bash]
+----
+docker compose ps
+
+# Voir seulement les unhealthy
+docker compose ps | grep unhealthy
+----
+
+**Étape 2** : Inspecter le health check
+
+[source,bash]
+----
+docker inspect nom-conteneur | grep -A 20 Health
+
+# Voir uniquement le status
+docker inspect --format='{{.State.Health.Status}}' nom-conteneur
+
+# Voir les derniers logs du health check
+docker inspect --format='{{json .State.Health.Log}}' nom-conteneur | jq
+----
+
+**Codes de sortie importants** :
+
+* **0** : Health check réussi ✅
+* **1** : Health check échoué (erreur applicative)
+* **127** : Commande non trouvée (outil manquant dans l'image)
+* **137** : Tué par signal (timeout)
+
+**Problèmes courants** :
+
+[source,text]
+----
+ExitCode: 127
+Output: "/bin/sh: curl: not found"
+→ Solution : Installer curl dans Dockerfile
+----
+
+[source,text]
+----
+ExitCode: 1
+Output: "Connection refused"
+→ Solution : Vérifier que l'app écoute sur le bon port
+----
+
+=== Debugging avec Docker Events
+
+Surveiller tous les événements Docker en temps réel :
+
+[source,bash]
+----
+# Voir tous les événements
+docker events
+
+# Filtrer par conteneur
+docker events --filter container=nom-conteneur
+
+# Filtrer par type d'événement
+docker events --filter event=start
+docker events --filter event=die
+docker events --filter event=health_status
+
+# Combiner plusieurs filtres
+docker events --filter container=backend --filter event=health_status
+----
+
+**Exemple de sortie** :
+
+[source,text]
+----
+2026-01-12T10:30:15 container health_status: unhealthy (name=backend)
+2026-01-12T10:30:20 container die (name=backend, exitCode=137)
+2026-01-12T10:30:25 container start (name=backend)
+----
+
+**Utilisation pratique** :
+
+[source,bash]
+----
+# Dans un terminal, monitorer les événements
+docker events --filter event=health_status
+
+# Dans un autre terminal, démarrer les services
+docker compose up -d
+
+# Observer en temps réel les changements de santé
+----
+
+=== 📊 Checklist de Debugging
+
+Quand un problème survient en production :
+
+[%step]
+1. ✅ `docker compose ps` → Identifier les services en erreur
+2. ✅ `docker logs <service>` → Lire les logs d'erreur
+3. ✅ `docker inspect <service>` → Vérifier la configuration
+4. ✅ Si unhealthy : `docker inspect` pour voir Health.Log
+5. ✅ `docker events` en parallèle pour monitoring temps réel
+
+[TIP]
+====
+**Commande magique de debugging** :
+
+[source,bash]
+----
+docker compose ps && \
+docker compose logs --tail=50 && \
+docker events --filter type=container
+----
+
+Affiche : statuts, logs récents, et écoute les événements !
+====
+
 == Aller plus loin
 
 [%step]

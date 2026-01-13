@@ -540,6 +540,299 @@ sidekick_service:
 * Si le fichier n'existe pas, la commande échoue et Docker considère le service comme malsain.
 * Docker exécutera cette vérification de santé toutes les 5 secondes (`interval: 5s`), et si elle ne répond pas dans les 10 secondes (`timeout: 10s`), Docker la considérera comme un échec. Docker réessaiera une vérification de santé échouée 5 fois (`retries: 5`) avant de considérer le service comme malsain.
 
+== ⚠️ Piège : Outils manquants dans les images de base
+
+[.notes]
+--
+Section duration: 10 minutes
+Real impact: ExitCode 127 = command not found
+Common student failure: +1.5 points average impact
+--
+
+=== Le Problème
+
+[IMPORTANT]
+====
+Si la commande utilisée dans un health check **n'existe pas dans l'image**, le health check **échouera** !
+====
+
+[%step]
+* Les images **slim** et **alpine** sont **minimalistes** pour réduire la taille
+* Elles **ne contiennent PAS** les outils courants (curl, wget, bash, etc.)
+* Health check avec outil manquant → **Status "unhealthy"** → **Conteneur inutilisable**
+
+=== Exemples d'Images et Outils Disponibles
+
+[cols="2,2,3", options="header"]
+|===
+| Image de Base
+| Outils Inclus
+| Outils ABSENTS
+
+| `debian:12`
+| sh, bash, ps, grep
+| ❌ wget, curl, netcat (installables via apt)
+
+| `debian:12-slim`
+| sh, bash, ps
+| ❌ curl, wget, netcat
+
+| `alpine:3.19`
+| sh, wget, ps
+| ❌ curl, bash
+
+| `python:3.11`
+| python, pip, bash, ps, wget, curl
+| _(image complète)_
+
+| `python:3.11-slim`
+| python, pip, sh, bash, ps
+| ❌ curl, wget
+
+| `python:3.11-alpine`
+| python, pip, sh, wget, ps
+| ❌ curl, bash
+
+| `node:18`
+| node, npm, bash, ps, wget, curl
+| _(image complète)_
+
+| `node:18-alpine`
+| node, npm, sh, wget, ps
+| ❌ curl, bash
+
+| `postgres:15`
+| **pg_isready**, psql, bash
+| _(include outils PostgreSQL)_
+
+| `redis:7`
+| **redis-cli**, bash
+| _(include outils Redis)_
+
+| `nginx:latest`
+| wget, bash, ps, curl
+| _(version latest complète, nginx:alpine plus limité)_
+|===
+
+[TIP]
+====
+**Images officielles de bases de données** (postgres, mysql, redis, mongodb) incluent généralement leurs propres outils de diagnostic.
+====
+
+=== Symptômes d'un Health Check avec Outil Manquant
+
+Quand un health check échoue à cause d'un outil manquant :
+
+[source,bash]
+----
+docker compose ps
+----
+
+[source,text]
+----
+NAME            IMAGE                  STATUS
+myapp-backend   python:3.11-slim      Up 30 seconds (unhealthy)
+----
+
+[source,bash]
+----
+docker inspect myapp-backend | grep -A 10 Health
+----
+
+[source,json]
+----
+"Health": {
+    "Status": "unhealthy",
+    "FailingStreak": 5,
+    "Log": [
+        {
+            "ExitCode": 127,  # ← Code 127 = "Command not found"
+            "Output": "/bin/sh: curl: not found"
+        }
+    ]
+}
+----
+
+[WARNING]
+====
+**ExitCode 127** = La commande **n'existe pas** dans l'image !
+====
+
+=== Solution 1 : Installer l'Outil dans le Dockerfile
+
+La méthode la plus fiable : **installer l'outil manquant**.
+
+[source,dockerfile]
+----
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Installer curl pour le health check
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    rm -rf /var/lib/apt/lists/*  # ← Nettoyer le cache apt
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]
+----
+
+[source,yaml]
+----
+services:
+  backend:
+    build: ./backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]  # ✅ Fonctionne !
+      interval: 10s
+      timeout: 5s
+      retries: 3
+----
+
+[TIP]
+====
+**Alpine** : Utiliser `apk add` au lieu de `apt-get`
+
+[source,dockerfile]
+----
+FROM python:3.11-alpine
+
+RUN apk add --no-cache curl
+----
+====
+
+=== Solution 2 : Utiliser des Alternatives Natives
+
+Utilisez les outils **déjà présents** dans l'image.
+
+[cols="2,3,3", options="header"]
+|===
+| Besoin
+| Au lieu de...
+| Utiliser
+
+| Tester connexion HTTP
+| `curl http://localhost:8080`
+| `wget --spider --quiet http://localhost:8080`
+
+| Tester port ouvert
+| `curl -f localhost:8080`
+| `nc -z localhost 8080` (si netcat disponible) +
+`cat < /dev/tcp/localhost/8080` (bash uniquement)
+
+| Tester fichier existe
+| `curl -f http://...`
+| `[ -f /path/to/file ] \|\| exit 1`
+
+| Tester processus
+| `curl http://...`
+| `ps aux \| grep "mon-process"`
+|===
+
+**Exemple avec wget** (disponible dans Alpine) :
+
+[source,yaml]
+----
+services:
+  frontend:
+    image: node:18-alpine
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+----
+
+=== Solution 3 : Utiliser Python/Node Built-in
+
+[NOTE]
+====
+Cette solution s'applique **uniquement** aux images qui contiennent déjà Python ou Node.js (ex: `python:3.11-slim`, `node:18-alpine`, images d'applications Python/Node). N'installez pas Python/Node.js juste pour le health check - utilisez plutôt les Solutions 1 ou 2.
+====
+
+**Health check avec Python** (pour images Python) :
+
+[source,yaml]
+----
+services:
+  backend:
+    image: python:3.11-slim  # ← Déjà contient Python
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+----
+
+**Health check avec Node.js** (pour images Node) :
+
+[source,yaml]
+----
+services:
+  api:
+    image: node:18-alpine  # ← Déjà contient Node.js
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:8080/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+----
+
+=== 🎓 Exercice Pratique
+
+Corrigez ce `docker-compose.yml` qui échoue avec "unhealthy" :
+
+[source,yaml]
+----
+services:
+  webapp:
+    image: python:3.11-slim
+    # Dockerfile n'installe PAS curl !
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 10s
+----
+
+**3 solutions possibles** :
+
+1. Ajouter `RUN apt-get update && apt-get install -y curl` dans Dockerfile
+2. Remplacer par `wget --spider --quiet http://localhost:5000/health`
+3. Remplacer par health check Python natif (Solution 3)
+
+=== 📊 En Résumé (Checklist)
+
+Avant d'écrire un health check :
+
+[%step]
+1. ✅ **Vérifier** : La commande existe-t-elle dans l'image ?
+2. ✅ **Tester** : `docker run --rm image commande` pour vérifier
+3. ✅ **Choisir une solution** :
+   * Installer l'outil (Solution 1) → Recommandé pour production
+   * Utiliser alternative native (Solution 2) → Léger, pas d'install
+   * Utiliser Python/Node built-in (Solution 3) → Images avec runtime uniquement
+
+[WARNING]
+====
+**Erreurs fréquentes** :
+
+* ❌ `curl` dans `python:3.11-slim` → ExitCode 127
+* ❌ `bash` dans Alpine → Utiliser `sh`
+* ❌ Oublier `--no-cache` lors de l'install → Image plus lourde
+====
+
+[TIP]
+====
+**Règle d'or** : `docker run --rm mon-image commande`
+
+Si la commande échoue → Elle échouera aussi dans le health check !
+====
+
 [%auto-animate]
 [.columns]
 == 🏁🔢 Étude de cas 📚🔍
