@@ -570,12 +570,12 @@ Si la commande utilisée dans un health check **n'existe pas dans l'image**, le 
 | Outils ABSENTS
 
 | `debian:12`
-| sh, bash, ps, grep, wget, curl, netcat
-| _(image complète)_
+| sh, bash, ps, grep
+| ❌ wget, curl, netcat (installables via apt)
 
 | `debian:12-slim`
-| sh, ps
-| ❌ curl, wget, netcat, bash
+| sh, bash, ps
+| ❌ curl, wget, netcat
 
 | `alpine:3.19`
 | sh, wget, ps
@@ -586,8 +586,8 @@ Si la commande utilisée dans un health check **n'existe pas dans l'image**, le 
 | _(image complète)_
 
 | `python:3.11-slim`
-| python, pip, sh, ps
-| ❌ curl, wget, bash
+| python, pip, sh, bash, ps
+| ❌ curl, wget
 
 | `python:3.11-alpine`
 | python, pip, sh, wget, ps
@@ -610,8 +610,8 @@ Si la commande utilisée dans un health check **n'existe pas dans l'image**, le 
 | _(include outils Redis)_
 
 | `nginx:latest`
-| **wget**, bash, ps, curl
-| _(include outils web)_
+| wget, bash, ps, curl
+| _(version latest complète, nginx:alpine plus limité)_
 |===
 
 [TIP]
@@ -735,7 +735,7 @@ Utilisez les outils **déjà présents** dans l'image.
 | `ps aux \| grep "mon-process"`
 |===
 
-**Exemple avec wget** (disponible dans Alpine et Debian-slim) :
+**Exemple avec wget** (disponible dans Alpine) :
 
 [source,yaml]
 ----
