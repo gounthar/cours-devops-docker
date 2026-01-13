@@ -398,7 +398,7 @@ http {
 
 **Résultat** : `nginx: [emerg] host not found in upstream "app-server"`
 
-=== La Solution : Directive `resolver`
+=== La Solution : Directive `resolver` + Variables
 
 [source,nginx]
 ----
@@ -407,25 +407,46 @@ events {
 }
 
 http {
-    # ✅ DNS interne Docker pour résolution dynamique
+    # DNS interne Docker pour résolution dynamique
     resolver 127.0.0.11 valid=30s ipv6=off;
-
-    upstream backend {
-        server app-server:8080;  # ✅ Fonctionne !
-    }
 
     server {
         listen 80;
         location / {
-            proxy_pass http://backend;
+            # ✅ Utiliser une variable pour forcer la résolution dynamique
+            set $backend_host "app-server:8080";
+            proxy_pass http://$backend_host;
         }
     }
 }
 ----
 
+[IMPORTANT]
+====
+La directive `resolver` **seule ne suffit pas** avec les blocs `upstream` et noms fixes !
+
+**Deux approches fonctionnelles** :
+
+1. **Approche variable (recommandée pour Docker)** :
+   - Pas de bloc `upstream`
+   - Utiliser `set $var "nom-service:port"`
+   - Puis `proxy_pass http://$var`
+   - ✅ Force la résolution DNS à chaque requête
+
+2. **Approche upstream** :
+   - Garder le bloc `upstream` pour load balancing
+   - Nécessite configurations avancées (variables + health checks)
+   - Plus complexe à maintenir
+
+Pour la plupart des cas Docker simples → **Approche variable**
+====
+
 [TIP]
 ====
-**127.0.0.11** est l'adresse du **DNS interne Docker** dans tous les réseaux Docker.
+**127.0.0.11** est l'adresse du **DNS interne Docker** dans les **réseaux définis par l'utilisateur** (user-defined networks).
+
+[NOTE]
+Le réseau `bridge` par défaut n'a pas de serveur DNS - utilisez `docker network create` pour créer un réseau personnalisé.
 ====
 
 === Quand est-ce nécessaire ?
@@ -436,13 +457,13 @@ http {
 | Directive `resolver` nécessaire ?
 | Raison
 
-| upstream block avec noms Docker
-| ✅ OUI
-| NGINX résout au démarrage
+| upstream block avec noms Docker (statique)
+| ⚠️ INSUFFISANT
+| Nécessite AUSSI variables + proxy_pass
 
-| upstream avec variables (`$backend_host`)
-| ✅ OUI
-| Résolution dynamique requise
+| proxy_pass avec variable (`$backend_host`)
+| ✅ OUI + obligatoire
+| Force résolution dynamique à chaque requête
 
 | upstream avec IP fixe
 | ❌ NON

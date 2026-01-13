@@ -1506,8 +1506,8 @@ docker inspect --format='{{.State.ExitCode}}' nom-conteneur
 | Solution
 
 | `host not found in upstream`
-| NGINX : manque directive resolver
-| Ajouter `resolver 127.0.0.11`
+| NGINX : résolution DNS statique
+| Utiliser variables : `set $backend "app:8080"` + `proxy_pass http://$backend`
 
 | `cannot assign requested address`
 | Port déjà utilisé
