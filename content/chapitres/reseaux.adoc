@@ -857,7 +857,7 @@ const API_URL = "http://localhost:5000/api";  // ❌ FAUX !
 
 [source,javascript]
 ----
-const API_URL = "/api";  # ✅ Relatif → passe par NGINX
+const API_URL = "/api";  // ✅ Relatif → passe par NGINX
 ----
 
 **Solution 2** : Variable d'environnement
