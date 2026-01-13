@@ -860,20 +860,38 @@ const API_URL = "http://localhost:5000/api";  // ❌ FAUX !
 const API_URL = "/api";  // ✅ Relatif → passe par NGINX
 ----
 
-**Solution 2** : Variable d'environnement
+**Solution 2** : Variable d'environnement (build-time)
 
 [source,javascript]
 ----
-const API_URL = process.env.REACT_APP_API_URL || "http://backend:5000/api";
+const API_URL = process.env.REACT_APP_API_URL || "/api";
 ----
 
 [source,yaml]
 ----
 services:
   frontend:
-    environment:
-      REACT_APP_API_URL: "http://backend:5000/api"  # ✅ Nom de service
+    build:
+      context: ./frontend
+      args:
+        # ✅ URL publique qui passe par le reverse proxy
+        REACT_APP_API_URL: "/api"
 ----
+
+[WARNING]
+====
+**React client-side ≠ SSR/Next.js** :
+
+* **React client-side** (CRA, Vite) : Code s'exécute dans le **navigateur**
+  → Ne peut PAS résoudre `backend:5000`
+  → **Utiliser URL publique** : `/api` ou `http://localhost:8080/api`
+
+* **SSR/Next.js** : Code s'exécute sur le **serveur Node.js**
+  → Peut résoudre `backend:5000` (dans le réseau Docker)
+  → Mais préférez quand même le reverse proxy pour la cohérence
+
+**Recommandation** : Toujours utiliser le reverse proxy (Solution 1) pour éviter la confusion !
+====
 
 === Tableau de Référence Rapide
 
