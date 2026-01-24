@@ -6142,13 +6142,25 @@ hljs.configure({
   ignoreUnescapedHTML: true,
 });
 hljs.highlightAll();
-</script><!-- Google Analytics 4 -->
+</script><!-- Google Analytics 4 with Consent Mode v2 (GDPR compliant) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-4TEWYQ2YDS"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
+
+  // Consent Mode v2: Default to denied for GDPR compliance
+  gtag('consent', 'default', {
+    'analytics_storage': 'denied',
+    'ad_storage': 'denied',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied',
+    'wait_for_update': 500
+  });
+
   gtag('js', new Date());
-  gtag('config', 'G-4TEWYQ2YDS');
+  gtag('config', 'G-4TEWYQ2YDS', {
+    'anonymize_ip': true
+  });
 </script>
 
 <script src="reveal.js/plugin/reveal.js-copycode/copycode.js"></script>
