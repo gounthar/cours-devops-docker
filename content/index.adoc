@@ -12,6 +12,7 @@ image::qrcode.png["QRCode to this presentation",height=150]
 * Version PDF de la présentation : link:slides.pdf[{pdf_icon} Cliquez ici,window="_blank"]
 * Contenu sous licence link:https://creativecommons.org/licenses/by/4.0/[Creative Commons Attribution 4.0 International License,window="_blank"]
 * Code source de la présentation: link:{repositoryUrl}[{github_icon} {repositoryUrl},window="_blank"]
+* Mis à jour le{nbsp}: {buildDate}
 
 [background-color="MediumBlue"]
 [.dark.background]
