@@ -12,6 +12,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: true
+
 env:
   REPOSITORY_URL: https://github.com/${{ github.repository }}
   PRESENTATION_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.ref_name }}
@@ -63,6 +67,9 @@ jobs:
     needs: [build-slides]
     # Only run deploy when pushing code on a branch of the repository
     if: github.event_name == 'push'
+    concurrency:
+      group: gh-pages-deploy
+      cancel-in-progress: false
     steps:
     - name: 'Download dist/ Artefacts'
       uses: actions/download-artifact@v8
