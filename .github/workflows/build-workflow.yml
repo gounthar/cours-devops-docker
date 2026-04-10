@@ -67,6 +67,9 @@ jobs:
     needs: [build-slides]
     # Only run deploy when pushing code on a branch of the repository
     if: github.event_name == 'push'
+    concurrency:
+      group: gh-pages-deploy
+      cancel-in-progress: false
     steps:
     - name: 'Download dist/ Artefacts'
       uses: actions/download-artifact@v8
