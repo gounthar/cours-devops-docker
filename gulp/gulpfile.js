@@ -93,7 +93,7 @@ function html(cb) {
                 'revealjsdir': 'node_modules/reveal.js@',
                 'presentationUrl': process.env.PRESENTATION_URL,
                 'repositoryUrl': process.env.REPOSITORY_URL,
-                'buildDate': new Date().toLocaleDateString('fr-FR', {year: 'numeric', month: 'long', day: 'numeric'}),
+                'buildDate': new Intl.DateTimeFormat('fr-FR', {year: 'numeric', month: 'long', day: 'numeric', timeZone: process.env.BUILD_TIMEZONE || 'Europe/Paris'}).format(new Date()),
             },
             to_dir: current_config.buildDir,
         }
