@@ -21,6 +21,9 @@ sources:
       repository: "maven"
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
+      typefilter:
+        prerelease: true
+        release: true
       versioning:
         kind: semver
         pattern: "~4"
