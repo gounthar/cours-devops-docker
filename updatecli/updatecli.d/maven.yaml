@@ -23,7 +23,7 @@ sources:
       username: "{{ .github.username }}"
       versioning:
         kind: semver
-        pattern: "~3"
+        pattern: "~4"
     transformers:
       - trimprefix: "maven-"
 
