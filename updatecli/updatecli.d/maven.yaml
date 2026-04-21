@@ -25,8 +25,8 @@ sources:
         prerelease: true
         release: true
       versionfilter:
-        kind: semver
-        pattern: "~4.0.0-0"
+        kind: regex
+        pattern: "^maven-4\\."
     transformers:
       - trimprefix: "maven-"
 
