@@ -26,7 +26,7 @@ sources:
         release: true
       versioning:
         kind: semver
-        pattern: "~4"
+        pattern: "~4.0.0-0"
     transformers:
       - trimprefix: "maven-"
 
