@@ -24,7 +24,7 @@ sources:
       typefilter:
         prerelease: true
         release: true
-      versioning:
+      versionfilter:
         kind: semver
         pattern: "~4.0.0-0"
     transformers:
