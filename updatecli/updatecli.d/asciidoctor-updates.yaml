@@ -32,7 +32,7 @@ targets:
     scmid: default
     spec:
       file: "Makefile"
-      matchpattern: 'ASCIIDOCTOR_IMAGE \?= asciidoctor/docker-asciidoctor:\d+\.\d+'
+      matchpattern: 'ASCIIDOCTOR_IMAGE \?= asciidoctor/docker-asciidoctor:[\d.]+'
       replacepattern: 'ASCIIDOCTOR_IMAGE ?= asciidoctor/docker-asciidoctor:{{ source "asciidoctor" }}'
 
 actions:
