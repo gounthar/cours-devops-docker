@@ -1,5 +1,5 @@
 # Use a Maven image for building the application
-FROM maven:3.9.13-eclipse-temurin-25-alpine AS build
+FROM maven:3.9.14-eclipse-temurin-25-alpine AS build
 WORKDIR /app
 
 # Clone the Spring Boot application repository
