@@ -415,7 +415,7 @@ ul.byline li + li {
 }
 </style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/v4-shims.min.css"><link rel="stylesheet" href="./styles/build.css"></head><body><div class="reveal"><div class="slides"><section class="title" data-state="title"><h1>🇫🇷 Devops </h1><h2>Docker</h2><div class="preamble"><div class="paragraph title"><p>2025/2026</p></div>
 <div class="imageblock"><img src="media/qrcode.png" alt="QRCode to this presentation" height="150"></div>
-<div class="ulist small"><ul><li><p>Présentation disponible à l’adresse: <a href="https://gounthar.github.io/cours-devops-docker/updatecli_main_630f3b9b1230ad1d18e4512a80f5ae614ce378412ec45ecdbe2fc69621209176">https://gounthar.github.io/cours-devops-docker/updatecli_main_630f3b9b1230ad1d18e4512a80f5ae614ce378412ec45ecdbe2fc69621209176</a></p></li><li><p>Version PDF de la présentation : <a href="slides.pdf" target="_blank"><span class="icon"><i class="fa fa-file-pdf"></i></span> Cliquez ici</a></p></li><li><p>Contenu sous licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">Creative Commons Attribution 4.0 International License</a></p></li><li><p>Code source de la présentation: <a href="https://github.com/gounthar/cours-devops-docker" target="_blank"><span class="icon"><i class="fab fa-github"></i></span> https://github.com/gounthar/cours-devops-docker</a></p></li></ul></div></div></section>
+<div class="ulist small"><ul><li><p>Présentation disponible à l’adresse: <a href="https://gounthar.github.io/cours-devops-docker/updatecli_main_630f3b9b1230ad1d18e4512a80f5ae614ce378412ec45ecdbe2fc69621209176">https://gounthar.github.io/cours-devops-docker/updatecli_main_630f3b9b1230ad1d18e4512a80f5ae614ce378412ec45ecdbe2fc69621209176</a></p></li><li><p>Version PDF de la présentation : <a href="slides.pdf" target="_blank"><span class="icon"><i class="fa fa-file-pdf"></i></span> Cliquez ici</a></p></li><li><p>Contenu sous licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">Creative Commons Attribution 4.0 International License</a></p></li><li><p>Code source de la présentation: <a href="https://github.com/gounthar/cours-devops-docker" target="_blank"><span class="icon"><i class="fab fa-github"></i></span> https://github.com/gounthar/cours-devops-docker</a></p></li><li><p>Mis à jour le&#160;: 15 mai 2026</p></li></ul></div></div></section>
 <section id="comment_utiliser_cette_présentation" class="dark background columns" data-background-color="MediumBlue" data-background-image="media/logo-t-shirt-transparent-1080.png" data-background-size="contain" data-background-position="left"><h2>Comment utiliser cette présentation ?</h2><div class="slide-content"><div class="openblock column"><div class="content"></div></div>
 <div class="openblock column"><div class="content"><div class="ulist"><ul><li><p>Pour naviguer, utilisez les flèches en bas à droite (ou celles de votre clavier)</p><div class="ulist"><ul><li><p>Gauche/Droite: changer de chapitre</p></li><li><p>Haut/Bas: naviguer dans un chapitre</p></li></ul></div></li><li><p>Pour avoir une vue globale : utiliser la touche "o" (pour "<strong>Overview</strong>")</p></li></ul></div></div></div></div></section>
 <section><section id="bonjour" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Bonjour !</h2><div class="slide-content"><div class="imageblock"><img src="media/bitmoji-hello.png" alt="bitmoji hello" width="200"></div><div class="imageblock"><img src="media/hello-from-docker.svg" alt="hello from docker"></div><div class="paragraph small"><small>La suite: vers le bas ⬇️</small></div></div></section><section data-background-color="rgb(248, 228, 130)" data-background-image="media/docker_love.png" data-background-size="contain" data-background-position="center" data-state="invert"><div class="slide-content">
@@ -1875,10 +1875,10 @@ docker container run --rm ubuntu:22.04 git --version
 # docker: Error response from daemon: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: "git": executable file not found in $PATH: unknown.
 
 # En interactif ?
-docker container run --rm --tty --interactive ubuntu:22.04 git --version</code></pre></div></div></div></section><section id="fabriquer_sa_première_image"><h2>🎓 Fabriquer sa première image</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> fabriquer une image Docker qui contient <code>git</code></p></li><li><p>Dans votre workspace Gitpod, créez un dossier nommé <code>docker-git/</code></p></li><li><p>Dans ce dossier, créer un fichier <code>Dockerfile</code> avec le contenu ci-dessous :</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-noescape="true" data-lang="Dockerfile">FROM alpine:3.23.0
+docker container run --rm --tty --interactive ubuntu:22.04 git --version</code></pre></div></div></div></section><section id="fabriquer_sa_première_image"><h2>🎓 Fabriquer sa première image</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> fabriquer une image Docker qui contient <code>git</code></p></li><li><p>Dans votre workspace Gitpod, créez un dossier nommé <code>docker-git/</code></p></li><li><p>Dans ce dossier, créer un fichier <code>Dockerfile</code> avec le contenu ci-dessous :</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-noescape="true" data-lang="Dockerfile">FROM alpine:3.23.4
 
 RUN apk update &amp;&amp; apk add --no-cache git</code></pre></div></div></li><li><p>Fabriquez votre image avec la commande <code>docker image build --tag=docker-git chemin/vers/docker-git/</code></p></li><li><p>Testez l&#8217;image fraîchement fabriquée</p><div class="ulist"><ul><li><p>💡 <code>docker image ls</code></p></li></ul></div></li></ul></div></div></section><section id="fabriquer_sa_première_image_2"><h2>✅ Fabriquer sa première image</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cat &lt;&lt;EOF &gt;Dockerfile
-FROM alpine:3.23.0
+FROM alpine:3.23.4
 
 RUN apk update &amp;&amp; apk add --no-cache git
 EOF
@@ -1894,7 +1894,7 @@ docker container run --rm docker-git:latest git --version</code></pre></div></di
 <div class="paragraph fragment"><p><strong>📖🍳 RECETTE</strong></p></div>
 <div class="ulist"><ul><li class="fragment"><p>On part d&#8217;une image Alpine</p></li><li class="fragment"><p>On installe un JRE</p></li></ul></div></div></section><section data-background-image="media/images-output52_with_transparency.png" data-background-size="contain" data-auto-animate></section><section data-background-image="media/images-output53_with_transparency.png" data-background-size="contain" data-auto-animate></section><section data-background-image="media/images-output54_with_transparency.png" data-background-size="contain" data-auto-animate></section><section data-background-image="media/images-output56_with_transparency.png" data-background-size="contain" data-auto-animate><div class="slide-content">
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {52..56}; do convert Diapositive${i}.PNG -crop 9580x5224+1879+1795 -transparent white -resize x1080 images-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="fabriquer_son_image_3" class="columns" data-auto-animate><h2>🐋 📖🍳 Fabriquer son image</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="imageblock"><img src="media/images-output56_with_transparency.png" alt="images output56 with transparency"></div></div></div>
-<div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.23.0
+<div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.23.4
 LABEL maintainer="Tony Stark"
 
 RUN apk update
@@ -2462,7 +2462,7 @@ Connection: keep-alive
 ETag: "65253f9d-4564d"
 Accept-Ranges: bytes</code></pre></div></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {71..73}; do convert Diapositive${i}.PNG -crop 10146x4801+2250+1833 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="travaux_pratiques_7"><h2>🎓 Travaux pratiques #7</h2><div class="slide-content"><div class="paragraph"><p>Étapes:</p></div>
-<div class="ulist"><ul><li class="fragment"><p>Créer un fichier HTML et le distribuer à partir d&#8217;un container <code>nginx</code></p></li><li class="fragment"><p>Récupérer un war sur GitHub et le déployer dans un container <code>tomcat (<a href="https://github.com/gounthar/tp07-sample/releases/download/v2025.11.24-095931/sample-2025.11.24-095931.war" class="bare">https://github.com/gounthar/tp07-sample/releases/download/v2025.11.24-095931/sample-2025.11.24-095931.war</a>)</code></p></li><li class="fragment"><p>Récupérer le code sur <a href="https://spring.io/guides/gs/spring-boot/" class="bare">https://spring.io/guides/gs/spring-boot/</a> et faire tourner l&#8217;appli (sous répertoire <code>complete</code>)</p></li></ul></div></div></section><section id="solution_travaux_pratiques_7" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-html hljs" data-noescape="true" data-lang="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;header&gt;
+<div class="ulist"><ul><li class="fragment"><p>Créer un fichier HTML et le distribuer à partir d&#8217;un container <code>nginx</code></p></li><li class="fragment"><p>Récupérer un war sur GitHub et le déployer dans un container <code>tomcat (<a href="https://github.com/gounthar/tp07-sample/releases/download/v2025.12.15-093217/sample-2025.12.15-093217.war" class="bare">https://github.com/gounthar/tp07-sample/releases/download/v2025.12.15-093217/sample-2025.12.15-093217.war</a>)</code></p></li><li class="fragment"><p>Récupérer le code sur <a href="https://spring.io/guides/gs/spring-boot/" class="bare">https://spring.io/guides/gs/spring-boot/</a> et faire tourner l&#8217;appli (sous répertoire <code>complete</code>)</p></li></ul></div></div></section><section id="solution_travaux_pratiques_7" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-html hljs" data-noescape="true" data-lang="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;header&gt;
 &lt;title&gt;http://info.cern.ch&lt;/title&gt;
 &lt;/header&gt;
 
@@ -2475,7 +2475,7 @@ Accept-Ranges: bytes</code></pre></div></div>
 &lt;li&gt;&lt;a href="http://home.web.cern.ch/about"&gt;Learn about CERN, the physics laboratory where the web was born&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</code></pre></div></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker run --name my-nginx -v /fully/qualified/path/on/my/computer/:/usr/share/nginx/html:ro -d -p 8000:80 nginx:1.29.4-alpine3.23</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker run --name my-nginx -v /fully/qualified/path/on/my/computer/:/usr/share/nginx/html:ro -d -p 8000:80 nginx:1.31.0-alpine3.23</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">curl --noproxy '*' http://localhost:8000
 &lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;header&gt;
 &lt;title&gt;http://info.cern.ch&lt;/title&gt;
@@ -2490,14 +2490,14 @@ Accept-Ranges: bytes</code></pre></div></div>
 &lt;li&gt;&lt;a href="http://home.web.cern.ch/about"&gt;Learn about CERN, the physics laboratory where the web was born&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</code></pre></div></div></div></section><section id="solution_travaux_pratiques_7_2" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">wget https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp07/-/raw/master/sample.war</code></pre></div></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Used to run a Docker container with the name "tomcat-container" using the "tomcat:11.0.14-jdk25-temurin-noble" image. The container is
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Used to run a Docker container with the name "tomcat-container" using the "tomcat:11.0.22-jdk25-temurin-noble" image. The container is
 # configured to expose port 8080 on the host machine, which will be mapped to the corresponding port inside
 # the container. Additionally, a volume is mounted to the container, linking the
 # "/fully/qualified/path/on/my/computer/sample.war" file to "/usr/local/tomcat/webapps/sample.war"
 # path within the container. This allows the Tomcat server running inside the container to access and deploy the
 # "sample.war" file. The "-d" flag is used to run the container in detached mode, meaning it will run in the
 # background.
-docker run -d -p 8080:8080 --name tomcat-container -v /fully/qualified/path/on/my/computer/sample.war:/usr/local/tomcat/webapps/sample.war tomcat:11.0.14-jdk25-temurin-noble</code></pre></div></div>
+docker run -d -p 8080:8080 --name tomcat-container -v /fully/qualified/path/on/my/computer/sample.war:/usr/local/tomcat/webapps/sample.war tomcat:11.0.22-jdk25-temurin-noble</code></pre></div></div>
 <div class="paragraph fragment"><p>Visitez avec votre navigateur <code><a href="http://localhost:8080/sample/" class="bare">http://localhost:8080/sample/</a></code>.</p></div></div></section><section id="solution_travaux_pratiques_7_3" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">git clone https://github.com/spring-guides/gs-spring-boot.git</code></pre></div></div>
 <div class="paragraph"><p>C&#8217;est un début&#8230;&#8203;</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cd gs-spring-boot/complete</code></pre></div></div>
@@ -2505,7 +2505,7 @@ docker run -d -p 8080:8080 --name tomcat-container -v /fully/qualified/path/on/m
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">java -jar target/spring-boot-complete-0.0.1-SNAPSHOT.jar</code></pre></div></div>
 <div class="paragraph fragment"><p>Ok, il y a de l&#8217;idée&#8230;&#8203;</p></div></div></section><section id="solution_travaux_pratiques_7_4" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="paragraph"><p>Assemblons tout ça dans un <code>Dockerfile</code>.</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Use a Maven image for building the application
-FROM maven:3.9-eclipse-temurin-11-alpine
+FROM maven:3.9.14-eclipse-temurin-25-alpine
 WORKDIR /app
 
 # Clone the Spring Boot application repository
@@ -2527,7 +2527,7 @@ CMD ["java", "-jar", "spring-boot-complete-0.0.1-SNAPSHOT.jar"]</code></pre></di
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker run -d -p 8080:8080 --name spring-boot-container spring-boot-app</code></pre></div></div></div></section><section id="attends_un_peu"><h2>⏳ Attends un peu…</h2><div class="slide-content"><div class="imageblock"><img src="media/1779074283-image19.gif" alt="1779074283 image19"></div>
 <div class="paragraph"><p><em>Ça fonctionne, mais c&#8217;est comme si  je laissais la grue dans la chambre une fois que j&#8217;avais fini de construire ma maison !</em></p></div></div></section><section id="solution_travaux_pratiques_7_5" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="paragraph"><p>On essaye un <code>Dockerfile</code> moins BTP?</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Use a Maven image for building the application
-FROM maven:3.9-eclipse-temurin-11-alpine AS build
+FROM maven:3.9.14-eclipse-temurin-25-alpine AS build
 WORKDIR /app
 
 # Clone the Spring Boot application repository
@@ -2551,7 +2551,7 @@ CMD ["java", "-jar", "spring-boot-complete-0.0.1-SNAPSHOT.jar"]</code></pre></di
 <div class="paragraph fragment"><p>Le multistage, c&#8217;est la classe à Arras.
 On en reparle après.</p></div></div></section><section id="une_première_solution"><h2>🧩 Une première solution</h2><div class="slide-content"><div class="paragraph"><p>Avec un autre exemple&#8230;&#8203;
 Une image pour construire l&#8217;appli:</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM golang:1.25
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM golang:1.26
 
 WORKDIR /go/src/github.com/alexellis/href-counter/
 
@@ -2562,7 +2562,7 @@ COPY app.go	.
 
 RUN CGO_ENABLED=0 GOOS=linux go build  -ldflags "-s -w" -o app .</code></pre></div></div>
 <div class="paragraph fragment"><p>Une image pour faire tourner l&#8217;appli</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.23.0
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.23.4
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
@@ -2886,7 +2886,81 @@ Vous pouvez voir les détails de ce réseau dans le tableau, y compris son ident
 ^C
 --- web ping statistics ---
 10 packets transmitted, 10 packets received, 0% packet loss
-round-trip min/avg/max = 0.097/0.141/0.442 ms</code></pre></div></div></div></section><section id="microdns_2" data-auto-animate><h2>🖥️🔍 MicroDNS</h2><div class="slide-content"><div class="imageblock"><img src="media/appeler_son_voisin.png" alt="appeler son voisin" height="600"></div></div></section><section id="se_connecter_à_un_réseau"><h2>📶🔌 Se connecter à un réseau</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker network connect mynet myapp</code></pre></div></div>
+round-trip min/avg/max = 0.097/0.141/0.442 ms</code></pre></div></div></div></section><section id="microdns_2" data-auto-animate><h2>🖥️🔍 MicroDNS</h2><div class="slide-content"><div class="imageblock"><img src="media/appeler_son_voisin.png" alt="appeler son voisin" height="600"></div></div></section><section id="piège_nginx_résolution_dns_dans_upstream_blocks"><h2>🚨 Piège NGINX : Résolution DNS dans upstream blocks</h2><div class="slide-content"><aside class="notes"><div class="paragraph"><p>Section duration: 7 minutes
+Problem: NGINX resolves DNS at startup only, not dynamically like other tools
+Impact: Common exam failure (+1.20 points average)</p></div></aside>
+<h3>Le Problème</h3><div class="paragraph"><p>NGINX, contrairement à d&#8217;autres outils (curl, wget, applications), <strong>résout les noms DNS au démarrage uniquement</strong>.</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Si un service Docker n&#8217;est pas encore démarré → NGINX <strong>échoue au démarrage</strong></p></li><li class="fragment"><p>Si un conteneur redémarre et change d&#8217;IP → NGINX continue d&#8217;utiliser l'<strong>ancienne IP</strong></p></li><li class="fragment"><p>Erreur typique : <code>host not found in upstream "nom-service:port"</code></p></li></ul></div>
+<h3>Exemple de Configuration Défaillante</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-nginx hljs" data-noescape="true" data-lang="nginx">events {
+    worker_connections 1024;
+}
+
+http {
+    # ❌ AUCUNE directive resolver !
+
+    upstream backend {
+        server app-server:8080;  # ❌ ÉCHEC au démarrage !
+    }
+
+    server {
+        listen 80;
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</code></pre></div></div>
+<div class="paragraph"><p><strong>Résultat</strong> : <code>nginx: [emerg] host not found in upstream "app-server"</code></p></div>
+<h3>La Solution : Directive <code>resolver</code> + Variables</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-nginx hljs" data-noescape="true" data-lang="nginx">events {
+    worker_connections 1024;
+}
+
+http {
+    # DNS interne Docker pour résolution dynamique
+    resolver 127.0.0.11 valid=30s ipv6=off;
+
+    server {
+        listen 80;
+        location / {
+            # ✅ Utiliser une variable pour forcer la résolution dynamique
+            set $backend_host "app-server:8080";
+            proxy_pass http://$backend_host;
+        }
+    }
+}</code></pre></div></div>
+<div class="admonitionblock important"><table><tr><td class="icon"><i class="fa fa-exclamation-circle" title="Important"></i></td><td class="content"><div class="paragraph"><p>La directive <code>resolver</code> <strong>seule ne suffit pas</strong> avec les blocs <code>upstream</code> et noms fixes !</p></div>
+<div class="paragraph"><p><strong>Deux approches fonctionnelles</strong> :</p></div>
+<div class="olist arabic"><ol class="arabic"><li><p><strong>Approche variable (recommandée pour Docker)</strong> :</p><div class="ulist"><ul><li><p>Pas de bloc <code>upstream</code></p></li><li><p>Utiliser <code>set $var "nom-service:port"</code></p></li><li><p>Puis <code>proxy_pass <a href="http://$var" class="bare">http://$var</a></code></p></li><li><p>✅ Force la résolution DNS à chaque requête</p></li></ul></div></li><li><p><strong>Approche upstream</strong> :</p><div class="ulist"><ul><li><p>Garder le bloc <code>upstream</code> pour load balancing</p></li><li><p>Nécessite configurations avancées (variables + health checks)</p></li><li><p>Plus complexe à maintenir</p></li></ul></div></li></ol></div>
+<div class="paragraph"><p>Pour la plupart des cas Docker simples → <strong>Approche variable</strong></p></div></td></tr></table></div>
+<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content"><div class="paragraph"><p><strong>127.0.0.11</strong> est l&#8217;adresse du <strong>DNS interne Docker</strong> dans les <strong>réseaux définis par l&#8217;utilisateur</strong> (user-defined networks).</p></div>
+<div class="admonitionblock note"><table><tr><td class="icon"><i class="fa fa-info-circle" title="Note"></i></td><td class="content">Le réseau <code>bridge</code> par défaut n&#8217;a pas de serveur DNS - utilisez <code>docker network create</code> pour créer un réseau personnalisé.</td></tr></table></div></td></tr></table></div>
+<h3>Quand est-ce nécessaire ?</h3><table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:33.3333%"><col style="width:50%"><col style="width:16.6667%"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Situation</th><th class="tableblock halign-left valign-top">Directive <code>resolver</code> nécessaire ?</th><th class="tableblock halign-left valign-top">Raison</th></tr><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">upstream block avec noms Docker (statique)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">⚠️ INSUFFISANT</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Nécessite AUSSI variables + proxy_pass</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">proxy_pass avec variable (<code>$backend_host</code>)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">✅ OUI + obligatoire</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Force résolution dynamique à chaque requête</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">upstream avec IP fixe</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">❌ NON</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Pas de résolution DNS</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">proxy_pass avec nom fixe (sans upstream)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">⚠️ RECOMMANDÉ</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Évite erreurs au redémarrage</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">proxy_pass avec variable</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">✅ OUI</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Résolution dynamique obligatoire</p></td></tr></table>
+<h3>Paramètres de la Directive <code>resolver</code></h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-nginx hljs" data-noescape="true" data-lang="nginx">resolver 127.0.0.11 valid=30s ipv6=off;
+#        ^^^^^^^^^^^ ^^^^^^^^^ ^^^^^^^^
+#        Adresse DNS  Cache TTL Désactiver IPv6</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p><strong>127.0.0.11</strong> : DNS interne Docker (toujours cette adresse dans Docker)</p></li><li class="fragment"><p><strong>valid=30s</strong> : Durée de cache des résolutions (30 secondes par défaut)</p></li><li class="fragment"><p><strong>ipv6=off</strong> : Désactive IPv6 (optionnel, évite warnings)</p></li></ul></div>
+<h3>🎓 Exercice Pratique</h3><div class="paragraph"><p>Créez un projet avec :</p></div>
+<div class="olist arabic"><ol class="arabic"><li><p><strong>NGINX</strong> (proxy) utilisant upstream vers <code>webapp</code></p></li><li><p><strong>webapp</strong> (serveur web simple sur port 8080)</p></li></ol></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  webapp:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+
+  proxy:
+    image: nginx:latest
+    ports:
+      - "8000:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro</code></pre></div></div>
+<div class="paragraph"><p><strong>Test 1</strong> : Sans <code>resolver</code> → Observer l&#8217;échec NGINX</p></div>
+<div class="paragraph"><p><strong>Test 2</strong> : Avec <code>resolver 127.0.0.11</code> → Succès !</p></div>
+<h3>📊 En Résumé</h3><div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content"><div class="paragraph"><p><strong>Règle d&#8217;or</strong> : upstream block avec noms Docker → <strong>DOIT avoir resolver</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-nginx hljs" data-noescape="true" data-lang="nginx">http {
+    resolver 127.0.0.11 valid=30s ipv6=off;
+    # ...
+}</code></pre></div></div></td></tr></table></div>
+<div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content"><div class="paragraph"><p>Sans cette directive, vous aurez :</p></div>
+<div class="ulist"><ul><li><p>❌ Échecs au démarrage si services pas encore prêts</p></li><li><p>❌ IPs obsolètes après redémarrage de conteneurs</p></li><li><p>❌ Erreur : <code>host not found in upstream</code></p></li></ul></div></td></tr></table></div></div></section><section id="se_connecter_à_un_réseau"><h2>📶🔌 Se connecter à un réseau</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker network connect mynet myapp</code></pre></div></div>
 <div class="paragraph fragment"><p>Cette commande permet d&#8217;attacher un container à un réseau après sa création.</p></div></div></section><section id="travaux_pratiques_11"><h2>🎓 Travaux pratiques #11</h2><div class="slide-content"><div class="paragraph"><p>Étapes:</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Lister et inspecter les réseaux existants</p></li><li class="fragment"><p>Lancer un container `nginx `nommé "web1"</p></li><li class="fragment"><p>A quel réseau est-il attaché ?</p></li><li class="fragment"><p>Créer un réseau de type bridge et l&#8217;inspecter</p></li><li class="fragment"><p>Lancer un container <code>nginx</code> nommé "web2" et l&#8217;attacher au réseau créé</p></li><li class="fragment"><p>L&#8217;inspection confirme-t-elle l&#8217;attachement ?</p></li><li class="fragment"><p>Lancer un bash dans le container "web1"</p></li><li class="fragment"><p>Est-ce que "web1" peut voir "web2" ?</p></li><li class="fragment"><p>Corriger pour que ce soit le cas</p></li></ul></div></div></section><section id="solution_travaux_pratiques_11" data-auto-animate><h2>✅ Solution travaux pratiques #11</h2><div class="slide-content"><div class="paragraph"><p>Étape 1 : Lister et inspecter les réseaux existants</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Liste tous les réseaux Docker existants
@@ -2950,7 +3024,101 @@ curl web2</code></pre></div></div>
 &lt;head&gt;
 &lt;title&gt;Welcome to nginx!&lt;/title&gt;
 &lt;style&gt;
-[...]</code></pre></div></div></div></section></section>
+[...]</code></pre></div></div></div></section><section id="piège_localhost_vs_nom_de_service_dans_docker"><h2>🚨 Piège : localhost vs nom de service dans Docker</h2><div class="slide-content"><aside class="notes"><div class="paragraph"><p>Section duration: 8 minutes
+Real student error: GELF logging to localhost instead of service name
+Impact: Common exam failure (+1.30 points average)</p></div></aside>
+<h3>La Confusion Fatale</h3><table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:25%"><col style="width:37.5%"><col style="width:37.5%"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Terme</th><th class="tableblock halign-left valign-top">Hors Docker (machine locale)</th><th class="tableblock halign-left valign-top">Dans Docker (environnement conteneurisé)</th></tr><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>localhost</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Votre ordinateur</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Le conteneur actuel uniquement</strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>127.0.0.1</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Votre ordinateur</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Le conteneur actuel uniquement</strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>nom_service</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><em>(n&#8217;existe pas)</em></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Un autre conteneur du même réseau</strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>nom_service:port</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><em>(n&#8217;existe pas)</em></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Communication inter-conteneurs</strong></p></td></tr></table>
+<div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content"><div class="paragraph"><p><strong>Dans Docker</strong> : <code>localhost</code> ≠ autre conteneur</p></div>
+<div class="paragraph"><p><code>localhost</code> = seulement le conteneur où vous êtes !</p></div></td></tr></table></div>
+<h3>Exemples d&#8217;Erreurs Réelles</h3><div class="paragraph"><p>Ces erreurs proviennent d&#8217;examens réels (2025-2026).</p></div>
+<h4>Erreur #1 : Logging GELF vers localhost</h4><div class="paragraph"><p><strong>Code cassé</strong> :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  backend:
+    image: mon-app
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://localhost:12201"  # ❌ FAUX !
+        tag: "backend"
+
+  logstash:
+    image: logstash:latest
+    ports:
+      - "12201:12201/udp"</code></pre></div></div>
+<div class="paragraph"><p><strong>Problème</strong> : <code>localhost:12201</code> pointe vers le <strong>conteneur backend</strong>, pas vers logstash !</p></div>
+<div class="paragraph"><p><strong>Solution</strong> :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  backend:
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://logstash:12201"  # ✅ Nom du service !</code></pre></div></div>
+<h4>Erreur #2 : Health Check avec localhost IPv6</h4><div class="paragraph"><p><strong>Code cassé</strong> :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  webapp:
+    image: node:18
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://[::1]:3000/health"]  # ❌ FAUX !</code></pre></div></div>
+<div class="paragraph"><p><strong>Problème</strong> : <code>[::1]</code> (localhost IPv6) pointe vers le conteneur webapp lui-même, mais si l&#8217;app écoute sur IPv4&#8230;&#8203;</p></div>
+<div class="paragraph"><p><strong>Solution</strong> :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">healthcheck:
+  test: ["CMD", "curl", "-f", "http://localhost:3000/health"]  # ✅ OK (même conteneur)
+  # OU
+  test: ["CMD", "curl", "-f", "http://127.0.0.1:3000/health"]  # ✅ OK</code></pre></div></div>
+<div class="admonitionblock note"><table><tr><td class="icon"><i class="fa fa-info-circle" title="Note"></i></td><td class="content"><div class="paragraph"><p>Health check = test <strong>dans le même conteneur</strong> → <code>localhost</code> est <strong>correct</strong> ici !</p></div>
+<div class="paragraph"><p>C&#8217;est quand on veut <strong>accéder à un autre service</strong> qu&#8217;il faut utiliser le nom du service.</p></div></td></tr></table></div>
+<h4>Erreur #3 : Backend URL avec localhost</h4><div class="paragraph"><p><strong>Code cassé (frontend)</strong> :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-javascript hljs" data-noescape="true" data-lang="javascript">// frontend/src/config.js
+const API_URL = "http://localhost:5000/api";  // ❌ FAUX !</code></pre></div></div>
+<div class="paragraph"><p><strong>Problème</strong> : Le navigateur du client exécute ce code → <code>localhost</code> pointe vers <strong>l&#8217;ordinateur du client</strong>, pas le backend Docker !</p></div>
+<div class="paragraph"><p><strong>Solution 1</strong> : Utiliser un reverse proxy (NGINX)</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-javascript hljs" data-noescape="true" data-lang="javascript">const API_URL = "/api";  // ✅ Relatif → passe par NGINX</code></pre></div></div>
+<div class="paragraph"><p><strong>Solution 2</strong> : Variable d&#8217;environnement (build-time)</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-javascript hljs" data-noescape="true" data-lang="javascript">const API_URL = process.env.REACT_APP_API_URL || "/api";</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # ✅ URL publique qui passe par le reverse proxy
+        REACT_APP_API_URL: "/api"</code></pre></div></div>
+<div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content"><div class="paragraph"><p><strong>React client-side ≠ SSR/Next.js</strong> :</p></div>
+<div class="ulist"><ul><li><p><strong>React client-side</strong> (CRA, Vite) : Code s&#8217;exécute dans le <strong>navigateur</strong>
+→ Ne peut PAS résoudre <code>backend:5000</code>
+→ <strong>Utiliser URL publique</strong> : <code>/api</code> ou <code><a href="http://localhost:8080/api" class="bare">http://localhost:8080/api</a></code></p></li><li><p><strong>SSR/Next.js</strong> : Code s&#8217;exécute sur le <strong>serveur Node.js</strong>
+→ Peut résoudre <code>backend:5000</code> (dans le réseau Docker)
+→ Mais préférez quand même le reverse proxy pour la cohérence</p></li></ul></div>
+<div class="paragraph"><p><strong>Recommandation</strong> : Toujours utiliser le reverse proxy (Solution 1) pour éviter la confusion !</p></div></td></tr></table></div>
+<h3>Tableau de Référence Rapide</h3><table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:42.8571%"><col style="width:28.5714%"><col style="width:28.5715%"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Situation</th><th class="tableblock halign-left valign-top">Utiliser</th><th class="tableblock halign-left valign-top">Exemple</th></tr><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Health check (même conteneur)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>localhost</code> ou <code>127.0.0.1</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>curl <a href="http://localhost:8080/health" class="bare">http://localhost:8080/health</a></code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Communication entre services Docker</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Nom du service</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://backend:5000" class="bare">http://backend:5000</a></code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Logging GELF vers Logstash</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Nom du service</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>gelf-address: "udp://logstash:12201"</code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Adresse de connexion base de données</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Nom du service</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>DATABASE_URL=postgresql://db:5432/mydb</code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">API frontend → backend (même réseau Docker)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Nom du service</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>API_URL=http://backend:5000</code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">API frontend → backend (navigateur client)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Reverse proxy</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>API_URL=/api</code> (NGINX route vers backend)</p></td></tr></table>
+<h3>Règle Mnémotechnique</h3><div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content"><div class="paragraph"><p><strong>Localhost = Local Container</strong></p></div>
+<div class="ulist"><ul><li><p><code>localhost</code> dans un conteneur = <strong>ce conteneur uniquement</strong></p></li><li><p>Pour parler à un <strong>autre conteneur</strong> = utiliser son <strong>nom de service</strong></p></li><li><p>Pour parler depuis le <strong>navigateur</strong> = utiliser <strong>reverse proxy</strong> ou <strong>URL publique</strong></p></li></ul></div></td></tr></table></div>
+<h3>🎓 Exercice Pratique</h3><div class="paragraph"><p>Corrigez ce <code>docker-compose.yml</code> cassé :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  webapp:
+    image: node:18
+    environment:
+      DATABASE_URL: "postgresql://localhost:5432/mydb"  # ❌ Erreur 1
+      REDIS_URL: "redis://127.0.0.1:6379"              # ❌ Erreur 2
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://localhost:12201"          # ❌ Erreur 3
+
+  database:
+    image: postgres:15
+
+  cache:
+    image: redis:7
+
+  logstash:
+    image: logstash:latest
+    ports:
+      - "12201:12201/udp"</code></pre></div></div>
+<div class="paragraph"><p><strong>Solution</strong> : Remplacer tous les <code>localhost</code> par les noms de services !</p></div>
+<h3>📊 En Résumé</h3><div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content"><div class="paragraph"><p><strong>Erreurs fréquentes</strong> :</p></div>
+<div class="ulist"><ul><li><p>❌ <code>localhost:5432</code> pour PostgreSQL → <strong>Utiliser</strong> <code>database:5432</code></p></li><li><p>❌ <code>localhost:6379</code> pour Redis → <strong>Utiliser</strong> <code>cache:6379</code></p></li><li><p>❌ <code>localhost:12201</code> pour GELF logging → <strong>Utiliser</strong> <code>logstash:12201</code></p></li><li><p>❌ <code>localhost</code> dans variables d&#8217;environnement → <strong>Utiliser nom de service</strong></p></li></ul></div></td></tr></table></div>
+<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content"><div class="paragraph"><p><strong>Règle d&#8217;or</strong> :</p></div>
+<div class="ulist"><ul><li><p>Même conteneur → <code>localhost</code> ✅</p></li><li><p>Autre conteneur → <strong>nom du service</strong> ✅</p></li><li><p>Depuis navigateur → <strong>reverse proxy</strong> ✅</p></li></ul></div></td></tr></table></div></div></section></section>
 <section><section id="docker_compose"><h2>🐋🐙 Docker compose</h2><div class="slide-content"><div class="imageblock"><img src="media/2073552164-image2.png" alt="2073552164 image2" height="550px"></div></div></section><section id="un_cas_de_la_vraie_vie"><h2>🌐🏡 Un cas de la vraie vie</h2><div class="slide-content"><div class="paragraph"><p>Une application riche repose souvent sur plusieurs éléments techniques à coordonner ensemble.</p></div>
 <div class="paragraph"><p>(Apache, Tomcat, Node, MongoDB, ElasticSearch, Logstash, etc.)</p></div>
 <div class="paragraph"><p>Comment automatiser ces déploiements ?</p></div></div></section><section id="on_pourrait_tout_scripter"><h2>📜💻 On pourrait tout scripter…</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">#!/bin/sh
@@ -3221,7 +3389,106 @@ C&#8217;est généralement fait lorsque vous voulez interagir avec le service en
       interval: 5s
       timeout: 10s
       retries: 5</code></pre></div></div>
-<div class="ulist"><ul><li class="fragment"><p>Enfin, un healthcheck est défini pour le service. Il s&#8217;agit d&#8217;une commande que Docker exécutera à l&#8217;intérieur du conteneur pour vérifier sa santé.</p></li><li class="fragment"><p>Dans ce cas, la commande vérifie si un fichier nommé <code>conductor_ok</code> existe dans le répertoire <code>/ssh-dir</code>.</p></li><li class="fragment"><p>Si le fichier existe, la commande réussit et Docker considère le service comme sain.</p></li><li class="fragment"><p>Si le fichier n&#8217;existe pas, la commande échoue et Docker considère le service comme malsain.</p></li><li class="fragment"><p>Docker exécutera cette vérification de santé toutes les 5 secondes (<code>interval: 5s</code>), et si elle ne répond pas dans les 10 secondes (<code>timeout: 10s</code>), Docker la considérera comme un échec. Docker réessaiera une vérification de santé échouée 5 fois (<code>retries: 5</code>) avant de considérer le service comme malsain.</p></li></ul></div></div></section><section id="étude_de_cas_5" class="columns" data-auto-animate><h2>🏁🔢 Étude de cas 📚🔍</h2><div class="slide-content"><div class="openblock column is-two-thirds"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+<div class="ulist"><ul><li class="fragment"><p>Enfin, un healthcheck est défini pour le service. Il s&#8217;agit d&#8217;une commande que Docker exécutera à l&#8217;intérieur du conteneur pour vérifier sa santé.</p></li><li class="fragment"><p>Dans ce cas, la commande vérifie si un fichier nommé <code>conductor_ok</code> existe dans le répertoire <code>/ssh-dir</code>.</p></li><li class="fragment"><p>Si le fichier existe, la commande réussit et Docker considère le service comme sain.</p></li><li class="fragment"><p>Si le fichier n&#8217;existe pas, la commande échoue et Docker considère le service comme malsain.</p></li><li class="fragment"><p>Docker exécutera cette vérification de santé toutes les 5 secondes (<code>interval: 5s</code>), et si elle ne répond pas dans les 10 secondes (<code>timeout: 10s</code>), Docker la considérera comme un échec. Docker réessaiera une vérification de santé échouée 5 fois (<code>retries: 5</code>) avant de considérer le service comme malsain.</p></li></ul></div></div></section><section id="piège_outils_manquants_dans_les_images_de_base"><h2>⚠️ Piège : Outils manquants dans les images de base</h2><div class="slide-content"><aside class="notes"><div class="paragraph"><p>Section duration: 10 minutes
+Real impact: ExitCode 127 = command not found
+Common student failure: +1.5 points average impact</p></div></aside>
+<h3>Le Problème</h3><div class="admonitionblock important"><table><tr><td class="icon"><i class="fa fa-exclamation-circle" title="Important"></i></td><td class="content"><div class="paragraph"><p>Si la commande utilisée dans un health check <strong>n&#8217;existe pas dans l&#8217;image</strong>, le health check <strong>échouera</strong> !</p></div></td></tr></table></div>
+<div class="ulist"><ul><li class="fragment"><p>Les images <strong>slim</strong> et <strong>alpine</strong> sont <strong>minimalistes</strong> pour réduire la taille</p></li><li class="fragment"><p>Elles <strong>ne contiennent PAS</strong> les outils courants (curl, wget, bash, etc.)</p></li><li class="fragment"><p>Health check avec outil manquant → <strong>Status "unhealthy"</strong> → <strong>Conteneur inutilisable</strong></p></li></ul></div>
+<h3>Exemples d&#8217;Images et Outils Disponibles</h3><table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:28.5714%"><col style="width:28.5714%"><col style="width:42.8572%"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Image de Base</th><th class="tableblock halign-left valign-top">Outils Inclus</th><th class="tableblock halign-left valign-top">Outils ABSENTS</th></tr><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>debian:12</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">sh, bash, ps, grep</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">❌ wget, curl, netcat (installables via apt)</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>debian:12-slim</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">sh, bash, ps</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">❌ curl, wget, netcat</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>alpine:3.19</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">sh, wget, ps</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">❌ curl, bash</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>python:3.11</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">python, pip, bash, ps, wget, curl</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><em>(image complète)</em></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>python:3.11-slim</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">python, pip, sh, bash, ps</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">❌ curl, wget</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>python:3.11-alpine</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">python, pip, sh, wget, ps</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">❌ curl, bash</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>node:18</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">node, npm, bash, ps, wget, curl</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><em>(image complète)</em></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>node:18-alpine</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">node, npm, sh, wget, ps</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">❌ curl, bash</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>postgres:15</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>pg_isready</strong>, psql, bash</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><em>(include outils PostgreSQL)</em></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>redis:7</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>redis-cli</strong>, bash</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><em>(include outils Redis)</em></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>nginx:latest</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">wget, bash, ps, curl</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><em>(version latest complète, nginx:alpine plus limité)</em></p></td></tr></table>
+<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content"><div class="paragraph"><p><strong>Images officielles de bases de données</strong> (postgres, mysql, redis, mongodb) incluent généralement leurs propres outils de diagnostic.</p></div></td></tr></table></div>
+<h3>Symptômes d&#8217;un Health Check avec Outil Manquant</h3><div class="paragraph"><p>Quand un health check échoue à cause d&#8217;un outil manquant :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose ps</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-text hljs" data-noescape="true" data-lang="text">NAME            IMAGE                  STATUS
+myapp-backend   python:3.11-slim      Up 30 seconds (unhealthy)</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker inspect myapp-backend | grep -A 10 Health</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">"Health": {
+    "Status": "unhealthy",
+    "FailingStreak": 5,
+    "Log": [
+        {
+            "ExitCode": 127,  # ← Code 127 = "Command not found"
+            "Output": "/bin/sh: curl: not found"
+        }
+    ]
+}</code></pre></div></div>
+<div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content"><div class="paragraph"><p><strong>ExitCode 127</strong> = La commande <strong>n&#8217;existe pas</strong> dans l&#8217;image !</p></div></td></tr></table></div>
+<h3>Solution 1 : Installer l&#8217;Outil dans le Dockerfile</h3><div class="paragraph"><p>La méthode la plus fiable : <strong>installer l&#8217;outil manquant</strong>.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM python:3.11-slim
+
+WORKDIR /app
+
+# Installer curl pour le health check
+RUN apt-get update &amp;&amp; \
+    apt-get install -y --no-install-recommends curl &amp;&amp; \
+    rm -rf /var/lib/apt/lists/*  # ← Nettoyer le cache apt
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  backend:
+    build: ./backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]  # ✅ Fonctionne !
+      interval: 10s
+      timeout: 5s
+      retries: 3</code></pre></div></div>
+<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content"><div class="paragraph"><p><strong>Alpine</strong> : Utiliser <code>apk add</code> au lieu de <code>apt-get</code></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM python:3.11-alpine
+
+RUN apk add --no-cache curl</code></pre></div></div></td></tr></table></div>
+<h3>Solution 2 : Utiliser des Alternatives Natives</h3><div class="paragraph"><p>Utilisez les outils <strong>déjà présents</strong> dans l&#8217;image.</p></div>
+<table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:25%"><col style="width:37.5%"><col style="width:37.5%"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Besoin</th><th class="tableblock halign-left valign-top">Au lieu de&#8230;&#8203;</th><th class="tableblock halign-left valign-top">Utiliser</th></tr><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Tester connexion HTTP</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>curl <a href="http://localhost:8080" class="bare">http://localhost:8080</a></code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>wget --spider --quiet <a href="http://localhost:8080" class="bare">http://localhost:8080</a></code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Tester port ouvert</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>curl -f localhost:8080</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>nc -z localhost 8080</code> (si netcat disponible)<br>
+<code>cat &lt; /dev/tcp/localhost/8080</code> (bash uniquement)</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Tester fichier existe</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>curl -f <a href="http://&#8230;&#8203" class="bare">http://&#8230;&#8203</a>;</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>[ -f /path/to/file ] || exit 1</code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Tester processus</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>curl <a href="http://&#8230;&#8203" class="bare">http://&#8230;&#8203</a>;</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>ps aux | grep "mon-process"</code></p></td></tr></table>
+<div class="paragraph"><p><strong>Exemple avec wget</strong> (disponible dans Alpine) :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  frontend:
+    image: node:18-alpine
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3</code></pre></div></div>
+<h3>Solution 3 : Utiliser Python/Node Built-in</h3><div class="admonitionblock note"><table><tr><td class="icon"><i class="fa fa-info-circle" title="Note"></i></td><td class="content"><div class="paragraph"><p>Cette solution s&#8217;applique <strong>uniquement</strong> aux images qui contiennent déjà Python ou Node.js (ex: <code>python:3.11-slim</code>, <code>node:18-alpine</code>, images d&#8217;applications Python/Node). N&#8217;installez pas Python/Node.js juste pour le health check - utilisez plutôt les Solutions 1 ou 2.</p></div></td></tr></table></div>
+<div class="paragraph"><p><strong>Health check avec Python</strong> (pour images Python) :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  backend:
+    image: python:3.11-slim  # ← Déjà contient Python
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3</code></pre></div></div>
+<div class="paragraph"><p><strong>Health check avec Node.js</strong> (pour images Node) :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  api:
+    image: node:18-alpine  # ← Déjà contient Node.js
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:8080/health', (r) =&gt; process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () =&gt; process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 3</code></pre></div></div>
+<h3>🎓 Exercice Pratique</h3><div class="paragraph"><p>Corrigez ce <code>docker-compose.yml</code> qui échoue avec "unhealthy" :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  webapp:
+    image: python:3.11-slim
+    # Dockerfile n'installe PAS curl !
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 10s</code></pre></div></div>
+<div class="paragraph"><p><strong>3 solutions possibles</strong> :</p></div>
+<div class="olist arabic"><ol class="arabic"><li><p>Ajouter <code>RUN apt-get update &amp;&amp; apt-get install -y curl</code> dans Dockerfile</p></li><li><p>Remplacer par <code>wget --spider --quiet <a href="http://localhost:5000/health" class="bare">http://localhost:5000/health</a></code></p></li><li><p>Remplacer par health check Python natif (Solution 3)</p></li></ol></div>
+<h3>📊 En Résumé (Checklist)</h3><div class="paragraph"><p>Avant d&#8217;écrire un health check :</p></div>
+<div class="olist arabic"><ol class="arabic"><li class="fragment"><p>✅ <strong>Vérifier</strong> : La commande existe-t-elle dans l&#8217;image ?</p></li><li class="fragment"><p>✅ <strong>Tester</strong> : <code>docker run --rm image commande</code> pour vérifier</p></li><li class="fragment"><p>✅ <strong>Choisir une solution</strong> :</p><div class="ulist"><ul><li><p>Installer l&#8217;outil (Solution 1) → Recommandé pour production</p></li><li><p>Utiliser alternative native (Solution 2) → Léger, pas d&#8217;install</p></li><li><p>Utiliser Python/Node built-in (Solution 3) → Images avec runtime uniquement</p></li></ul></div></li></ol></div>
+<div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content"><div class="paragraph"><p><strong>Erreurs fréquentes</strong> :</p></div>
+<div class="ulist"><ul><li><p>❌ <code>curl</code> dans <code>python:3.11-slim</code> → ExitCode 127</p></li><li><p>❌ <code>bash</code> dans Alpine → Utiliser <code>sh</code></p></li><li><p>❌ Oublier <code>--no-cache</code> lors de l&#8217;install → Image plus lourde</p></li></ul></div></td></tr></table></div>
+<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content"><div class="paragraph"><p><strong>Règle d&#8217;or</strong> : <code>docker run --rm mon-image commande</code></p></div>
+<div class="paragraph"><p>Si la commande échoue → Elle échouera aussi dans le health check !</p></div></td></tr></table></div></div></section><section id="étude_de_cas_5" class="columns" data-auto-animate><h2>🏁🔢 Étude de cas 📚🔍</h2><div class="slide-content"><div class="openblock column is-two-thirds"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   sidekick_service: [...]
 
   jenkins_controller: [...]
@@ -3655,7 +3922,7 @@ volumes:
       retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
     volumes:
       - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_3" data-auto-animate><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph"><p>Maven</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM jenkins/ssh-agent:7.9.0-jdk17 as ssh-agent
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM jenkins/ssh-agent:8.4.0-jdk21 as ssh-agent
 
 # ca-certificates because curl will need it later on for the maven installation
 RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends ca-certificates curl &amp;&amp; apt-get clean &amp;&amp; \
@@ -3934,7 +4201,7 @@ x-slides-base: &amp;slides-base
 <div class="ulist"><ul><li class="fragment"><p>Dans Docker, chaque instruction dans le Dockerfile est exécutée par un utilisateur particulier.</p></li><li class="fragment"><p>Par défaut, cet utilisateur est root, mais pour des raisons de sécurité, il est souvent recommandé d&#8217;exécuter les processus en tant qu&#8217;utilisateur non root.</p></li><li class="fragment"><p>Cette ligne définit l&#8217;ID de l&#8217;utilisateur qui exécutera les commandes à l&#8217;intérieur du conteneur Docker à la valeur de la variable d&#8217;environnement <code>CURRENT_UID</code>.</p></li><li class="fragment"><p>La syntaxe <code>${CURRENT_UID}</code> est utilisée pour accéder à la valeur d&#8217;une variable d&#8217;environnement.</p></li><li class="fragment"><p>Dans ce cas, Docker Compose recherchera une variable d&#8217;environnement nommée <code>CURRENT_UID</code> et utilisera sa valeur.</p></li><li class="fragment"><p>Si <code>CURRENT_UID</code> n&#8217;est pas défini dans l&#8217;environnement où Docker Compose est exécuté, Docker Compose renverra une erreur.</p></li></ul></div></div></section><section id="autre_étude_de_cas_10" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># Ce Dockerfile met en place un environnement Node.js avec des outils et dépendances supplémentaires.
 # Il est basé sur l'image Docker officielle de Node.js (version 22, variante Alpine).
 
-FROM node:25-alpine
+FROM node:26-alpine
 
 # Installer la dernière version des dépendances requises
 # hadolint ignore=DL3018
@@ -4695,7 +4962,78 @@ docker tag myapp:latest myregistry.com/myapp:latest</code></pre></div></div>
 <div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Démarrer registre local (port 5000)</p></li><li class="fragment"><p>Tagger images SecureVote</p></li><li class="fragment"><p>Pousser vers registre</p></li><li class="fragment"><p>Modifier docker-compose.yml</p></li><li class="fragment"><p>Re-déployer</p></li></ol></div></div></section><section id="récapitulatif_et_bonnes_pratiques" data-background-color="MediumBlue"><h2>Récapitulatif et bonnes pratiques</h2></section><section id="checklist_sécurité"><h2>Checklist sécurité</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>✅ Images officielles et à jour</p></li><li class="fragment"><p>✅ Scan régulier des vulnérabilités</p></li><li class="fragment"><p>✅ Utilisateurs non-root systématiques</p></li><li class="fragment"><p>✅ Secrets jamais en clair</p></li><li class="fragment"><p>✅ Réseau isolé par défaut</p></li></ul></div></div></section><section id="checklist_production"><h2>Checklist production</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>✅ Limites de ressources CPU/RAM</p></li><li class="fragment"><p>✅ Politiques de redémarrage</p></li><li class="fragment"><p>✅ Health checks implémentés</p></li><li class="fragment"><p>✅ Dépendances ordonnées</p></li><li class="fragment"><p>✅ Logs structurés et rotation</p></li></ul></div></div></section><section id="ce_quon_a_appris"><h2>Ce qu&#8217;on a appris</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Sécuriser une application Docker de bout en bout</p></li><li class="fragment"><p>Scanner et corriger les vulnérabilités</p></li><li class="fragment"><p>Gérer les secrets correctement</p></li><li class="fragment"><p>Configurer pour la production</p></li><li class="fragment"><p>Distribuer via registres</p></li></ul></div></div></section><section id="securevote_avantaprès"><h2>SecureVote : Avant/Après</h2><div class="slide-content"><div class="exampleblock columns"><div class="content"><div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Avant :</strong></p></div>
 <div class="ulist"><ul><li><p>Images non scannées</p></li><li><p>Root partout</p></li><li><p>Secrets en clair</p></li><li><p>Pas de limites</p></li></ul></div></div></div>
 <div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Après :</strong></p></div>
-<div class="ulist"><ul><li><p>Images slim, scannées</p></li><li><p>Utilisateurs dédiés</p></li><li><p>Secrets protégés</p></li><li><p>Production-ready ✅</p></li></ul></div></div></div></div></div></div></section><section id="aller_plus_loin"><h2>Aller plus loin</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p><strong>Orchestration</strong> : Kubernetes, Docker Swarm</p></li><li class="fragment"><p><strong>Secrets Management</strong> : Vault, Sealed Secrets</p></li><li class="fragment"><p><strong>Image Signing</strong> : Docker Content Trust, Cosign</p></li><li class="fragment"><p><strong>Runtime Security</strong> : Falco, Aqua Security</p></li></ul></div></div></section><section id="ressources_utiles"><h2>Ressources utiles</h2><div class="slide-content"><div class="ulist"><ul><li><p>Docker Security: <a href="https://docs.docker.com/engine/security/" class="bare">https://docs.docker.com/engine/security/</a></p></li><li><p>CIS Docker Benchmark</p></li><li><p>Trivy: <a href="https://github.com/aquasecurity/trivy" class="bare">https://github.com/aquasecurity/trivy</a></p></li><li><p>OWASP Docker Security Cheat Sheet</p></li></ul></div></div></section><section id="fin_de_la_session" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Fin de la session</h2><div class="slide-content"><div class="paragraph"><p>Bravo, vous avez transformé SecureVote en application sécurisée et production-ready !</p></div>
+<div class="ulist"><ul><li><p>Images slim, scannées</p></li><li><p>Utilisateurs dédiés</p></li><li><p>Secrets protégés</p></li><li><p>Production-ready ✅</p></li></ul></div></div></div></div></div></div></section><section id="troubleshooting_production"><h2>🔧 Troubleshooting Production</h2><div class="slide-content"><aside class="notes"><div class="paragraph"><p>Section duration: 5 minutes
+Practical debugging guide for common production issues</p></div></aside>
+<h3>Conteneurs qui ne démarrent pas</h3><div class="paragraph"><p><strong>Étape 1</strong> : Vérifier les logs</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker logs nom-conteneur
+
+# OU pour suivre en temps réel
+docker logs -f nom-conteneur</code></pre></div></div>
+<div class="paragraph"><p><strong>Étape 2</strong> : Inspecter le conteneur</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker inspect nom-conteneur
+
+# Voir seulement l'état
+docker inspect --format='{{.State.Status}}' nom-conteneur
+
+# Voir le code de sortie
+docker inspect --format='{{.State.ExitCode}}' nom-conteneur</code></pre></div></div>
+<div class="paragraph"><p><strong>Problèmes courants</strong> :</p></div>
+<table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:28.5714%"><col style="width:42.8571%"><col style="width:28.5715%"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Symptôme</th><th class="tableblock halign-left valign-top">Cause probable</th><th class="tableblock halign-left valign-top">Solution</th></tr><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>host not found in upstream</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">NGINX : résolution DNS statique</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Utiliser variables : <code>set $backend "app:8080"</code> + <code>proxy_pass <a href="http://$backend" class="bare">http://$backend</a></code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>cannot assign requested address</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Port déjà utilisé</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Changer port ou arrêter service conflictuel</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>no such file or directory</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Volume mal configuré</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Vérifier chemin absolu dans volumes</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>permission denied</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Problème permissions fichier</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Vérifier propriétaire et chmod</p></td></tr></table>
+<h3>Health Checks qui échouent</h3><div class="paragraph"><p><strong>Étape 1</strong> : Vérifier le status des services</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose ps
+
+# Voir seulement les unhealthy
+docker compose ps | grep unhealthy</code></pre></div></div>
+<div class="paragraph"><p><strong>Étape 2</strong> : Inspecter le health check</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker inspect nom-conteneur | grep -A 20 Health
+
+# Voir uniquement le status
+docker inspect --format='{{.State.Health.Status}}' nom-conteneur
+
+# Voir les derniers logs du health check
+docker inspect --format='{{json .State.Health.Log}}' nom-conteneur | jq</code></pre></div></div>
+<div class="paragraph"><p><strong>Codes de sortie importants</strong> :</p></div>
+<div class="ulist"><ul><li><p><strong>0</strong> : Health check réussi ✅</p></li><li><p><strong>1</strong> : Health check échoué (erreur applicative)</p></li><li><p><strong>127</strong> : Commande non trouvée (outil manquant dans l&#8217;image)</p></li><li><p><strong>137</strong> : Tué par signal (timeout)</p></li></ul></div>
+<div class="paragraph"><p><strong>Problèmes courants</strong> :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-text hljs" data-noescape="true" data-lang="text">ExitCode: 127
+Output: "/bin/sh: curl: not found"
+→ Solution : Installer curl dans Dockerfile</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-text hljs" data-noescape="true" data-lang="text">ExitCode: 1
+Output: "Connection refused"
+→ Solution : Vérifier que l'app écoute sur le bon port</code></pre></div></div>
+<h3>Debugging avec Docker Events</h3><div class="paragraph"><p>Surveiller tous les événements Docker en temps réel :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Voir tous les événements
+docker events
+
+# Filtrer par conteneur
+docker events --filter container=nom-conteneur
+
+# Filtrer par type d'événement
+docker events --filter event=start
+docker events --filter event=die
+docker events --filter event=health_status
+
+# Combiner plusieurs filtres
+docker events --filter container=backend --filter event=health_status</code></pre></div></div>
+<div class="paragraph"><p><strong>Exemple de sortie</strong> :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-text hljs" data-noescape="true" data-lang="text">2026-01-12T10:30:15 container health_status: unhealthy (name=backend)
+2026-01-12T10:30:20 container die (name=backend, exitCode=137)
+2026-01-12T10:30:25 container start (name=backend)</code></pre></div></div>
+<div class="paragraph"><p><strong>Utilisation pratique</strong> :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Dans un terminal, monitorer les événements
+docker events --filter event=health_status
+
+# Dans un autre terminal, démarrer les services
+docker compose up -d
+
+# Observer en temps réel les changements de santé</code></pre></div></div>
+<h3>📊 Checklist de Debugging</h3><div class="paragraph"><p>Quand un problème survient en production :</p></div>
+<div class="olist arabic"><ol class="arabic"><li class="fragment"><p>✅ <code>docker compose ps</code> → Identifier les services en erreur</p></li><li class="fragment"><p>✅ <code>docker logs &lt;service&gt;</code> → Lire les logs d&#8217;erreur</p></li><li class="fragment"><p>✅ <code>docker inspect &lt;service&gt;</code> → Vérifier la configuration</p></li><li class="fragment"><p>✅ Si unhealthy : <code>docker inspect</code> pour voir Health.Log</p></li><li class="fragment"><p>✅ <code>docker events</code> en parallèle pour monitoring temps réel</p></li></ol></div>
+<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content"><div class="paragraph"><p><strong>Commande magique de debugging</strong> :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose ps &amp;&amp; \
+docker compose logs --tail=50 &amp;&amp; \
+docker events --filter type=container</code></pre></div></div>
+<div class="paragraph"><p>Affiche : statuts, logs récents, et écoute les événements !</p></div></td></tr></table></div></div></section><section id="aller_plus_loin"><h2>Aller plus loin</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p><strong>Orchestration</strong> : Kubernetes, Docker Swarm</p></li><li class="fragment"><p><strong>Secrets Management</strong> : Vault, Sealed Secrets</p></li><li class="fragment"><p><strong>Image Signing</strong> : Docker Content Trust, Cosign</p></li><li class="fragment"><p><strong>Runtime Security</strong> : Falco, Aqua Security</p></li></ul></div></div></section><section id="ressources_utiles"><h2>Ressources utiles</h2><div class="slide-content"><div class="ulist"><ul><li><p>Docker Security: <a href="https://docs.docker.com/engine/security/" class="bare">https://docs.docker.com/engine/security/</a></p></li><li><p>CIS Docker Benchmark</p></li><li><p>Trivy: <a href="https://github.com/aquasecurity/trivy" class="bare">https://github.com/aquasecurity/trivy</a></p></li><li><p>OWASP Docker Security Cheat Sheet</p></li></ul></div></div></section><section id="fin_de_la_session" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Fin de la session</h2><div class="slide-content"><div class="paragraph"><p>Bravo, vous avez transformé SecureVote en application sécurisée et production-ready !</p></div>
 <aside class="notes"><div class="paragraph"><p>Questions et discussion finale
 Retours sur expérience
 Difficultés rencontrées</p></div></aside></div></section><section id="questions"><h2>Questions ?</h2><div class="slide-content"><div class="imageblock"><img src="media/questions-docker.png" alt="questions docker" height="400px"></div>
@@ -5804,7 +6142,28 @@ hljs.configure({
   ignoreUnescapedHTML: true,
 });
 hljs.highlightAll();
-</script><script src="reveal.js/plugin/reveal.js-copycode/copycode.js"></script>
+</script><!-- Google Analytics 4 with Consent Mode v2 (GDPR compliant) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4TEWYQ2YDS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+
+  // Consent Mode v2: Default to denied for GDPR compliance
+  gtag('consent', 'default', {
+    'analytics_storage': 'denied',
+    'ad_storage': 'denied',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied',
+    'wait_for_update': 500
+  });
+
+  gtag('js', new Date());
+  gtag('config', 'G-4TEWYQ2YDS', {
+    'anonymize_ip': true
+  });
+</script>
+
+<script src="reveal.js/plugin/reveal.js-copycode/copycode.js"></script>
 <script src="reveal.js/reveal.js-plugins/menu/menu.js"></script>
 <script src="reveal.js/plugin/search/search.js"></script>
 <link rel="stylesheet" href="reveal.js/reveal.js-plugins/chalkboard/style.css">
