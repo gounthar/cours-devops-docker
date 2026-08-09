@@ -26,7 +26,7 @@ sources:
         release: true
       versionfilter:
         kind: regex
-        pattern: "^maven-4\\."
+        pattern: "^maven-3\\."
     transformers:
       - trimprefix: "maven-"
 
