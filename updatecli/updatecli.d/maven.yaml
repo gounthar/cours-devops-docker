@@ -22,11 +22,14 @@ sources:
       token: "{{ requiredEnv .github.token }}"
       username: "{{ .github.username }}"
       typefilter:
-        prerelease: true
+        prerelease: false
         release: true
       versionfilter:
         kind: regex
-        pattern: "^maven-3\\."
+        # Only final 3.x releases: apache/maven publishes release candidates
+        # (e.g. maven-3.10.0-rc-1) without flagging them as prereleases, and
+        # Docker Hub has no matching maven:<rc>-eclipse-temurin-21-alpine tag.
+        pattern: "^maven-3\\.[0-9]+\\.[0-9]+$"
     transformers:
       - trimprefix: "maven-"
 
