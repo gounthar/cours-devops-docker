@@ -18,8 +18,24 @@ all: clean build verify
 build:
 	@$(call compose_up,--exit-code-from=build build)
 
-verify:
-	@echo "Verify disabled"
+## U+2013/U+2014 look identical to "-" on a slide but break every command.
+## Scoped to command lines on purpose: French headings ("Etape 1 - ...")
+## use en dashes correctly, and a check that fires on correct writing
+## gets ignored, then disabled. See issue #426.
+DASH_CMDS = docker|podman|kubectl|apt|apt-get|curl|wget|git|sudo|make|npm|tail|ps|chmod|chown
+
+check-dashes:
+	@if grep -rnIP '[\x{2013}\x{2014}]' $(CURDIR)/content/ \
+	     | grep -P '[\s:`]($(DASH_CMDS))\b'; then \
+	  echo ""; \
+	  echo "ERROR: en/em dash (U+2013 / U+2014) used in the command(s) above."; \
+	  echo "       Replace it with an ASCII hyphen '-' (see issue #426)."; \
+	  exit 1; \
+	fi
+	@echo "OK: no en/em dash found in commands"
+
+verify: check-dashes
+	@echo "NOTE: link checking is still disabled (see issue #486)"
 
 serve:
 	@$(call compose_up, --force-recreate serve qrcode)
@@ -66,4 +82,4 @@ clean:
 qrcode:
 	@$(call compose_up, qrcode)
 
-.PHONY: all build verify serve qrcode pdf exam-pdf dependencies-update dependencies-lock-update
+.PHONY: all build verify check-dashes serve qrcode pdf exam-pdf dependencies-update dependencies-lock-update

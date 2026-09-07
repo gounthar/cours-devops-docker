@@ -92,7 +92,7 @@ image::1435904594-image8.png[]
 
 [source,bash]
 ----
-docker container run –d -p 8000:80 nginx
+docker container run -d -p 8000:80 nginx
 ----
 
 [%auto-animate]
@@ -300,7 +300,7 @@ En résumé, avec ces commandes, vous avez créé un nouveau réseau Docker nomm
 
 [source,bash]
 ----
-docker run –d --net=mon-reseau --name=app img
+docker run -d --net=mon-reseau --name=app img
 ----
 
 [%step]
