@@ -1,6 +1,6 @@
 = Projet de fin de module DevOps - Docker
 Bruno Verachten <gounthar@gmail.com>
-v3.0, 8 décembre 2025
+v4.0, 7 septembre 2026
 :doctype: article
 :encoding: utf-8
 :lang: fr
@@ -17,10 +17,11 @@ v3.0, 8 décembre 2025
 :allow-uri-read:
 :linkattrs:
 :experimental:
+include::./dates.adoc[]
 
 [IMPORTANT]
 ====
-**Date limite de rendu : 4 janvier 2026**
+**Date limite de rendu : {exam_deadline}**
 
 Seuls les commits antérieurs à cette date seront pris en compte pour la correction.
 ====
@@ -29,7 +30,7 @@ Seuls les commits antérieurs à cette date seront pris en compte pour la correc
 
 === Présentation générale
 
-Ce document décrit le projet de fin de module pour le cours **DevOps - Docker** du Master 2 ILI, année universitaire 2025-2026.
+Ce document décrit le projet de fin de module pour le cours **DevOps - Docker** du Master 2 ILI, année universitaire {academic_year}.
 
 Le projet se décompose en **deux parties distinctes** :
 
@@ -79,7 +80,7 @@ Le choix des technologies (reverse-proxy, serveur d'application) sera effectué 
 
 ==== Date limite
 
-**4 janvier 2026** - 23h59
+**{exam_deadline}** - {exam_deadline_time}
 
 Seuls les commits effectués avant cette date seront corrigés. Aucune exception ne sera accordée. Les commits ne mentent pas.
 
@@ -2089,9 +2090,9 @@ Ne restez pas bloqué 2 jours sur un problème, demandez après 1-2 heures de re
 
 ---
 
-**Q: La date limite (4 janvier 2026) inclut-elle les heures ?**
+**Q: La date limite ({exam_deadline}) inclut-elle les heures ?**
 
-R: Oui, la deadline est **4 janvier 2026 à 23h59** (minuit).
+R: Oui, la deadline est **{exam_deadline} à {exam_deadline_time}** (minuit).
 
 Tous les commits après cette heure seront ignorés.
 
@@ -2104,7 +2105,7 @@ Tous les commits après cette heure seront ignorés.
 
 **Q: Peut-on modifier le projet après la deadline pour corriger des bugs ?**
 
-R: Non. Seuls les commits **avant** le 4 janvier 2026 à 23h59 seront évalués.
+R: Non. Seuls les commits **avant** le {exam_deadline} à {exam_deadline_time} seront évalués.
 
 == Conclusion
 
