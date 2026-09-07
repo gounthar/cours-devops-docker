@@ -438,7 +438,7 @@ docker exec <containerID> echo "hello"
 
 [source,bash]
 ----
-docker exec –it <containerID> bash
+docker exec -it <containerID> bash
 ----
 
 == Debugging : docker inspect

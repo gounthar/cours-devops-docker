@@ -538,7 +538,7 @@ Ca fonctionne aussi en interactif !
 Étapes
 
 * Lancer un container "daemon" `jpetazzo/clock`
-* Utiliser l'équivalent de `tail –f` pour lire la sortie standard du container 💡
+* Utiliser l'équivalent de `tail -f` pour lire la sortie standard du container 💡
 * Lancer un second container "daemon" 👹
 * Stocker l'identifiant de ce container dans une variable du shell, en une seule commande et en jouant avec `docker container ls`
 * Stopper le container avec cet identifiant
@@ -552,7 +552,7 @@ Ca fonctionne aussi en interactif !
 # Lancer un container "daemon" `jpetazzo/clock`
 docker container run --detach --name first-clock jpetazzo/clock
 
-# Utiliser l'équivalent de `tail –f` pour lire la sortie standard du container 💡
+# Utiliser l'équivalent de `tail -f` pour lire la sortie standard du container 💡
 docker container logs -f first-clock
 
 # * Lancer un second container "daemon" 👹
@@ -575,7 +575,7 @@ docker container ls --filter "status=exited"
 == 🎓 Exercice : conteneur en tâche de fond
 
 * Relancer un des containers arrêtés.
-* Exécuter un `ps –ef `dans ce container
+* Exécuter un `ps -ef `dans ce container
 * Quel est le PID du process principal ?
 * Vérifier que le container "tourne" toujours
 * Supprimer l'image (tip : `docker rmi`)
@@ -589,7 +589,7 @@ docker container ls --filter "status=exited"
 # Relancer un des containers arrêtés.
 docker container start second-clock
 
-# Exécuter un `ps –ef `dans ce container
+# Exécuter un `ps -ef `dans ce container
 docker container exec second-clock ps -ef
 PID   USER     TIME  COMMAND
     1 root      0:00 /bin/sh -c while date; do sleep 1; done
