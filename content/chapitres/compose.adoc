@@ -1313,13 +1313,13 @@ Dans cet exemple, le service mon_service appartient au profil dev.
 == 👤 Profils dans Docker Compose 🐙
 
 [%step]
-- Pour démarrer seulement les services qui appartiennent à un certain profil, vous pouvez utiliser l'option `--profile` avec la commande `docker compose up`.
+- Pour démarrer seulement les services qui appartiennent à un certain profil, vous pouvez utiliser l'option `--profile` de la commande `docker compose`, placée *avant* la sous-commande `up`.
 - Par exemple :
 
 [%step]
 [source,bash]
 ----
-docker compose up --profile dev
+docker compose --profile dev up
 ----
 [%step]
 Cette commande démarrera seulement les services qui appartiennent au profil `dev`.
@@ -1364,7 +1364,7 @@ services:
       - prod
 ----
 [%step]
-- Nous pouvons choisir de démarrer seulement les services de développement avec `docker compose up --profile dev`, ou uniquement les services de production avec `docker compose up --profile prod`.
+- Nous pouvons choisir de démarrer seulement les services de développement avec `docker compose --profile dev up`, ou uniquement les services de production avec `docker compose --profile prod up`.
 - Les profils dans Docker Compose sont un outil puissant pour gérer différents environnements dans le même fichier Docker Compose.
 - Ils peuvent rendre votre développement et vos tests plus efficaces et organisés.
 

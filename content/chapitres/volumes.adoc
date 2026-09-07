@@ -247,11 +247,11 @@ Création d'un volume anonyme mappé sur le répertoire /data des containers bas
 
 [source,bash]
 ----
-docker container run
-  -d
-  --read-only
-  --tmpfs /run/httpd
-  --tmpfs /tmp
+docker container run \
+  -d \
+  --read-only \
+  --tmpfs /usr/local/apache2/logs \
+  --tmpfs /tmp \
   httpd
 ----
 
@@ -362,11 +362,16 @@ Copiez vos fichiers de la page web dans ce volume :
 [%step]
 [source,bash]
 ----
+# Montez le volume nommé "mon-nginx-html" sous "/cible" dans le conteneur.
+# Montez le répertoire hôte où se trouve le fichier html sous "/html".
+# Définissez "/cible" comme répertoire de travail.
+# Copiez récursivement le *contenu* de "/html" dans le répertoire de travail
+# ("/html/." et non "/html", sinon les fichiers atterrissent dans un sous-répertoire).
 docker container run --rm \
-  --volume mon-nginx-html:/cible \   # Montez le volume nommé "mon-nginx-html" dans le conteneur sous le répertoire "/cible".
-  --volume /chemin/vers/la/page/web/sur/lhote:/html \ # Montez le répertoire où se trouve le fichier html
-  --workdir /cible \                # Définissez le répertoire de travail à "/cible" dans le conteneur.
-  busybox cp -r /html .   # Copiez récursivement le contenu depuis "/chemin/vers/la/page/web/sur/lhote" dans le répertoire actuel du conteneur.
+  --volume mon-nginx-html:/cible \
+  --volume /chemin/vers/la/page/web/sur/lhote:/html \
+  --workdir /cible \
+  busybox cp -r /html/. .
 ----
 [%step]
 Maintenant, lancez le conteneur Nginx et montez le volume nommé :
