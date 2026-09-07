@@ -263,7 +263,7 @@ https://dependabot-gitlab.gitlab.io/dependabot/guide/getting-started.html#step-3
 [source,bash]
 ----
 export SETTINGS__GITLAB_URL=http://localhost
-export SETTINGS__GITLAB_ACCESS_TOKEN=glpat-LXUfrxeFXuRJXNTNNifD
+export SETTINGS__GITLAB_ACCESS_TOKEN=glpat-XXXXXXXXXXXXXXXXXXXX
 ----
 
 [%auto-animate]
