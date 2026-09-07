@@ -2092,7 +2092,7 @@ Ne restez pas bloqué 2 jours sur un problème, demandez après 1-2 heures de re
 
 **Q: La date limite ({exam_deadline}) inclut-elle les heures ?**
 
-R: Oui, la deadline est **{exam_deadline} à {exam_deadline_time}** (minuit).
+R: Oui, la deadline est **{exam_deadline} à {exam_deadline_time}**.
 
 Tous les commits après cette heure seront ignorés.
 
