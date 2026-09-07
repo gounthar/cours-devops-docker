@@ -508,6 +508,18 @@ logging:
 **Résultat** : Le conteneur essaie d'envoyer les logs au port 12201 de **lui-même**, échoue, et crash en boucle infinie.
 ====
 
+[IMPORTANT]
+====
+**Correctif du 2026-09-07 : le diagnostic GELF ci-dessus est faux, et le cours a été corrigé dans l'autre sens.**
+
+Le pilote `gelf` ne s'exécute pas dans le conteneur mais dans le **démon Docker de l'hôte**, qui n'est pas sur le réseau Compose. Mesuré sur Docker 29.7.2 / Compose v5.4.0 :
+
+* `udp://logstash:12201` — le conteneur **ne démarre pas** : `gelf: cannot connect to GELF endpoint: logstash:12201 dial udp: lookup logstash on ...: no such host`
+* `udp://localhost:12201` — le conteneur démarre et les logs partent vers le port publié de l'hôte
+
+La recommandation « remplacer `localhost` par le nom de service » est donc à inverser pour le bloc `logging:` uniquement. Le reste de l'analyse (variables d'environnement, health checks, URL frontend) reste valable. Voir `content/chapitres/reseaux.adoc`, section « Erreur #1 », et le ticket #425.
+====
+
 ==== Ce qu'il faut ajouter au cours
 
 **Localisation suggérée** : Nouvelle section dans `reseaux.adoc` après la section sur les réseaux personnalisés.
@@ -546,6 +558,8 @@ Dans Docker, **chaque conteneur a son propre localhost** !
 === Exemples d'Erreurs Réelles
 
 ==== Erreur #1 : Logging GELF vers localhost
+
+NOTE: Texte proposé non retenu en l'état — voir le correctif plus haut. La version publiée dans `reseaux.adoc` inverse le sens de cette section.
 
 [source,yaml]
 ----
