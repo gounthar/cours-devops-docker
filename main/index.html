@@ -2700,11 +2700,11 @@ Les données n&#8217;existent que tant que le conteneur est en cours d&#8217;ex�
 WORKDIR /repertoire/travail
 VOLUME ["/data"]
 RUN echo hello &gt; ./world.txt</code></pre></div></div>
-<div class="paragraph fragment"><p>Création d&#8217;un volume anonyme mappé sur le répertoire /data des containers basés sur cette image</p></div></div></section><section id="filesystem_en_ram" data-auto-animate><h2>💾🧠 FileSystem en RAM</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run
-  -d
-  --read-only
-  --tmpfs /run/httpd
-  --tmpfs /tmp
+<div class="paragraph fragment"><p>Création d&#8217;un volume anonyme mappé sur le répertoire /data des containers basés sur cette image</p></div></div></section><section id="filesystem_en_ram" data-auto-animate><h2>💾🧠 FileSystem en RAM</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run \
+  -d \
+  --read-only \
+  --tmpfs /usr/local/apache2/logs \
+  --tmpfs /tmp \
   httpd</code></pre></div></div>
 <div class="admonitionblock caution fragment"><table><tr><td class="icon"><i class="fa fa-fire" title="Caution"></i></td><td class="content">Les données sont perdues à l&#8217;arrêt du container.</td></tr></table></div></div></section><section id="filesystem_en_ram_2" data-auto-animate><h2>💾🧠 FileSystem en RAM</h2><div class="slide-content"><div class="imageblock"><img src="media/volumes-output21_with_transparency.png" alt="volumes output21 with transparency"></div>
 <div class="admonitionblock caution"><table><tr><td class="icon"><i class="fa fa-fire" title="Caution"></i></td><td class="content">Les données sont perdues à l&#8217;arrêt du container.</td></tr></table></div>
@@ -2721,11 +2721,16 @@ RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="paragraph fragment"><p>Tout d&#8217;abord, créez un volume nommé :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume create mon-nginx-html</code></pre></div></div>
 <div class="paragraph fragment"><p>Copiez vos fichiers de la page web dans ce volume :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm \
-  --volume mon-nginx-html:/cible \   # Montez le volume nommé "mon-nginx-html" dans le conteneur sous le répertoire "/cible".
-  --volume /chemin/vers/la/page/web/sur/lhote:/html \ # Montez le répertoire où se trouve le fichier html
-  --workdir /cible \                # Définissez le répertoire de travail à "/cible" dans le conteneur.
-  busybox cp -r /html .   # Copiez récursivement le contenu depuis "/chemin/vers/la/page/web/sur/lhote" dans le répertoire actuel du conteneur.</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Montez le volume nommé "mon-nginx-html" sous "/cible" dans le conteneur.
+# Montez le répertoire hôte où se trouve le fichier html sous "/html".
+# Définissez "/cible" comme répertoire de travail.
+# Copiez récursivement le *contenu* de "/html" dans le répertoire de travail
+# ("/html/." et non "/html", sinon les fichiers atterrissent dans un sous-répertoire).
+docker container run --rm \
+  --volume mon-nginx-html:/cible \
+  --volume /chemin/vers/la/page/web/sur/lhote:/html \
+  --workdir /cible \
+  busybox cp -r /html/. .</code></pre></div></div>
 <div class="paragraph fragment"><p>Maintenant, lancez le conteneur Nginx et montez le volume nommé :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 80:80 --name mon-nginx -v mon-nginx-html:/usr/share/nginx/html nginx</code></pre></div></div></div></section><section id="travaux_pratiques_9"><h2>🎓 Travaux pratiques #9</h2><div class="slide-content"><div class="paragraph title"><p>Étapes:</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Créer un volume nommé "data"</p></li><li class="fragment"><p>Démarrer un container attaché à ce volume</p></li><li class="fragment"><p>Lancer un processus qui écrit un fichier dans le volume</p></li><li class="fragment"><p>Démarrer un second container attaché à ce volume</p></li><li class="fragment"><p>Lire les données du volume depuis le second container</p></li><li class="fragment"><p>Supprimer le volume</p></li></ul></div></div></section><section id="solution_travaux_pratiques_9"><h2>✅ Solution travaux pratiques #9</h2><div class="slide-content"><div class="paragraph"><p>Créer un volume nommé "data" :</p></div>
@@ -3722,8 +3727,8 @@ Configuration (with the authentication token) was saved in "/etc/gitlab-runner/c
     image: mon_image
     profiles:
       - dev</code></pre></div></div>
-<div class="paragraph fragment"><p>Dans cet exemple, le service mon_service appartient au profil dev.</p></div></div></section><section id="profils_dans_docker_compose_3" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Pour démarrer seulement les services qui appartiennent à un certain profil, vous pouvez utiliser l&#8217;option <code>--profile</code> avec la commande <code>docker compose up</code>.</p></li><li class="fragment"><p>Par exemple :</p></li></ul></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose up --profile dev</code></pre></div></div>
+<div class="paragraph fragment"><p>Dans cet exemple, le service mon_service appartient au profil dev.</p></div></div></section><section id="profils_dans_docker_compose_3" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Pour démarrer seulement les services qui appartiennent à un certain profil, vous pouvez utiliser l&#8217;option <code>--profile</code> de la commande <code>docker compose</code>, placée <strong>avant</strong> la sous-commande <code>up</code>.</p></li><li class="fragment"><p>Par exemple :</p></li></ul></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose --profile dev up</code></pre></div></div>
 <div class="paragraph fragment"><p>Cette commande démarrera seulement les services qui appartiennent au profil <code>dev</code>.</p></div></div></section><section id="profils_dans_docker_compose_4" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Les profils peuvent rendre votre fichier Docker Compose plus organisé et flexible.</p></li><li class="fragment"><p>Ils vous permettent de définir différents environnements dans le même fichier et de choisir facilement quels services démarrer en fonction de vos besoins.</p></li><li class="fragment"><p>Jetons un coup d&#8217;œil à un exemple de fichier Docker Compose avec des profils :</p></li></ul></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   service_dev:
@@ -3743,7 +3748,7 @@ Configuration (with the authentication token) was saved in "/etc/gitlab-runner/c
     image: mon_image_prod
     profiles:
       - prod</code></pre></div></div>
-<div class="ulist"><ul><li class="fragment"><p>Nous pouvons choisir de démarrer seulement les services de développement avec <code>docker compose up --profile dev</code>, ou uniquement les services de production avec <code>docker compose up --profile prod</code>.</p></li><li class="fragment"><p>Les profils dans Docker Compose sont un outil puissant pour gérer différents environnements dans le même fichier Docker Compose.</p></li><li class="fragment"><p>Ils peuvent rendre votre développement et vos tests plus efficaces et organisés.</p></li></ul></div></div></section><section id="une_autre_forge_ça_vous_dit"><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph fragment"><p>😏 Non, et bien, c&#8217;est parti quand même.</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Nous pouvons choisir de démarrer seulement les services de développement avec <code>docker compose --profile dev up</code>, ou uniquement les services de production avec <code>docker compose --profile prod up</code>.</p></li><li class="fragment"><p>Les profils dans Docker Compose sont un outil puissant pour gérer différents environnements dans le même fichier Docker Compose.</p></li><li class="fragment"><p>Ils peuvent rendre votre développement et vos tests plus efficaces et organisés.</p></li></ul></div></div></section><section id="une_autre_forge_ça_vous_dit"><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph fragment"><p>😏 Non, et bien, c&#8217;est parti quand même.</p></div>
 <div class="paragraph fragment"><p><a href="https://raw.githubusercontent.com/jenkins-docs/quickstart-tutorials/refs/heads/main/docker-compose.yaml" class="bare">https://raw.githubusercontent.com/jenkins-docs/quickstart-tutorials/refs/heads/main/docker-compose.yaml</a></p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   # Le service sidekick est responsable de la génération des clés SSH et de la vérification de leur existence.
