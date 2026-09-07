@@ -835,7 +835,7 @@ C'est la seule exception de ce chapitre à la règle « autre conteneur → nom 
 ====
 **Sans `ports:`, le conteneur démarre quand même — et les logs partent dans le vide.**
 
-GELF utilise UDP : le démon n'ouvre aucune connexion, il émet des datagrammes. Si personne n'écoute sur `localhost:12201`, rien ne le signale. Le conteneur sort en code 0 et Kibana reste vide.
+GELF utilise UDP : le démon n'ouvre aucune connexion, il émet des datagrammes. Si personne n'écoute sur `localhost:12201`, rien ne le signale : le conteneur démarre normalement, son code de sortie ne dépend que du processus qu'il exécute, et Kibana reste vide.
 
 Vérifiez toujours que les logs **arrivent**, pas seulement que le conteneur démarre.
 ====
