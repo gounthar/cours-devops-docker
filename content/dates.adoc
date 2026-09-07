@@ -1,0 +1,8 @@
+// Dates de la session universitaire — le seul endroit à mettre à jour chaque année.
+//
+// Inclus par attributes.adoc (cours et diapositives d'examen) et directement par
+// examen-final-detaille.adoc, qui est un document autonome rendu en PDF par la
+// cible `exam-pdf` du Makefile et ne partage aucun autre en-tête. Voir #433.
+:academic_year: 2026/2027
+:exam_deadline: 4 janvier 2027
+:exam_deadline_time: 23h59

@@ -2,7 +2,7 @@
 == Projet de fin de module
 
 [.title]
-**DEVOPS M2 ILI - Année 2025-2026**
+**DEVOPS M2 ILI - Année {academic_year}**
 
 === Vue d'ensemble
 
@@ -33,7 +33,7 @@
 === Deadline
 
 [.title]
-**4 janvier 2026**
+**{exam_deadline}**
 
 Seuls les commits avant cette date seront corrigés
 
