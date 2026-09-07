@@ -734,7 +734,8 @@ curl web2
 [.notes]
 --
 Section duration: 8 minutes
-Real student error: GELF logging to localhost instead of service name
+Real student error: GELF logging to the Compose service name
+Impact: the gelf driver runs in the host daemon, which is not on the Compose network
 Impact: Common exam failure (+1.30 points average)
 --
 
@@ -774,7 +775,7 @@ Impact: Common exam failure (+1.30 points average)
 
 Ces erreurs proviennent d'examens réels (2025-2026).
 
-==== Erreur #1 : Logging GELF vers localhost
+==== Erreur #1 : Logging GELF vers le nom de service
 
 **Code cassé** :
 
@@ -786,7 +787,7 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://localhost:12201"  # ❌ FAUX !
+        gelf-address: "udp://logstash:12201"  # ❌ FAUX !
         tag: "backend"
 
   logstash:
@@ -795,7 +796,16 @@ services:
       - "12201:12201/udp"
 ----
 
-**Problème** : `localhost:12201` pointe vers le **conteneur backend**, pas vers logstash !
+**Problème** : le pilote `gelf` ne s'exécute **pas dans le conteneur**. Il s'exécute dans le **démon Docker de l'hôte**, qui n'est pas sur le réseau Compose et ne connaît donc pas le nom `logstash`.
+
+Le conteneur ne démarre même pas :
+
+[source,text]
+----
+Error response from daemon: failed to create task for container:
+failed to initialize logging driver: gelf: cannot connect to GELF endpoint:
+logstash:12201 dial udp: lookup logstash on ...: no such host
+----
 
 **Solution** :
 
@@ -806,8 +816,29 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://logstash:12201"  # ✅ Nom du service !
+        gelf-address: "udp://localhost:12201"  # ✅ Adresse vue depuis l'hôte
+
+  logstash:
+    image: logstash:latest
+    ports:
+      - "12201:12201/udp"                      # ✅ le port publié rend logstash joignable depuis l'hôte
 ----
+
+[IMPORTANT]
+====
+**L'adresse d'un pilote de log se lit depuis l'hôte, pas depuis le conteneur.**
+
+C'est la seule exception de ce chapitre à la règle « autre conteneur → nom du service ». Les options `logging:` sont interprétées par le démon Docker **avant** que le conteneur existe : il lui faut une adresse joignable depuis l'hôte, d'où le port publié `12201:12201/udp` et l'adresse `localhost`.
+====
+
+[WARNING]
+====
+**Sans `ports:`, le conteneur démarre quand même — et les logs partent dans le vide.**
+
+GELF utilise UDP : le démon n'ouvre aucune connexion, il émet des datagrammes. Si personne n'écoute sur `localhost:12201`, rien ne le signale. Le conteneur sort en code 0 et Kibana reste vide.
+
+Vérifiez toujours que les logs **arrivent**, pas seulement que le conteneur démarre.
+====
 
 ==== Erreur #2 : Health Check avec localhost IPv6
 
@@ -909,9 +940,9 @@ services:
 | **Nom du service**
 | `http://backend:5000`
 
-| Logging GELF vers Logstash
-| **Nom du service**
-| `gelf-address: "udp://logstash:12201"`
+| Logging GELF (options `logging:`)
+| **Adresse vue depuis l'hôte**
+| `gelf-address: "udp://localhost:12201"` + `ports: - "12201:12201/udp"`
 
 | Adresse de connexion base de données
 | **Nom du service**
@@ -935,6 +966,7 @@ services:
 * `localhost` dans un conteneur = **ce conteneur uniquement**
 * Pour parler à un **autre conteneur** = utiliser son **nom de service**
 * Pour parler depuis le **navigateur** = utiliser **reverse proxy** ou **URL publique**
+* Dans un bloc `logging:` = **adresse vue depuis l'hôte** (le pilote tourne côté démon)
 ====
 
 === 🎓 Exercice Pratique
@@ -952,7 +984,7 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://localhost:12201"          # ❌ Erreur 3
+        gelf-address: "udp://localhost:12201"          # ⚠️ Piège : cette ligne est correcte
 
   database:
     image: postgres:15
@@ -966,7 +998,7 @@ services:
       - "12201:12201/udp"
 ----
 
-**Solution** : Remplacer tous les `localhost` par les noms de services !
+**Solution** : remplacer les `localhost` des **variables d'environnement** par les noms de services, et **laisser l'adresse GELF telle quelle** — le pilote de log est interprété par le démon de l'hôte (voir Erreur #1).
 
 === 📊 En Résumé
 
@@ -976,8 +1008,15 @@ services:
 
 * ❌ `localhost:5432` pour PostgreSQL → **Utiliser** `database:5432`
 * ❌ `localhost:6379` pour Redis → **Utiliser** `cache:6379`
-* ❌ `localhost:12201` pour GELF logging → **Utiliser** `logstash:12201`
 * ❌ `localhost` dans variables d'environnement → **Utiliser nom de service**
+* ❌ `logstash:12201` pour GELF logging → **Utiliser** `localhost:12201` + port publié
+====
+
+[NOTE]
+====
+**La dernière ligne va à contre-courant des trois autres, et c'est voulu.**
+
+Le bloc `logging:` est la seule option de ce chapitre qui soit interprétée par le **démon Docker de l'hôte** et non depuis le réseau Compose. C'est précisément parce que la règle générale est bien apprise que cette exception est ratée à l'examen.
 ====
 
 [TIP]
@@ -987,4 +1026,5 @@ services:
 * Même conteneur → `localhost` ✅
 * Autre conteneur → **nom du service** ✅
 * Depuis navigateur → **reverse proxy** ✅
+* Bloc `logging:` → **adresse joignable depuis l'hôte** ✅
 ====
