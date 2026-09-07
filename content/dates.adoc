@@ -1,4 +1,4 @@
-// Dates de la session universitaire — le seul endroit à mettre à jour chaque année.
+// Valeurs qui périment d'une année sur l'autre — le seul endroit à mettre à jour chaque année.
 //
 // Inclus par attributes.adoc (cours et diapositives d'examen) et directement par
 // examen-final-detaille.adoc, qui est un document autonome rendu en PDF par la
@@ -6,3 +6,9 @@
 :academic_year: 2026/2027
 :exam_deadline: 4 janvier 2027
 :exam_deadline_time: 23h59
+
+// Âge de Docker en années révolues depuis sa publication en open source (mars 2013,
+// cf. les notes du présentateur de intro.adoc). À incrémenter en même temps que
+// :academic_year: ci-dessus. La diapo cite aussi la date d'origine, donc une valeur
+// oubliée une année reste vérifiable par le lecteur au lieu de passer pour un fait. Voir #507.
+:docker_age: 13
