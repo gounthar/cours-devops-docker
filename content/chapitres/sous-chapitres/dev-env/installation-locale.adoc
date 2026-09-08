@@ -1,44 +1,133 @@
-=== Ubuntu 25.04 et le conflit Podman ⚠️
+=== Installer Docker sur Ubuntu 26.04 🐧
 
-**Problème :** Ubuntu 25.04+ est livré avec Podman par défaut
+**Le piège :** `apt install docker.io` n'installe pas ce qu'il faut
 
+[.small]
+⚠️ Ni `docker compose`, ni `docker buildx`, et Docker demande de retirer ce paquet
+
+[.columns]
+=== Pourquoi pas `docker.io` ? 🤔
+
+[.column]
+--
+**Ce que donne `apt install docker.io`**
+
+[source,bash]
+----
+docker compose version
+# docker: unknown command: docker compose
+
+docker buildx version
+# docker: unknown command: docker buildx
+----
+
+[.small]
+Les deux plugins sont en `Suggests:`, donc apt ne les installe pas
+--
+
+[.column]
+--
+**Et la doc Docker demande de le retirer**
+
+[.small]
+`docker.io` figure sur la liste officielle des paquets à désinstaller *avant* d'installer Docker,
+aux côtés de `podman-docker`.
+
+[.small]
+➡️ On utilise donc le **dépôt apt officiel Docker**
+--
+
+=== Étape 1 : retirer les paquets en conflit 🧹
+
+[source,bash]
+----
+sudo apt remove $(dpkg --get-selections \
+  docker.io docker-compose docker-compose-v2 \
+  docker-doc docker-buildx podman-docker \
+  containerd runc | cut -f1)
+----
+
+[.small]
+✅ Sans effet si aucun n'est installé — la commande ne retire rien et se termine normalement
+
+=== Étape 2 : ajouter le dépôt officiel 🔑
+
+[source,bash]
+----
+sudo apt update
+sudo apt install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+  -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+----
+
+[.small]
+🔑 La clé GPG sert à vérifier la signature des paquets téléchargés
+
+=== Étape 2 (suite) : déclarer la source 📝
+
+[source,bash]
+----
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+sudo apt update
+----
+
+=== Étape 3 : installer et vérifier ✅
+
+[source,bash]
+----
+sudo apt install docker-ce docker-ce-cli containerd.io \
+  docker-buildx-plugin docker-compose-plugin
+
+sudo usermod -aG docker $USER
+----
+
+[.small]
+⚠️ Logout/login requis pour que le groupe `docker` s'applique
+
+=== Ça marche ? 🎯
+
+[source,bash]
+----
+docker --version
+docker compose version
+docker buildx version
+docker run hello-world
+----
+
+[.small]
+✅ Cette fois `docker compose` et `docker buildx` répondent
+
+[.columns]
+=== Et si Podman est installé ? 🤔
+
+[.column]
+--
 **Symptôme :** `Cannot connect to the Docker daemon`
 
 [.small]
-⚠️ Conflit entre `/var/run/docker.sock` et `/run/podman/podman.sock`
-
-[.columns]
-=== Solutions au conflit
-
-[.column]
---
-**Solution 1 : Installer Docker**
-
-[source,bash]
-----
-sudo apt install docker.io
-sudo systemctl enable --now docker
-sudo usermod -aG docker $USER
-----
-
-[.small]
-⚠️ Logout/login requis pour groupe docker
+Conflit entre `/var/run/docker.sock` et `/run/podman/podman.sock`
 --
 
 [.column]
 --
-**Solution 2 : Désinstaller Podman** ✅
-
 [source,bash]
 ----
-sudo apt remove podman
-sudo apt install docker.io
-sudo systemctl enable --now docker
-sudo usermod -aG docker $USER
+sudo apt remove podman-docker podman
 ----
 
 [.small]
-⚠️ Logout/login requis
+⚠️ Ubuntu **n'installe pas** Podman par défaut : ce cas ne concerne que vous si vous l'avez
+installé vous-même
 --
 
 === Environnement prêt ! ✅
@@ -47,7 +136,7 @@ Votre environnement Docker est maintenant configuré 🎉
 
 [.small]
 * ✅ GitHub Codespaces : Docker déjà installé
-* ✅ Ubuntu 25.04 : Conflit Podman résolu
+* ✅ Ubuntu 26.04 : Docker installé par le dépôt officiel
 * ✅ Prêt pour la suite !
 
 === Prochaine étape 🚀
@@ -76,74 +165,76 @@ Docker s'utilise exclusivement en ligne de commande !
 
 [.notes]
 --
-**CONTEXTE - UBUNTU 25.04 ET PODMAN :**
+**POURQUOI PAS `apt install docker.io` :**
 
-Ubuntu 25.04 (Noble Numbat) marque un changement majeur : Podman devient le moteur de conteneurs par défaut à la place de Docker.
+C'est la méthode que l'on trouve partout, et elle pose deux problèmes distincts.
 
-**Pourquoi ce changement ?**
-- Podman est "daemonless" (pas de daemon en root)
-- Mieux intégré avec systemd
-- Compatible OCI (Open Container Initiative)
-- Plus sécurisé par défaut (rootless)
+**1. Le paquet ne fournit ni Compose ni Buildx.**
+Sur Ubuntu 26.04, `docker.io` (version 29.1.3) place `docker-compose-v2` et `docker-buildx` en
+`Suggests:` (ni `Depends:`, ni `Recommends:`). apt n'installe pas les suggestions. Après un
+`apt install docker.io`, `docker compose version` répond `docker: unknown command: docker compose`,
+et `docker buildx version` fait de même. Les étudiants buteraient dessus dès le chapitre Compose.
 
-**Le conflit :**
-- Podman crée un socket `/run/podman/podman.sock` (ou rootless: `/run/user/$UID/podman/podman.sock`)
-- Docker cherche `/var/run/docker.sock`
-- Si les deux sont installés : confusion entre les sockets
+**2. Docker demande explicitement de le désinstaller.**
+La documentation officielle d'installation liste les paquets à retirer avant d'installer Docker
+Engine : `docker.io`, `docker-compose`, `docker-compose-v2`, `docker-doc`, `docker-buildx`,
+`podman-docker`, plus `containerd` et `runc`. Enseigner `docker.io` reviendrait donc à installer
+la première chose que Docker dit de retirer.
 
-**Solution 1 - Installer Docker :**
-✅ Installation complète et propre
-✅ Docker démarre automatiquement au boot (systemctl enable)
-✅ Utilisateur ajouté au groupe docker
-❌ Nécessite logout/login pour activer le groupe
-❌ Garde Podman installé (peut causer confusion)
+**LES TROIS MÉTHODES OFFICIELLES :**
+- **Dépôt apt** : celle enseignée ici. Mises à jour par `apt upgrade` comme le reste du système.
+- **Paquets `.deb` manuels** — à retélécharger et réinstaller à chaque mise à jour.
+- **Script de commodité** (`get.docker.com`) — Docker le réserve explicitement aux environnements
+  de test et de développement, pas à une installation durable.
 
-**Explication des commandes Solution 1 :**
-- `apt install docker.io` : Installe Docker Engine
-- `systemctl enable --now docker` : Active et démarre le service Docker
-- `usermod -aG docker $USER` : Ajoute l'utilisateur au groupe docker
-- **Important** : Re-login requis pour que le groupe s'applique
+**EXPLICATION DES COMMANDES :**
 
-**Solution 2 - Désinstaller Podman :**
-✅ Solution la plus propre et définitive
-✅ Pas de configuration supplémentaire
-✅ Recommandé pour un cours Docker
-✅ Évite confusion entre Docker et Podman
-❌ Supprime Podman (si vous en avez besoin)
+**Étape 1 :** `dpkg --get-selections` ne renvoie que les paquets réellement connus de dpkg, et
+`cut -f1` n'en garde que les noms. Si aucun n'est installé, la liste est vide et `apt remove` ne
+retire rien : la commande est sans danger sur une machine neuve.
 
-**Pour le TP :**
-- Recommander Solution 2 si les étudiants ne connaissent pas Podman
-- Solution 1 si vous voulez garder Podman pour d'autres usages
-- Dans GitHub Codespaces : aucun problème, Docker préconfiguré
+**Étape 2 :** `install -m 0755 -d` crée le répertoire des clés avec les bonnes permissions.
+`chmod a+r` rend la clé lisible par apt, qui ne tourne pas en root pour tout.
+Dans le fichier `.sources`, la ligne `Suites:` détecte le nom de code de la distribution
+(`resolute` pour 26.04) au lieu de le coder en dur : la même procédure fonctionne sur 24.04.
 
-**Vérification post-installation :**
-[source,bash]
-----
-# Vérifier que Docker tourne
-sudo systemctl status docker
+**Étape 3 :** `docker-ce` est le démon, `docker-ce-cli` la commande, `containerd.io` le moteur
+d'exécution de bas niveau, et les deux `*-plugin` fournissent `docker compose` et `docker buildx`.
 
-# Vérifier l'appartenance au groupe (après re-login)
-groups | grep docker
+**`usermod -aG docker $USER` :** ajoute l'utilisateur au groupe `docker` pour éviter `sudo` devant
+chaque commande. Le changement de groupe ne s'applique qu'à la prochaine session : il faut se
+déconnecter et se reconnecter, un simple `su - $USER` ne suffit pas toujours.
 
-# Tester Docker (sans sudo)
-docker run hello-world
-----
+⚠️ Appartenir au groupe `docker` équivaut à un accès root sur la machine : le démon tourne en root
+et peut monter n'importe quel répertoire de l'hôte dans un conteneur. C'est acceptable sur un poste
+personnel, à ne pas reproduire sur un serveur partagé.
 
-**Note Docker Compose :**
-- `docker.io` sur Ubuntu inclut `docker compose` (v2, plugin)
-- Commande : `docker compose` (pas `docker-compose`)
-- Si vous utilisez Podman : installer `podman-compose` séparément
+**LE CAS PODMAN :**
 
-**Alternative bonus - Podman :**
-Si vous voulez enseigner Podman au lieu de Docker :
-[source,bash]
-----
-alias docker=podman
-----
-⚠️ Attention : L'alias ne fournit PAS `docker compose`
-- Utilisez `podman-compose` à la place
-- Podman est compatible CLI Docker mais pas 100% identique
+Podman est un moteur de conteneurs compatible OCI, « daemonless » et rootless par défaut. Il est
+le moteur par défaut chez Red Hat (RHEL, Fedora).
+
+**Ubuntu, lui, ne l'installe pas par défaut** : `podman` est dans le composant `universe`, en
+priorité `optional`. Il n'arrive sur la machine que si quelqu'un l'a demandé. Le conflit décrit
+ici ne concerne donc que les étudiants qui ont installé Podman eux-mêmes, ou qui ont récupéré une
+machine où il l'était.
+
+Quand les deux coexistent :
+- Podman expose `/run/podman/podman.sock` (ou `/run/user/$UID/podman/podman.sock` en rootless)
+- Docker attend `/var/run/docker.sock`
+- Le paquet `podman-docker` installe en plus un `/usr/bin/docker` qui redirige vers Podman, d'où
+  le `Cannot connect to the Docker daemon` alors que « docker » semble installé
+
+C'est précisément pour cette raison que `podman-docker` figure sur la liste des paquets que Docker
+demande de retirer.
+
+**Si vous préférez rester sur Podman :** l'alias `alias docker=podman` couvre une bonne partie de
+la CLI, mais **ne fournit pas** `docker compose` : il faut `podman-compose`, dont le comportement
+diffère sur plusieurs points. Le cours suppose Docker.
 
 **MESSAGE CLÉ :**
-"Ubuntu 25.04 privilégie Podman, mais pour ce cours Docker, choisissez une solution claire : soit Docker seul, soit Podman avec alias. Évitez d'avoir les deux installés simultanément sans configuration."
+"Installez Docker par le dépôt apt officiel : c'est la seule méthode qui donne Docker Engine,
+Compose et Buildx d'un coup, et qui se met à jour avec le système. Si Podman est présent sur la
+machine, choisissez-en un des deux — les deux ensemble, sans configuration, produisent des erreurs
+difficiles à lire."
 --
