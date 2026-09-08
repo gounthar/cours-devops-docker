@@ -840,6 +840,24 @@ GELF utilise UDP : le démon n'ouvre aucune connexion, il émet des datagrammes.
 Vérifiez toujours que les logs **arrivent**, pas seulement que le conteneur démarre.
 ====
 
+[WARNING]
+====
+**`localhost` ne désigne pas une seule adresse, et le pilote `gelf` ne s'en plaint pas.**
+
+`localhost` peut être résolu en `127.0.0.1` (IPv4) ou en `::1` (IPv6). La publication `12201:12201/udp` écoute sur les deux familles — `0.0.0.0:12201` **et** `[::]:12201` — donc `localhost` tombe juste quoi qu'il arrive.
+
+Restreindre la publication à une seule famille change tout. Avec `127.0.0.1:12201:12201/udp`, le démon n'écoute plus qu'en IPv4 : si `localhost` est résolu en `::1`, les datagrammes ne trouvent personne. Mesuré sur un démon 27.5.1 : zéro log reçu, trois essais sur trois, sans un message d'erreur nulle part.
+
+C'est le même piège qu'au-dessus, avec une cause de plus : ici le port *est* publié, et l'écriture `localhost` suffit à le manquer.
+
+[source,console]
+----
+docker port <conteneur>    # montre les familles réellement écoutées
+----
+
+En cas de doute, écrire `127.0.0.1` plutôt que `localhost` : la famille est explicite, la résolution ne peut plus surprendre.
+====
+
 ==== Erreur #2 : Health Check avec localhost IPv6
 
 **Code cassé** :
