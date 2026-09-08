@@ -13,7 +13,7 @@ La suite: vers le bas ⬇️
 [{invert}]
 == !
 
-image::docker_love.png[background, size=contain, position=center, opacity=0.1]
+image::docker_love.png[background, size=contain, position=center]
 
 [.notes]
 --
@@ -24,13 +24,14 @@ On en reparlera après, mais j'aime Docker depuis longtemps, d'un amour platoniq
 3. Ce n'est pas qu'un projet open source. Et si j'y bossais ?
 --
 
+[background-opacity=0.1]
 [{invert}]
 [.columns]
 == !
 
 [.column]
 --
-image::vates-planet.png[background, size=contain, position=left, opacity=0.1]
+image::vates-planet.png[background, size=contain, position=left]
 --
 
 

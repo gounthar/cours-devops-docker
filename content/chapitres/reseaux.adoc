@@ -69,7 +69,7 @@ for i in {2..6}; do convert Diapositive${i}.PNG -crop 9004x5341+1968+1654 -trans
 [.intellij.background]
 == Ex : intégration IntelliJ
 
-image::intellij-docker.png[background, size=cover, position=left, opacity=0.1]
+image::intellij-docker.png[background, size=cover, position=left]
 
 [%auto-animate]
 == 🤝 Interagir avec le Docker Engine

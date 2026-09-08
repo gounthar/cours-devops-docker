@@ -10,16 +10,18 @@ image::multi-layered-cake.jpeg[width=900]
 
 => Permet de fournir un livrable portable (ou presque).
 
+[background-opacity=0.1]
 [%auto-animate]
 == 🤔 C'est quoi une image ?
 
-image::multi-layered-cake-removebg-preview.png[background, size=contain, position=left, opacity=0.1]
+image::multi-layered-cake-removebg-preview.png[background, size=contain, position=left]
 
 C'est une collection de fichiers et de metadonnées.
 
+[background-opacity=0.1]
 == 🤔 C'est quoi une image ?
 
-image::multi-layered-cake-removebg-preview.png[background, size=contain, position=left, opacity=0.1]
+image::multi-layered-cake-removebg-preview.png[background, size=contain, position=left]
 
 C'est une collection de fichiers et de metadonnées.
 
@@ -427,7 +429,7 @@ Il est possible de créer ses propres registres (ex : registre privé d'entrepri
 
 == !
 
-image::node_Official_Image_Docker_Hub.png[background, size=cover, position=left, opacity=0.1]
+image::node_Official_Image_Docker_Hub.png[background, size=cover, position=left]
 
 [.notes]
 --

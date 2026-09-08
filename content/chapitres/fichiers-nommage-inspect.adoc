@@ -1,6 +1,7 @@
+[background-opacity=0.1]
 = 📁 Nos fichiers dans les images
 
-image::fichiers.png[background, size=cover, position=left, opacity=0.1]
+image::fichiers.png[background, size=cover, position=left]
 
 == 📂 Le répertoire de travail
 
@@ -273,7 +274,7 @@ README-secret.md
 
 == !
 
-image::docker-commands-table.png[background, size=contain, position=center, opacity=0.1]
+image::docker-commands-table.png[background, size=contain, position=center]
 
 [%auto-animate]
 == 📝 Renommage des images

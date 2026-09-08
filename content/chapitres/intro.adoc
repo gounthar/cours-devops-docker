@@ -3,10 +3,11 @@ include::../attributes.adoc[]
 
 [{invert}]
 
+[background-opacity=0.1]
 [.container.background]
 = Docker
 
-image::empty_harbor.png[background, size=cover, position=left, opacity=0.1]
+image::empty_harbor.png[background, size=cover, position=left]
 
 [%title]
 "La Base"
@@ -112,7 +113,7 @@ Vous voulez la version enfant de 5 ans? Je ne crois pas...
 
 Depuis mars 2013, soit {docker_age} ans déjà...
 
-image::containerconteneuraccidenteavariejpg_5e8b87ccc8c27.jpg[position=left, opacity=0.1]
+image::containerconteneuraccidenteavariejpg_5e8b87ccc8c27.jpg[]
 
 [.notes]
 --
@@ -129,7 +130,7 @@ and Sebastien Pahl in 2008 to provide cloud hosting services for software develo
 
 Mais moi aussi...
 
-image::piWorkshop.png[position=left, opacity=0.1]
+image::piWorkshop.png[]
 
 [.notes]
 --
@@ -147,7 +148,7 @@ image::piWorkshop.png[position=left, opacity=0.1]
 
 Aucune raison que ça soit réservé aux puissants! La révolution vaincra!
 
-image::resin-ports-docker-to-arm.png[position=left, opacity=0.1]
+image::resin-ports-docker-to-arm.png[]
 
 [.notes]
 --
@@ -160,7 +161,7 @@ image::resin-ports-docker-to-arm.png[position=left, opacity=0.1]
 
 Linux everywhere... And then Docker to follow.
 
-image::buildx_multi_arch.png[position=left, opacity=0.1]
+image::buildx_multi_arch.png[]
 
 [.notes]
 --
@@ -392,19 +393,21 @@ image::container_vs_vm.jpg[]
 
 * Légère, vraiment?
 
+[background-opacity=0.1]
 [%auto-animate]
 == Légère, vraiment!
 
-image::RPiDockerConChallenge.png[background, size=contain, position=left, opacity=0.1]
+image::RPiDockerConChallenge.png[background, size=contain, position=left]
 
 [.small]
 http://web.archive.org/web/20200810061020/https://www.docker.com/blog/raspberry-pi-dockercon-challenge-winner/
 
 
+[background-opacity=0.1]
 [%auto-animate]
 == Légère, vraiment!
 
-image::esxpi.png[background, size=contain, position=left, opacity=0.1]
+image::esxpi.png[background, size=contain, position=left]
 
 [.small]
 https://www.architecting.it/blog/esxi-on-raspberry-pi/

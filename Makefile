@@ -45,7 +45,49 @@ check-dashes:
 	fi
 	@echo "OK: no en/em dash found in commands"
 
-verify: check-dashes
+## `opacity=` written inside an image macro is dropped by the converter without
+## a word: only a [background-opacity=...] line above the slide title reaches
+## the HTML. Two guards, because either alone can be green while wrong.
+##   1. no opacity= left in an image macro -- catches the original form coming
+##      back, and catches a half-finished conversion, which guard 2 cannot see;
+##   2. what the source declares must equal what the HTML carries -- catches a
+##      converter or theme upgrade dropping the attribute again.
+## Counted per output, since the two decks are built from disjoint file sets.
+## See issue #513.
+check-opacity:
+	@fail=0; checked=0; \
+	for deck in index index-examen; do \
+	  out=$(DIST_DIR)/$$deck.html; \
+	  if [ ! -f "$$out" ]; then \
+	    echo "NOTE: $$deck.html not built, opacity count not checked for that deck"; \
+	    continue; \
+	  fi; \
+	  src=$(CURDIR)/content/$$deck.adoc; \
+	  files="$$src `sed -n 's|^include::\./\(.*\)\[.*$$|$(CURDIR)/content/\1|p' $$src`"; \
+	  want=`cat $$files 2>/dev/null | grep -c '^\[background-opacity='`; \
+	  got=`grep -o 'data-background-opacity' $$out | wc -l`; \
+	  checked=`expr $$checked + 1`; \
+	  if [ "$$want" -ne "$$got" ]; then \
+	    echo "ERROR: $$deck.adoc declares $$want slide background opacity attribute(s), $$deck.html carries $$got."; \
+	    fail=1; \
+	  else \
+	    echo "OK: $$deck -> $$want declared, $$want emitted"; \
+	  fi; \
+	done; \
+	if [ "$$checked" -eq 0 ]; then \
+	  echo "ERROR: no built deck to check against. Run 'make build' first (see issue #513)."; \
+	  exit 1; \
+	fi; \
+	if grep -rn 'image::.*opacity=' $(CURDIR)/content/ --include=*.adoc; then \
+	  echo ""; \
+	  echo "ERROR: opacity= inside the image macro(s) above is ignored by the converter."; \
+	  echo "       Put a [background-opacity=0.1] line above the slide title instead,"; \
+	  echo "       or drop it when the image is meant to stay fully visible (issue #513)."; \
+	  fail=1; \
+	fi; \
+	exit $$fail
+
+verify: check-dashes check-opacity
 	@echo "NOTE: link checking is still disabled (see issue #486)"
 
 serve:
@@ -103,4 +145,4 @@ clean:
 qrcode:
 	@$(call compose_up, qrcode)
 
-.PHONY: all build clean verify check-dashes serve qrcode pdf exam-pdf dependencies-update dependencies-lock-update
+.PHONY: all build clean verify check-dashes check-opacity serve qrcode pdf exam-pdf dependencies-update dependencies-lock-update
