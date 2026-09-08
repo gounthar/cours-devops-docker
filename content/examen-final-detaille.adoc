@@ -1287,6 +1287,24 @@ management.metrics.export.prometheus.enabled=true
 * 0.5 pt : Fichier `goss.yaml` avec tests complets
 * 0.25 pt : Pipeline CI/CD qui exécute les tests Goss
 * 0.25 pt : Rapport de tests généré (JUnit XML ou JSON)
+* Sur ces 0.5 pt : la démonstration qu'un test **échoue** quand il doit
+  échouer. Un `goss.yaml` qui passe au vert ne prouve rien tant qu'on n'a pas
+  vu le rouge — voir l'avertissement ci-dessous.
+
+**⚠️ Goss ignore silencieusement ce qu'il ne connaît pas.**
+
+Goss n'a pas de ressource pour les conteneurs Docker. Ses types sont
+`package`, `file`, `addr`, `port`, `service`, `user`, `group`, `command`,
+`dns`, `process`, `http`, `goss`, `kernel-param`, `mount` et `interface`
+(`goss add --help` les liste). Un bloc `docker-container:` n'est pas rejeté :
+il est **ignoré**. Mesuré avec Goss 0.4.10, un fichier contenant un test
+`port` valide plus trois assertions `docker-container:` rend `Count: 1` et
+sort en code 0. Les trois assertions ont disparu sans un mot.
+
+C'est le pire cas possible pour une note : la CI est verte, et ni l'étudiant
+ni le correcteur ne peuvent voir que rien n'a été testé. D'où le point de
+barème ci-dessus : lancer le fichier une fois avec une assertion volontairement
+fausse, et vérifier que le compte de tests **et** le code de sortie bougent.
 
 **Exemple de tests Goss :**
 
@@ -1312,21 +1330,46 @@ http:
     body:
       - '{"status":"UP"}'
 
-docker-container:
-  reverse-proxy:
-    running: true
-    status: "running"
+# L'état des conteneurs passe par `command:`, seule porte de sortie vers le
+# démon Docker. Noter la forme `docker ps --filter` : `docker inspect
+# --format` serait plus direct, mais Goss traite d'abord le fichier comme un
+# template Go et consomme les accolades, ce qui donne
+# `can't evaluate field State in type *goss.TmplVars`.
+command:
+  docker ps --filter name=reverse-proxy --filter status=running --quiet:
+    exit-status: 0
+    stdout:
+      - "/[0-9a-f]{12}/"
 
-  app-server:
-    running: true
-    status: "running"
-    health-status: "healthy"
+  docker ps --filter name=app-server --filter health=healthy --quiet:
+    exit-status: 0
+    stdout:
+      - "/[0-9a-f]{12}/"
 
-  database:
-    running: true
-    status: "running"
-    health-status: "healthy"
+  docker ps --filter name=database --filter health=healthy --quiet:
+    exit-status: 0
+    stdout:
+      - "/[0-9a-f]{12}/"
 ----
+
+Ces trois blocs supposent que Goss voit le démon Docker : le conteneur qui
+l'exécute doit avoir la CLI Docker et `/var/run/docker.sock` monté.
+
+Un conteneur absent ou non sain fait sortir `docker ps` sans identifiant, la
+sortie ne correspond plus au motif, et Goss compte l'échec. Vérification que
+le rouge sort bien — c'est le point de barème plus haut :
+
+[source,bash]
+----
+# Arrêter un des trois services, ou viser un nom inexistant, puis relancer
+docker compose stop database
+goss -g goss.yaml validate --format documentation
+# Count: 6, Failed: 1, Skipped: 0   -> code de sortie 1
+----
+
+Six assertions pour trois blocs : chaque bloc `command:` vérifie `exit-status`
+**et** `stdout`. Un `Count:` qui n'augmente pas quand on ajoute un bloc est le
+signe que Goss vient d'en ignorer un.
 
 **Pipeline GitLab CI (exemple) :**
 
