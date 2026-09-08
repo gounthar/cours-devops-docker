@@ -112,22 +112,29 @@ docker run hello-world
 
 [.column]
 --
-**Symptôme :** `Cannot connect to the Docker daemon`
+**Symptôme :** `docker` semble installé, mais répond
+`Cannot connect to the Docker daemon`
 
 [.small]
-Conflit entre `/var/run/docker.sock` et `/run/podman/podman.sock`
+C'est le paquet `podman-docker` qui pose un `/usr/bin/docker` redirigeant vers Podman. Podman seul
+ne fournit aucune commande `docker` : on obtiendrait `command not found`.
 --
 
 [.column]
 --
 [source,bash]
 ----
-sudo apt remove podman-docker podman
+# Qui répond, au juste ?
+command -v docker
+echo $DOCKER_HOST
+docker context ls
+
+# Retirer le wrapper suffit
+sudo apt remove podman-docker
 ----
 
 [.small]
-⚠️ Ubuntu **n'installe pas** Podman par défaut : ce cas ne concerne que vous si vous l'avez
-installé vous-même
+⚠️ Ubuntu **n'installe pas** Podman par défaut : ce cas ne concerne que qui l'a installé lui-même
 --
 
 === Environnement prêt ! ✅
@@ -229,8 +236,10 @@ C'est précisément pour cette raison que `podman-docker` figure sur la liste de
 demande de retirer.
 
 **Si vous préférez rester sur Podman :** l'alias `alias docker=podman` couvre une bonne partie de
-la CLI, mais **ne fournit pas** `docker compose` : il faut `podman-compose`, dont le comportement
-diffère sur plusieurs points. Le cours suppose Docker.
+la CLI. `podman compose` existe, mais ce n'est qu'une façade : sa propre aide la décrit comme
+« Run compose workloads via an external provider such as docker-compose or podman-compose ». Il
+faut donc avoir installé l'un de ces deux fournisseurs, et le comportement diffère de Docker
+Compose sur plusieurs points. Le cours suppose Docker.
 
 **MESSAGE CLÉ :**
 "Installez Docker par le dépôt apt officiel : c'est la seule méthode qui donne Docker Engine,
