@@ -434,7 +434,7 @@ COPY src ./src
 RUN mvn package -DskipTests
 
 # Stage 2: Runtime
-FROM tomcat:11-jre17-temurin-noble
+FROM tomcat:10.1-jre17-temurin-noble
 
 # Supprimer les apps par défaut de Tomcat
 RUN rm -rf /usr/local/tomcat/webapps/*
@@ -470,14 +470,19 @@ CMD ["catalina.sh", "run"]
 +
 [source,bash]
 ----
-docker manifest inspect tomcat:11-jre17-temurin-noble
+docker manifest inspect tomcat:10.1-jre17-temurin-noble
 ----
 * **La syntaxe de création d'utilisateur dépend de la base.** `addgroup -S` /
   `adduser -S` sont des commandes BusyBox, donc Alpine. Sur une base Debian ou
   Ubuntu il faut `groupadd` / `useradd`, sinon le build échoue sur
   `Option g is ambiguous (gecos, gid, group)`.
 
-L'image de base `tomcat:11-jre17-temurin-noble` pèse 414 MB ; le Dockerfile
+`10.1` et non `11` : la ligne 10.1 est la ligne 10.x courante, donc le sujet
+reste sur Jakarta EE 10 / Servlet 6.0 comme avant. Passer à Tomcat 11 ferait
+franchir un cap majeur — Jakarta EE 11, `SecurityManager` retiré, API internes
+non compatibles — sans rapport avec le tag manquant qu'on corrige ici.
+
+L'image de base `tomcat:10.1-jre17-temurin-noble` pèse 414 MB ; le Dockerfile
 ci-dessus produit une image de 447 MB, sous la limite de 500 MB fixée plus bas.
 Le JRE 17 du runtime est aligné sur le JDK du stage de build.
 
@@ -1336,7 +1341,7 @@ http:
 # template Go et consomme les accolades, ce qui donne
 # `can't evaluate field State in type *goss.TmplVars`.
 command:
-  docker ps --filter name=reverse-proxy --filter status=running --quiet:
+  docker ps --filter name=reverse-proxy --filter status=running --filter health=healthy --quiet:
     exit-status: 0
     stdout:
       - "/[0-9a-f]{12}/"
@@ -1352,8 +1357,17 @@ command:
       - "/[0-9a-f]{12}/"
 ----
 
-Ces trois blocs supposent que Goss voit le démon Docker : le conteneur qui
-l'exécute doit avoir la CLI Docker et `/var/run/docker.sock` monté.
+Ces trois blocs supposent que Goss atteigne un démon Docker, et il y a deux
+façons de le lui donner — à choisir, pas à cumuler :
+
+* **monter `/var/run/docker.sock`** dans le conteneur qui exécute Goss. C'est
+  le socket du démon de l'hôte : le conteneur obtient le contrôle du moteur
+  Docker, donc de l'hôte. À réserver à du code de confiance, et à ne jamais
+  faire dans un job qui exécute du code d'étudiant ou de dépendance ;
+* **pointer `DOCKER_HOST` vers un démon `dind`**, isolé de l'hôte. C'est ce que
+  fait le pipeline ci-dessous, qui déclare un service `docker:24-dind`. Mais il
+  ne définit ni `DOCKER_HOST` ni les variables TLS, donc tel quel il ne joint
+  aucun démon. Voir #472, qui porte sur ce pipeline.
 
 Un conteneur absent ou non sain fait sortir `docker ps` sans identifiant, la
 sortie ne correspond plus au motif, et Goss compte l'échec. Vérification que
@@ -1361,15 +1375,22 @@ le rouge sort bien — c'est le point de barème plus haut :
 
 [source,bash]
 ----
-# Arrêter un des trois services, ou viser un nom inexistant, puis relancer
+# Extraire les trois blocs command: dans un fichier à part, arrêter un service,
+# puis relancer sur ce seul fichier
 docker compose stop database
-goss -g goss.yaml validate --format documentation
+goss -g goss-conteneurs.yaml validate --format documentation
 # Count: 6, Failed: 1, Skipped: 0   -> code de sortie 1
 ----
 
 Six assertions pour trois blocs : chaque bloc `command:` vérifie `exit-status`
 **et** `stdout`. Un `Count:` qui n'augmente pas quand on ajoute un bloc est le
 signe que Goss vient d'en ignorer un.
+
+Le fichier complet ci-dessus, lui, rend `Count: 12, Failed: 4, Skipped: 2`
+alors même que les trois services sont sains : les blocs `port` et `http`
+visent `localhost` **dans le conteneur qui exécute Goss**, pas dans les
+services. C'est le défaut décrit en #472. Il est laissé ici parce que la
+comparaison des deux comptes est justement ce qu'il faut savoir lire.
 
 **Pipeline GitLab CI (exemple) :**
 
