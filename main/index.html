@@ -674,7 +674,7 @@ Encouragez-les à demander le GitHub Student Developer Pack qui double le quota 
 <aside class="notes"><div class="paragraph"><p><strong>Détails à expliquer oralement :</strong></p></div>
 <div class="paragraph"><p><strong>Pas d&#8217;installation locale :</strong>
 - Évite les problèmes de configuration spécifiques à chaque système (Windows, macOS, Linux)
-- Pas besoin de gérer les conflits Podman/Docker sur Ubuntu 25.04
+- Pas besoin de gérer un éventuel conflit Podman/Docker sur son poste
 - Pas de problèmes de permissions ou de versions</p></div>
 <div class="paragraph"><p><strong>Docker pré-configuré :</strong>
 - <code>docker</code> command disponible immédiatement
@@ -1297,76 +1297,117 @@ Que vous soyez sur Windows, Mac, Linux, Chromebook, voire une tablette, vous ave
 <div class="paragraph"><p><strong>Statistiques à partager (si pertinent) :</strong></p></div>
 <div class="paragraph"><p>"Dans les années précédentes, nous passions en moyenne 90 minutes à aider les étudiants avec l&#8217;installation. Cette année, avec Codespaces, tout le monde était prêt en 5 minutes. Ça, c&#8217;est 85 minutes de plus pour apprendre Docker !"</p></div>
 <div class="paragraph"><p><strong>Ouverture vers l&#8217;autonomie :</strong></p></div>
-<div class="paragraph"><p>"Vous avez maintenant accès à un environnement professionnel cloud. N&#8217;hésitez pas à l&#8217;utiliser pour d&#8217;autres projets, pour expérimenter, pour apprendre d&#8217;autres technologies. C&#8217;est votre laboratoire personnel, accessible 24/7. Profitez-en !"</p></div></aside></div></section><section id="installation_locale_de_docker"><h2>🐳 Installation locale de Docker</h2></section><section id="ubuntu_25_04_et_le_conflit_podman"><h2>Ubuntu 25.04 et le conflit Podman ⚠️</h2><div class="slide-content"><div class="paragraph"><p><strong>Problème :</strong> Ubuntu 25.04+ est livré avec Podman par défaut</p></div>
-<div class="paragraph"><p><strong>Symptôme :</strong> <code>Cannot connect to the Docker daemon</code></p></div>
-<div class="paragraph small"><small>⚠️ Conflit entre <code>/var/run/docker.sock</code> et <code>/run/podman/podman.sock</code></small></div></div></section><section id="solutions_au_conflit" class="columns"><h2>Solutions au conflit</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Solution 1 : Installer Docker</strong></p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo apt install docker.io
-sudo systemctl enable --now docker
+<div class="paragraph"><p>"Vous avez maintenant accès à un environnement professionnel cloud. N&#8217;hésitez pas à l&#8217;utiliser pour d&#8217;autres projets, pour expérimenter, pour apprendre d&#8217;autres technologies. C&#8217;est votre laboratoire personnel, accessible 24/7. Profitez-en !"</p></div></aside></div></section><section id="installation_locale_de_docker"><h2>🐳 Installation locale de Docker</h2></section><section id="installer_docker_sur_ubuntu_26_04"><h2>Installer Docker sur Ubuntu 26.04 🐧</h2><div class="slide-content"><div class="paragraph"><p><strong>Le piège :</strong> <code>apt install docker.io</code> n&#8217;installe pas ce qu&#8217;il faut</p></div>
+<div class="paragraph small"><small>⚠️ Ni <code>docker compose</code>, ni <code>docker buildx</code>, et Docker demande de retirer ce paquet</small></div></div></section><section id="pourquoi_pas_docker_io" class="columns"><h2>Pourquoi pas <code>docker.io</code> ? 🤔</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Ce que donne <code>apt install docker.io</code></strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose version
+# docker: unknown command: docker compose
+
+docker buildx version
+# docker: unknown command: docker buildx</code></pre></div></div>
+<div class="paragraph small"><small>Les deux plugins sont en <code>Suggests:</code>, donc apt ne les installe pas</small></div></div></div>
+<div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Et la doc Docker demande de le retirer</strong></p></div>
+<div class="paragraph small"><small><code>docker.io</code> figure sur la liste officielle des paquets à désinstaller <strong>avant</strong> d&#8217;installer Docker,
+aux côtés de <code>podman-docker</code>.</small></div>
+<div class="paragraph small"><small>➡️ On utilise donc le <strong>dépôt apt officiel Docker</strong></small></div></div></div></div></section><section id="étape_1_retirer_les_paquets_en_conflit"><h2>Étape 1 : retirer les paquets en conflit 🧹</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo apt remove $(dpkg --get-selections \
+  docker.io docker-compose docker-compose-v2 \
+  docker-doc docker-buildx podman-docker \
+  containerd runc | cut -f1)</code></pre></div></div>
+<div class="paragraph small"><small>✅ Sans effet si aucun n&#8217;est installé — la commande ne retire rien et se termine normalement</small></div></div></section><section id="étape_2_ajouter_le_dépôt_officiel"><h2>Étape 2 : ajouter le dépôt officiel 🔑</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo apt update
+sudo apt install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+  -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc</code></pre></div></div>
+<div class="paragraph small"><small>🔑 La clé GPG sert à vérifier la signature des paquets téléchargés</small></div></div></section><section id="étape_2_suite_déclarer_la_source"><h2>Étape 2 (suite) : déclarer la source 📝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo tee /etc/apt/sources.list.d/docker.sources &lt;&lt;EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release &amp;&amp; echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+sudo apt update</code></pre></div></div></div></section><section id="étape_3_installer_et_vérifier"><h2>Étape 3 : installer et vérifier ✅</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo apt install docker-ce docker-ce-cli containerd.io \
+  docker-buildx-plugin docker-compose-plugin
+
 sudo usermod -aG docker $USER</code></pre></div></div>
-<div class="paragraph small"><small>⚠️ Logout/login requis pour groupe docker</small></div></div></div>
-<div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Solution 2 : Désinstaller Podman</strong> ✅</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo apt remove podman
-sudo apt install docker.io
-sudo systemctl enable --now docker
-sudo usermod -aG docker $USER</code></pre></div></div>
-<div class="paragraph small"><small>⚠️ Logout/login requis</small></div></div></div></div></section><section id="environnement_prêt"><h2>Environnement prêt ! ✅</h2><div class="slide-content"><div class="paragraph"><p>Votre environnement Docker est maintenant configuré 🎉</p></div>
-<div class="ulist small"><ul><li><p>✅ GitHub Codespaces : Docker déjà installé</p></li><li><p>✅ Ubuntu 25.04 : Conflit Podman résolu</p></li><li><p>✅ Prêt pour la suite !</p></li></ul></div></div></section><section id="prochaine_étape"><h2>Prochaine étape 🚀</h2><div class="slide-content"><div class="paragraph"><p>Avant de découvrir Docker, un détour essentiel&#8230;&#8203;</p></div>
+<div class="paragraph small"><small>⚠️ Logout/login requis pour que le groupe <code>docker</code> s&#8217;applique</small></div></div></section><section id="ça_marche"><h2>Ça marche ? 🎯</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker --version
+docker compose version
+docker buildx version
+docker run hello-world</code></pre></div></div>
+<div class="paragraph small"><small>✅ Cette fois <code>docker compose</code> et <code>docker buildx</code> répondent</small></div></div></section><section id="et_si_podman_est_installé" class="columns"><h2>Et si Podman est installé ? 🤔</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Symptôme :</strong> <code>docker</code> semble installé, mais répond
+<code>Cannot connect to the Docker daemon</code></p></div>
+<div class="paragraph small"><small>C&#8217;est le paquet <code>podman-docker</code> qui pose un <code>/usr/bin/docker</code> redirigeant vers Podman. Podman seul
+ne fournit aucune commande <code>docker</code> : on obtiendrait <code>command not found</code>.</small></div></div></div>
+<div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Qui répond, au juste ?
+command -v docker
+echo $DOCKER_HOST
+docker context ls
+
+# Retirer le wrapper suffit
+sudo apt remove podman-docker</code></pre></div></div>
+<div class="paragraph small"><small>⚠️ Ubuntu <strong>n&#8217;installe pas</strong> Podman par défaut : ce cas ne concerne que qui l&#8217;a installé lui-même</small></div></div></div></div></section><section id="environnement_prêt"><h2>Environnement prêt ! ✅</h2><div class="slide-content"><div class="paragraph"><p>Votre environnement Docker est maintenant configuré 🎉</p></div>
+<div class="ulist small"><ul><li><p>✅ GitHub Codespaces : Docker déjà installé</p></li><li><p>✅ Ubuntu 26.04 : Docker installé par le dépôt officiel</p></li><li><p>✅ Prêt pour la suite !</p></li></ul></div></div></section><section id="prochaine_étape"><h2>Prochaine étape 🚀</h2><div class="slide-content"><div class="paragraph"><p>Avant de découvrir Docker, un détour essentiel&#8230;&#8203;</p></div>
 <div class="paragraph fragment"><p><strong>La ligne de commande (CLI)</strong></p></div>
 <div class="paragraph small fragment"><small>Docker s&#8217;utilise exclusivement en ligne de commande !</small></div></div></section><section id="pourquoi_la_cli"><h2>Pourquoi la CLI ? 💻</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>🖥️ Interface fondamentale pour Docker</p></li><li class="fragment"><p>🔧 Base de tous les outils DevOps</p></li><li class="fragment"><p>💪 Compétence indispensable pour automatiser</p></li></ul></div>
 <div class="paragraph small fragment"><small>➡️ <strong>Prochain chapitre :</strong> Guide de survie de la ligne de commande</small></div>
-<aside class="notes"><div class="paragraph"><p><strong>CONTEXTE - UBUNTU 25.04 ET PODMAN :</strong></p></div>
-<div class="paragraph"><p>Ubuntu 25.04 (Noble Numbat) marque un changement majeur : Podman devient le moteur de conteneurs par défaut à la place de Docker.</p></div>
-<div class="paragraph"><p><strong>Pourquoi ce changement ?</strong>
-- Podman est "daemonless" (pas de daemon en root)
-- Mieux intégré avec systemd
-- Compatible OCI (Open Container Initiative)
-- Plus sécurisé par défaut (rootless)</p></div>
-<div class="paragraph"><p><strong>Le conflit :</strong>
-- Podman crée un socket <code>/run/podman/podman.sock</code> (ou rootless: <code>/run/user/$UID/podman/podman.sock</code>)
-- Docker cherche <code>/var/run/docker.sock</code>
-- Si les deux sont installés : confusion entre les sockets</p></div>
-<div class="paragraph"><p><strong>Solution 1 - Installer Docker :</strong>
-✅ Installation complète et propre
-✅ Docker démarre automatiquement au boot (systemctl enable)
-✅ Utilisateur ajouté au groupe docker
-❌ Nécessite logout/login pour activer le groupe
-❌ Garde Podman installé (peut causer confusion)</p></div>
-<div class="paragraph"><p><strong>Explication des commandes Solution 1 :</strong>
-- <code>apt install docker.io</code> : Installe Docker Engine
-- <code>systemctl enable --now docker</code> : Active et démarre le service Docker
-- <code>usermod -aG docker $USER</code> : Ajoute l&#8217;utilisateur au groupe docker
-- <strong>Important</strong> : Re-login requis pour que le groupe s&#8217;applique</p></div>
-<div class="paragraph"><p><strong>Solution 2 - Désinstaller Podman :</strong>
-✅ Solution la plus propre et définitive
-✅ Pas de configuration supplémentaire
-✅ Recommandé pour un cours Docker
-✅ Évite confusion entre Docker et Podman
-❌ Supprime Podman (si vous en avez besoin)</p></div>
-<div class="paragraph"><p><strong>Pour le TP :</strong>
-- Recommander Solution 2 si les étudiants ne connaissent pas Podman
-- Solution 1 si vous voulez garder Podman pour d&#8217;autres usages
-- Dans GitHub Codespaces : aucun problème, Docker préconfiguré</p></div>
-<div class="paragraph"><p><strong>Vérification post-installation :</strong></p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Vérifier que Docker tourne
-sudo systemctl status docker
-
-# Vérifier l'appartenance au groupe (après re-login)
-groups | grep docker
-
-# Tester Docker (sans sudo)
-docker run hello-world</code></pre></div></div>
-<div class="paragraph"><p><strong>Note Docker Compose :</strong>
-- <code>docker.io</code> sur Ubuntu inclut <code>docker compose</code> (v2, plugin)
-- Commande : <code>docker compose</code> (pas <code>docker-compose</code>)
-- Si vous utilisez Podman : installer <code>podman-compose</code> séparément</p></div>
-<div class="paragraph"><p><strong>Alternative bonus - Podman :</strong>
-Si vous voulez enseigner Podman au lieu de Docker :</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">alias docker=podman</code></pre></div></div>
-<div class="paragraph"><p>⚠️ Attention : L&#8217;alias ne fournit PAS <code>docker compose</code>
-- Utilisez <code>podman-compose</code> à la place
-- Podman est compatible CLI Docker mais pas 100% identique</p></div>
+<aside class="notes"><div class="paragraph"><p><strong>POURQUOI PAS <code>apt install docker.io</code> :</strong></p></div>
+<div class="paragraph"><p>C&#8217;est la méthode que l&#8217;on trouve partout, et elle pose deux problèmes distincts.</p></div>
+<div class="paragraph"><p><strong>1. Le paquet ne fournit ni Compose ni Buildx.</strong>
+Sur Ubuntu 26.04, <code>docker.io</code> (version 29.1.3) place <code>docker-compose-v2</code> et <code>docker-buildx</code> en
+<code>Suggests:</code> (ni <code>Depends:</code>, ni <code>Recommends:</code>). apt n&#8217;installe pas les suggestions. Après un
+<code>apt install docker.io</code>, <code>docker compose version</code> répond <code>docker: unknown command: docker compose</code>,
+et <code>docker buildx version</code> fait de même. Les étudiants buteraient dessus dès le chapitre Compose.</p></div>
+<div class="paragraph"><p><strong>2. Docker demande explicitement de le désinstaller.</strong>
+La documentation officielle d&#8217;installation liste les paquets à retirer avant d&#8217;installer Docker
+Engine : <code>docker.io</code>, <code>docker-compose</code>, <code>docker-compose-v2</code>, <code>docker-doc</code>, <code>docker-buildx</code>,
+<code>podman-docker</code>, plus <code>containerd</code> et <code>runc</code>. Enseigner <code>docker.io</code> reviendrait donc à installer
+la première chose que Docker dit de retirer.</p></div>
+<div class="paragraph"><p><strong>LES TROIS MÉTHODES OFFICIELLES :</strong>
+- <strong>Dépôt apt</strong> : celle enseignée ici. Mises à jour par <code>apt upgrade</code> comme le reste du système.
+- <strong>Paquets <code>.deb</code> manuels</strong> — à retélécharger et réinstaller à chaque mise à jour.
+- <strong>Script de commodité</strong> (<code>get.docker.com</code>) — Docker le réserve explicitement aux environnements
+  de test et de développement, pas à une installation durable.</p></div>
+<div class="paragraph"><p><strong>EXPLICATION DES COMMANDES :</strong></p></div>
+<div class="paragraph"><p><strong>Étape 1 :</strong> <code>dpkg --get-selections</code> ne renvoie que les paquets réellement connus de dpkg, et
+<code>cut -f1</code> n&#8217;en garde que les noms. Si aucun n&#8217;est installé, la liste est vide et <code>apt remove</code> ne
+retire rien : la commande est sans danger sur une machine neuve.</p></div>
+<div class="paragraph"><p><strong>Étape 2 :</strong> <code>install -m 0755 -d</code> crée le répertoire des clés avec les bonnes permissions.
+<code>chmod a+r</code> rend la clé lisible par apt, qui ne tourne pas en root pour tout.
+Dans le fichier <code>.sources</code>, la ligne <code>Suites:</code> détecte le nom de code de la distribution
+(<code>resolute</code> pour 26.04) au lieu de le coder en dur : la même procédure fonctionne sur 24.04.</p></div>
+<div class="paragraph"><p><strong>Étape 3 :</strong> <code>docker-ce</code> est le démon, <code>docker-ce-cli</code> la commande, <code>containerd.io</code> le moteur
+d&#8217;exécution de bas niveau, et les deux <code>*-plugin</code> fournissent <code>docker compose</code> et <code>docker buildx</code>.</p></div>
+<div class="paragraph"><p><strong><code>usermod -aG docker $USER</code> :</strong> ajoute l&#8217;utilisateur au groupe <code>docker</code> pour éviter <code>sudo</code> devant
+chaque commande. Le changement de groupe ne s&#8217;applique qu&#8217;à la prochaine session : il faut se
+déconnecter et se reconnecter, un simple <code>su - $USER</code> ne suffit pas toujours.</p></div>
+<div class="paragraph"><p>⚠️ Appartenir au groupe <code>docker</code> équivaut à un accès root sur la machine : le démon tourne en root
+et peut monter n&#8217;importe quel répertoire de l&#8217;hôte dans un conteneur. C&#8217;est acceptable sur un poste
+personnel, à ne pas reproduire sur un serveur partagé.</p></div>
+<div class="paragraph"><p><strong>LE CAS PODMAN :</strong></p></div>
+<div class="paragraph"><p>Podman est un moteur de conteneurs compatible OCI, « daemonless » et rootless par défaut. Il est
+le moteur par défaut chez Red Hat (RHEL, Fedora).</p></div>
+<div class="paragraph"><p><strong>Ubuntu, lui, ne l&#8217;installe pas par défaut</strong> : <code>podman</code> est dans le composant <code>universe</code>, en
+priorité <code>optional</code>. Il n&#8217;arrive sur la machine que si quelqu&#8217;un l&#8217;a demandé. Le conflit décrit
+ici ne concerne donc que les étudiants qui ont installé Podman eux-mêmes, ou qui ont récupéré une
+machine où il l&#8217;était.</p></div>
+<div class="paragraph"><p>Quand les deux coexistent :
+- Podman expose <code>/run/podman/podman.sock</code> (ou <code>/run/user/$UID/podman/podman.sock</code> en rootless)
+- Docker attend <code>/var/run/docker.sock</code>
+- Le paquet <code>podman-docker</code> installe en plus un <code>/usr/bin/docker</code> qui redirige vers Podman, d&#8217;où
+  le <code>Cannot connect to the Docker daemon</code> alors que « docker » semble installé</p></div>
+<div class="paragraph"><p>C&#8217;est précisément pour cette raison que <code>podman-docker</code> figure sur la liste des paquets que Docker
+demande de retirer.</p></div>
+<div class="paragraph"><p><strong>Si vous préférez rester sur Podman :</strong> l&#8217;alias <code>alias docker=podman</code> couvre une bonne partie de
+la CLI. <code>podman compose</code> existe, mais ce n&#8217;est qu&#8217;une façade : sa propre aide la décrit comme
+« Run compose workloads via an external provider such as docker-compose or podman-compose ». Il
+faut donc avoir installé l&#8217;un de ces deux fournisseurs, et le comportement diffère de Docker
+Compose sur plusieurs points. Le cours suppose Docker.</p></div>
 <div class="paragraph"><p><strong>MESSAGE CLÉ :</strong>
-"Ubuntu 25.04 privilégie Podman, mais pour ce cours Docker, choisissez une solution claire : soit Docker seul, soit Podman avec alias. Évitez d&#8217;avoir les deux installés simultanément sans configuration."</p></div></aside></div></section></section>
+"Installez Docker par le dépôt apt officiel : c&#8217;est la seule méthode qui donne Docker Engine,
+Compose et Buildx d&#8217;un coup, et qui se met à jour avec le système. Si Podman est présent sur la
+machine, choisissez-en un des deux — les deux ensemble, sans configuration, produisent des erreurs
+difficiles à lire."</p></div></aside></div></section></section>
 <section><section id="ligne_de_commande" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Ligne de commande</h2><div class="slide-content"><div class="paragraph"><p>Guide de survie</p></div></div></section><section id="problématique"><h2>🤔 Problématique</h2><div class="slide-content"><div class="ulist"><ul><li><p>Communication Humain &lt;&#8594; Machine</p></li><li><p>Base commune de TOUS les outils</p></li></ul></div></div></section><section id="cli" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>CLI</h2><div class="slide-content"><div class="ulist"><ul><li><p>🇬🇧 CLI == "Command Line Interface"</p></li><li><p>🇫🇷 "Interface de Ligne de Commande"</p></li></ul></div></div></section><section id="repl"><h2>REPL</h2><div class="slide-content"><div class="paragraph"><p>Pour les théoriciens et curieux :</p></div>
 <div class="ulist"><ul><li><p>🇬🇧 REPL == "Read–eval–print loop"</p></li></ul></div>
 <div class="paragraph"><p><a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop" class="bare">https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop</a></p></div></div></section><section id="anatomie_dune_commande"><h2>Anatomie d&#8217;une commande</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">ls --color=always -l /bin</code></pre></div></div>
@@ -1433,9 +1474,9 @@ $ ./monscript.sh
 <div class="paragraph"><p><a href="https://git-scm.com/" class="bare">https://git-scm.com/</a></p></div>
 <div class="imageblock"><img src="media/git-logo.png" alt="git logo"></div></div></section><section id="les_3_états_avec_git"><h2>Les 3 états avec Git</h2><div class="slide-content"><div class="ulist"><ul><li><p>L&#8217;historique ("Version Database") : dossier <code>.git</code></p></li><li><p>Dossier de votre projet ("Working Directory") - Commande</p></li><li><p>La zone d&#8217;index ("Staging Area")</p></li></ul></div>
 <div class="imageblock"><img src="media/git-3-etats.png" alt="git 3 etats" width="300"></div>
-<div class="paragraph small"><small>Source : <a href="https://git-scm.com/book/fr/v2/D%C3%A9marrage-rapide-Rudiments-de-Git#" class="bare">https://git-scm.com/book/fr/v2/D%C3%A9marrage-rapide-Rudiments-de-Git#</a><em>les_trois</em>%C3%A9tats</small></div></div></section><section id="exercice_avec_git_1_1"><h2>🎓 Exercice avec Git - 1.1</h2><div class="slide-content"><div class="ulist"><ul><li><p>Dans le terminal de votre environnement GitPod:</p><div class="ulist"><ul><li><p>Créez un dossier vide nommé <code>projet-vcs-1</code> dans le répertoire <code>/workspace</code>, puis positionnez-vous dans ce dossier</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">mkdir -p /workspace/projet-vcs-1/
-cd /workspace/projet-vcs-1/</code></pre></div></div></li><li><p>Est-ce qu&#8217;il y a un dossier <code>.git/</code> ?</p></li><li><p>Essayez la commande <code>git status</code> ?</p></li></ul></div></li><li><p>Initialisez le dépôt git avec <code>git init</code></p><div class="ulist"><ul><li><p>Est-ce qu&#8217;il y a un dossier <code>.git/</code> ?</p></li><li><p>Essayez la commande <code>git status</code> ?</p></li></ul></div></li></ul></div></div></section><section id="solution_de_lexercice_avec_git_1_1"><h2>✅ Solution de l&#8217;exercice avec Git - 1.1</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">mkdir -p /workspace/projet-vcs-1/
-cd /workspace/projet-vcs-1/
+<div class="paragraph small"><small>Source : <a href="https://git-scm.com/book/fr/v2/D%C3%A9marrage-rapide-Rudiments-de-Git#" class="bare">https://git-scm.com/book/fr/v2/D%C3%A9marrage-rapide-Rudiments-de-Git#</a><em>les_trois</em>%C3%A9tats</small></div></div></section><section id="exercice_avec_git_1_1"><h2>🎓 Exercice avec Git - 1.1</h2><div class="slide-content"><div class="ulist"><ul><li><p>Dans le terminal de votre Codespace :</p><div class="ulist"><ul><li><p>Créez un dossier vide nommé <code>projet-vcs-1</code> dans le répertoire <code>/workspaces</code>, puis positionnez-vous dans ce dossier</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">mkdir -p /workspaces/projet-vcs-1/
+cd /workspaces/projet-vcs-1/</code></pre></div></div></li><li><p>Est-ce qu&#8217;il y a un dossier <code>.git/</code> ?</p></li><li><p>Essayez la commande <code>git status</code> ?</p></li></ul></div></li><li><p>Initialisez le dépôt git avec <code>git init</code></p><div class="ulist"><ul><li><p>Est-ce qu&#8217;il y a un dossier <code>.git/</code> ?</p></li><li><p>Essayez la commande <code>git status</code> ?</p></li></ul></div></li></ul></div></div></section><section id="solution_de_lexercice_avec_git_1_1"><h2>✅ Solution de l&#8217;exercice avec Git - 1.1</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">mkdir -p /workspaces/projet-vcs-1/
+cd /workspaces/projet-vcs-1/
 ls -la # Pas de dossier .git
 git status # Erreur "fatal: not a git repository"
 git init ./
@@ -1471,7 +1512,10 @@ git add ./index.html &amp;&amp; git commit --message="Ajout d'une page HTML par 
 
 git log
 git log --graph
-git lg # cat ~/.gitconfig =&gt; regardez la section section [alias], cette commande est déjà définie!</code></pre></div></div></div></section><section id="terminologie_de_git_merge"><h2>Terminologie de Git - Merge</h2><div class="slide-content"><div class="ulist"><ul><li><p>On intègre une branche dans une autre en effectuant un <strong>merge</strong></p><div class="ulist"><ul><li><p>Un nouveau commit est créé, fruit de la combinaison de 2 autres commits</p></li></ul></div></li></ul></div>
+
+# 'git lg' n'existe pas par défaut : c'est un alias, à définir une fois pour toutes
+git config --global alias.lg "log --graph --oneline --decorate --all"
+git lg # cat ~/.gitconfig =&gt; l'alias apparaît maintenant dans la section [alias]</code></pre></div></div></div></section><section id="terminologie_de_git_merge"><h2>Terminologie de Git - Merge</h2><div class="slide-content"><div class="ulist"><ul><li><p>On intègre une branche dans une autre en effectuant un <strong>merge</strong></p><div class="ulist"><ul><li><p>Un nouveau commit est créé, fruit de la combinaison de 2 autres commits</p></li></ul></div></li></ul></div>
 <div class="imageblock"><img src="media/scm-merge.png" alt="scm merge"></div></div></section><section id="exercice_avec_git_4"><h2>🎓 Exercice avec Git - 4</h2><div class="slide-content"><div class="ulist"><ul><li><p>Merger la branche <code>feature/html</code> dans la branche principale</p><div class="ulist"><ul><li><p>⚠️ Pensez à utiliser l&#8217;option <code>--no-ff</code></p></li></ul></div></li><li><p>Afficher le graphe correspondant à cette branche avec <code>git log --graph</code></p></li></ul></div></div></section><section id="solution_de_lexercice_avec_git_4"><h2>✅ Solution de l&#8217;exercice avec Git - 4</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">git switch main
 git merge --no-ff feature/html # Enregistrer puis fermer le fichier 'MERGE_MSG' qui a été ouvert
 git log --graph
@@ -1480,7 +1524,7 @@ git log --graph
 <div class="imageblock"><a class="image" href="https://twitter.com/jay_gee/status/702638177471873024"><img src="media/scm-feature-branch-workflow.png" alt="scm feature branch workflow"></a></div></div></section><section id="exemple_dusages_de_vcs"><h2>Exemple d&#8217;usages de VCS</h2><div class="slide-content"><div class="ulist"><ul><li><p>"Infrastructure as Code" :</p><div class="ulist"><ul><li><p>Besoins de traçabilité, de définition explicite et de gestion de conflits</p></li><li><p>Collaboration requise pour chaque changement (revue, responsabilités)</p></li></ul></div></li><li><p>Code Civil:</p><div class="ulist"><ul><li><p><a href="https://github.com/steeve/france.code-civil" class="bare">https://github.com/steeve/france.code-civil</a></p></li><li><p><a href="https://github.com/steeve/france.code-civil/pull/40" class="bare">https://github.com/steeve/france.code-civil/pull/40</a></p></li><li><p><a href="https://github.com/steeve/france.code-civil/commit/b805ecf05a86162d149d3d182e04074ecf72c066" class="bare">https://github.com/steeve/france.code-civil/commit/b805ecf05a86162d149d3d182e04074ecf72c066</a></p></li></ul></div></li></ul></div></div></section><section id="checkpoint_2"><h2>Checkpoint 🎯</h2><div class="slide-content"><div class="ulist"><ul><li><p><code>git</code> est un des (plus populaires) de système de contrôle de versions</p></li><li><p>Cet outil vous permet:</p><div class="ulist"><ul><li><p>D&#8217;avoir un historique auditable de votre code source</p></li><li><p>De collaborer efficacement sur le code source (conflit <code>git</code> == "PARLEZ-VOUS")</p></li></ul></div></li></ul></div>
 <div class="paragraph"><p>&#8658; C&#8217;est une ligne de commande (trop?) complète qui nécessite de pratiquer</p></div></div></section></section>
 <section><section id="containers" data-background-image="media/blue-shipping-container.png" data-background-size="contain" data-background-position="left"><h2>Containers</h2><div class="slide-content"></div></section><section id="exercice_votre_premier_conteneur"><h2>🎓 Exercice : Votre premier conteneur</h2><div class="slide-content"><div class="paragraph"><p>C&#8217;est à vous (ouf) !</p></div>
-<div class="ulist"><ul><li><p>Allez dans Gitpod</p></li><li><p>Dans un terminal, tapez la commande suivante :</p></li></ul></div>
+<div class="ulist"><ul><li><p>Allez dans votre Codespace</p></li><li><p>Dans un terminal, tapez la commande suivante :</p></li></ul></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run hello-world
 # Equivalent de l'ancienne commande 'docker run'</code></pre></div></div></div></section><section id="anatomie" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="ulist"><ul><li><p>Un service "Docker Engine" tourne en tâche de fond et publie une API REST</p></li><li><p>La commande <code>docker container run &#8230;&#8203;</code> a lancé un client docker qui a envoyé une requête <code>POST</code> au service docker</p></li><li><p>Le service a téléchargé une <strong>Image</strong> Docker depuis le registre <strong>DockerHub</strong>,</p></li><li><p>Puis a exécuté un <strong>conteneur</strong> basé sur cette image</p></li></ul></div></div></section><section id="anatomie_2" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/output3_with_transparency.png" alt="output3 with transparency"></div></div></section><section id="anatomie_3" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/output4_with_transparency.png" alt="output4 with transparency"></div></div></section><section id="anatomie_4" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/output5_with_transparency.png" alt="output5 with transparency"></div></div></section><section id="anatomie_5" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/output6_with_transparency.png" alt="output6 with transparency"></div></div></section><section id="anatomie_6" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/output7_with_transparency.png" alt="output7 with transparency"></div></div></section><section id="anatomie_7" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/output8_with_transparency.png" alt="output8 with transparency"></div></div></section><section id="anatomie_8" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/output9_with_transparency.png" alt="output9 with transparency"></div></div></section><section id="anatomie_9" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/output10_with_transparency.png" alt="output10 with transparency"></div></div></section><section id="anatomie_10" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/dollar_date.png" alt="dollar date"></div></div></section><section id="anatomie_11" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/shell_dans_shell_pour_date.png" alt="shell dans shell pour date"></div></div></section><section id="exercice_où_est_mon_conteneur"><h2>🎓 Exercice : Où est mon conteneur ?</h2><div class="slide-content"><div class="paragraph"><p>C&#8217;est à vous !</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls --help
@@ -1527,7 +1571,7 @@ représentant une application auto-suffisante.</p><div class="ulist"><ul><li><p>
 / $</code></pre></div></div>
 <div class="ulist"><ul><li><p>On lance un container à partir de l&#8217;image "alpine"</p></li><li><p>On lance un <code>sh</code>  dans ce container</p></li><li><p>On redirige l&#8217;entrée standard avec -i</p></li></ul></div></div></section><section id="lancer_un_container_interactif_6" data-auto-animate><h2>🏓 Lancer un container interactif</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container run  --interactive --tty alpine
 / $</code></pre></div></div>
-<div class="ulist"><ul><li><p>On lance un container à partir de l&#8217;image "alpine"</p></li><li><p>On lance un <code>sh</code>  dans ce container</p></li><li><p>On redirige l&#8217;entrée standard avec -i</p></li><li><p>On déclare un pseudo-terminal avec -t</p></li></ul></div></div></section><section id="exercice_conteneur_interactif"><h2>🎓 Exercice : conteneur interactif</h2><div class="slide-content"><div class="ulist"><ul><li><p>Quelle distribution Linux est utilisée dans le terminal Gitpod ?</p><div class="ulist"><ul><li><p>💡 Regardez le fichier <code>/etc/os-release</code></p></li></ul></div></li><li><p>Exécutez un conteneur interactif basé sur <code>alpine:3.18.3</code> (une distribution Linux ultra-légère) et regardez le contenu du fichier au même emplacement</p><div class="ulist"><ul><li><p>💡 <code>docker container run --help</code></p></li><li><p>💡 Demandez un <a href="https://en.wikipedia.org/wiki/TTY"><code>tty</code></a> à Docker</p></li><li><p>💡 Activez le mode interactif</p></li></ul></div></li><li><p>Exécutez la même commande dans un conteneur basé sur la même image mais en <strong>NON</strong> interactif</p><div class="ulist"><ul><li><p>💡 Comment surcharger la commande par défaut ?</p></li></ul></div></li></ul></div></div></section><section id="solution_conteneur_interactif"><h2>✅ Solution : conteneur interactif</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ cat /etc/os-release
+<div class="ulist"><ul><li><p>On lance un container à partir de l&#8217;image "alpine"</p></li><li><p>On lance un <code>sh</code>  dans ce container</p></li><li><p>On redirige l&#8217;entrée standard avec -i</p></li><li><p>On déclare un pseudo-terminal avec -t</p></li></ul></div></div></section><section id="exercice_conteneur_interactif"><h2>🎓 Exercice : conteneur interactif</h2><div class="slide-content"><div class="ulist"><ul><li><p>Quelle distribution Linux est utilisée dans le terminal Codespaces ?</p><div class="ulist"><ul><li><p>💡 Regardez le fichier <code>/etc/os-release</code></p></li></ul></div></li><li><p>Exécutez un conteneur interactif basé sur <code>alpine:3.18.3</code> (une distribution Linux ultra-légère) et regardez le contenu du fichier au même emplacement</p><div class="ulist"><ul><li><p>💡 <code>docker container run --help</code></p></li><li><p>💡 Demandez un <a href="https://en.wikipedia.org/wiki/TTY"><code>tty</code></a> à Docker</p></li><li><p>💡 Activez le mode interactif</p></li></ul></div></li><li><p>Exécutez la même commande dans un conteneur basé sur la même image mais en <strong>NON</strong> interactif</p><div class="ulist"><ul><li><p>💡 Comment surcharger la commande par défaut ?</p></li></ul></div></li></ul></div></div></section><section id="solution_conteneur_interactif"><h2>✅ Solution : conteneur interactif</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ cat /etc/os-release
 # ... Ubuntu ....
 
 $ docker container run --tty --interactive alpine:3.18.3
@@ -1870,12 +1914,12 @@ docker container ls</code></pre></div></div></div></section><section id="checkpo
 git --version
 # ...
 
-# Même version de Linux que dans GitPod
-docker container run --rm ubuntu:22.04 git --version
+# Même version de Linux que dans Codespaces
+docker container run --rm ubuntu:24.04 git --version
 # docker: Error response from daemon: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: "git": executable file not found in $PATH: unknown.
 
 # En interactif ?
-docker container run --rm --tty --interactive ubuntu:22.04 git --version</code></pre></div></div></div></section><section id="fabriquer_sa_première_image"><h2>🎓 Fabriquer sa première image</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> fabriquer une image Docker qui contient <code>git</code></p></li><li><p>Dans votre workspace Gitpod, créez un dossier nommé <code>docker-git/</code></p></li><li><p>Dans ce dossier, créer un fichier <code>Dockerfile</code> avec le contenu ci-dessous :</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-noescape="true" data-lang="Dockerfile">FROM alpine:3.24.1
+docker container run --rm --tty --interactive ubuntu:24.04 git --version</code></pre></div></div></div></section><section id="fabriquer_sa_première_image"><h2>🎓 Fabriquer sa première image</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> fabriquer une image Docker qui contient <code>git</code></p></li><li><p>Dans votre Codespace, créez un dossier nommé <code>docker-git/</code></p></li><li><p>Dans ce dossier, créer un fichier <code>Dockerfile</code> avec le contenu ci-dessous :</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-noescape="true" data-lang="Dockerfile">FROM alpine:3.24.1
 
 RUN apk update &amp;&amp; apk add --no-cache git</code></pre></div></div></li><li><p>Fabriquez votre image avec la commande <code>docker image build --tag=docker-git chemin/vers/docker-git/</code></p></li><li><p>Testez l&#8217;image fraîchement fabriquée</p><div class="ulist"><ul><li><p>💡 <code>docker image ls</code></p></li></ul></div></li></ul></div></div></section><section id="fabriquer_sa_première_image_2"><h2>✅ Fabriquer sa première image</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cat &lt;&lt;EOF &gt;Dockerfile
 FROM alpine:3.24.1
@@ -2014,7 +2058,10 @@ docker container run --rm docker-git:1.1.0 git config --get init.defaultBranch
   ---&gt; Using cache</code></pre></div></div>
 <div class="paragraph"><p>🤔 En fait, Docker n&#8217;a PAS exécuté cette commande la seconde fois &#8658; ça va beaucoup plus vite !</p></div>
 <div class="imageblock"><img src="media/docker-layers.jpg" alt="docker layers" width="400"></div>
-<div class="paragraph"><p>🎓 Essayez de voir les layers avec (dans Gitpod) <a href="https://github.com/wagoodman/dive" target="_blank"><code>dive &lt;image&gt;:&lt;tag&gt;</code></a></p></div></div></section><section id="cache_dimages_layers_2"><h2>🎓 Cache d&#8217;images &amp; Layers</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> manipuler le cache d&#8217;images</p></li><li><p>Commencez par vérifier que le cache est utilisé : relancez la dernière commande <code>docker image build</code> (plusieurs fois s&#8217;il le faut)</p></li><li><p>Invalidez le cache en ajoutant le paquet APT <code>make</code> à installer en même temps que <code>git</code></p><div class="ulist"><ul><li><p>⚠️ Tag <code>1.2.0</code></p></li></ul></div></li><li><p>Vérifiez que le cache est bien présent de nouveau</p></li></ul></div></div></section><section id="cache_dimages_layers_3"><h2>✅ Cache d&#8217;images &amp; Layers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Build one time
+<div class="paragraph"><p>🎓 Essayez de voir les layers avec <a href="https://github.com/wagoodman/dive" target="_blank"><code>dive</code></a>. Il n&#8217;est pas installé dans Codespaces, mais s&#8217;utilise en conteneur sans rien installer :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm --tty --interactive \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
+  wagoodman/dive:latest &lt;image&gt;:&lt;tag&gt;</code></pre></div></div></div></section><section id="cache_dimages_layers_2"><h2>🎓 Cache d&#8217;images &amp; Layers</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> manipuler le cache d&#8217;images</p></li><li><p>Commencez par vérifier que le cache est utilisé : relancez la dernière commande <code>docker image build</code> (plusieurs fois s&#8217;il le faut)</p></li><li><p>Invalidez le cache en ajoutant le paquet APT <code>make</code> à installer en même temps que <code>git</code></p><div class="ulist"><ul><li><p>⚠️ Tag <code>1.2.0</code></p></li></ul></div></li><li><p>Vérifiez que le cache est bien présent de nouveau</p></li></ul></div></div></section><section id="cache_dimages_layers_3"><h2>✅ Cache d&#8217;images &amp; Layers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Build one time
 docker image build -t docker-git:1.1.0 ./docker-git/
 # Second time is fully cached
 docker image build -t docker-git:1.1.0 ./docker-git/
@@ -3864,8 +3911,6 @@ Configuration (with the authentication token) was saved in "/etc/gitlab-runner/c
   # Le service node est un agent Jenkins avec Node.js installé.
   node:
     build: dockerfiles/node/.  # Le Dockerfile pour construire l'image du service Node.js.
-    environment:
-      - GITPOD_WORKSPACE_URL=${GITPOD_WORKSPACE_URL}  # Les variables d'environnement pour le service.
     container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
     profiles:
       - node  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
@@ -3905,8 +3950,6 @@ Configuration (with the authentication token) was saved in "/etc/gitlab-runner/c
   # Le service multi est un agent Jenkins pour gérer plusieurs jobs et configurations Jenkins.
   multi:
     build: 06_multibranch_pipeline/dockerfiles/agent/.  # Le Dockerfile pour construire l'image du service multi Jenkins agent.
-    environment:
-      - GITPOD_WORKSPACE_URL=${GITPOD_WORKSPACE_URL}  # Les variables d'environnement pour le service.
     container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
     profiles:
       - multi  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
