@@ -1335,11 +1335,18 @@ sudo usermod -aG docker $USER</code></pre></div></div>
 docker compose version
 docker buildx version
 docker run hello-world</code></pre></div></div>
-<div class="paragraph small"><small>✅ Cette fois <code>docker compose</code> et <code>docker buildx</code> répondent</small></div></div></section><section id="et_si_podman_est_installé" class="columns"><h2>Et si Podman est installé ? 🤔</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Symptôme :</strong> <code>Cannot connect to the Docker daemon</code></p></div>
-<div class="paragraph small"><small>Conflit entre <code>/var/run/docker.sock</code> et <code>/run/podman/podman.sock</code></small></div></div></div>
-<div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo apt remove podman-docker podman</code></pre></div></div>
-<div class="paragraph small"><small>⚠️ Ubuntu <strong>n&#8217;installe pas</strong> Podman par défaut : ce cas ne concerne que vous si vous l&#8217;avez
-installé vous-même</small></div></div></div></div></section><section id="environnement_prêt"><h2>Environnement prêt ! ✅</h2><div class="slide-content"><div class="paragraph"><p>Votre environnement Docker est maintenant configuré 🎉</p></div>
+<div class="paragraph small"><small>✅ Cette fois <code>docker compose</code> et <code>docker buildx</code> répondent</small></div></div></section><section id="et_si_podman_est_installé" class="columns"><h2>Et si Podman est installé ? 🤔</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Symptôme :</strong> <code>docker</code> semble installé, mais répond
+<code>Cannot connect to the Docker daemon</code></p></div>
+<div class="paragraph small"><small>C&#8217;est le paquet <code>podman-docker</code> qui pose un <code>/usr/bin/docker</code> redirigeant vers Podman. Podman seul
+ne fournit aucune commande <code>docker</code> : on obtiendrait <code>command not found</code>.</small></div></div></div>
+<div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Qui répond, au juste ?
+command -v docker
+echo $DOCKER_HOST
+docker context ls
+
+# Retirer le wrapper suffit
+sudo apt remove podman-docker</code></pre></div></div>
+<div class="paragraph small"><small>⚠️ Ubuntu <strong>n&#8217;installe pas</strong> Podman par défaut : ce cas ne concerne que qui l&#8217;a installé lui-même</small></div></div></div></div></section><section id="environnement_prêt"><h2>Environnement prêt ! ✅</h2><div class="slide-content"><div class="paragraph"><p>Votre environnement Docker est maintenant configuré 🎉</p></div>
 <div class="ulist small"><ul><li><p>✅ GitHub Codespaces : Docker déjà installé</p></li><li><p>✅ Ubuntu 26.04 : Docker installé par le dépôt officiel</p></li><li><p>✅ Prêt pour la suite !</p></li></ul></div></div></section><section id="prochaine_étape"><h2>Prochaine étape 🚀</h2><div class="slide-content"><div class="paragraph"><p>Avant de découvrir Docker, un détour essentiel&#8230;&#8203;</p></div>
 <div class="paragraph fragment"><p><strong>La ligne de commande (CLI)</strong></p></div>
 <div class="paragraph small fragment"><small>Docker s&#8217;utilise exclusivement en ligne de commande !</small></div></div></section><section id="pourquoi_la_cli"><h2>Pourquoi la CLI ? 💻</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>🖥️ Interface fondamentale pour Docker</p></li><li class="fragment"><p>🔧 Base de tous les outils DevOps</p></li><li class="fragment"><p>💪 Compétence indispensable pour automatiser</p></li></ul></div>
@@ -1392,8 +1399,10 @@ machine où il l&#8217;était.</p></div>
 <div class="paragraph"><p>C&#8217;est précisément pour cette raison que <code>podman-docker</code> figure sur la liste des paquets que Docker
 demande de retirer.</p></div>
 <div class="paragraph"><p><strong>Si vous préférez rester sur Podman :</strong> l&#8217;alias <code>alias docker=podman</code> couvre une bonne partie de
-la CLI, mais <strong>ne fournit pas</strong> <code>docker compose</code> : il faut <code>podman-compose</code>, dont le comportement
-diffère sur plusieurs points. Le cours suppose Docker.</p></div>
+la CLI. <code>podman compose</code> existe, mais ce n&#8217;est qu&#8217;une façade : sa propre aide la décrit comme
+« Run compose workloads via an external provider such as docker-compose or podman-compose ». Il
+faut donc avoir installé l&#8217;un de ces deux fournisseurs, et le comportement diffère de Docker
+Compose sur plusieurs points. Le cours suppose Docker.</p></div>
 <div class="paragraph"><p><strong>MESSAGE CLÉ :</strong>
 "Installez Docker par le dépôt apt officiel : c&#8217;est la seule méthode qui donne Docker Engine,
 Compose et Buildx d&#8217;un coup, et qui se met à jour avec le système. Si Podman est présent sur la
