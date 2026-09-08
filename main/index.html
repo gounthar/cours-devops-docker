@@ -2029,16 +2029,16 @@ docker image ls | grep docker-git | grep '1.0.0'
 
 # Doit fonctionner
 docker container run --rm docker-git:1.0.0 git --version</code></pre></div></div></div></section><section id="mettre_à_jour_votre_image_1_1_0"><h2>🎓 Mettre à jour votre image (1.1.0)</h2><div class="slide-content"><div class="ulist"><ul><li><p>Mettez à jour votre image en version <code>1.1.0</code> avec les changements suivants :</p><div class="ulist"><ul><li><p>Ajoutez un <a href="https://docs.docker.com/engine/reference/builder/#label" target="_blank"><code>LABEL</code></a> dont la clef est <code>description</code> (et la valeur de votre choix)</p></li><li><p>Configurez <code>git</code> pour utiliser une branche <code>main</code> par défaut au lieu de <code>master</code> (commande <code>git config --global init.defaultBranch main</code>)</p></li></ul></div></li><li><p>Indices :</p><div class="ulist"><ul><li><p>💡 Commande <code>docker image inspect &lt;image name&gt;</code></p></li><li><p>💡 Commande <code>git config --get init.defaultBranch</code> (dans le conteneur)</p></li><li><p>💡 Ajoutez des lignes <strong>à la fin</strong> du <code>Dockerfile</code></p></li><li><p>💡 <a href="https://docs.docker.com/engine/reference/builder/" target="_blank">Documentation de référence des <code>Dockerfile</code></a></p></li></ul></div></li></ul></div></div></section><section id="mettre_à_jour_votre_image_1_1_0_2"><h2>✅ Mettre à jour votre image (1.1.0)</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cat ./Dockerfile
-FROM ubuntu:22.04
-RUN apt-get update &amp;&amp; apt-get install --yes --no-install-recommends git
+FROM alpine:3.24.1
+RUN apk update &amp;&amp; apk add --no-cache git
 LABEL description="Une image contenant git préconfiguré"
 RUN git config --global init.defaultBranch main
 
 docker image build -t docker-git:1.1.0 ./docker-git/
 # Sending build context to Docker daemon  2.048kB
-# Step 1/4 : FROM ubuntu:22.04
+# Step 1/4 : FROM alpine:3.24.1
 #  ---&gt; e40cf56b4be3
-# Step 2/4 : RUN apt-get update &amp;&amp; apt-get install --yes --no-install-recommends git
+# Step 2/4 : RUN apk update &amp;&amp; apk add --no-cache git
 #  ---&gt; Using cache
 #  ---&gt; 926b8d87f128
 # Step 3/4 : LABEL description="Une image contenant git préconfiguré"
@@ -2054,21 +2054,21 @@ Successfully tagged docker-git:1.1.0
 
 docker container run --rm docker-git:1.0.0 git config --get init.defaultBranch
 docker container run --rm docker-git:1.1.0 git config --get init.defaultBranch
-# main</code></pre></div></div></div></section><section id="cache_dimages_layers"><h2>Cache d&#8217;images &amp; Layers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-plaintext hljs" data-noescape="true" data-lang="plaintext">Step 2/4 : RUN apt-get update &amp;&amp; apt-get install --yes --no-install-recommends git
+# main</code></pre></div></div></div></section><section id="cache_dimages_layers"><h2>Cache d&#8217;images &amp; Layers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-plaintext hljs" data-noescape="true" data-lang="plaintext">Step 2/4 : RUN apk update &amp;&amp; apk add --no-cache git
   ---&gt; Using cache</code></pre></div></div>
 <div class="paragraph"><p>🤔 En fait, Docker n&#8217;a PAS exécuté cette commande la seconde fois &#8658; ça va beaucoup plus vite !</p></div>
 <div class="imageblock"><img src="media/docker-layers.jpg" alt="docker layers" width="400"></div>
 <div class="paragraph"><p>🎓 Essayez de voir les layers avec <a href="https://github.com/wagoodman/dive" target="_blank"><code>dive</code></a>. Il n&#8217;est pas installé dans Codespaces, mais s&#8217;utilise en conteneur sans rien installer :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm --tty --interactive \
   --volume /var/run/docker.sock:/var/run/docker.sock \
-  wagoodman/dive:latest &lt;image&gt;:&lt;tag&gt;</code></pre></div></div></div></section><section id="cache_dimages_layers_2"><h2>🎓 Cache d&#8217;images &amp; Layers</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> manipuler le cache d&#8217;images</p></li><li><p>Commencez par vérifier que le cache est utilisé : relancez la dernière commande <code>docker image build</code> (plusieurs fois s&#8217;il le faut)</p></li><li><p>Invalidez le cache en ajoutant le paquet APT <code>make</code> à installer en même temps que <code>git</code></p><div class="ulist"><ul><li><p>⚠️ Tag <code>1.2.0</code></p></li></ul></div></li><li><p>Vérifiez que le cache est bien présent de nouveau</p></li></ul></div></div></section><section id="cache_dimages_layers_3"><h2>✅ Cache d&#8217;images &amp; Layers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Build one time
+  wagoodman/dive:latest &lt;image&gt;:&lt;tag&gt;</code></pre></div></div></div></section><section id="cache_dimages_layers_2"><h2>🎓 Cache d&#8217;images &amp; Layers</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> manipuler le cache d&#8217;images</p></li><li><p>Commencez par vérifier que le cache est utilisé : relancez la dernière commande <code>docker image build</code> (plusieurs fois s&#8217;il le faut)</p></li><li><p>Invalidez le cache en ajoutant le paquet APK <code>make</code> à installer en même temps que <code>git</code></p><div class="ulist"><ul><li><p>⚠️ Tag <code>1.2.0</code></p></li></ul></div></li><li><p>Vérifiez que le cache est bien présent de nouveau</p></li></ul></div></div></section><section id="cache_dimages_layers_3"><h2>✅ Cache d&#8217;images &amp; Layers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Build one time
 docker image build -t docker-git:1.1.0 ./docker-git/
 # Second time is fully cached
 docker image build -t docker-git:1.1.0 ./docker-git/
 
 cat Dockerfile
-# FROM ubuntu:22.04
-# RUN apt-get update &amp;&amp; apt-get install --yes --no-install-recommends git make
+# FROM alpine:3.24.1
+# RUN apk update &amp;&amp; apk add --no-cache git make
 # LABEL description="Une image contenant git préconfiguré"
 # RUN git config --global init.defaultBranch main
 
