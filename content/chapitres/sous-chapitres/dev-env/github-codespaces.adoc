@@ -76,7 +76,7 @@ Encouragez-les à demander le GitHub Student Developer Pack qui double le quota 
 
 **Pas d'installation locale :**
 - Évite les problèmes de configuration spécifiques à chaque système (Windows, macOS, Linux)
-- Pas besoin de gérer les conflits Podman/Docker sur Ubuntu 25.04
+- Pas besoin de gérer un éventuel conflit Podman/Docker sur son poste
 - Pas de problèmes de permissions ou de versions
 
 **Docker pré-configuré :**
