@@ -45,5 +45,11 @@ services:
       build:
         condition: service_completed_successfully
     user: ${CURRENT_UID}
+    environment:
+      # Chromium needs a writable HOME for its crashpad database. The image
+      # only declares a home for uid 1000, so any other id -- a CI runner,
+      # most Codespaces -- lands on HOME=/ and the browser refuses to start
+      # with "chrome_crashpad_handler: --database is required". See #514.
+      - HOME=/tmp
     volumes:
       - ${DIST_DIR}:/slides
