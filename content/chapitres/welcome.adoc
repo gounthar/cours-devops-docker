@@ -30,7 +30,7 @@ On en reparlera après, mais j'aime Docker depuis longtemps, d'un amour platoniq
 
 [.column]
 --
-image::logo.svg[background, size=contain, position=left, opacity=0.1]
+image::vates-planet.png[background, size=contain, position=left, opacity=0.1]
 --
 
 
@@ -40,8 +40,8 @@ image::logo.svg[background, size=contain, position=left, opacity=0.1]
 [.strong]
 Bruno VERACHTEN
 
-image::cloudbees.svg[fit=line]
-* Sr Developer Relations chez https://www.cloudbees.com[CloudBees,window="_blank"] pour le projet link:https://www.jenkins.io/[Jenkins,window="_blank"] 👨🏻‍⚖️
+image::xcpng.svg[height=120]
+* Community Manager & Platform Evangelist chez https://vates.tech[Vates,window="_blank"], l'éditeur de link:https://xcp-ng.org/[XCP-ng,window="_blank"] et link:https://xen-orchestra.com/[Xen Orchestra,window="_blank"] 👨🏻‍⚖️
 * Me contacter :
 ** {author_mail}
 ** link:https://github.com/gounthar[{github_icon} gounthar,window="_blank"]
