@@ -6,7 +6,7 @@ image::blue-shipping-container.png[background, size=contain, position=left, opac
 
 C'est à vous (ouf) !
 
-* Allez dans Gitpod
+* Allez dans votre Codespace
 * Dans un terminal, tapez la commande suivante :
 
 [source,bash]

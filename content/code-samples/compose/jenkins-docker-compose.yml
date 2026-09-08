@@ -89,8 +89,6 @@ services:
   # Le service node est un agent Jenkins avec Node.js installé.
   node:
     build: dockerfiles/node/.  # Le Dockerfile pour construire l'image du service Node.js.
-    environment:
-      - GITPOD_WORKSPACE_URL=${GITPOD_WORKSPACE_URL}  # Les variables d'environnement pour le service.
     container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
     profiles:
       - node  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
@@ -130,8 +128,6 @@ services:
   # Le service multi est un agent Jenkins pour gérer plusieurs jobs et configurations Jenkins.
   multi:
     build: 06_multibranch_pipeline/dockerfiles/agent/.  # Le Dockerfile pour construire l'image du service multi Jenkins agent.
-    environment:
-      - GITPOD_WORKSPACE_URL=${GITPOD_WORKSPACE_URL}  # Les variables d'environnement pour le service.
     container_name: desktop-jenkins_agent-1  # Le nom du conteneur.
     profiles:
       - multi  # Les profils à appliquer au service. Cela permet de personnaliser le comportement du service en fonction des besoins spécifiques.
