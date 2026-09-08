@@ -1,6 +1,7 @@
+[background-opacity=0.1]
 = Containers
 
-image::blue-shipping-container.png[background, size=contain, position=left, opacity=0.1]
+image::blue-shipping-container.png[background, size=contain, position=left]
 
 == 🎓 Exercice : Votre premier conteneur
 

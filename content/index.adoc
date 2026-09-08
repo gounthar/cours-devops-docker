@@ -15,13 +15,14 @@ image::qrcode.png["QRCode to this presentation",height=150]
 * Mis à jour le{nbsp}: {buildDate}
 
 [background-color="MediumBlue"]
+[background-opacity=0.1]
 [.dark.background]
 [.columns]
 == Comment utiliser cette présentation ?
 
 [.column]
 --
-image::logo-t-shirt-transparent-1080.png[background, size=contain, position=left, opacity=0.1, "image générée par ideogram.ai avec un prompt créé par chatGPT]
+image::logo-t-shirt-transparent-1080.png[background, size=contain, position=left, "image générée par ideogram.ai avec un prompt créé par chatGPT]
 --
 
 [.column]
