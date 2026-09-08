@@ -69,14 +69,14 @@ Source : https://git-scm.com/book/fr/v2/D%C3%A9marrage-rapide-Rudiments-de-Git#_
 
 == 🎓 Exercice avec Git - 1.1
 
-* Dans le terminal de votre environnement GitPod:
+* Dans le terminal de votre Codespace :
 
-** Créez un dossier vide nommé `projet-vcs-1` dans le répertoire `/workspace`, puis positionnez-vous dans ce dossier
+** Créez un dossier vide nommé `projet-vcs-1` dans le répertoire `/workspaces`, puis positionnez-vous dans ce dossier
 +
 [source,bash]
 ----
-mkdir -p /workspace/projet-vcs-1/
-cd /workspace/projet-vcs-1/
+mkdir -p /workspaces/projet-vcs-1/
+cd /workspaces/projet-vcs-1/
 ----
 
 ** Est-ce qu'il y a un dossier `.git/` ?
@@ -92,8 +92,8 @@ cd /workspace/projet-vcs-1/
 
 [source,bash]
 --
-mkdir -p /workspace/projet-vcs-1/
-cd /workspace/projet-vcs-1/
+mkdir -p /workspaces/projet-vcs-1/
+cd /workspaces/projet-vcs-1/
 ls -la # Pas de dossier .git
 git status # Erreur "fatal: not a git repository"
 git init ./
@@ -220,7 +220,10 @@ git add ./index.html && git commit --message="Ajout d'une page HTML par défaut"
 
 git log
 git log --graph
-git lg # cat ~/.gitconfig => regardez la section section [alias], cette commande est déjà définie!
+
+# 'git lg' n'existe pas par défaut : c'est un alias, à définir une fois pour toutes
+git config --global alias.lg "log --graph --oneline --decorate --all"
+git lg # cat ~/.gitconfig => l'alias apparaît maintenant dans la section [alias]
 --
 
 == Terminologie de Git - Merge

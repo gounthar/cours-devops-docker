@@ -157,19 +157,19 @@ cat /etc/os-release
 git --version
 # ...
 
-# Même version de Linux que dans GitPod
-docker container run --rm ubuntu:22.04 git --version
+# Même version de Linux que dans Codespaces
+docker container run --rm ubuntu:24.04 git --version
 # docker: Error response from daemon: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: "git": executable file not found in $PATH: unknown.
 
 # En interactif ?
-docker container run --rm --tty --interactive ubuntu:22.04 git --version
+docker container run --rm --tty --interactive ubuntu:24.04 git --version
 ----
 
 == 🎓 Fabriquer sa première image
 
 * *But :* fabriquer une image Docker qui contient `git`
 
-* Dans votre workspace Gitpod, créez un dossier nommé `docker-git/`
+* Dans votre Codespace, créez un dossier nommé `docker-git/`
 * Dans ce dossier, créer un fichier `Dockerfile` avec le contenu ci-dessous :
 +
 [source,Dockerfile]
@@ -682,7 +682,14 @@ Step 2/4 : RUN apt-get update && apt-get install --yes --no-install-recommends g
 
 image::docker-layers.jpg[width=400]
 
-🎓 Essayez de voir les layers avec (dans Gitpod) https://github.com/wagoodman/dive[`dive <image>:<tag>`,window="_blank"]
+🎓 Essayez de voir les layers avec https://github.com/wagoodman/dive[`dive`,window="_blank"]. Il n'est pas installé dans Codespaces, mais s'utilise en conteneur sans rien installer :
+
+[source,bash]
+----
+docker container run --rm --tty --interactive \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
+  wagoodman/dive:latest <image>:<tag>
+----
 
 == 🎓 Cache d'images & Layers
 
