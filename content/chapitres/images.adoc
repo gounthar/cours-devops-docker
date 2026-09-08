@@ -644,16 +644,16 @@ docker container run --rm docker-git:1.0.0 git --version
 [source,bash]
 ----
 cat ./Dockerfile
-FROM ubuntu:22.04
-RUN apt-get update && apt-get install --yes --no-install-recommends git
+FROM alpine:3.24.1
+RUN apk update && apk add --no-cache git
 LABEL description="Une image contenant git préconfiguré"
 RUN git config --global init.defaultBranch main
 
 docker image build -t docker-git:1.1.0 ./docker-git/
 # Sending build context to Docker daemon  2.048kB
-# Step 1/4 : FROM ubuntu:22.04
+# Step 1/4 : FROM alpine:3.24.1
 #  ---> e40cf56b4be3
-# Step 2/4 : RUN apt-get update && apt-get install --yes --no-install-recommends git
+# Step 2/4 : RUN apk update && apk add --no-cache git
 #  ---> Using cache
 #  ---> 926b8d87f128
 # Step 3/4 : LABEL description="Une image contenant git préconfiguré"
@@ -676,7 +676,7 @@ docker container run --rm docker-git:1.1.0 git config --get init.defaultBranch
 
 [source, plaintext]
 ----
-Step 2/4 : RUN apt-get update && apt-get install --yes --no-install-recommends git
+Step 2/4 : RUN apk update && apk add --no-cache git
   ---> Using cache
 ----
 
@@ -699,7 +699,7 @@ docker container run --rm --tty --interactive \
 
 * Commencez par vérifier que le cache est utilisé : relancez la dernière commande `docker image build` (plusieurs fois s'il le faut)
 
-* Invalidez le cache en ajoutant le paquet APT `make` à installer en même temps que `git`
+* Invalidez le cache en ajoutant le paquet APK `make` à installer en même temps que `git`
 ** ⚠️ Tag `1.2.0`
 
 * Vérifiez que le cache est bien présent de nouveau
@@ -714,8 +714,8 @@ docker image build -t docker-git:1.1.0 ./docker-git/
 docker image build -t docker-git:1.1.0 ./docker-git/
 
 cat Dockerfile
-# FROM ubuntu:22.04
-# RUN apt-get update && apt-get install --yes --no-install-recommends git make
+# FROM alpine:3.24.1
+# RUN apk update && apk add --no-cache git make
 # LABEL description="Une image contenant git préconfiguré"
 # RUN git config --global init.defaultBranch main
 
