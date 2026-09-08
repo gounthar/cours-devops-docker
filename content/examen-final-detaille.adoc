@@ -434,7 +434,7 @@ COPY src ./src
 RUN mvn package -DskipTests
 
 # Stage 2: Runtime
-FROM tomcat:10-jre17-temurin-alpine
+FROM tomcat:11-jre17-temurin-noble
 
 # Supprimer les apps par défaut de Tomcat
 RUN rm -rf /usr/local/tomcat/webapps/*
@@ -443,11 +443,12 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 COPY --from=builder /app/target/myapp.war /usr/local/tomcat/webapps/ROOT.war
 
 # Utilisateur non-root (sécurité)
-RUN addgroup -g 1001 -S appgroup && \
-    adduser -u 1001 -S appuser -G appgroup && \
+# Base Ubuntu : syntaxe groupadd/useradd, pas addgroup -S d'Alpine
+RUN groupadd -g 1001 appgroup && \
+    useradd -u 1001 -g 1001 appuser && \
     chown -R appuser:appgroup /usr/local/tomcat
 
-USER appuser
+USER 1001:1001
 
 EXPOSE 8080
 
@@ -460,6 +461,26 @@ CMD ["catalina.sh", "run"]
 * Séparation build / runtime
 * Amélioration de la sécurité
 
+**Deux pièges dans ce bloc, à connaître avant de le recopier :**
+
+* **L'image officielle `tomcat` n'a pas de variante Alpine.** Aucun tag Alpine n'a
+  été publié au-delà de 9.0.20 (2019) ; `tomcat:10-jre17-temurin-alpine` n'existe
+  pas et le build s'arrête sur `no such manifest`. La variante actuelle est
+  `-noble`, donc **Ubuntu 24.04**. Vérifier qu'un tag existe avant de l'épingler :
++
+[source,bash]
+----
+docker manifest inspect tomcat:11-jre17-temurin-noble
+----
+* **La syntaxe de création d'utilisateur dépend de la base.** `addgroup -S` /
+  `adduser -S` sont des commandes BusyBox, donc Alpine. Sur une base Debian ou
+  Ubuntu il faut `groupadd` / `useradd`, sinon le build échoue sur
+  `Option g is ambiguous (gecos, gid, group)`.
+
+L'image de base `tomcat:11-jre17-temurin-noble` pèse 414 MB ; le Dockerfile
+ci-dessus produit une image de 447 MB, sous la limite de 500 MB fixée plus bas.
+Le JRE 17 du runtime est aligné sur le JDK du stage de build.
+
 ==== Taille des images
 
 **Critères d'évaluation :**
@@ -469,7 +490,9 @@ CMD ["catalina.sh", "run"]
 
 **Conseils pour réduire la taille :**
 
-* Utiliser des images de base Alpine quand possible (`alpine`, `slim`)
+* Utiliser des images de base Alpine quand possible (`alpine`, `slim`) — en
+  vérifiant que la variante existe pour l'image visée, ce qui n'est pas le cas
+  de `tomcat`
 * Multi-stage builds
 * Nettoyer les caches (`apt-get clean`, `yum clean all`, etc.)
 * Utiliser `.dockerignore`
@@ -808,20 +831,39 @@ Vous devez créer au moins **un dashboard Kibana basique** avec :
 
 Tous les conteneurs doivent tourner avec un utilisateur **non-root**.
 
-**Dans le Dockerfile :**
+**Dans le Dockerfile — la commande dépend de la base de l'image.**
+
+Sur une base Debian ou Ubuntu (`python:3.11-slim`, `tomcat:…-noble`, `ubuntu`) :
 
 [source,dockerfile]
 ----
 # Créer un utilisateur
-RUN addgroup -g 1001 -S appgroup && \
-    adduser -u 1001 -S appuser -G appgroup
+RUN groupadd -g 1001 appgroup && \
+    useradd -u 1001 -g 1001 appuser
 
 # Changer les permissions
 RUN chown -R appuser:appgroup /app
 
-# Passer à l'utilisateur
-USER appuser
+# Passer à l'utilisateur (forme numérique : pas de lookup dans /etc/passwd)
+USER 1001:1001
 ----
+
+Sur une base Alpine (`alpine`, `node:20-alpine`), où `adduser` est fourni par
+BusyBox :
+
+[source,dockerfile]
+----
+RUN addgroup -g 1001 -S appgroup && \
+    adduser -u 1001 -S appuser -G appgroup
+
+RUN chown -R appuser:appgroup /app
+
+USER 1001:1001
+----
+
+Utiliser la syntaxe BusyBox sur une base Ubuntu échoue sur
+`Option g is ambiguous (gecos, gid, group)` ; l'inverse échoue sur
+`groupadd: not found`.
 
 **Ou dans le docker-compose.yml :**
 
