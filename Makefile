@@ -166,7 +166,13 @@ check-assets:
 	@echo "OK: every local file referenced by the built HTML exists"
 
 ## Not in `verify` on purpose -- see the comment above check-assets.
+##
+## The image is pulled quietly first, on its own line. Left to `docker run`,
+## fifteen lines of layer-pull progress land on stderr, and the scheduled job
+## copies the whole stream into the issue body, burying the findings under
+## checksum noise. A pull failure still surfaces: `docker run` fails next.
 check-links:
+	@docker pull --quiet $(LYCHEE_IMAGE) >/dev/null 2>&1 || true
 	@decks=""; \
 	for deck in index index-examen; do \
 	  if [ -f $(DIST_DIR)/$$deck.html ]; then \
