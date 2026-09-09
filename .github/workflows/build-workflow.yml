@@ -13,10 +13,6 @@ on:
   pull_request:
   workflow_dispatch:
 
-concurrency:
-  group: deploy-${{ github.ref_name }}
-  cancel-in-progress: true
-
 # Without this block the jobs inherit the repository default, which this
 # repository sets to `write`: the job that only builds slides was handed a
 # read/write token. See issue #481.
@@ -31,6 +27,18 @@ jobs:
   build-slides:
     name: 'Build Slides'
     runs-on: ubuntu-latest
+    # Cancel a superseded *build*, never a publication in flight. This used to
+    # sit at workflow level, where `cancel-in-progress: true` cancels the whole
+    # run -- `deploy` included, mid force-push -- which is precisely the race
+    # the `gh-pages-deploy` group below exists to prevent. Scoping it to this
+    # job keeps the saving and removes the race. See issue #528.
+    #
+    # Expect a cancelled run to read as `fail` in `gh pr checks` while the API
+    # returns CANCELLED. That is not a CI failure; check `gh run list` before
+    # debugging one.
+    concurrency:
+      group: build-slides-${{ github.ref_name }}
+      cancel-in-progress: true
     steps:
       - name: 'Check environment'
         run: |
@@ -81,6 +89,7 @@ jobs:
     # The only job that writes to the repository: it force-pushes to gh-pages.
     permissions:
       contents: write
+    # Serialises the force pushes to gh-pages. Two at once overwrite each other.
     concurrency:
       group: gh-pages-deploy
       cancel-in-progress: false
