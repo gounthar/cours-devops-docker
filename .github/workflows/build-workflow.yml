@@ -1,9 +1,10 @@
 name: Slides Workflow
 
+# The `create:` trigger was removed here -- see issue #482. Its `tags:` filter
+# is silently ignored by GitHub (actionlint: "tags filter is not available for
+# create event"), so it fired on *every* branch creation as well. The `push`
+# trigger below carries a `tags` filter that is honoured.
 on:
-  create:
-    tags:
-      - '*'
   push:
     branches-ignore:
       - gh-pages
