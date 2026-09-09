@@ -23,6 +23,7 @@ ce que le Dockerfile produirait. C'est ce que `make check-diagrams` exécute.
 """
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
@@ -78,16 +79,23 @@ INSTRUCTION_GROUP = {
 
 
 def split_command(args):
-    """Découpe l'argument en (commande_mise_en_valeur, reste).
+    r"""Découpe l'argument en (commande_mise_en_valeur, reste).
 
     Renvoie ("", args) si rien ne correspond -- c'est le cas de `apk update`,
     volontairement, puisque l'original ne le met pas en valeur.
+
+    Le découpage se fait sur la chaîne d'origine, pas sur une version
+    renormalisée. Découper à `len(" ".join(mots))` casse dès que la source
+    contient deux espaces : sur `apk  add --no-cache git`, le préfixe reconstruit
+    fait 7 caractères alors que le vrai en fait 8, et le reste commençait par un
+    `d` en trop. `(?!\S)` empêche par ailleurs `apk add` de mordre sur un
+    hypothétique `apk addition`.
     """
-    words = args.split()
     for prefix in COMMAND_PREFIXES:
-        if tuple(words[: len(prefix)]) == prefix:
-            head = " ".join(words[: len(prefix)])
-            return head, args[len(head) :]
+        pattern = r"\s*" + r"\s+".join(re.escape(w) for w in prefix) + r"(?!\S)"
+        m = re.match(pattern, args)
+        if m:
+            return m.group(0).strip(), args[m.end() :]
     return "", args
 
 
@@ -304,7 +312,30 @@ def main():
     else:
         wanted = [(args.output, build_svg(rows, width=args.width))]
 
+    # Fichiers d'etapes perimes. Si le Dockerfile perd un groupe -- un `LABEL`
+    # retire, par exemple -- la sequence raccourcit, mais l'ancienne derniere
+    # etape reste sur le disque. `images.adoc` continue de la referencer,
+    # `check-assets` la trouve puisqu'elle existe, et `--check` ne la voyait pas
+    # puisqu'il ne verifiait que les fichiers qu'il aurait ecrits. Resultat : une
+    # barriere verte au-dessus d'une diapositive perimee, c'est-a-dire tout ce
+    # que ce script existe pour empecher.
+    stale = []
+    if args.steps:
+        expected = {path for path, _ in wanted}
+        pattern = re.compile(re.escape(args.output.stem) + r"-\d+$")
+        for sibling in args.output.parent.glob(f"{args.output.stem}-*{args.output.suffix}"):
+            if pattern.fullmatch(sibling.stem) and sibling not in expected:
+                stale.append(sibling)
+
     if args.check:
+        if stale:
+            noms = ", ".join(sorted(f.name for f in stale))
+            sys.exit(
+                f"ERREUR : etape(s) perimee(s) a cote de la sequence attendue : {noms}.\n"
+                f"       {args.dockerfile} ne produit plus que {len(wanted)} etapes.\n"
+                f"       Lancer 'make diagrams', qui les supprimera, puis verifier\n"
+                f"       que le deck ne les reference plus."
+            )
         for path, svg in wanted:
             if not path.is_file():
                 sys.exit(
@@ -324,6 +355,11 @@ def main():
     args.output.parent.mkdir(parents=True, exist_ok=True)
     for path, svg in wanted:
         path.write_text(svg, encoding="utf-8")
+    # Ces fichiers ne sont produits que par ce script : les effacer est sans
+    # risque et evite qu'une etape orpheline survive a un raccourcissement.
+    for path in stale:
+        path.unlink()
+        print(f"SUPPRIME: {path} (etape perimee)")
     print(f"OK: {len(wanted)} fichier(s) produit(s) depuis {args.dockerfile}")
 
 
