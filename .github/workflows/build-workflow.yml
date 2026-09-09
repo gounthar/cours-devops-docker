@@ -17,6 +17,12 @@ concurrency:
   group: deploy-${{ github.ref_name }}
   cancel-in-progress: true
 
+# Without this block the jobs inherit the repository default, which this
+# repository sets to `write`: the job that only builds slides was handed a
+# read/write token. See issue #481.
+permissions:
+  contents: read
+
 env:
   REPOSITORY_URL: https://github.com/${{ github.repository }}
   PRESENTATION_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.ref_name }}
@@ -29,10 +35,14 @@ jobs:
       - name: 'Check environment'
         run: |
           docker compose version
-          echo $REPOSITORY_URL
-          echo $PRESENTATION_URL
+          echo "$REPOSITORY_URL"
+          echo "$PRESENTATION_URL"
+      # This job never pushes, so the checkout token has no reason to survive
+      # in .git/config once the clone is done. Same reasoning as link-check.yml.
       - name: 'Checkout'
-        uses: actions/checkout@master
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: 'Validate package-lock.json sync'
         run: |
           cd npm-packages
@@ -68,6 +78,9 @@ jobs:
     needs: [build-slides]
     # Only run deploy when pushing code on a branch of the repository
     if: github.event_name == 'push'
+    # The only job that writes to the repository: it force-pushes to gh-pages.
+    permissions:
+      contents: write
     concurrency:
       group: gh-pages-deploy
       cancel-in-progress: false
