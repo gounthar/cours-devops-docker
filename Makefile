@@ -138,6 +138,29 @@ PDF_EXCLUDE = $(if $(wildcard $(DIST_DIR)/slides.pdf),,--exclude 'slides\.pdf$$'
 ## wrote, and the run fails loudly rather than quietly passing.
 REPO_EXCLUDE = $(if $(filter file://%,$(REPOSITORY_URL)),--exclude '^$(REPOSITORY_URL)',)
 
+## Les diagrammes qui montrent un Dockerfile sont *derives* du Dockerfile, pas
+## dessines a cote. Un PNG exporte d'un PowerPoint ne peut pas suivre : celui du
+## defi JRE montrait encore alpine:3.18 et un `RUN apk update` supprime depuis,
+## alors que dependabot avait monte l'etiquette du Dockerfile onze fois. Voir
+## issues #527 et #537.
+##
+## `diagrams` regenere, `check-diagrams` echoue si le SVG commite ne correspond
+## plus a son Dockerfile. Le second est dans `verify` : il est hors ligne et
+## deterministe, donc il peut bloquer une PR sans dependre de personne.
+DIAGRAM_CARDS = content/media/dockerfile-defi.svg:content/code-samples/images/defi/Dockerfile
+
+diagrams:
+	@for pair in $(DIAGRAM_CARDS); do \
+	  svg=$${pair%%:*}; src=$${pair#*:}; \
+	  python3 $(CURDIR)/scripts/gen_dockerfile_card.py "$(CURDIR)/$$src" "$(CURDIR)/$$svg" || exit 1; \
+	done
+
+check-diagrams:
+	@for pair in $(DIAGRAM_CARDS); do \
+	  svg=$${pair%%:*}; src=$${pair#*:}; \
+	  python3 $(CURDIR)/scripts/gen_dockerfile_card.py "$(CURDIR)/$$src" "$(CURDIR)/$$svg" --check || exit 1; \
+	done
+
 check-assets:
 	@test -d $(DIST_DIR) || { \
 	  echo "ERROR: $(DIST_DIR) does not exist. Run 'make build' first (see issue #486)."; \
@@ -187,7 +210,7 @@ check-links:
 	fi; \
 	$(call lychee_run,--exclude '^file://' $(LYCHEE_EXTRA) $$decks)
 
-verify: check-dashes check-opacity check-assets
+verify: check-dashes check-diagrams check-opacity check-assets
 	@echo "NOTE: external links are checked by 'make check-links', not here (see issue #486)"
 
 serve:

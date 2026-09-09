@@ -256,7 +256,7 @@ for i in {52..56}; do convert Diapositive${i}.PNG -crop 9580x5224+1879+1795 -tra
 
 [.column]
 --
-image::images-output56_with_transparency.png[]
+image::dockerfile-defi.svg[Structure d'un Dockerfile : couche de base, metadata, commandes d'installation]
 --
 
 [.column]
