@@ -106,7 +106,10 @@ jobs:
             echo "chacune avec la mesure qui la justifie. Reproduire en local :"
             echo
             echo '```bash'
-            echo 'make build && make pdf && make check-links'
+            echo 'make build'
+            echo 'SOURCE_FILE=index-examen.adoc make build'
+            echo 'make pdf'
+            echo 'make check-links'
             echo '```'
             echo
             echo '```'
