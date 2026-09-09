@@ -43,5 +43,10 @@ exclude = [
 
   ## LinkedIn answers 999 to every automated client as a matter of policy.
   ## Verified alive on 2026-09-09: curl with a browser agent returns 200.
-  "^https://(www\\.)?linkedin\\.com/",
+  ##
+  ## Any subdomain, not just www. The first version of this pattern matched
+  ## `www.linkedin.com` only, and the course also links `fr.linkedin.com`,
+  ## which slipped through and was reported as broken by the first scheduled
+  ## run. Country subdomains are the norm on LinkedIn, not the exception.
+  "^https://([a-z0-9-]+\\.)*linkedin\\.com/",
 ]

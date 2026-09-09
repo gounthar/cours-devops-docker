@@ -55,10 +55,25 @@ jobs:
       - name: 'Build PDF slides'
         run: make pdf
 
+      # `set -o pipefail` is the whole point of this step. GitHub runs `run:`
+      # under `bash -e`, WITHOUT pipefail, so the exit status of the pipeline
+      # is tee's, which is always 0. Without it, `make check-links` reported
+      # six dead links, exited 2, and the step still went green -- the Report
+      # step then read OUTCOME=success and CLOSED the tracking issue. A check
+      # signalling success while ignoring what it found is the exact defect
+      # issue #486 exists to remove, reintroduced in the fix for it.
+      # Hosts that answer a workstation but refuse the runner's address. This
+      # is a reachability limit of CI, not a dead link, so it is excluded here
+      # rather than in lychee.toml -- `make check-links` from a workstation
+      # still covers them. grottedubarbu.fr: 403 from the runner on
+      # 2026-09-09, 200 from a workstation the same minute.
       - name: 'Check links'
         id: check
         continue-on-error: true
+        env:
+          LYCHEE_EXTRA: --exclude 'grottedubarbu\.fr'
         run: |
+          set -o pipefail
           make check-links 2>&1 | tee link-report.txt
 
       - name: 'Report'
