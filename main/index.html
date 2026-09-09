@@ -604,14 +604,14 @@ ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
 ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 
 # Votre gestionnaire de paquets utilisera désormais le proxy
-RUN apk update &amp;&amp; apk add your-package</code></pre></div></div>
+RUN apk add --no-cache your-package</code></pre></div></div>
 <div class="paragraph"><p>⚠️ <strong>Ordre crucial:</strong> <code>FROM</code> → <code>ENV</code> → <code>RUN</code> (réseau)</p></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache_3" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><h3>Option 2 – Build multi-étapes (proxy uniquement quand nécessaire)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Étape de build avec proxy
 FROM alpine:latest as builder
 ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
 ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
-RUN apk update &amp;&amp; apk add build-dependencies
+RUN apk add --no-cache build-dependencies
 
 # Étape finale sans proxy
 FROM alpine:latest
@@ -620,7 +620,7 @@ COPY --from=builder /built-artifacts /app</code></pre></div></div></div></sectio
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">ARG https_proxy
 ARG http_proxy
 
-RUN apk update &amp;&amp; apk add your-package</code></pre></div></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache_5" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><h3>Option 4 – Configuration du démon Docker (système entier)</h3><div class="paragraph"><p>Ajouter dans <code>/etc/docker/daemon.json</code> :</p></div>
+RUN apk add --no-cache your-package</code></pre></div></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache_5" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><h3>Option 4 – Configuration du démon Docker (système entier)</h3><div class="paragraph"><p>Ajouter dans <code>/etc/docker/daemon.json</code> :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">{
   "proxies": {
     "http-proxy": "http://cache-etu.univ-artois.fr:3128",
@@ -1921,10 +1921,10 @@ docker container run --rm ubuntu:24.04 git --version
 # En interactif ?
 docker container run --rm --tty --interactive ubuntu:24.04 git --version</code></pre></div></div></div></section><section id="fabriquer_sa_première_image"><h2>🎓 Fabriquer sa première image</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But :</strong> fabriquer une image Docker qui contient <code>git</code></p></li><li><p>Dans votre Codespace, créez un dossier nommé <code>docker-git/</code></p></li><li><p>Dans ce dossier, créer un fichier <code>Dockerfile</code> avec le contenu ci-dessous :</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-noescape="true" data-lang="Dockerfile">FROM alpine:3.24.1
 
-RUN apk update &amp;&amp; apk add --no-cache git</code></pre></div></div></li><li><p>Fabriquez votre image avec la commande <code>docker image build --tag=docker-git chemin/vers/docker-git/</code></p></li><li><p>Testez l&#8217;image fraîchement fabriquée</p><div class="ulist"><ul><li><p>💡 <code>docker image ls</code></p></li></ul></div></li></ul></div></div></section><section id="fabriquer_sa_première_image_2"><h2>✅ Fabriquer sa première image</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cat &lt;&lt;EOF &gt;Dockerfile
+RUN apk add --no-cache git</code></pre></div></div></li><li><p>Fabriquez votre image avec la commande <code>docker image build --tag=docker-git chemin/vers/docker-git/</code></p></li><li><p>Testez l&#8217;image fraîchement fabriquée</p><div class="ulist"><ul><li><p>💡 <code>docker image ls</code></p></li></ul></div></li></ul></div></div></section><section id="fabriquer_sa_première_image_2"><h2>✅ Fabriquer sa première image</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cat &lt;&lt;EOF &gt;Dockerfile
 FROM alpine:3.24.1
 
-RUN apk update &amp;&amp; apk add --no-cache git
+RUN apk add --no-cache git
 EOF
 
 docker image build --tag=docker-git ./
@@ -1940,8 +1940,6 @@ docker container run --rm docker-git:latest git --version</code></pre></div></di
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {52..56}; do convert Diapositive${i}.PNG -crop 9580x5224+1879+1795 -transparent white -resize x1080 images-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="fabriquer_son_image_3" class="columns" data-auto-animate><h2>🐋 📖🍳 Fabriquer son image</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="imageblock"><img src="media/images-output56_with_transparency.png" alt="images output56 with transparency"></div></div></div>
 <div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.24.1
 LABEL maintainer="Tony Stark"
-
-RUN apk update
 
 RUN apk add --no-cache openjdk17-jre-headless</code></pre></div></div></div></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {52..56}; do convert Diapositive${i}.PNG -crop 9580x5224+1879+1795 -transparent white -resize x1080 images-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="cuistot_au_boulot" data-auto-animate><h2>🐋 📖🍳 Cuistot, au boulot!</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output57_with_transparency.png" alt="images output57 with transparency"></div></div></section><section id="cuistot_au_boulot_2" data-auto-animate><h2>🐋 📖🍳 Cuistot, au boulot!</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output58_with_transparency.png" alt="images output58 with transparency"></div></div></section><section id="cuistot_au_boulot_3" data-auto-animate><h2>🐋 📖🍳 Cuistot, au boulot!</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output59_with_transparency.png" alt="images output59 with transparency"></div></div></section><section id="cuistot_au_boulot_4" class="columns" data-auto-animate><h2>🐋 📖🍳 Cuistot, au boulot!</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="imageblock"><img src="media/images-output59_with_transparency.png" alt="images output59 with transparency"></div></div></div>
@@ -2030,7 +2028,7 @@ docker image ls | grep docker-git | grep '1.0.0'
 # Doit fonctionner
 docker container run --rm docker-git:1.0.0 git --version</code></pre></div></div></div></section><section id="mettre_à_jour_votre_image_1_1_0"><h2>🎓 Mettre à jour votre image (1.1.0)</h2><div class="slide-content"><div class="ulist"><ul><li><p>Mettez à jour votre image en version <code>1.1.0</code> avec les changements suivants :</p><div class="ulist"><ul><li><p>Ajoutez un <a href="https://docs.docker.com/engine/reference/builder/#label" target="_blank"><code>LABEL</code></a> dont la clef est <code>description</code> (et la valeur de votre choix)</p></li><li><p>Configurez <code>git</code> pour utiliser une branche <code>main</code> par défaut au lieu de <code>master</code> (commande <code>git config --global init.defaultBranch main</code>)</p></li></ul></div></li><li><p>Indices :</p><div class="ulist"><ul><li><p>💡 Commande <code>docker image inspect &lt;image name&gt;</code></p></li><li><p>💡 Commande <code>git config --get init.defaultBranch</code> (dans le conteneur)</p></li><li><p>💡 Ajoutez des lignes <strong>à la fin</strong> du <code>Dockerfile</code></p></li><li><p>💡 <a href="https://docs.docker.com/engine/reference/builder/" target="_blank">Documentation de référence des <code>Dockerfile</code></a></p></li></ul></div></li></ul></div></div></section><section id="mettre_à_jour_votre_image_1_1_0_2"><h2>✅ Mettre à jour votre image (1.1.0)</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cat ./Dockerfile
 FROM alpine:3.24.1
-RUN apk update &amp;&amp; apk add --no-cache git
+RUN apk add --no-cache git
 LABEL description="Une image contenant git préconfiguré"
 RUN git config --global init.defaultBranch main
 
@@ -2038,7 +2036,7 @@ docker image build -t docker-git:1.1.0 ./docker-git/
 # Sending build context to Docker daemon  2.048kB
 # Step 1/4 : FROM alpine:3.24.1
 #  ---&gt; e40cf56b4be3
-# Step 2/4 : RUN apk update &amp;&amp; apk add --no-cache git
+# Step 2/4 : RUN apk add --no-cache git
 #  ---&gt; Using cache
 #  ---&gt; 926b8d87f128
 # Step 3/4 : LABEL description="Une image contenant git préconfiguré"
@@ -2054,8 +2052,17 @@ Successfully tagged docker-git:1.1.0
 
 docker container run --rm docker-git:1.0.0 git config --get init.defaultBranch
 docker container run --rm docker-git:1.1.0 git config --get init.defaultBranch
-# main</code></pre></div></div></div></section><section id="cache_dimages_layers"><h2>Cache d&#8217;images &amp; Layers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-plaintext hljs" data-noescape="true" data-lang="plaintext">Step 2/4 : RUN apk update &amp;&amp; apk add --no-cache git
+# main</code></pre></div></div></div></section><section id="cache_dimages_layers"><h2>Cache d&#8217;images &amp; Layers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-plaintext hljs" data-noescape="true" data-lang="plaintext">Step 2/4 : RUN apk add --no-cache git
   ---&gt; Using cache</code></pre></div></div>
+<aside class="notes"><div class="paragraph"><p>Pourquoi <code>--no-cache</code> et pas <code>apk update &amp;&amp; apk add</code> ?</p></div>
+<div class="paragraph"><p><code>apk update</code> écrit l&#8217;index des paquets dans <code>/var/cache/apk/</code>, et cet index reste dans la
+couche. <code>--no-cache</code> demande à <code>apk</code> de télécharger le même index sans le conserver : les
+deux ensemble se contredisent, la couche garde le cache que <code>--no-cache</code> devait éviter.</p></div>
+<div class="paragraph"><p>Mesuré sur <code>alpine:3.24.1</code>, deux images ne différant que par cette ligne :</p></div>
+<div class="ulist"><ul><li><p><code>RUN apk update &amp;&amp; apk add --no-cache git</code> : 38,8 MB, <code>/var/cache/apk</code> = 2,9 Mo</p></li><li><p><code>RUN apk add --no-cache git</code> : 32,6 MB, <code>/var/cache/apk</code> = 4,0 Ko</p></li></ul></div>
+<div class="paragraph"><p>Même <code>git version 2.54.0</code> des deux côtés. 6,2 MB inutiles, soit environ 19 % de l&#8217;image.</p></div>
+<div class="paragraph"><p>Deux <code>RUN</code> séparés (<code>RUN apk update</code> puis <code>RUN apk add</code>) sont pires encore : deux couches
+au lieu d&#8217;une, le cache conservé, et un index que le cache de build peut resservir périmé.</p></div></aside>
 <div class="paragraph"><p>🤔 En fait, Docker n&#8217;a PAS exécuté cette commande la seconde fois &#8658; ça va beaucoup plus vite !</p></div>
 <div class="imageblock"><img src="media/docker-layers.jpg" alt="docker layers" width="400"></div>
 <div class="paragraph"><p>🎓 Essayez de voir les layers avec <a href="https://github.com/wagoodman/dive" target="_blank"><code>dive</code></a>. Il n&#8217;est pas installé dans Codespaces, mais s&#8217;utilise en conteneur sans rien installer :</p></div>
@@ -2068,7 +2075,7 @@ docker image build -t docker-git:1.1.0 ./docker-git/
 
 cat Dockerfile
 # FROM alpine:3.24.1
-# RUN apk update &amp;&amp; apk add --no-cache git make
+# RUN apk add --no-cache git make
 # LABEL description="Une image contenant git préconfiguré"
 # RUN git config --global init.defaultBranch main
 
@@ -2101,7 +2108,7 @@ http_access allow all</code></pre></div></div>
 On va s&#8217;outiller!</p></div></div></div>
 <div class="openblock column is-half"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.24
 LABEL maintainer="John Doe"
-RUN apk update &amp;&amp; apk add curl
+RUN apk add --no-cache curl
 # Si vous utilisez le proxy de l'Université
 CMD ["curl","-x", "http://prx:3128", "-L", "--connect-timeout", "60", "http://google.com"]
 # Si vous utilisez votre propre proxy docker
@@ -2124,7 +2131,7 @@ docker container run --rm my-curl:2.0 http://twitter.com</code></pre></div></div
 <div class="paragraph"><p>Paramétrable, et hop!</p></div></div></div>
 <div class="openblock column is-half"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.24
 LABEL maintainer="John Doe"
-RUN apk update &amp;&amp; apk add curl
+RUN apk add --no-cache curl
 # Si vous utilisez le proxy de l'Université
 ENTRYPOINT ["curl","-x", "http://prx:3128", "-L", "--connect-timeout", "60"]
 # Si vous utilisez votre propre proxy docker
@@ -2137,7 +2144,7 @@ google blahblahblah [...]
 <div class="paragraph"><p>Paramétrable, et hop!</p></div></div></div>
 <div class="openblock column is-half"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.24
 LABEL maintainer="John Doe"
-RUN apk update &amp;&amp; apk add curl
+RUN apk add --no-cache curl
 # Si vous utilisez le proxy de l'Université
 ENTRYPOINT ["curl","-x", "http://prx:3128", "-L", "--connect-timeout", "60"]
 # Si vous utilisez votre propre proxy docker
@@ -5449,8 +5456,8 @@ a469e4d1cb0c   3 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0
 Ça progresse&#8230;&#8203; On peut donc créer un premier 💀 Dockerfile</p></li></ul></div></div></section><section id="solution_travaux_pratiques_14_10" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍💀</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Utiliser Alpine ou Debian comme image de base
 FROM alpine
 
-# Mettre à jour le système et installer nginx
-RUN apk update &amp;&amp; apk add nginx
+# Installer nginx sans garder l'index des paquets
+RUN apk add --no-cache nginx
 
 # Exposer le port 80
 EXPOSE 80
@@ -5493,9 +5500,9 @@ C&#8217;est encore le fichier de base de nginx sous CentOs.
 # Utilise Alpine Linux comme image de base. Alpine Linux est une distribution Linux légère et orientée sécurité.
 FROM alpine
 
-# Met à jour la liste des paquets du système et installe Nginx.
+# Installe Nginx sans conserver l'index des paquets dans la couche.
 # Nginx est un serveur web populaire qui peut également être utilisé comme proxy inverse, équilibreur de charge et cache HTTP.
-RUN apk update &amp;&amp; apk add nginx &amp;&amp; rm -rf /var/cache/apk/*
+RUN apk add --no-cache nginx
 
 # Expose le port 80 au monde extérieur. C'est le port standard pour le trafic HTTP.
 EXPOSE 80
