@@ -1667,6 +1667,4 @@ Difficultés rencontrées
 
 == Questions ?
 
-image::questions-docker.png[height=400px]
-
 {author_mail}

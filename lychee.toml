@@ -1,0 +1,47 @@
+# Link checker configuration -- see issue #486.
+#
+# Two Makefile targets share this file:
+#   make check-assets  (offline, runs inside `make verify`) -- local files only
+#   make check-links   (network, run on demand and weekly in CI) -- external URLs
+#
+# Every exclusion below is a measured decision, not a convenience. A link
+# checker that hides real breakage is the failure this repository keeps
+# hitting: a control that reports success without checking anything.
+
+## Identify as a browser.
+##
+## This is not evasion, it is accuracy. Measured on 2026-09-09 against the
+## course bibliography: with the default agent, five blog.stephane-robert.info
+## pages answered 403 and LinkedIn answered 999, while all of them are alive
+## and serve 200 to a browser. Excluding those hosts would have hidden real
+## breakage on them; nine of twenty failures were this, and a report that is
+## half false gets ignored, then switched off.
+user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+
+## Be polite rather than fast. The whole run takes well under a minute.
+max_concurrency = 6
+timeout = 25
+max_retries = 2
+no_progress = true
+
+## Course material teaches commands against the student's own machine:
+## localhost:8080, 172.17.0.2, 192.168.x. Asciidoctor turns those into real
+## anchors, so they reach the checker and none of them are reachable from CI.
+exclude_loopback = true
+exclude_private = true
+exclude_link_local = true
+
+exclude = [
+  ## Campus intranet: resolvable from the university network only. The GitLab,
+  ## Moodle and ownCloud links are correct for students and unreachable from a
+  ## GitHub runner, so checking them would report breakage that is not there.
+  "univ-artois\\.fr",
+
+  ## Per-account GitHub pages behind authentication. They answer 404 to an
+  ## anonymous client by design; the instruction to the student is still right.
+  "^https://github\\.com/settings/",
+
+  ## LinkedIn answers 999 to every automated client as a matter of policy.
+  ## Verified alive on 2026-09-09: curl with a browser agent returns 200.
+  "^https://(www\\.)?linkedin\\.com/",
+]
