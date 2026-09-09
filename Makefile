@@ -179,7 +179,7 @@ check-links:
 	  echo "ERROR: no built deck in $(DIST_DIR). Run 'make build' first (see issue #486)."; \
 	  exit 1; \
 	fi; \
-	$(call lychee_run,--exclude '^file://' $$decks)
+	$(call lychee_run,--exclude '^file://' $(LYCHEE_EXTRA) $$decks)
 
 verify: check-dashes check-opacity check-assets
 	@echo "NOTE: external links are checked by 'make check-links', not here (see issue #486)"
