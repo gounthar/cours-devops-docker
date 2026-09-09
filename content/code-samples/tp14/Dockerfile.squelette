@@ -1,8 +1,8 @@
 # Utiliser Alpine ou Debian comme image de base
 FROM alpine
 
-# Mettre à jour le système et installer nginx
-RUN apk update && apk add nginx
+# Installer nginx sans garder l'index des paquets
+RUN apk add --no-cache nginx
 
 # Exposer le port 80
 EXPOSE 80
