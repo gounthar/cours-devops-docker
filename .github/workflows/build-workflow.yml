@@ -1,9 +1,10 @@
 name: Slides Workflow
 
+# The `create:` trigger was removed here -- see issue #482. Its `tags:` filter
+# is silently ignored by GitHub (actionlint: "tags filter is not available for
+# create event"), so it fired on *every* branch creation as well. The `push`
+# trigger below carries a `tags` filter that is honoured.
 on:
-  create:
-    tags:
-      - '*'
   push:
     branches-ignore:
       - gh-pages
@@ -12,9 +13,11 @@ on:
   pull_request:
   workflow_dispatch:
 
-concurrency:
-  group: deploy-${{ github.ref_name }}
-  cancel-in-progress: true
+# Without this block the jobs inherit the repository default, which this
+# repository sets to `write`: the job that only builds slides was handed a
+# read/write token. See issue #481.
+permissions:
+  contents: read
 
 env:
   REPOSITORY_URL: https://github.com/${{ github.repository }}
@@ -24,14 +27,30 @@ jobs:
   build-slides:
     name: 'Build Slides'
     runs-on: ubuntu-latest
+    # Cancel a superseded *build*, never a publication in flight. This used to
+    # sit at workflow level, where `cancel-in-progress: true` cancels the whole
+    # run -- `deploy` included, mid force-push -- which is precisely the race
+    # the `gh-pages-deploy` group below exists to prevent. Scoping it to this
+    # job keeps the saving and removes the race. See issue #528.
+    #
+    # Expect a cancelled run to read as `fail` in `gh pr checks` while the API
+    # returns CANCELLED. That is not a CI failure; check `gh run list` before
+    # debugging one.
+    concurrency:
+      group: build-slides-${{ github.ref_name }}
+      cancel-in-progress: true
     steps:
       - name: 'Check environment'
         run: |
           docker compose version
-          echo $REPOSITORY_URL
-          echo $PRESENTATION_URL
+          echo "$REPOSITORY_URL"
+          echo "$PRESENTATION_URL"
+      # This job never pushes, so the checkout token has no reason to survive
+      # in .git/config once the clone is done. Same reasoning as link-check.yml.
       - name: 'Checkout'
-        uses: actions/checkout@master
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: 'Validate package-lock.json sync'
         run: |
           cd npm-packages
@@ -67,6 +86,10 @@ jobs:
     needs: [build-slides]
     # Only run deploy when pushing code on a branch of the repository
     if: github.event_name == 'push'
+    # The only job that writes to the repository: it force-pushes to gh-pages.
+    permissions:
+      contents: write
+    # Serialises the force pushes to gh-pages. Two at once overwrite each other.
     concurrency:
       group: gh-pages-deploy
       cancel-in-progress: false
