@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1981 594" width="1981" height="594" role="img" aria-label="Structure d'un Dockerfile : couche de base, metadata, commandes d'installation">
+  <style>
+    .code { font-family: "DejaVu Sans Mono", Menlo, Consolas, monospace; font-size: 40px; }
+    .kw { font-weight: 700; }
+    .pill { font-family: "Trebuchet MS", "Century Gothic", Verdana, sans-serif; font-size: 24px; text-anchor: middle; }
+    .filename { font-family: "Trebuchet MS", "Century Gothic", Verdana, sans-serif; font-size: 26px; text-anchor: end; fill: #2496ED; }
+  </style>
+  <path d="M 129 7 H 1951 A 23 23 0 0 1 1974 30 V 564 A 23 23 0 0 1 1951 587 H 30 A 23 23 0 0 1 7 564 V 129 Z" fill="#ffffff" stroke="#2496ED" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M 7 129 L 129 7 L 129 129 Z" fill="#D1D2D4"/>
+  <text x="1932" y="49" class="filename">Dockerfile</text>
+  <text x="90" y="219" class="code" xml:space="preserve"><tspan class="kw" fill="#8064A2">FROM</tspan><tspan fill="#000000"> alpine:3.24.1</tspan></text>
+  <text x="90" y="288" class="code" xml:space="preserve"><tspan class="kw" fill="#F79646">LABEL</tspan><tspan fill="#000000"> maintainer=&quot;Tony Stark&quot;</tspan></text>
+  <text x="90" y="394" class="code" xml:space="preserve"><tspan class="kw" fill="#2496ED">RUN</tspan><tspan class="kw" fill="#558ED5"> apk add</tspan><tspan fill="#000000"> --no-cache openjdk17-jre-headless</tspan></text>
+  <rect x="1660" y="181" width="231" height="49" rx="24" fill="#8064A2"/><text x="1775" y="215" class="pill" fill="#ffffff">couche de base</text>
+  <path d="M 1648 205 L 558 205" stroke="#8064A2" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <rect x="1740" y="252" width="151" height="49" rx="24" fill="#F79646"/><text x="1816" y="286" class="pill" fill="#ffffff">metadata</text>
+  <path d="M 1728 276 L 822 274" stroke="#F79646" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <rect x="1525" y="356" width="366" height="49" rx="24" fill="#4BACC6"/><text x="1708" y="391" class="pill" fill="#ffffff">commandes d'installation</text>
+  <path d="M 1513 381 L 1206 381" stroke="#4BACC6" stroke-width="4" fill="none" stroke-linecap="round"/>
+</svg>
