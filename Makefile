@@ -167,10 +167,6 @@ check-assets:
 
 ## Not in `verify` on purpose -- see the comment above check-assets.
 check-links:
-	@test -f $(DIST_DIR)/index.html || { \
-	  echo "ERROR: no built deck in $(DIST_DIR). Run 'make build' first (see issue #486)."; \
-	  exit 1; \
-	}
 	@decks=""; \
 	for deck in index index-examen; do \
 	  if [ -f $(DIST_DIR)/$$deck.html ]; then \
@@ -179,6 +175,10 @@ check-links:
 	    echo "NOTE: $$deck.html not built, its links are not checked"; \
 	  fi; \
 	done; \
+	if [ -z "$$decks" ]; then \
+	  echo "ERROR: no built deck in $(DIST_DIR). Run 'make build' first (see issue #486)."; \
+	  exit 1; \
+	fi; \
 	$(call lychee_run,--exclude '^file://' $$decks)
 
 verify: check-dashes check-opacity check-assets
