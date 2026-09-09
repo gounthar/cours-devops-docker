@@ -268,7 +268,7 @@ ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
 ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
 
 # Votre gestionnaire de paquets utilisera désormais le proxy
-RUN apk update && apk add your-package
+RUN apk add --no-cache your-package
 ----
 
 ⚠️ **Ordre crucial:** `FROM` → `ENV` → `RUN` (réseau)
@@ -286,7 +286,7 @@ ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
 ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
 ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
-RUN apk update && apk add build-dependencies
+RUN apk add --no-cache build-dependencies
 
 # Étape finale sans proxy
 FROM alpine:latest
@@ -310,7 +310,7 @@ Dockerfile correspondant :
 ARG https_proxy
 ARG http_proxy
 
-RUN apk update && apk add your-package
+RUN apk add --no-cache your-package
 ----
 
 [%auto-animate]

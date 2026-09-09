@@ -645,7 +645,7 @@ docker container run --rm docker-git:1.0.0 git --version
 ----
 cat ./Dockerfile
 FROM alpine:3.24.1
-RUN apk update && apk add --no-cache git
+RUN apk add --no-cache git
 LABEL description="Une image contenant git préconfiguré"
 RUN git config --global init.defaultBranch main
 
@@ -653,7 +653,7 @@ docker image build -t docker-git:1.1.0 ./docker-git/
 # Sending build context to Docker daemon  2.048kB
 # Step 1/4 : FROM alpine:3.24.1
 #  ---> e40cf56b4be3
-# Step 2/4 : RUN apk update && apk add --no-cache git
+# Step 2/4 : RUN apk add --no-cache git
 #  ---> Using cache
 #  ---> 926b8d87f128
 # Step 3/4 : LABEL description="Une image contenant git préconfiguré"
@@ -676,9 +676,28 @@ docker container run --rm docker-git:1.1.0 git config --get init.defaultBranch
 
 [source, plaintext]
 ----
-Step 2/4 : RUN apk update && apk add --no-cache git
+Step 2/4 : RUN apk add --no-cache git
   ---> Using cache
 ----
+
+[.notes]
+--
+Pourquoi `--no-cache` et pas `apk update && apk add` ?
+
+`apk update` écrit l'index des paquets dans `/var/cache/apk/`, et cet index reste dans la
+couche. `--no-cache` demande à `apk` de télécharger le même index sans le conserver : les
+deux ensemble se contredisent, la couche garde le cache que `--no-cache` devait éviter.
+
+Mesuré sur `alpine:3.24.1`, deux images ne différant que par cette ligne :
+
+* `RUN apk update && apk add --no-cache git` : 38,8 MB, `/var/cache/apk` = 2,9 Mo
+* `RUN apk add --no-cache git` : 32,6 MB, `/var/cache/apk` = 4,0 Ko
+
+Même `git version 2.54.0` des deux côtés. 6,2 MB inutiles, soit environ 19 % de l'image.
+
+Deux `RUN` séparés (`RUN apk update` puis `RUN apk add`) sont pires encore : deux couches
+au lieu d'une, le cache conservé, et un index que le cache de build peut resservir périmé.
+--
 
 🤔 En fait, Docker n'a PAS exécuté cette commande la seconde fois => ça va beaucoup plus vite !
 
@@ -715,7 +734,7 @@ docker image build -t docker-git:1.1.0 ./docker-git/
 
 cat Dockerfile
 # FROM alpine:3.24.1
-# RUN apk update && apk add --no-cache git make
+# RUN apk add --no-cache git make
 # LABEL description="Une image contenant git préconfiguré"
 # RUN git config --global init.defaultBranch main
 
