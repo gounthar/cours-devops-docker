@@ -26,15 +26,45 @@ import argparse
 import sys
 from pathlib import Path
 
-# Palette reprise du support d'origine, pour que la carte ne détonne pas à côté
-# des autres images exportées du même PowerPoint.
-BORDER = "#29abe2"
-FOLD = "#c9c9c9"
-INK = "#1a1a1a"
+# Palette relevée au pixel sur `content/media/images-output56_with_transparency.png`,
+# l'image exportée du support d'origine, plutôt qu'estimée à l'œil :
+#   convert <png> -alpha remove txt:- puis comptage par bande de ligne.
+# Les valeurs ci-dessous sont donc celles du support, pas une approximation.
+BORDER = "#2496ED"
+FOLD = "#D1D2D4"
+INK = "#000000"
+# Couleur du mot-clé d'instruction. Attention : elle ne suit PAS toujours celle
+# de la pastille du groupe. `RUN` est en bleu Docker alors que sa pastille
+# « commandes d'installation » est turquoise ; relevé sur l'original.
+KEYWORD = {
+    "FROM": "#8064A2",
+    "LABEL": "#F79646",
+    "MAINTAINER": "#F79646",
+    "RUN": "#2496ED",
+    "COPY": "#2496ED",
+    "ADD": "#2496ED",
+}
+# Mise en valeur d'une commande *dans* l'argument. Sur l'original, `apk add` est
+# en #558ED5 tandis que le `apk update` de la ligne au-dessus reste en noir : la
+# couleur marque la commande d'installation, pas n'importe quelle commande. La
+# liste reproduit cette sélectivité.
+COMMAND = "#558ED5"
+COMMAND_PREFIXES = (
+    ("apk", "add"),
+    ("apt-get", "install"),
+    ("apt", "install"),
+    ("dnf", "install"),
+    ("yum", "install"),
+    ("microdnf", "install"),
+    ("npm", "install"),
+    ("pip", "install"),
+    ("pip3", "install"),
+    ("gem", "install"),
+)
 GROUPS = {
-    "base": ("#7b5ea7", "couche de base"),
-    "metadata": ("#f1953d", "metadata"),
-    "install": ("#4a9cb8", "commandes d'installation"),
+    "base": ("#8064A2", "couche de base"),
+    "metadata": ("#F79646", "metadata"),
+    "install": ("#4BACC6", "commandes d'installation"),
 }
 # Quelle instruction appartient à quel groupe d'annotation.
 INSTRUCTION_GROUP = {
@@ -45,6 +75,22 @@ INSTRUCTION_GROUP = {
     "COPY": "install",
     "ADD": "install",
 }
+
+
+def split_command(args):
+    """Découpe l'argument en (commande_mise_en_valeur, reste).
+
+    Renvoie ("", args) si rien ne correspond -- c'est le cas de `apk update`,
+    volontairement, puisque l'original ne le met pas en valeur.
+    """
+    words = args.split()
+    for prefix in COMMAND_PREFIXES:
+        if tuple(words[: len(prefix)]) == prefix:
+            head = " ".join(words[: len(prefix)])
+            return head, args[len(head) :]
+    return "", args
+
+
 # Largeur d'un caractère en fonte à chasse fixe, en fraction de la taille de
 # police. 0.6 est la valeur des fontes DejaVu Sans Mono / Menlo / Consolas.
 MONO_RATIO = 0.6
@@ -126,13 +172,20 @@ def build_svg(rows, width=1981, height=None):
         if instruction is None:
             y += line_h * 0.55
             continue
-        colour = GROUPS[group][0] if group else INK
-        # xml:space="preserve" : sans lui, SVG mange l'espace de tête du second
-        # tspan et la carte affiche « FROMalpine:3.24.1 ».
+        colour = KEYWORD.get(instruction, INK)
+        command, rest = split_command(args)
+        # xml:space="preserve" : sans lui, SVG mange l'espace de tête des tspans
+        # suivants et la carte affiche « FROMalpine:3.24.1 ».
+        spans = [f'<tspan class="kw" fill="{colour}">{esc(instruction)}</tspan>']
+        if command:
+            spans.append(f'<tspan class="kw" fill="{COMMAND}"> {esc(command)}</tspan>')
+            spans.append(f'<tspan fill="{INK}">{esc(rest)}</tspan>')
+        else:
+            spans.append(f'<tspan fill="{INK}"> {esc(rest)}</tspan>')
         parts.append(
             f'<text x="{code_left:.0f}" y="{y:.0f}" class="code" xml:space="preserve">'
-            f'<tspan class="kw" fill="{colour}">{esc(instruction)}</tspan>'
-            f'<tspan fill="{INK}"> {esc(args)}</tspan></text>'
+            + "".join(spans)
+            + "</text>"
         )
         if group:
             full = f"{instruction} {args}".strip()
