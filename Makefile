@@ -87,8 +87,82 @@ check-opacity:
 	fi; \
 	exit $$fail
 
-verify: check-dashes check-opacity
-	@echo "NOTE: link checking is still disabled (see issue #486)"
+## Link checking, in two halves, because the two have different failure modes.
+##
+##   check-assets  offline, deterministic, part of `verify`: does every local
+##                 file the HTML points at actually exist? This is the half
+##                 that can gate a pull request, because it cannot fail for a
+##                 reason outside the repository.
+##   check-links   network, run on demand and weekly in CI: are the external
+##                 URLs still alive? Deliberately NOT part of `verify` -- a
+##                 gate that depends on somebody else's uptime gets ignored,
+##                 then switched off, which is how this repository ended up
+##                 with `verify: @echo "Verify disabled"` for two years.
+##
+## Exclusions and the browser user agent live in lychee.toml, each one with
+## the measurement that justifies it. See issue #486.
+LYCHEE_IMAGE ?= lycheeverse/lychee:0.24.2
+
+lychee_run = docker run --rm --user $(CURRENT_UID) \
+	--volume $(DIST_DIR):/input:ro \
+	--volume $(CURDIR)/lychee.toml:/lychee.toml:ro \
+	--workdir /input $(LYCHEE_IMAGE) --config /lychee.toml $(1)
+
+## `link:slides.pdf[]` on the first slide is produced by `make pdf`, a separate
+## target that CI runs before `verify`. Absent after a bare `make build`, so
+## say it is unchecked rather than reporting a broken link that is not broken.
+PDF_EXCLUDE = $(if $(wildcard $(DIST_DIR)/slides.pdf),,--exclude 'slides\.pdf$$')
+
+## REPOSITORY_URL defaults to file://$(CURDIR) so the local preview can link
+## back to the working copy. lychee then resolves those anchors as missing
+## files. That is build configuration showing through, not a broken link: CI
+## sets REPOSITORY_URL to the repository https URL, and --offline skips it
+## there, while check-links covers it for real.
+##
+## The value is baked into the HTML at build time, so this exclusion is only
+## correct when REPOSITORY_URL holds the same value it held during `make
+## build`. CI gets that for free -- build and verify share one job. Locally,
+## overriding it for the check alone un-hides the anchors the previous build
+## wrote, and the run fails loudly rather than quietly passing.
+REPO_EXCLUDE = $(if $(filter file://%,$(REPOSITORY_URL)),--exclude '^$(REPOSITORY_URL)',)
+
+check-assets:
+	@test -d $(DIST_DIR) || { \
+	  echo "ERROR: $(DIST_DIR) does not exist. Run 'make build' first (see issue #486)."; \
+	  exit 1; \
+	}
+	@decks=""; \
+	for deck in index index-examen; do \
+	  test -f $(DIST_DIR)/$$deck.html && decks="$$decks $$deck.html"; \
+	done; \
+	if [ -z "$$decks" ]; then \
+	  echo "ERROR: no built deck in $(DIST_DIR). Run 'make build' first (see issue #486)."; \
+	  exit 1; \
+	fi; \
+	test -f $(DIST_DIR)/slides.pdf || \
+	  echo "NOTE: dist/slides.pdf absent, its link is not checked (run 'make pdf')"; \
+	$(call lychee_run,--offline $(PDF_EXCLUDE) $(REPO_EXCLUDE) $$decks) || { \
+	  echo ""; \
+	  echo "ERROR: the built HTML points at local file(s) that do not exist."; \
+	  echo "       Add the missing file, or drop the reference (see issue #486)."; \
+	  exit 1; \
+	}
+	@echo "OK: every local file referenced by the built HTML exists"
+
+## Not in `verify` on purpose -- see the comment above check-assets.
+check-links:
+	@test -f $(DIST_DIR)/index.html || { \
+	  echo "ERROR: no built deck in $(DIST_DIR). Run 'make build' first (see issue #486)."; \
+	  exit 1; \
+	}
+	@decks=""; \
+	for deck in index index-examen; do \
+	  test -f $(DIST_DIR)/$$deck.html && decks="$$decks $$deck.html"; \
+	done; \
+	$(call lychee_run,--exclude '^file://' $$decks)
+
+verify: check-dashes check-opacity check-assets
+	@echo "NOTE: external links are checked by 'make check-links', not here (see issue #486)"
 
 serve:
 	@$(call compose_up, --force-recreate serve qrcode)
@@ -145,4 +219,4 @@ clean:
 qrcode:
 	@$(call compose_up, qrcode)
 
-.PHONY: all build clean verify check-dashes check-opacity serve qrcode pdf exam-pdf dependencies-update dependencies-lock-update
+.PHONY: all build clean verify check-dashes check-opacity check-assets check-links serve qrcode pdf exam-pdf dependencies-update dependencies-lock-update

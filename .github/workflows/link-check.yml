@@ -1,0 +1,103 @@
+---
+# Weekly external link check -- see issue #486.
+#
+# Deliberately separate from build-workflow.yml. `make verify` there gates
+# every pull request and must only contain checks that cannot fail for a
+# reason outside this repository. Link rot depends on other people's uptime,
+# so it is reported here on a schedule instead of blocking a merge. A gate
+# that cries wolf gets ignored, then switched off -- which is exactly how
+# `verify` came to be a bare `echo "Verify disabled"` for two years.
+name: Link Check
+
+on:
+  schedule:
+    # Monday 06:27 UTC. Off the hour on purpose: scheduled jobs queue heavily
+    # at :00 and GitHub drops them under load.
+    - cron: '27 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: link-check
+  cancel-in-progress: false
+
+env:
+  REPOSITORY_URL: https://github.com/${{ github.repository }}
+  PRESENTATION_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.ref_name }}
+  ISSUE_TITLE: 'Liens morts détectés par la vérification hebdomadaire'
+
+jobs:
+  check-links:
+    name: 'Check external links'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v7
+
+      - name: 'Build HTML slides'
+        run: make build
+
+      - name: 'Build exam HTML slides'
+        run: SOURCE_FILE=index-examen.adoc make build
+
+      # The first slide carries link:slides.pdf[], which only exists once the
+      # PDF target has run. Without it the report would flag a link that is
+      # present on the published site.
+      - name: 'Build PDF slides'
+        run: make pdf
+
+      - name: 'Check links'
+        id: check
+        continue-on-error: true
+        run: |
+          make check-links 2>&1 | tee link-report.txt
+
+      - name: 'Report'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OUTCOME: ${{ steps.check.outcome }}
+        run: |
+          # Exact title match over the labelled open issues rather than a
+          # `--search` query: a quoting mishap on an accented title would
+          # return nothing, and this job would then open a fresh duplicate
+          # every Monday instead of updating the one that is already there.
+          number="$(gh issue list --state open --label liens-morts \
+            --limit 100 --json number,title \
+            --jq 'map(select(.title == env.ISSUE_TITLE)) | .[0].number // empty')"
+
+          if [ "$OUTCOME" = 'success' ]; then
+            echo "No broken link found."
+            if [ -n "$number" ]; then
+              gh issue comment "$number" --body \
+                "Plus aucun lien mort au passage du $(date -u '+%d/%m/%Y'). Ticket refermé automatiquement."
+              gh issue close "$number"
+            fi
+            exit 0
+          fi
+
+          {
+            echo "Relevé automatique du $(date -u '+%d/%m/%Y à %H:%M UTC')."
+            echo
+            echo "Les exclusions et l'agent utilisateur sont dans \`lychee.toml\`,"
+            echo "chacune avec la mesure qui la justifie. Reproduire en local :"
+            echo
+            echo '```bash'
+            echo 'make build && make pdf && make check-links'
+            echo '```'
+            echo
+            echo '```'
+            cat link-report.txt
+            echo '```'
+          } > issue-body.md
+
+          if [ -n "$number" ]; then
+            gh issue edit "$number" --body-file issue-body.md
+            echo "Updated issue #$number"
+          else
+            gh issue create --title "$ISSUE_TITLE" \
+              --label liens-morts --label outillage \
+              --body-file issue-body.md
+          fi
