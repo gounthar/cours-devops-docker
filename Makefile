@@ -147,18 +147,23 @@ REPO_EXCLUDE = $(if $(filter file://%,$(REPOSITORY_URL)),--exclude '^$(REPOSITOR
 ## `diagrams` regenere, `check-diagrams` echoue si le SVG commite ne correspond
 ## plus a son Dockerfile. Le second est dans `verify` : il est hors ligne et
 ## deterministe, donc il peut bloquer une PR sans dependre de personne.
+## La diapositive d'origine est une apparition progressive en quatre temps
+## (quatre `[%auto-animate]`) : le code seul, puis une pastille de plus a
+## chaque etape. `--steps` produit <base>-1.svg .. <base>-N.svg. La geometrie
+## ne depend que du code, donc les quatre partagent les memes positions et
+## reveal.js peut les interpoler.
 DIAGRAM_CARDS = content/media/dockerfile-defi.svg:content/code-samples/images/defi/Dockerfile
 
 diagrams:
 	@for pair in $(DIAGRAM_CARDS); do \
 	  svg=$${pair%%:*}; src=$${pair#*:}; \
-	  python3 $(CURDIR)/scripts/gen_dockerfile_card.py "$(CURDIR)/$$src" "$(CURDIR)/$$svg" || exit 1; \
+	  python3 $(CURDIR)/scripts/gen_dockerfile_card.py "$(CURDIR)/$$src" "$(CURDIR)/$$svg" --steps || exit 1; \
 	done
 
 check-diagrams:
 	@for pair in $(DIAGRAM_CARDS); do \
 	  svg=$${pair%%:*}; src=$${pair#*:}; \
-	  python3 $(CURDIR)/scripts/gen_dockerfile_card.py "$(CURDIR)/$$src" "$(CURDIR)/$$svg" --check || exit 1; \
+	  python3 $(CURDIR)/scripts/gen_dockerfile_card.py "$(CURDIR)/$$src" "$(CURDIR)/$$svg" --steps --check || exit 1; \
 	done
 
 check-assets:

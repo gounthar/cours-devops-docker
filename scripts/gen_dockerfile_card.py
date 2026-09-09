@@ -134,10 +134,17 @@ def esc(text):
     )
 
 
-def build_svg(rows, width=1981, height=None):
+def build_svg(rows, width=1981, height=None, reveal=None):
     """Hauteur adaptative : une carte de trois lignes dans un canevas de 1080
     laisse les deux tiers en blanc, et la diapositive réduit alors le texte pour
-    rien. Le SVG se met à l'échelle, donc autant coller au contenu."""
+    rien. Le SVG se met à l'échelle, donc autant coller au contenu.
+
+    `reveal` limite l'affichage aux N premières pastilles, pour reproduire
+    l'apparition progressive du support d'origine (quatre diapositives
+    `[%auto-animate]` : le code seul, puis une pastille de plus à chaque fois).
+    La géométrie ne dépend que du code, jamais des pastilles, donc toutes les
+    étapes partagent exactement les mêmes positions et reveal.js peut les
+    interpoler proprement. `None` affiche tout."""
     code_rows = [r for r in rows if r[0] is not None]
     if not code_rows:
         raise SystemExit("ERREUR : aucune instruction trouvée dans le Dockerfile.")
@@ -207,6 +214,8 @@ def build_svg(rows, width=1981, height=None):
     pills = []
     # Ordre stable : l'ordre d'apparition dans le Dockerfile, pas celui du dict.
     ordered = [g for g in ("base", "metadata", "install") if g in pill_targets]
+    if reveal is not None:
+        ordered = ordered[:reveal]
     pill_h = int(font_size * 1.24)
     pill_fs = int(font_size * 0.62)
     # Chaque pastille est posée à la hauteur de la ou des lignes qu'elle annote,
@@ -264,6 +273,12 @@ def main():
     ap.add_argument("output", type=Path)
     ap.add_argument("--width", type=int, default=1981)
     ap.add_argument(
+        "--steps",
+        action="store_true",
+        help="produire la sequence d'apparition : <sortie>-1.svg (code seul) "
+        "jusqu'a <sortie>-N.svg (toutes les pastilles)",
+    )
+    ap.add_argument(
         "--check",
         action="store_true",
         help="ne rien écrire ; sortir en 1 si la sortie existante est périmée",
@@ -273,26 +288,43 @@ def main():
     if not args.dockerfile.is_file():
         sys.exit(f"ERREUR : {args.dockerfile} est introuvable.")
 
-    svg = build_svg(parse_dockerfile(args.dockerfile), width=args.width)
+    rows = parse_dockerfile(args.dockerfile)
+
+    if args.steps:
+        groups = {g for _, _, g in rows if g}
+        n = len(groups)
+        # Etape 1 = le code seul, puis une pastille de plus a chaque etape.
+        wanted = [
+            (
+                args.output.with_name(f"{args.output.stem}-{k + 1}{args.output.suffix}"),
+                build_svg(rows, width=args.width, reveal=k),
+            )
+            for k in range(n + 1)
+        ]
+    else:
+        wanted = [(args.output, build_svg(rows, width=args.width))]
 
     if args.check:
-        if not args.output.is_file():
-            sys.exit(
-                f"ERREUR : {args.output} est absent.\n"
-                f"       Lancer 'make diagrams' pour le produire."
-            )
-        if args.output.read_text(encoding="utf-8") != svg:
-            sys.exit(
-                f"ERREUR : {args.output} ne correspond plus à {args.dockerfile}.\n"
-                f"       C'est exactement la désynchronisation de #537.\n"
-                f"       Lancer 'make diagrams' et committer le résultat."
-            )
-        print(f"OK: {args.output} est à jour par rapport à {args.dockerfile}")
+        for path, svg in wanted:
+            if not path.is_file():
+                sys.exit(
+                    f"ERREUR : {path} est absent.\n"
+                    f"       Lancer 'make diagrams' pour le produire."
+                )
+            if path.read_text(encoding="utf-8") != svg:
+                sys.exit(
+                    f"ERREUR : {path} ne correspond plus à {args.dockerfile}.\n"
+                    f"       C'est exactement la désynchronisation de #537.\n"
+                    f"       Lancer 'make diagrams' et committer le résultat."
+                )
+        noun = "sont à jour" if len(wanted) > 1 else "est à jour"
+        print(f"OK: {len(wanted)} fichier(s) {noun} par rapport à {args.dockerfile}")
         return
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(svg, encoding="utf-8")
-    print(f"OK: {args.output} produit depuis {args.dockerfile}")
+    for path, svg in wanted:
+        path.write_text(svg, encoding="utf-8")
+    print(f"OK: {len(wanted)} fichier(s) produit(s) depuis {args.dockerfile}")
 
 
 if __name__ == "__main__":

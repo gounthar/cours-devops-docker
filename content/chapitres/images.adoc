@@ -225,22 +225,22 @@ Créer une image alpine avec un JRE installé.
 [%auto-animate]
 == !
 
-image::images-output52_with_transparency.png[background,size=contain]
+image::dockerfile-defi-1.svg[background,size=contain]
 
 [%auto-animate]
 == !
 
-image::images-output53_with_transparency.png[background,size=contain]
+image::dockerfile-defi-2.svg[background,size=contain]
 
 [%auto-animate]
 == !
 
-image::images-output54_with_transparency.png[background,size=contain]
+image::dockerfile-defi-3.svg[background,size=contain]
 
 [%auto-animate]
 == !
 
-image::images-output56_with_transparency.png[background,size=contain]
+image::dockerfile-defi-4.svg[background,size=contain]
 
 [.notes]
 --
@@ -256,7 +256,7 @@ for i in {52..56}; do convert Diapositive${i}.PNG -crop 9580x5224+1879+1795 -tra
 
 [.column]
 --
-image::dockerfile-defi.svg[Structure d'un Dockerfile : couche de base, metadata, commandes d'installation]
+image::dockerfile-defi-4.svg[Structure d'un Dockerfile : couche de base, metadata, commandes d'installation]
 --
 
 [.column]
