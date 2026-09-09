@@ -34,8 +34,14 @@ jobs:
     name: 'Check external links'
     runs-on: ubuntu-latest
     steps:
+      # This job never pushes. The report goes through GH_TOKEN in the last
+      # step, and the build containers do not mount .git, so leaving the
+      # checkout token in .git/config would only widen what a later host-side
+      # step could read.
       - name: 'Checkout'
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: 'Build HTML slides'
         run: make build
@@ -89,7 +95,15 @@ jobs:
             echo '```'
             echo
             echo '```'
-            cat link-report.txt
+            # A GitHub issue body stops at 65536 characters. A wide outage --
+            # DNS down, no network on the runner -- turns every one of the 125
+            # URLs into an error line with its redirect chain, and the whole
+            # report would then be rejected, so no report would reach anyone
+            # at exactly the moment there is most to say.
+            head -c 50000 link-report.txt
+            if [ "$(wc -c < link-report.txt)" -gt 50000 ]; then
+              printf '\n[rapport tronqué à 50 000 octets — la suite est dans le journal du job]\n'
+            fi
             echo '```'
           } > issue-body.md
 

@@ -82,7 +82,10 @@ External links are checked by a separate target, on demand:
 
 [source,bash]
 ----
-make build && make pdf && make check-links
+make build
+SOURCE_FILE=index-examen.adoc make build
+make pdf
+make check-links
 ----
 
 It is kept out of `make verify` on purpose. Link rot depends on other people's
@@ -93,6 +96,16 @@ Monday instead and opens or updates an issue with the findings.
 Exclusions and the browser user agent live in `lychee.toml`, each with the
 measurement that justifies it -- campus hosts a runner cannot resolve, the
 `localhost` addresses the course teaches, and pages behind authentication.
+
+Re-running the check several times in an hour trips GitHub's anonymous limit of
+60 requests, and the run then reports live `github.com` URLs as broken. Export a
+token to lift it; it is forwarded to the checker only when you set it, and the
+scheduled job does not:
+
+[source,bash]
+----
+GITHUB_TOKEN="$(gh auth token)" make check-links
+----
 
 NOTE: The W3C compliance validation this section used to promise has never
 existed. See issue #486 for the history, and the follow-up issue linked there

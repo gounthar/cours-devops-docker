@@ -103,9 +103,21 @@ check-opacity:
 ## the measurement that justifies it. See issue #486.
 LYCHEE_IMAGE ?= lycheeverse/lychee:0.24.2
 
+## GITHUB_TOKEN is forwarded only when the caller has set it. lychee sends it
+## to api.github.com to lift the 60-requests-per-hour anonymous limit, which a
+## developer re-running the check a few times in an hour will hit -- the run
+## then reports GitHub URLs as broken when they are not.
+##
+## The scheduled job deliberately does NOT set it. Twenty-two github.com URLs
+## once a week is far inside the anonymous limit, and its token also carries
+## `issues: write`; handing that to a tool whose job is to make requests to
+## arbitrary third-party hosts buys robustness we do not need.
+LYCHEE_TOKEN_ENV = $(if $(GITHUB_TOKEN),--env GITHUB_TOKEN,)
+
 lychee_run = docker run --rm --user $(CURRENT_UID) \
 	--volume $(DIST_DIR):/input:ro \
 	--volume $(CURDIR)/lychee.toml:/lychee.toml:ro \
+	$(LYCHEE_TOKEN_ENV) \
 	--workdir /input $(LYCHEE_IMAGE) --config /lychee.toml $(1)
 
 ## `link:slides.pdf[]` on the first slide is produced by `make pdf`, a separate
@@ -133,7 +145,11 @@ check-assets:
 	}
 	@decks=""; \
 	for deck in index index-examen; do \
-	  test -f $(DIST_DIR)/$$deck.html && decks="$$decks $$deck.html"; \
+	  if [ -f $(DIST_DIR)/$$deck.html ]; then \
+	    decks="$$decks $$deck.html"; \
+	  else \
+	    echo "NOTE: $$deck.html not built, its links are not checked"; \
+	  fi; \
 	done; \
 	if [ -z "$$decks" ]; then \
 	  echo "ERROR: no built deck in $(DIST_DIR). Run 'make build' first (see issue #486)."; \
@@ -157,7 +173,11 @@ check-links:
 	}
 	@decks=""; \
 	for deck in index index-examen; do \
-	  test -f $(DIST_DIR)/$$deck.html && decks="$$decks $$deck.html"; \
+	  if [ -f $(DIST_DIR)/$$deck.html ]; then \
+	    decks="$$decks $$deck.html"; \
+	  else \
+	    echo "NOTE: $$deck.html not built, its links are not checked"; \
+	  fi; \
 	done; \
 	$(call lychee_run,--exclude '^file://' $$decks)
 
