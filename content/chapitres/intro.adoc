@@ -352,10 +352,12 @@ En résumé, la virtualisation légère des conteneurs Docker permet d'exécuter
 
 Virtualisation
 
-image::types_of_hypervisors.png["https://medium.com/teamresellerclub/type-1-and-type-2-hypervisors-what-makes-them-different-6a1755d6ae2c"]
+image::types_of_hypervisors.png["Schéma comparant un hyperviseur de type 1, posé directement sur le matériel, et un hyperviseur de type 2, posé sur un système d'exploitation hôte"]
 
 [.notes]
 --
+Source du schéma : https://medium.com/teamresellerclub/type-1-and-type-2-hypervisors-what-makes-them-different-6a1755d6ae2c
+
 Un hyperviseur est un logiciel spécialisé qui permet d'exécuter plusieurs systèmes d'exploitation (comme Windows, Linux, etc.) sur un seul matériel physique (comme un serveur). Il agit comme une couche d'abstraction entre le matériel et les systèmes d'exploitation invités.
 
 Il existe deux types d'hyperviseurs :
@@ -375,14 +377,25 @@ En résumé, un hyperviseur vous permet d'exécuter plusieurs systèmes d'exploi
 Virtualisation
 
 [.column]
----
-image::type-1-hypervisor-examples.png["https://www.ubackup.com/enterprise-backup/type-1-hypervisor-vs-type-2.html"]
----
+--
+image::hyperviseurs-type-1.png["Logos d'hyperviseurs de type 1 : VMware vSphere, Microsoft Hyper-V, XenServer, XCP-ng, KVM et Proxmox VE"]
+--
 
 [.column]
----
-image::type-2-hypervisor-examples.png["https://www.ubackup.com/enterprise-backup/type-1-hypervisor-vs-type-2.html"]
----
+--
+image::type-2-hypervisor-examples.png["Logos d'hyperviseurs de type 2 : VMware Workstation, VirtualBox, VMware Fusion, QEMU et Microsoft Virtual PC"]
+--
+
+[.notes]
+--
+XCP-ng et XenServer figurent côte à côte : XCP-ng est né d'un fork de XenServer et fait aujourd'hui partie du Xen Project. Le dire à l'oral, sinon les deux logos voisins n'ont pas de lien apparent.
+
+Red Hat Virtualization a été retiré de l'illustration : sa dernière version, la 4.4, date d'août 2020, et la politique de cycle de vie de Red Hat lui donne cinq ans de support production. Ce n'est plus une option qu'on installe aujourd'hui.
+
+L'image des hyperviseurs de type 1 est produite par `scripts/gen_hypervisor_card.sh` ; la provenance de chaque logo est dans `scripts/logo-sources/PROVENANCE.md`.
+
+Source de l'image de type 2 : https://www.ubackup.com/enterprise-backup/type-1-hypervisor-vs-type-2.html
+--
 
 [%auto-animate]
 == Comment ça marche ?
