@@ -8,27 +8,26 @@
 * https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop
 * https://linuxhandbook.com/linux-directory-structure/
 * https://blog.stephane-robert.info/docs/admin-serveurs/linux/script-shell/
-* https://linuxopsys.com/topics/bash-script-examples
+* https://tldp.org/LDP/abs/html/
 
 == Git / VCS
 
 * https://docs.github.com
 * https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control
-* http://martinfowler.com/bliki/VersionControlTools.html
-* http://martinfowler.com/bliki/FeatureBranch.html
-* https://about.gitlab.com/2014/09/29/gitlab-flow/
+* https://martinfowler.com/bliki/VersionControlTools.html
+* https://martinfowler.com/bliki/FeatureBranch.html
+* https://about.gitlab.com/topics/version-control/what-is-gitlab-flow/
 * https://www.atlassian.com/git/tutorials/comparing-workflows
-* http://nvie.com/posts/a-successful-git-branching-model/
+* https://nvie.com/posts/a-successful-git-branching-model/
 * https://blog.stephane-robert.info/docs/developper/version/git/introduction/
 
 == Intégration Continue
 
-* http://martinfowler.com/articles/continuousIntegration.html
-* http://martinfowler.com/bliki/ContinuousDelivery.html
-* https://jaxenter.com/implementing-continuous-delivery-117916.html
-* https://technologyconversations.com/2014/04/29/continuous-delivery-introduction-to-concepts-and-tools/
-* http://blog.arungupta.me/continuous-integration-delivery-deployment-maturity-model
-* http://blog.crisp.se/2013/02/05/yassalsundman/continuous-delivery-vs-continuous-deployment
+* https://martinfowler.com/articles/continuousIntegration.html
+* https://martinfowler.com/bliki/ContinuousDelivery.html
+* https://continuousdelivery.com/
+* https://blog.arungupta.me/continuous-integration-delivery-deployment-maturity-model
+* https://blog.crisp.se/2013/02/05/yassalsundman/continuous-delivery-vs-continuous-deployment
 
 == Docker
 
@@ -40,7 +39,7 @@
 * https://www.r-bloggers.com/2021/05/best-practices-for-r-with-docker/
 * https://github.com/wagoodman/dive
 * https://docs.docker.com/engine/tutorials/networkingcontainers/
-* https://towardsdatascience.com/docker-networking-919461b7f498
+* https://docs.docker.com/engine/network/drivers/
 * https://blog.stephane-robert.info/post/docker-buildkit-partie-1/
 * https://dev.to/montells/docker-args-1ael
 
