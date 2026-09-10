@@ -397,6 +397,97 @@ L'image des hyperviseurs de type 1 est produite par `scripts/gen_hypervisor_card
 Source de l'image de type 2 : https://www.ubackup.com/enterprise-backup/type-1-hypervisor-vs-type-2.html
 --
 
+[.columns]
+== Un type 1 que vous pouvez installer
+
+[.column]
+--
+image::xcpng.svg[Logo de XCP-ng,height=200]
+
+[.small]
+⚖️ Transparence{nbsp}: je travaille chez Vates, l'éditeur de XCP-ng et de Xen Orchestra. Je les montre parce qu'ils sont libres et ouvrables, pas parce qu'il faudrait les acheter.
+--
+
+[.column]
+--
+* Bâtie sur l'hyperviseur **Xen**{nbsp}: elle s'installe sur le matériel nu, donc bien du type{nbsp}1
+* Née d'un fork de **XenServer**, aujourd'hui projet en incubation du **Xen Project**, hébergé par la Linux Foundation
+* L'ISO se télécharge et s'installe sans licence{nbsp}: un type{nbsp}1 que vous pouvez vraiment essayer, sur une machine que vous lui **dédiez** — elle ne fera plus que ça
+--
+
+[.notes]
+--
+Assumer la casquette à voix haute plutôt que de laisser un étudiant la découvrir sur la slide de présentation. La mention est aussi à l'écran, c'est l'arbitrage retenu sur le ticket #526.
+
+Sources, consultées le 2026-09-10 : https://xcp-ng.org/ pour « XCP-ng is officially part of the Xen Project », « a Xen Project incubation project hosted by the Linux Foundation » et l'origine XenServer. La version courante affichée en téléchargement est la 8.3 LTS ; ne pas citer un numéro de version à l'oral, il aura bougé.
+
+Insister sur « dédiez » : un hôte XCP-ng prend la machine entière. La documentation est explicite — « An XCP-ng server is dedicated entirely to running XCP-ng and hosting VMs. It is not used for other applications. » Il faut aussi VT-x ou AMD-V activé, 2 Go de RAM au minimum et 46 Go de disque (https://docs.xcp-ng.org/installation/requirements/, consultée le 2026-09-10). Ne pas laisser un étudiant lancer l'ISO sur le portable qui lui sert à suivre le cours.
+
+Le logo `xcpng.svg` est déjà dans le dépôt, il sert dans `welcome.adoc`.
+--
+
+[.columns]
+== On ne pilote pas XCP-ng à la main
+
+[.column]
+--
+* Sur un hôte XCP-ng, ni bureau ni fenêtre{nbsp}: la machine ne montre qu'une console
+* L'administration passe par un outil **séparé**, qui parle à l'hôte par le réseau
+--
+
+[.column]
+--
+* **Xen Orchestra** est celui de XCP-ng{nbsp}: visualiser, gérer, sauvegarder et déléguer un parc, depuis un navigateur
+* Sauvegardes complètes ou incrémentales, réplication, instantanés tournants — qui ne remplacent pas une sauvegarde
+* Deux façons de l'obtenir{nbsp}: l'appliance clé en main, ou une installation depuis les sources
+--
+
+[.notes]
+--
+Le point à faire passer n'est pas le produit, c'est la séparation : la machine qui exécute et l'outil qui commande ne sont pas au même endroit. Docker rejouera exactement ça au chapitre suivant, avec le démon d'un côté et le client `docker` de l'autre.
+
+Ne pas en faire une règle générale des type 1 : Proxmox VE et ESXi servent leur propre interface web depuis l'hôte. La console seule est le cas de XCP-ng, pas celui de toute la famille. C'est pour ça que la slide dit « sur un hôte XCP-ng » et pas « un hyperviseur de type 1 ».
+
+Sur les instantanés tournants : ils restent sur le même stockage que la VM. Pratiques pour revenir en arrière vite, inutiles le jour où c'est la baie qui tombe. La nuance est à l'écran parce que confondre les deux est une erreur qu'on retrouve ensuite sur les volumes Docker.
+
+Source, consultée le 2026-09-10 : https://docs.xen-orchestra.com/ — « the complete solution to visualize, manage, back up and delegate your XCP-ng (or XenServer) infrastructure », « rolling snapshots, full and incremental backups, replication, mirroring and immutability », « Get the turnkey appliance (XOA) running in minutes, or install from the sources ».
+--
+
+[.columns]
+== VM et conteneur ne s'opposent pas
+
+[.column]
+--
+....
+┌──────────────────────┐
+│ vos conteneurs de TP │
+├──────────────────────┤
+│  la VM du Codespace  │
+├──────────────────────┤
+│   un hyperviseur,    │
+│   chez l'hébergeur   │
+├──────────────────────┤
+│     le matériel      │
+└──────────────────────┘
+....
+--
+
+[.column]
+--
+* Depuis le premier TP, vos conteneurs tournent **déjà** dans une machine virtuelle{nbsp}: GitHub héberge chaque Codespace sur une VM
+* La question n'est donc jamais «{nbsp}VM ou conteneur{nbsp}?{nbsp}», mais «{nbsp}qu'est-ce que je mets à quel étage{nbsp}?{nbsp}»
+* Dans les TP, on ne travaillera qu'à l'étage du haut
+--
+
+[.notes]
+--
+C'est le seul point de cette sous-section qui relie vraiment la virtualisation au reste du programme : la garder si le format doit être resserré, et laisser tomber les deux précédentes.
+
+Source, consultée le 2026-09-10 : la documentation GitHub sur le cycle de vie d'un codespace dit « Your work will be saved on a virtual machine in the cloud ». https://docs.github.com/en/codespaces/about-codespaces/understanding-the-codespace-lifecycle
+
+Ne pas nommer l'hébergeur sous-jacent à l'écran : GitHub documente une VM, pas la marque de l'hyperviseur qui la porte.
+--
+
 [%auto-animate]
 == Comment ça marche ?
 
