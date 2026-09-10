@@ -352,10 +352,12 @@ En résumé, la virtualisation légère des conteneurs Docker permet d'exécuter
 
 Virtualisation
 
-image::types_of_hypervisors.png["https://medium.com/teamresellerclub/type-1-and-type-2-hypervisors-what-makes-them-different-6a1755d6ae2c"]
+image::types_of_hypervisors.png["Schéma comparant un hyperviseur de type 1, posé directement sur le matériel, et un hyperviseur de type 2, posé sur un système d'exploitation hôte"]
 
 [.notes]
 --
+Source du schéma : https://medium.com/teamresellerclub/type-1-and-type-2-hypervisors-what-makes-them-different-6a1755d6ae2c
+
 Un hyperviseur est un logiciel spécialisé qui permet d'exécuter plusieurs systèmes d'exploitation (comme Windows, Linux, etc.) sur un seul matériel physique (comme un serveur). Il agit comme une couche d'abstraction entre le matériel et les systèmes d'exploitation invités.
 
 Il existe deux types d'hyperviseurs :
@@ -375,14 +377,19 @@ En résumé, un hyperviseur vous permet d'exécuter plusieurs systèmes d'exploi
 Virtualisation
 
 [.column]
----
-image::type-1-hypervisor-examples.png["https://www.ubackup.com/enterprise-backup/type-1-hypervisor-vs-type-2.html"]
----
+--
+image::type-1-hypervisor-examples.png["Logos d'hyperviseurs de type 1 : VMware vSphere, Microsoft Hyper-V, XenServer, KVM et Red Hat Virtualization"]
+--
 
 [.column]
----
-image::type-2-hypervisor-examples.png["https://www.ubackup.com/enterprise-backup/type-1-hypervisor-vs-type-2.html"]
----
+--
+image::type-2-hypervisor-examples.png["Logos d'hyperviseurs de type 2 : VMware Workstation, VirtualBox, VMware Fusion, QEMU et Microsoft Virtual PC"]
+--
+
+[.notes]
+--
+Source des deux images : https://www.ubackup.com/enterprise-backup/type-1-hypervisor-vs-type-2.html
+--
 
 [%auto-animate]
 == Comment ça marche ?
