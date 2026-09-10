@@ -378,7 +378,7 @@ Virtualisation
 
 [.column]
 --
-image::type-1-hypervisor-examples.png["Logos d'hyperviseurs de type 1 : VMware vSphere, Microsoft Hyper-V, XenServer, KVM et Red Hat Virtualization"]
+image::hyperviseurs-type-1.png["Logos d'hyperviseurs de type 1 : VMware vSphere, Microsoft Hyper-V, XenServer, XCP-ng, KVM et Proxmox VE"]
 --
 
 [.column]
@@ -388,7 +388,13 @@ image::type-2-hypervisor-examples.png["Logos d'hyperviseurs de type 2 : VMware W
 
 [.notes]
 --
-Source des deux images : https://www.ubackup.com/enterprise-backup/type-1-hypervisor-vs-type-2.html
+XCP-ng et XenServer figurent côte à côte : XCP-ng est né d'un fork de XenServer et fait aujourd'hui partie du Xen Project. Le dire à l'oral, sinon les deux logos voisins n'ont pas de lien apparent.
+
+Red Hat Virtualization a été retiré de l'illustration : sa dernière version, la 4.4, date d'août 2020, et la politique de cycle de vie de Red Hat lui donne cinq ans de support production. Ce n'est plus une option qu'on installe aujourd'hui.
+
+L'image des hyperviseurs de type 1 est produite par `scripts/gen_hypervisor_card.sh` ; la provenance de chaque logo est dans `scripts/logo-sources/PROVENANCE.md`.
+
+Source de l'image de type 2 : https://www.ubackup.com/enterprise-backup/type-1-hypervisor-vs-type-2.html
 --
 
 [%auto-animate]
