@@ -154,3 +154,31 @@ $ make shell
 
 - GitHub Actions are used to continuously build, validate and deploy the changes on this slides.
 - GitHub Page is used to serve the generated HTML and PDF content (deployment target).
+
+=== Published previews, and when they disappear
+
+Every pushed branch gets its own preview at
+`https://gounthar.github.io/cours-devops-docker/<branch>/`. The course itself is
+the `main` one, linked at the top of this file.
+
+A preview weighs about 155 MB, and nothing used to remove it when its branch was
+deleted. By September 2026 the published branch held 68 previews of branches
+that no longer existed, 10.86 GB in total, of which `main` was 1.4 % -- and the
+Pages build started failing outright, so the site stopped updating while
+`gh-pages` held perfectly good content. See issue #542.
+
+A scheduled job now removes, every Monday, the previews whose branch is gone:
+
+[source,bash]
+----
+# what it would delete, without deleting anything
+PRUNE="$PWD/scripts/prune_gh_pages_previews.sh"
+git fetch origin gh-pages
+git worktree add /tmp/ghp gh-pages
+(cd /tmp/ghp && "$PRUNE" --dry-run)
+git worktree remove /tmp/ghp
+----
+
+`main` is spared unconditionally. So the preview URL of a merged branch stops
+answering within a week of the branch being deleted: send people the `main` URL,
+never a branch one.

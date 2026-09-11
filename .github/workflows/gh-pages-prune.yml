@@ -1,0 +1,114 @@
+---
+# Élagage hebdomadaire des aperçus de branches supprimées sur `gh-pages`.
+# Voir issue #542.
+#
+# Le job `deploy` de build-workflow.yml publie dans `gh-pages/<branche>/`, une
+# fois par branche, et rien ne supprimait ce répertoire quand la branche
+# disparaissait. Le 2026-09-10 la branche publiée avait atteint 10,86 Go et
+# 49 531 fichiers -- dont 1,4 % appartenaient à `main` -- et la publication
+# Pages a cessé de fonctionner quatre fois de suite. Le taux mesuré après
+# remise à zéro est d'UN orphelin par PR fusionnée, environ 155 Mo pièce :
+# sans ce job, la panne se reconstitue.
+#
+# Hebdomadaire et non quotidien : chaque poussée sur `gh-pages` déclenche une
+# reconstruction Pages d'une douzaine de minutes. Regrouper les suppressions
+# d'une semaine en une poussée coûte une reconstruction au lieu de cinq, et la
+# marge est large -- la limite dure est à 10 Go, une soixantaine d'aperçus. Le
+# script ne commite rien quand il n'y a rien à élaguer, donc une semaine sans
+# PR fusionnée ne reconstruit pas le site.
+name: Prune gh-pages previews
+
+on:
+  schedule:
+    # Lundi 05:13 UTC. En dehors de l'heure pile, comme link-check.yml : les
+    # jobs planifiés s'y entassent et GitHub en abandonne sous la charge. Et
+    # sur une autre minute que les 06:27 de link-check.yml, pour ne pas faire
+    # démarrer deux jobs ensemble.
+    - cron: '13 5 * * 1'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Lister les orphelins sans rien supprimer"
+        type: boolean
+        default: false
+
+# Lecture seule par défaut, comme dans build-workflow.yml : sans ce bloc les
+# jobs héritent du `write` réglé sur le dépôt. Le `contents: write` est posé
+# sur le seul job qui en a besoin, plus bas. Voir issue #481.
+permissions:
+  contents: read
+
+# Le MÊME groupe que le job `deploy` de build-workflow.yml, à dessein.
+# `peaceiris/actions-gh-pages` pousse en force : un élagage qui s'exécuterait
+# en parallèle d'un déploiement verrait l'un des deux écraser l'autre. Le
+# groupe partagé les met en file au lieu d'ouvrir une seconde course. C'est la
+# réserve écrite dans #542 et la leçon de #528.
+concurrency:
+  group: gh-pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  prune:
+    name: 'Prune orphaned previews'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # Deux copies de travail, parce que les deux moitiés du travail vivent
+      # sur deux branches : le script est sur la branche par défaut, l'arbre à
+      # élaguer est sur `gh-pages`.
+      #
+      # Celle-ci ne pousse jamais, donc le jeton n'a pas à survivre dans
+      # .git/config -- même raisonnement que dans link-check.yml.
+      - name: 'Checkout the tooling'
+        uses: actions/checkout@v7
+        with:
+          path: tooling
+          persist-credentials: false
+
+      # Celle-là garde le jeton : c'est avec lui que la dernière étape pousse
+      # l'élagage. C'est le seul endroit du dépôt où ce choix est le bon.
+      - name: 'Checkout gh-pages'
+        uses: actions/checkout@v7
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: 'Prune previews of deleted branches'
+        working-directory: gh-pages
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          # Comparaison explicite à 'true' : l'entrée vaut la chaîne "false"
+          # quand la case est décochée, et la chaîne vide sur un déclenchement
+          # planifié. Un ${DRY_RUN:+--dry-run} passerait donc l'essai à blanc
+          # précisément quand on demande un élagage réel.
+          if [ "$DRY_RUN" = 'true' ]; then
+            ../tooling/scripts/prune_gh_pages_previews.sh --dry-run
+          else
+            ../tooling/scripts/prune_gh_pages_previews.sh
+          fi
+
+      # Poussée ordinaire, jamais en force. Si un déploiement s'est glissé
+      # entre la lecture et ici, la poussée est refusée et le job échoue en le
+      # disant, au lieu d'effacer la publication qui vient d'arriver -- c'est
+      # ce que le groupe de concurrence ci-dessus est censé rendre impossible,
+      # et une poussée en force transformerait une hypothèse fausse en perte
+      # de données. L'élagage de la semaine suivante reprendra le travail.
+      #
+      # Pousser sur `gh-pages` ne relance pas la construction du cours
+      # (`branches-ignore: gh-pages` dans build-workflow.yml), seulement la
+      # reconstruction Pages.
+      - name: 'Push the pruning commit'
+        working-directory: gh-pages
+        run: |
+          # `refs/remotes/origin/gh-pages` et pas `@{upstream}` :
+          # actions/checkout fait un `checkout -B` sans `--track`, donc la
+          # branche locale n'a pas de branche amont et `@{upstream}` échoue.
+          if [ -z "$(git rev-list refs/remotes/origin/gh-pages..HEAD)" ]; then
+            echo "Rien à pousser."
+            exit 0
+          fi
+          git push origin gh-pages
