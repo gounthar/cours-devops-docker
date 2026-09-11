@@ -27,41 +27,41 @@ docker container run hello-world
 [%auto-animate]
 == 🩻 Anatomie
 
-image::output3_with_transparency.png[]
+image::anatomie-1.svg[]
 
 [%auto-animate]
 == 🩻 Anatomie
 
-image::output4_with_transparency.png[]
+image::anatomie-2.svg[]
 
 [%auto-animate]
 == 🩻 Anatomie
 
-image::output5_with_transparency.png[]
+image::anatomie-3.svg[]
 [%auto-animate]
 == 🩻 Anatomie
 
-image::output6_with_transparency.png[]
-
-[%auto-animate]
-== 🩻 Anatomie
-
-image::output7_with_transparency.png[]
+image::anatomie-4.svg[]
 
 [%auto-animate]
 == 🩻 Anatomie
 
-image::output8_with_transparency.png[]
+image::anatomie-5.svg[]
 
 [%auto-animate]
 == 🩻 Anatomie
 
-image::output9_with_transparency.png[]
+image::anatomie-6.svg[]
 
 [%auto-animate]
 == 🩻 Anatomie
 
-image::output10_with_transparency.png[]
+image::anatomie-7.svg[]
+
+[%auto-animate]
+== 🩻 Anatomie
+
+image::anatomie-8.svg[]
 
 [%auto-animate]
 == 🩻 Anatomie

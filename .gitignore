@@ -6,3 +6,7 @@ dist/
 /.idea/
 CLAUDE.md
 CONTEXT.md
+
+# Cartes 🩻 Anatomie : regenerees a chaque `make build` et horodatees, donc non
+# deterministes. Les commiter ferait un fichier perime des le commit. Voir #548.
+content/media/anatomie-*.svg
