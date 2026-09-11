@@ -182,6 +182,17 @@ check-diagrams:
 	  python3 $(CURDIR)/scripts/gen_dockerfile_card.py "$(CURDIR)/$$src" "$(CURDIR)/$$svg" --steps --check || exit 1; \
 	done
 
+## L'elagage de gh-pages supprime des fichiers sur une branche publiee, sans
+## personne pour regarder, une fois par semaine. Ses deux defauts connus ont ete
+## trouves en revue APRES la fusion, et les deux supprimaient l'apercu d'une
+## branche VIVANTE : un prefixe de branche qui bascule (`feature` morte puis
+## `feature/docs` vivante) et une etiquette nommee `main` qui satisfaisait le
+## garde-fou a la place de la branche. Les douze cas sont hors ligne et
+## deterministes -- git et bash, rien du reseau -- donc ils ont leur place ici
+## au meme titre que check-diagrams. Voir issue #542 et la revue de la PR #551.
+check-prune:
+	@bash $(CURDIR)/scripts/test_prune_gh_pages_previews.sh --quiet
+
 check-assets:
 	@test -d $(DIST_DIR) || { \
 	  echo "ERROR: $(DIST_DIR) does not exist. Run 'make build' first (see issue #486)."; \
@@ -231,7 +242,7 @@ check-links:
 	fi; \
 	$(call lychee_run,--exclude '^file://' $(LYCHEE_EXTRA) $$decks)
 
-verify: check-dashes check-diagrams check-opacity check-assets
+verify: check-dashes check-diagrams check-prune check-opacity check-assets
 	@echo "NOTE: external links are checked by 'make check-links', not here (see issue #486)"
 
 serve: anatomy
@@ -289,4 +300,4 @@ clean:
 qrcode:
 	@$(call compose_up, qrcode)
 
-.PHONY: all build anatomy clean verify check-dashes check-opacity check-assets check-links serve qrcode pdf exam-pdf dependencies-update dependencies-lock-update
+.PHONY: all build anatomy clean verify check-dashes check-diagrams check-opacity check-prune check-assets check-links diagrams serve qrcode pdf exam-pdf dependencies-update dependencies-lock-update

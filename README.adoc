@@ -85,11 +85,15 @@ gate a pull request without ever failing for a reason outside this repository:
 
 * `check-dashes` -- no en/em dash inside a shell command, where it looks like a
   hyphen on a slide and breaks the command when copied;
+* `check-diagrams` -- the committed SVG of a diagram that shows a Dockerfile
+  still matches that Dockerfile;
+* `check-prune` -- the twelve cases of `scripts/test_prune_gh_pages_previews.sh`,
+  which guard the weekly `gh-pages` pruning described under CI/CD below;
 * `check-opacity` -- the slide background opacity declared in the source is the
   one the generated HTML carries;
 * `check-assets` -- every local file the generated HTML points at exists.
 
-It needs the deck to have been generated first, since two of the three checks
+It needs the deck to have been generated first, since two of the five checks
 read the built HTML:
 
 [source,bash]
@@ -211,3 +215,15 @@ git worktree remove /tmp/ghp
 `main` is spared unconditionally. So the preview URL of a merged branch stops
 answering within a week of the branch being deleted: send people the `main` URL,
 never a branch one.
+
+The job deletes files on a published branch, once a week, with nobody watching,
+so its twelve cases run offline as part of `make verify`. Two of them are
+regressions: a branch prefix that flips over time (`feature` deleted, then
+`feature/docs` created, leaving both previews published) and a tag named `main`
+satisfying the guard that was meant to check the branch. Both deleted the
+preview of a live branch.
+
+[source,bash]
+----
+./scripts/test_prune_gh_pages_previews.sh      # case by case
+----
