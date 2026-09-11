@@ -22,10 +22,26 @@ compose_run = $(call compose_cmd, run --user=0 $(1))
 
 all: clean build verify
 
+## La carte 🩻 Anatomie porte une horodate : la diapositive existe pour montrer
+## qu'un conteneur rend le resultat DU MOMENT, et elle affichait une date de
+## 2023. Elle ne peut donc pas suivre le modele commit/--check de
+## check-diagrams -- une horodate n'est pas deterministe, --check echouerait a
+## tous les coups et la copie commitee serait perimee des le commit.
+##
+## Elle est donc regeneree avant chaque construction et ignoree par git, comme
+## content/media/qrcode.png l'est deja. Sur l'hote et non dans un conteneur,
+## comme check-diagrams : python3 suffit, et le conteneur de construction est
+## un conteneur node. check-assets la voit puisqu'il tourne apres la
+## construction. Voir issue #548.
+ANATOMY_CARD = $(CURDIR)/content/media/anatomie
+
+anatomy:
+	@python3 $(CURDIR)/scripts/gen_anatomy_card.py $(ANATOMY_CARD) --steps
+
 # Generate documents inside a container, all *.adoc in parallel
 ## mkdir before compose: the daemon creates a missing bind mount source as
 ## root, which the non-root container then cannot write into.
-build:
+build: anatomy
 	@mkdir -p $(DIST_DIR)
 	@$(call compose_up,--exit-code-from=build build)
 
@@ -229,7 +245,7 @@ check-links:
 verify: check-dashes check-diagrams check-prune check-opacity check-assets
 	@echo "NOTE: external links are checked by 'make check-links', not here (see issue #486)"
 
-serve:
+serve: anatomy
 	@$(call compose_up, --force-recreate serve qrcode)
 
 shell:
@@ -242,7 +258,7 @@ dependencies-update:
 	@$(call compose_run,--entrypoint=ncu --workdir=/app/npm-packages --rm serve -u)
 	@make -C $(CURDIR) dependencies-lock-update
 
-pdf:
+pdf: anatomy
 	@mkdir -p $(DIST_DIR)
 	@$(call compose_up, --exit-code-from=pdf pdf)
 
@@ -284,4 +300,4 @@ clean:
 qrcode:
 	@$(call compose_up, qrcode)
 
-.PHONY: all build clean verify check-dashes check-diagrams check-opacity check-prune check-assets check-links diagrams serve qrcode pdf exam-pdf dependencies-update dependencies-lock-update
+.PHONY: all build anatomy clean verify check-dashes check-diagrams check-opacity check-prune check-assets check-links diagrams serve qrcode pdf exam-pdf dependencies-update dependencies-lock-update

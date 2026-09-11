@@ -1,0 +1,136 @@
+---
+# Les commandes de la carte 🩻 Anatomie fonctionnent-elles encore ? Voir #548.
+#
+# La seconde moitié de #548. `make build` estampille la date du moment sans
+# lancer Docker ; ce job-ci fait l'autre travail, et c'est celui qui aurait
+# évité #547 : `docker container run centos date` avait cessé de fonctionner
+# -- `centos:latest` a disparu du Hub, `library/centos` est marqué DEPRECATED
+# depuis 2022 -- et personne ne l'a vu, parce que la commande était enfermée
+# dans les pixels d'un PNG. Il a fallu un balayage OCR de 268 images pour la
+# retrouver.
+#
+# Délibérément séparé de `make verify`, pour la raison que le Makefile écrit
+# déjà à propos de check-links : une barrière qui dépend de la disponibilité du
+# Hub finit ignorée puis désactivée. Elle est donc rapportée sur un rythme
+# hebdomadaire au lieu de bloquer une fusion.
+#
+# Les commandes ne sont PAS recopiées ici : elles sont lues dans le générateur
+# de la carte, seul endroit où elles existent. Une seconde copie serait
+# exactement la divergence que #548 existe pour supprimer.
+name: Anatomy commands
+
+on:
+  schedule:
+    # Lundi 07:41 UTC. En dehors de l'heure pile, et sur une minute qui n'est
+    # ni celle de link-check.yml (06:27) ni celle de gh-pages-prune.yml (05:13).
+    - cron: '41 7 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: anatomy-commands
+  cancel-in-progress: false
+
+env:
+  ISSUE_TITLE: "Les commandes de la carte 🩻 Anatomie ne fonctionnent plus"
+
+jobs:
+  run-commands:
+    name: 'Run the commands the card draws'
+    runs-on: ubuntu-latest
+    steps:
+      # Ce job ne pousse jamais ; le rapport passe par GH_TOKEN à la dernière
+      # étape. Même raisonnement que link-check.yml.
+      - name: 'Checkout'
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: 'Run them'
+        id: run
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          fail=0
+          : >anatomy-report.txt
+          # Le générateur écrit « commande<TAB>sortie attendue », la sortie
+          # attendue pouvant être vide quand elle change à chaque exécution --
+          # c'est le cas de `date`, dont on vérifie seulement qu'elle répond.
+          while IFS="$(printf '\t')" read -r command expected; do
+            [ -n "$command" ] || continue
+            echo "\$ $command" >>anatomy-report.txt
+            # $command non quoté : c'est voulu, la ligne doit être découpée en
+            # arguments. Elle vient du dépôt lui-même, pas d'une entrée.
+            # shellcheck disable=SC2086
+            if ! out="$(timeout 300 $command 2>&1)"; then
+              printf '%s\n[ÉCHEC : la commande sort en erreur]\n\n' "$out" \
+                >>anatomy-report.txt
+              fail=1
+              continue
+            fi
+            printf '%s\n' "$out" >>anatomy-report.txt
+            if [ -n "$expected" ] && [ "$out" != "$expected" ]; then
+              printf '[ÉCHEC : sortie attendue « %s »]\n' "$expected" \
+                >>anatomy-report.txt
+              fail=1
+            fi
+            printf '\n' >>anatomy-report.txt
+          done < <(python3 scripts/gen_anatomy_card.py unused --print-commands)
+          cat anatomy-report.txt
+          exit "$fail"
+
+      - name: 'Report'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OUTCOME: ${{ steps.run.outcome }}
+        run: |
+          # Correspondance exacte sur le titre plutôt qu'une requête `--search`
+          # : une maladresse de guillemets sur un titre accentué ne rendrait
+          # rien, et ce job ouvrirait alors un doublon chaque lundi au lieu de
+          # mettre à jour celui qui est déjà là. Même raisonnement, et même
+          # code, que link-check.yml.
+          number="$(gh issue list --state open --label outillage \
+            --limit 100 --json number,title \
+            --jq 'map(select(.title == env.ISSUE_TITLE)) | .[0].number // empty')"
+
+          if [ "$OUTCOME" = 'success' ]; then
+            echo "Les commandes de la carte fonctionnent toujours."
+            if [ -n "$number" ]; then
+              gh issue comment "$number" --body \
+                "Les commandes refonctionnent au passage du $(date -u '+%d/%m/%Y'). Ticket refermé automatiquement."
+              gh issue close "$number"
+            fi
+            exit 0
+          fi
+
+          {
+            echo "Relevé automatique du $(date -u '+%d/%m/%Y à %H:%M UTC')."
+            echo
+            echo "Les commandes ci-dessous sont celles que dessine la carte"
+            echo "\`🩻 Anatomie\`. Elles sont lues dans le générateur, pas"
+            echo "recopiées. Reproduire en local :"
+            echo
+            echo '```bash'
+            echo 'python3 scripts/gen_anatomy_card.py unused --print-commands'
+            echo '```'
+            echo
+            echo "Une commande qui ne fonctionne plus doit être corrigée dans"
+            echo "\`PANELS\`, en tête de \`scripts/gen_anatomy_card.py\` : la"
+            echo "carte suivra toute seule. C'est le défaut de #547, qui avait"
+            echo "demandé de retoucher cinq PNG au pixel."
+            echo
+            echo '```'
+            head -c 50000 anatomy-report.txt
+            echo '```'
+          } >issue-body.md
+
+          if [ -n "$number" ]; then
+            gh issue edit "$number" --body-file issue-body.md
+            echo "Updated issue #$number"
+          else
+            gh issue create --title "$ISSUE_TITLE" \
+              --label outillage --body-file issue-body.md
+          fi
