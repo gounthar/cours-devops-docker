@@ -66,67 +66,95 @@ fi
 # elle ne dépend pas d'un `fetch --prune` préalable. Une liste périmée ferait
 # supprimer l'aperçu d'une branche vivante, ce qui est la seule façon dont ce
 # script peut détruire quelque chose d'utile.
-#
-# Les étiquettes comptent aussi : `build-workflow.yml` se déclenche sur
-# `tags: '*'`, donc une poussée d'étiquette publie `gh-pages/<étiquette>/`.
-live_refs="$(git ls-remote --heads --tags --refs "$REMOTE" |
-  sed -e 's#^[0-9a-f]*[[:space:]]*refs/\(heads\|tags\)/##' |
-  sort -u)" || {
+remote_refs="$(git ls-remote --heads --tags --refs "$REMOTE")" || {
   echo "Erreur : impossible de lire les références de « $REMOTE »." >&2
   echo "         Rien n'a été supprimé : une absence non établie n'est pas une absence." >&2
   exit 1
 }
 
-# Deux contrôles sur la liste, parce qu'une liste vide ou tronquée ferait
-# passer tous les aperçus pour des orphelins. `ls-remote` sort en 0 et rend
-# une page vide dans plus d'un cas de figure (jeton expiré, quota atteint).
-if [ -z "$live_refs" ]; then
+# Les deux espaces de noms sont gardés SÉPARÉS, et pas aplatis ensemble. Le
+# garde-fou ci-dessous doit vérifier que `refs/heads/main` existe : sur un
+# distant portant une étiquette nommée `main` mais plus aucune branche, une
+# liste aplatie contient « main » et le garde-fou passe alors que la liste des
+# branches est vide -- donc tous les aperçus de branches deviennent orphelins.
+# Reproduit avant d'être corrigé.
+live_heads="$(awk '{print $2}' <<<"$remote_refs" | sed -n 's#^refs/heads/##p' | sort -u)"
+
+# Les étiquettes comptent pour épargner un aperçu : `build-workflow.yml` se
+# déclenche sur `tags: '*'`, donc une poussée d'étiquette publie
+# `gh-pages/<étiquette>/`. Elles ne comptent pas pour le garde-fou.
+live_tags="$(awk '{print $2}' <<<"$remote_refs" | sed -n 's#^refs/tags/##p' | sort -u)"
+live_refs="$(printf '%s\n%s\n' "$live_heads" "$live_tags" | sed '/^$/d' | sort -u)"
+
+# Deux contrôles sur la liste des BRANCHES, parce qu'une liste vide ou tronquée
+# ferait passer tous les aperçus pour des orphelins. `ls-remote` sort en 0 et
+# rend une page vide dans plus d'un cas de figure (jeton expiré, quota atteint).
+if [ -z "$live_heads" ]; then
   echo "Erreur : « $REMOTE » ne rend aucune branche. Rien n'a été supprimé." >&2
   exit 1
 fi
-if ! grep -qx 'main' <<<"$live_refs"; then
-  echo "Erreur : « main » manque à la liste des branches de « $REMOTE »." >&2
+if ! grep -qx 'main' <<<"$live_heads"; then
+  echo "Erreur : « main » manque aux BRANCHES de « $REMOTE » (une étiquette ne compte pas)." >&2
   echo "         La liste est donc fausse. Rien n'a été supprimé." >&2
   exit 1
 fi
 
-# Un aperçu est un répertoire portant un `index.html`. Ceux qui sont imbriqués
-# dans un autre aperçu sont écartés : un `index.html` qui apparaîtrait un jour
-# dans `main/<quelque chose>/` serait pris pour l'aperçu d'une branche
-# inexistante, et une partie de `main/` partirait avec.
+# Un aperçu est un répertoire portant un `index.html`. Les chemins complets
+# sont comparés aux noms de références, jamais les répertoires de tête : `feat/`
+# et `fix/` sont des préfixes, et comparer les têtes ferait passer `fix` pour un
+# orphelin, emportant les aperçus de toutes les branches `fix/*` vivantes.
+#
+# Le tri lexicographique suffit à faire passer un ancêtre avant ses descendants,
+# puisqu'un ancêtre est un préfixe strict du descendant.
 mapfile -t previews < <(git ls-files -- '*/index.html' |
   sed 's#/index\.html$##' | sort)
 
+# Classement en deux tas, ancêtres d'abord. Un aperçu situé SOUS un aperçu
+# conservé est du contenu de ce dernier, pas l'aperçu d'une branche : c'est le
+# cas d'un `index.html` qui apparaîtrait un jour dans `main/<quelque chose>/`.
+#
+# Les deux tas doivent être calculés avant toute suppression, parce que les
+# préfixes de branches basculent dans les deux sens au fil du temps. Git
+# interdit `refs/heads/feature` et `refs/heads/feature/docs` EN MÊME TEMPS, mais
+# pas l'une après l'autre : une branche `feature` supprimée puis une branche
+# `feature/docs` créée laissent `feature/index.html` ET
+# `feature/docs/index.html` publiés, dont un seul est mort. Un `git rm -r
+# feature` emporterait alors l'aperçu d'une branche VIVANTE. Reproduit avant
+# d'être corrigé.
 kept_previews=()
+orphans=()
 for preview in "${previews[@]:-}"; do
   [ -n "$preview" ] || continue
-  nested=0
-  for other in "${previews[@]}"; do
-    [ "$other" != "$preview" ] || continue
-    case "$preview" in "$other"/*)
-      nested=1
+
+  under_kept=0
+  for kept in "${kept_previews[@]:-}"; do
+    [ -n "$kept" ] || continue
+    case "$preview" in "$kept"/*)
+      under_kept=1
       break
       ;;
     esac
   done
-  [ "$nested" -eq 0 ] && kept_previews+=("$preview")
-done
+  if [ "$under_kept" -eq 1 ]; then
+    kept_previews+=("$preview")
+    continue
+  fi
 
-orphans=()
-for preview in "${kept_previews[@]:-}"; do
-  [ -n "$preview" ] || continue
-  keep=0
+  spared_here=0
   for spared in "${ALWAYS_KEEP[@]}"; do
     [ "$preview" != "$spared" ] || {
-      keep=1
+      spared_here=1
       break
     }
   done
-  [ "$keep" -eq 1 ] && continue
-  grep -qxF -- "$preview" <<<"$live_refs" || orphans+=("$preview")
+  if [ "$spared_here" -eq 1 ] || grep -qxF -- "$preview" <<<"$live_refs"; then
+    kept_previews+=("$preview")
+  else
+    orphans+=("$preview")
+  fi
 done
 
-echo "Aperçus publiés : ${#kept_previews[@]}"
+echo "Aperçus publiés : ${#previews[@]}"
 echo "Orphelins       : ${#orphans[@]}"
 
 if [ "${#orphans[@]}" -eq 0 ]; then
@@ -136,12 +164,44 @@ fi
 
 printf '  %s\n' "${orphans[@]}"
 
+# Les fichiers d'un orphelin, moins ceux qui appartiennent à un aperçu conservé
+# situé dessous. D'où une suppression fichier par fichier et non un `git rm -r`
+# sur le répertoire : c'est ce `-r` qui emportait l'aperçu vivant du cas
+# ci-dessus. Git supprime les répertoires devenus vides tout seul.
+#
+# Le cas inverse -- un orphelin sous un aperçu conservé -- n'est pas supprimé,
+# et c'est délibéré : rien ne distingue l'aperçu d'une branche morte du contenu
+# légitime d'un aperçu vivant. Une fuite se rattrape au prochain déploiement de
+# la branche vivante, qui réécrit son répertoire ; une suppression de trop ne se
+# rattrape pas.
+doomed=()
+while IFS= read -r -d '' file; do
+  protected=0
+  for kept in "${kept_previews[@]:-}"; do
+    [ -n "$kept" ] || continue
+    case "$file" in "$kept"/*)
+      protected=1
+      break
+      ;;
+    esac
+  done
+  [ "$protected" -eq 0 ] && doomed+=("$file")
+done < <(git ls-files -z -- "${orphans[@]}")
+
+echo "Fichiers à retirer : ${#doomed[@]}"
+
+if [ "${#doomed[@]}" -eq 0 ]; then
+  echo "Tous les fichiers de ces orphelins appartiennent à un aperçu conservé. Aucun commit."
+  exit 0
+fi
+
 if [ "$DRY_RUN" -eq 1 ]; then
   echo "Essai à blanc : rien n'a été supprimé."
   exit 0
 fi
 
-git rm -r --quiet -- "${orphans[@]}"
+printf '%s\0' "${doomed[@]}" |
+  git rm --quiet --pathspec-from-file=- --pathspec-file-nul
 
 # Le corps porte la liste : c'est ce que lira quelqu'un qui cherche pourquoi
 # une URL d'aperçu a cessé de répondre.
