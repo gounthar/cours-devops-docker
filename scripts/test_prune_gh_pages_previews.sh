@@ -82,6 +82,20 @@ fixture() {
   )
 
   git_q init -q "$root/ghp"
+  # Ici l'identité est ÉCRITE dans la configuration du dépôt, et pas passée par
+  # `-c` comme ailleurs : le script testé lance un `git commit` ordinaire, qui
+  # doit donc trouver une identité dans l'environnement. Un poste de travail en
+  # a une dans sa configuration globale, un runner GitHub n'en a pas -- les deux
+  # cas qui commitent échouaient en 128 sur `empty ident name` alors qu'ils
+  # passaient en local. C'est le workflow qui la fournit en production, juste
+  # avant d'appeler le script. Écrire ici est sans risque : `ghp` est un dépôt
+  # autonome et jetable, pas une copie de travail secondaire partageant le
+  # `.git/config` d'un autre.
+  git -C "$root/ghp" config user.name test
+  git -C "$root/ghp" config user.email test@example.invalid
+  git -C "$root/ghp" config commit.gpgsign false
+  git -C "$root/ghp" config format.signOff false
+  git -C "$root/ghp" config core.hooksPath /dev/null
   (
     cd "$root/ghp"
     git_q checkout -q -b gh-pages
