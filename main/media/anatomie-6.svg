@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1981 801" width="1981" height="801" role="img" aria-label="Deux terminaux : docker container run busybox echo hello world, et docker container run alpine date. Annotations : lancement d'un container, image, commande lancée.">
+  <style>
+    .code { font-family: "DejaVu Sans Mono", Menlo, Consolas, monospace; font-size: 68px; fill: #000000; }
+    .pill { font-family: "Trebuchet MS", "Century Gothic", Verdana, sans-serif; font-size: 62px; text-anchor: middle; }
+  </style>
+  <rect width="1981" height="801" fill="#FFFFFF"/>
+  <rect x="7" y="7" width="1967" height="301" fill="#D9D9D9" stroke="#1C334E" stroke-width="6"/>
+  <rect x="7" y="494" width="1967" height="301" fill="#D9D9D9" stroke="#1C334E" stroke-width="6"/>
+  <rect x="112" y="46" width="816" height="82" fill="#8064A2"/>
+  <rect x="112" y="533" width="816" height="82" fill="#8064A2"/>
+  <text x="30" y="109" class="code" xml:space="preserve">$ docker container run busybox echo hello world</text>
+  <text x="30" y="208" class="code" xml:space="preserve">hello world</text>
+  <text x="30" y="596" class="code" xml:space="preserve">$ docker container run alpine date</text>
+  <text x="30" y="695" class="code" xml:space="preserve">Fri Sep 11 09:15:12 UTC 2026</text>
+  <path d="M 520 401 L 520 128" stroke="#8064A2" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M 520 401 L 520 533" stroke="#8064A2" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <rect x="227" y="303" width="585" height="196" rx="98" fill="#8064A2"/>
+  <text x="520" y="377" class="pill" fill="#FFFFFF">Lancement</text>
+  <text x="520" y="450" class="pill" fill="#FFFFFF">d'un container</text>
+</svg>
