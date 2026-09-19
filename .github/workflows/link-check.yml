@@ -55,6 +55,13 @@ jobs:
       - name: 'Build PDF slides'
         run: make pdf
 
+      # The exam document is standalone and included by neither deck, so its
+      # links were checked by nothing. It ships as a PDF, which lychee cannot
+      # read; this renders the same source to HTML for the check only.
+      # See issue #554.
+      - name: 'Build exam HTML document'
+        run: make exam-html
+
       # `set -o pipefail` is the whole point of this step. GitHub runs `run:`
       # under `bash -e`, WITHOUT pipefail, so the exit status of the pipeline
       # is tee's, which is always 0. Without it, `make check-links` reported
@@ -109,6 +116,7 @@ jobs:
             echo 'make build'
             echo 'SOURCE_FILE=index-examen.adoc make build'
             echo 'make pdf'
+            echo 'make exam-html'
             echo 'make check-links'
             echo '```'
             echo

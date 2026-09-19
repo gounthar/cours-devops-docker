@@ -118,8 +118,13 @@ External links are checked by a separate target, on demand:
 make build
 SOURCE_FILE=index-examen.adoc make build
 make pdf
+make exam-html
 make check-links
 ----
+
+`make exam-html` renders the detailed exam document to HTML for the checker
+only. That document is standalone, included by neither deck, and ships as a
+PDF, which the checker cannot read; without this step its links go unchecked.
 
 It is kept out of `make verify` on purpose. Link rot depends on other people's
 uptime, so a pull request would fail for reasons its author cannot fix; a gate
