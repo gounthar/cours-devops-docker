@@ -64,13 +64,27 @@ jobs:
             echo "\$ $command" >>anatomy-report.txt
             # $command non quoté : c'est voulu, la ligne doit être découpée en
             # arguments. Elle vient du dépôt lui-même, pas d'une entrée.
+            #
+            # Seule la sortie standard est comparée à l'attendu ; l'erreur
+            # standard va au rapport, pas à la comparaison. Sur un runner qui
+            # n'a pas l'image, `docker run` écrit la progression du pull
+            # (« Unable to find image… », « Pull complete »…) sur stderr : la
+            # mêler à la sortie faisait échouer `busybox echo hello world`
+            # alors que `hello world` était bien affiché. Voir #557.
+            #
+            # Écarté : un `docker pull --quiet` préalable. Il faudrait extraire
+            # l'image de chaque commande, donc un second analyseur des lignes
+            # du générateur, et le contrat resterait faux pour toute commande
+            # qui parle sur stderr sans être en panne.
             # shellcheck disable=SC2086
-            if ! out="$(timeout 300 $command 2>&1)"; then
+            if ! out="$(timeout 300 $command 2>stderr.txt)"; then
+              cat stderr.txt >>anatomy-report.txt
               printf '%s\n[ÉCHEC : la commande sort en erreur]\n\n' "$out" \
                 >>anatomy-report.txt
               fail=1
               continue
             fi
+            cat stderr.txt >>anatomy-report.txt
             printf '%s\n' "$out" >>anatomy-report.txt
             if [ -n "$expected" ] && [ "$out" != "$expected" ]; then
               printf '[ÉCHEC : sortie attendue « %s »]\n' "$expected" \
