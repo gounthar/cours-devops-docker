@@ -1420,7 +1420,7 @@ test-infrastructure:
 **Ressources utiles :**
 
 * https://github.com/goss-org/goss
-* https://github.com/aelsabbahy/goss/blob/master/docs/manual.md
+* https://github.com/goss-org/goss/blob/master/docs/gossfile.md
 
 ==== Complément 3 : Gestion automatique des dépendances (+0.75 pt)
 
@@ -2251,4 +2251,4 @@ L'objectif est de vous **préparer** à l'entreprise, pas de vous **piéger** !
 **Ressources :**
 
 * Repository du cours : https://github.com/gounthar/cours-devops-docker
-* Slides du cours : https://gounthar.github.io/cours-devops-docker/
+* Slides du cours : https://gounthar.github.io/cours-devops-docker/main/
