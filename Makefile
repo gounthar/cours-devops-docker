@@ -229,7 +229,7 @@ check-assets:
 check-links:
 	@docker pull --quiet $(LYCHEE_IMAGE) >/dev/null 2>&1 || true
 	@decks=""; \
-	for deck in index index-examen; do \
+	for deck in index index-examen examen-final-detaille; do \
 	  if [ -f $(DIST_DIR)/$$deck.html ]; then \
 	    decks="$$decks $$deck.html"; \
 	  else \
@@ -285,6 +285,29 @@ exam-pdf:
 	@test -f $(DIST_DIR)/examen-final-detaille.pdf || { echo "ERROR: PDF was not generated"; exit 1; }
 	@echo "PDF generated: $(DIST_DIR)/examen-final-detaille.pdf"
 
+## The exam document is standalone: neither deck includes it, so check-links
+## never saw its URLs, and a link that had never worked sat in its Resources
+## section while every gate stayed green. The PDF is what students get, but
+## lychee cannot read a PDF, so render the same source to HTML with the same
+## attributes and hand that to check-links. Not published, not in `verify`:
+## it exists only to be checked. See issue #554.
+exam-html:
+	@mkdir -p $(DIST_DIR)
+	@docker run --rm \
+		--user $(CURRENT_UID) \
+		-v $(CURDIR)/content:/documents:ro \
+		-v $(DIST_DIR):/output \
+		$(ASCIIDOCTOR_IMAGE) \
+		asciidoctor \
+		-a imagesdir=/documents/media \
+		-a source-highlighter=rouge \
+		-a icons=font \
+		/documents/examen-final-detaille.adoc \
+		-o /output/examen-final-detaille.html \
+		|| { echo "ERROR: exam HTML generation failed"; exit 1; }
+	@test -f $(DIST_DIR)/examen-final-detaille.html || { echo "ERROR: exam HTML was not generated"; exit 1; }
+	@echo "HTML generated: $(DIST_DIR)/examen-final-detaille.html"
+
 ## The fallback recovers a dist/ left root-owned by an older build, or by a
 ## `docker compose up` run outside make with CURRENT_UID unset. Deleting the
 ## content from a root container is the only way to do it without sudo.
@@ -300,4 +323,4 @@ clean:
 qrcode:
 	@$(call compose_up, qrcode)
 
-.PHONY: all build anatomy clean verify check-dashes check-diagrams check-opacity check-prune check-assets check-links diagrams serve qrcode pdf exam-pdf dependencies-update dependencies-lock-update
+.PHONY: all build anatomy clean verify check-dashes check-diagrams check-opacity check-prune check-assets check-links diagrams serve qrcode pdf exam-pdf exam-html dependencies-update dependencies-lock-update
