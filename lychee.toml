@@ -55,4 +55,13 @@ exclude = [
   ## Measured on 2026-09-19 against https://dev.mysql.com/doc/, the only
   ## mysql.com URL in the course (examen-final-detaille.adoc, see #554).
   "^https://dev\\.mysql\\.com/",
+
+  ## Medium sits behind Cloudflare, which answers 403 with a challenge page
+  ## ("Attention Required!" / "Just a moment...") to a plain `curl` AND to the
+  ## browser agent above. Measured on 2026-09-19 against the only Medium URL in
+  ## the course (intro.adoc, source of the hypervisor diagram, see #556): the
+  ## article is alive, fetched in full through a reader proxy, published
+  ## 2019-05-24. The cost is that a real removal would now go unreported; the
+  ## link is a credit line, not something a student has to follow.
+  "^https://([a-z0-9-]+\\.)*medium\\.com/",
 ]
