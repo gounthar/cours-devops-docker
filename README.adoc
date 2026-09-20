@@ -145,9 +145,39 @@ scheduled job does not:
 GITHUB_TOKEN="$(gh auth token)" make check-links
 ----
 
-NOTE: The W3C compliance validation this section used to promise has never
-existed. See issue #486 for the history, and the follow-up issue linked there
-if it is wanted.
+==== Validating the generated HTML
+
+The markup the converter produces is checked by `make check-html`, using the
+W3C validator (vnu) in a container:
+
+[source,bash]
+----
+make build
+SOURCE_FILE=index-examen.adoc make build
+make check-html
+----
+
+Only errors are reported. Thirty-three of the thirty-seven warnings on the
+course deck are "Section lacks heading", which is what Reveal.js *is* -- every
+slide is a `<section>`, and a slide that is one full-bleed image has no heading
+on purpose. Printing them would bury the errors.
+
+Ten errors are expected today, and neither group is a surprise:
+
+* six come from the `http://...` autolink of issue #532, two anchors in
+  `compose.adoc` that the converter turns into links to nowhere;
+* four are `width="100%"` or `height="100%"` written onto `<video>`. The
+  converter substitutes that literal string for whichever dimension the source
+  leaves unset, so they cannot be fixed from `content/`.
+
+Like `check-links`, this is kept out of `make verify`: a gate that is red by
+design teaches people to ignore it. It can move in once #532 is fixed and the
+four videos are decided one way or the other.
+
+The image is pinned by digest rather than by tag, because the validator project
+tags releases irregularly -- its newest version tag predates `latest` by
+roughly two years, and does not even keep the jar at the same path. Bump it by
+hand, as `LYCHEE_IMAGE` is bumped.
 
 === Dependencies management
 
