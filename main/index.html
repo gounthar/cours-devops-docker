@@ -4112,9 +4112,9 @@ x-slides-base: &amp;slides-base
     - REPOSITORY_URL=${REPOSITORY_URL}
   # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
   user: ${CURRENT_UID}
-  # Un montage tmpfs pour des opérations d'E/S plus rapides.
+  # Un montage tmpfs pour des E/S plus rapides ; 1777 car le conteneur n'est pas root.
   tmpfs:
-    - ${BUILD_DIR}
+    - ${BUILD_DIR}:mode=1777
   # Volumes pour le conteneur Docker.
   volumes:
     - ./content:/app/content
@@ -4192,9 +4192,9 @@ x-slides-base: &amp;slides-base
     - REPOSITORY_URL=${REPOSITORY_URL}
   # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
   user: ${CURRENT_UID}
-  # Un montage tmpfs pour des opérations d'E/S plus rapides.
+  # Un montage tmpfs pour des E/S plus rapides ; 1777 car le conteneur n'est pas root.
   tmpfs:
-    - ${BUILD_DIR}
+    - ${BUILD_DIR}:mode=1777
   # Volumes pour le conteneur Docker.
   volumes:
     - ./content:/app/content
@@ -4271,9 +4271,9 @@ x-slides-base: &amp;slides-base
     - REPOSITORY_URL=${REPOSITORY_URL}
   # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
   user: ${CURRENT_UID}
-  # Un montage tmpfs pour des opérations d'E/S plus rapides.
+  # Un montage tmpfs pour des E/S plus rapides ; 1777 car le conteneur n'est pas root.
   tmpfs:
-    - ${BUILD_DIR}
+    - ${BUILD_DIR}:mode=1777
   # Volumes pour le conteneur Docker.
   volumes:
     - ./content:/app/content
@@ -4299,9 +4299,13 @@ x-slides-base: &amp;slides-base
   environment:
     - PRESENTATION_URL=${PRESENTATION_URL}
     - REPOSITORY_URL=${REPOSITORY_URL}</code></pre></div></div>
-<div class="ulist"><ul><li><p>Si la variable n&#8217;est définie ni dans le shell ni dans le fichier <code>.env</code>, Docker Compose utilise la valeur par défaut spécifiée dans le fichier <code>docker-compose.yml</code> (s&#8217;il y en a une).</p></li><li><p>Dans notre cas, aucune valeur par défaut n&#8217;est spécifiée, donc si la variable n&#8217;est définie ni dans le shell ni dans le fichier <code>.env</code>, Docker Compose générera une erreur.</p></li></ul></div></div></section><section id="autre_étude_de_cas_9" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
+<div class="ulist"><ul><li><p>Si la variable n&#8217;est définie ni dans le shell ni dans le fichier <code>.env</code>, Docker Compose utilise la valeur par défaut spécifiée dans le fichier <code>docker-compose.yml</code> (s&#8217;il y en a une).</p></li><li><p>Dans notre cas, aucune valeur par défaut n&#8217;est spécifiée. Docker Compose n&#8217;échoue pas pour autant : il émet un avertissement, substitue une <strong>chaîne vide</strong>, et continue.</p></li><li><p><code>The "PRESENTATION_URL" variable is not set. Defaulting to a blank string.</code> — code de sortie 0.</p></li></ul></div></div></section><section id="autre_étude_de_cas_9" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
   user: ${CURRENT_UID}</code></pre></div></div>
-<div class="ulist"><ul><li class="fragment"><p>Dans Docker, chaque instruction dans le Dockerfile est exécutée par un utilisateur particulier.</p></li><li class="fragment"><p>Par défaut, cet utilisateur est root, mais pour des raisons de sécurité, il est souvent recommandé d&#8217;exécuter les processus en tant qu&#8217;utilisateur non root.</p></li><li class="fragment"><p>Cette ligne définit l&#8217;ID de l&#8217;utilisateur qui exécutera les commandes à l&#8217;intérieur du conteneur Docker à la valeur de la variable d&#8217;environnement <code>CURRENT_UID</code>.</p></li><li class="fragment"><p>La syntaxe <code>${CURRENT_UID}</code> est utilisée pour accéder à la valeur d&#8217;une variable d&#8217;environnement.</p></li><li class="fragment"><p>Dans ce cas, Docker Compose recherchera une variable d&#8217;environnement nommée <code>CURRENT_UID</code> et utilisera sa valeur.</p></li><li class="fragment"><p>Si <code>CURRENT_UID</code> n&#8217;est pas défini dans l&#8217;environnement où Docker Compose est exécuté, Docker Compose renverra une erreur.</p></li></ul></div></div></section><section id="autre_étude_de_cas_10" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># Ce Dockerfile met en place un environnement Node.js avec des outils et dépendances supplémentaires.
+<div class="ulist"><ul><li class="fragment"><p>Dans Docker, chaque instruction dans le Dockerfile est exécutée par un utilisateur particulier.</p></li><li class="fragment"><p>Par défaut, cet utilisateur est root, mais pour des raisons de sécurité, il est souvent recommandé d&#8217;exécuter les processus en tant qu&#8217;utilisateur non root.</p></li><li class="fragment"><p>Cette ligne définit l&#8217;ID de l&#8217;utilisateur qui exécutera les commandes à l&#8217;intérieur du conteneur Docker à la valeur de la variable d&#8217;environnement <code>CURRENT_UID</code>.</p></li><li class="fragment"><p>La syntaxe <code>${CURRENT_UID}</code> est utilisée pour accéder à la valeur d&#8217;une variable d&#8217;environnement.</p></li><li class="fragment"><p>Dans ce cas, Docker Compose recherchera une variable d&#8217;environnement nommée <code>CURRENT_UID</code> et utilisera sa valeur.</p></li><li class="fragment"><p>Si <code>CURRENT_UID</code> n&#8217;est pas défini, Docker Compose <strong>n&#8217;échoue pas</strong> : même avertissement, même chaîne vide. <code>user:</code> reçoit une valeur vide.</p></li><li class="fragment"><p>Le conteneur démarre donc <strong>en root</strong> — exactement l&#8217;inverse de ce que cette ligne cherchait à obtenir.</p></li></ul></div></div></section><section id="rendre_une_variable_vraiment_obligatoire"><h2>🛡️ Rendre une variable vraiment obligatoire</h2><div class="slide-content"><div class="paragraph"><p>Permissif :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">user: ${CURRENT_UID}</code></pre></div></div>
+<div class="paragraph"><p>Obligatoire :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">user: ${CURRENT_UID:?CURRENT_UID est obligatoire}</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p><code>${VAR}</code> est permissif : variable absente, valeur vide, on continue.</p></li><li class="fragment"><p><code>${VAR:?message}</code> échoue pour de bon, dès <code>docker compose config</code> : le message s&#8217;affiche et le code de sortie est 1.</p></li><li class="fragment"><p>Rien ne démarre, donc rien ne démarre en root.</p></li><li class="fragment"><p>C&#8217;est la forme à écrire quand la valeur est obligatoire.</p></li></ul></div></div></section><section id="autre_étude_de_cas_10" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># Ce Dockerfile met en place un environnement Node.js avec des outils et dépendances supplémentaires.
 # Il est basé sur l'image Docker officielle de Node.js (version 22, variante Alpine).
 
 FROM node:26-alpine
@@ -4399,6 +4403,15 @@ DIST_DIR ?= $(CURDIR)/dist
 REPOSITORY_URL ?= file://$(CURDIR)
 export REPOSITORY_URL DIST_DIR
 
+# Les conteneurs de construction écrivent dans dist/ à travers un montage bind :
+# ils doivent donc tourner sous l'utilisateur qui lance make. Laissés en root, ils
+# y déposent des fichiers que `clean` ne peut plus supprimer depuis l'hôte, et
+# `make all` meurt sur sa première cible. Calculé ici plutôt qu'écrit en dur : cet
+# identifiant n'est pas le même sur un poste, dans un Codespace ou sur un agent
+# d'intégration continue.
+CURRENT_UID ?= $(shell id -u):$(shell id -g)
+export CURRENT_UID
+
 # Activer Docker BuildKit pour une construction plus rapide et la mise en cache des images.
 DOCKER_BUILDKIT ?= 1
 COMPOSE_DOCKER_CLI_BUILD ?= 1
@@ -4432,50 +4445,63 @@ all: clean build verify
 # Si le service 'build' se termine avec un code de sortie non nul (ce qui signifie qu'une erreur s'est produite), alors 'docker compose up' se terminera également avec un code de sortie non nul.
 # Cela permet à Make de savoir si la construction du projet a réussi ou non.
 build:
- @$(call compose_up,--exit-code-from=build build)
+	@$(call compose_up,--exit-code-from=build build)
 
 # Vérifier le projet. Actuellement désactivé.
 verify:
- @echo "Vérification désactivée"
+	@echo "Vérification désactivée"
 
 # Démarrer les services 'serve' et 'qrcode'.
 serve:
- @$(call compose_up, --force-recreate serve qrcode)
+	@$(call compose_up, --force-recreate serve qrcode)
 
 # Démarrer un shell à l'intérieur du conteneur du service 'serve'.
 shell:
- @$(call compose_run,--entrypoint=sh --rm serve)
+	@$(call compose_run,--entrypoint=sh --rm serve)
 
 # Mettre à jour le fichier de verrouillage pour les dépendances npm.
 dependencies-lock-update:
- @$(call compose_run,--entrypoint=npm --rm serve install --package-lock)
+	@$(call compose_run,--entrypoint=npm --rm serve install --package-lock)
 
 # Mettre à jour les dépendances npm et le fichier de verrouillage.
 dependencies-update:
- @$(call compose_run,--entrypoint=ncu --workdir=/app/npm-packages --rm serve -u)
- @make -C $(CURDIR) dependencies-lock-update
+	@$(call compose_run,--entrypoint=ncu --workdir=/app/npm-packages --rm serve -u)
+	@make -C $(CURDIR) dependencies-lock-update
 
 # Construire une version PDF du projet.
 pdf:
- @$(call compose_up, --exit-code-from=pdf pdf)
+	@$(call compose_up, --exit-code-from=pdf pdf)
 
 # Nettoyer le projet en arrêtant et en supprimant les conteneurs Docker, les réseaux et les volumes.
 clean:
- @$(call compose_cmd, down -v --remove-orphans)
- @rm -rf $(DIST_DIR)
+	@$(call compose_cmd, down -v --remove-orphans)
+	@rm -rf $(DIST_DIR) 2&gt;/dev/null || { \
+	  echo "NOTE: dist/ contient des fichiers appartenant à root, suppression depuis un conteneur"; \
+	  docker run --rm --volume $(DIST_DIR):/dist alpine:3 \
+	    sh -c 'rm -rf /dist/* /dist/.[!.]*' &gt;/dev/null 2&gt;&amp;1; \
+	  rm -rf $(DIST_DIR); \
+	}
 
 # Démarrer le service 'qrcode'.
 qrcode:
- @$(call compose_up, qrcode)
+	@$(call compose_up, qrcode)
 
 # Déclarer des cibles factices.
-.PHONY: all build verify serve qrcode pdf dependencies-update dependencies-lock-update</code></pre></div></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_2" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Activer Docker BuildKit pour une construction plus rapide et la mise en cache des images.
+.PHONY: all build verify serve shell clean qrcode pdf dependencies-update dependencies-lock-update</code></pre></div></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_2" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Les conteneurs de construction écrivent dans dist/ à travers un montage bind :
+# ils doivent donc tourner sous l'utilisateur qui lance make. Laissés en root, ils
+# y déposent des fichiers que `clean` ne peut plus supprimer depuis l'hôte, et
+# `make all` meurt sur sa première cible. Calculé ici plutôt qu'écrit en dur : cet
+# identifiant n'est pas le même sur un poste, dans un Codespace ou sur un agent
+# d'intégration continue.
+CURRENT_UID ?= $(shell id -u):$(shell id -g)
+export CURRENT_UID</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Voilà d&#8217;où vient le <code>CURRENT_UID</code> que <code>docker-compose.yml</code> consomme quelques diapos plus haut.</p></li><li class="fragment"><p>Compose ne le calcule pas, et ne se plaint pas non plus s&#8217;il manque : c&#8217;est au <code>Makefile</code> de le poser.</p></li><li class="fragment"><p><code>$(shell id -u):$(shell id -g)</code> le lit à chaque appel, au lieu de le figer dans <code>.env</code>.</p></li></ul></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_3" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Activer Docker BuildKit pour une construction plus rapide et la mise en cache des images.
 DOCKER_BUILDKIT ?= 1
 COMPOSE_DOCKER_CLI_BUILD ?= 1
 export DOCKER_BUILDKIT COMPOSE_DOCKER_CLI_BUILD</code></pre></div></div>
 <div class="paragraph"><p>Cette configuration de docker compose concerne Docker BuildKit, une fonctionnalité de Docker qui améliore les performances de construction des images Docker.</p></div>
 <div class="ulist"><ul><li><p>La ligne <code>DOCKER_BUILDKIT ?= 1</code> vérifie si la variable d&#8217;environnement <code>DOCKER_BUILDKIT</code> est déjà définie.</p><div class="ulist"><ul><li><p>Si ce n&#8217;est pas le cas, elle lui attribue la valeur <code>1</code>, ce qui active Docker BuildKit.</p></li></ul></div></li><li><p>De même, <code>COMPOSE_DOCKER_CLI_BUILD ?= 1</code> vérifie si la variable d&#8217;environnement <code>COMPOSE_DOCKER_CLI_BUILD</code> est déjà définie.</p><div class="ulist"><ul><li><p>Si ce n&#8217;est pas le cas, elle lui attribue la valeur <code>1</code>.</p></li><li><p>Cette variable d&#8217;environnement est utilisée pour activer l&#8217;utilisation de Docker CLI lors de l&#8217;utilisation de Docker Compose.</p></li><li><p>C&#8217;est nécessaire car Docker Compose ne supporte pas BuildKit par défaut, donc cette variable d&#8217;environnement est une solution de contournement pour l&#8217;activer.
-En résumé, ces deux lignes de code activent Docker BuildKit pour améliorer les performances de construction des images Docker lors de l&#8217;utilisation de Docker Compose.</p></li></ul></div></li></ul></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_3" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Définition des commandes shell réutilisables pour Docker Compose.
+En résumé, ces deux lignes de code activent Docker BuildKit pour améliorer les performances de construction des images Docker lors de l&#8217;utilisation de Docker Compose.</p></li></ul></div></li></ul></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_4" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Définition des commandes shell réutilisables pour Docker Compose.
 
 # compose_cmd est une fonction qui exécute la commande 'docker compose' avec le fichier docker-compose.yml du répertoire courant.
 # Elle prend un argument $(1) qui représente les options supplémentaires à passer à la commande 'docker compose'.
@@ -4492,13 +4518,13 @@ compose_up = $(call compose_cmd, up --build $(1))
 # compose_run est une fonction qui utilise compose_cmd pour exécuter 'docker compose run'.
 # Elle prend un argument $(1) qui représente les options supplémentaires à passer à la commande 'docker compose run'.
 # L'option '--user=0' est toujours incluse, ce qui signifie que les commandes seront exécutées en tant que root à l'intérieur du conteneur.
-compose_run = $(call compose_cmd, run --user=0 $(1))</code></pre></div></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_4" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Construire le projet à l'intérieur d'un conteneur Docker.
+compose_run = $(call compose_cmd, run --user=0 $(1))</code></pre></div></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_5" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Construire le projet à l'intérieur d'un conteneur Docker.
 # Cette règle Makefile utilise la fonction compose_up définie précédemment pour exécuter 'docker compose up' avec l'option '--exit-code-from=build'.
 # L'option '--exit-code-from=build' signifie que la commande 'docker compose up' renverra le code de sortie du service 'build'.
 # Si le service 'build' se termine avec un code de sortie non nul (ce qui signifie qu'une erreur s'est produite), alors 'docker compose up' se terminera également avec un code de sortie non nul.
 # Cela permet à Make de savoir si la construction du projet a réussi ou non.
 build:
- @$(call compose_up,--exit-code-from=build build)</code></pre></div></div>
+	@$(call compose_up,--exit-code-from=build build)</code></pre></div></div>
 <div class="ulist"><ul><li class="fragment"><p>Cette règle <code>Makefile</code> est utilisée pour construire le projet à l&#8217;intérieur d&#8217;un conteneur Docker.</p></li><li class="fragment"><p>Elle utilise la fonction <code>compose_up</code> pour exécuter la commande <code>docker compose up</code> avec l&#8217;option <code>--exit-code-from=build</code>.</p></li><li class="fragment"><p>Cette option permet à la commande <code>docker compose up</code> de renvoyer le code de sortie du service <code>build</code>, ce qui permet à Make de savoir si la construction du projet a réussi ou non.</p></li></ul></div></div></section><section id="fin_du_chapitre_docker_compose"><h2>📖🔚 Fin du chapitre docker compose 🐋🐙</h2><div class="slide-content"><div class="imageblock"><img src="media/bitmoji-whale%20friend.png" alt="bitmoji whale friend" height="500"></div></div></section></section>
 <section><section id="sécurité_et_production_docker" data-background-color="Navy"><h2>Sécurité et Production Docker</h2><div class="slide-content"><div class="imageblock"><img src="media/security-production-header.png" alt="security production header" height="400"></div><aside class="notes"><div class="paragraph"><p>Durée totale : 3 heures
 Session pratique avec projet fil rouge SecureVote</p></div></aside></div></section><section id="objectifs_de_la_session"><h2>Objectifs de la session</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Comprendre et appliquer les bonnes pratiques de sécurité Docker</p></li><li class="fragment"><p>Optimiser les conteneurs pour la production</p></li><li class="fragment"><p>Gérer les registres d&#8217;images Docker</p></li><li class="fragment"><p>Déployer une application sécurisée et production-ready</p></li></ul></div>
