@@ -15,9 +15,9 @@ x-slides-base: &slides-base
     - REPOSITORY_URL=${REPOSITORY_URL}
   # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
   user: ${CURRENT_UID}
-  # Un montage tmpfs pour des opérations d'E/S plus rapides.
+  # Un montage tmpfs pour des E/S plus rapides ; 1777 car le conteneur n'est pas root.
   tmpfs:
-    - ${BUILD_DIR}
+    - ${BUILD_DIR}:mode=1777
   # Volumes pour le conteneur Docker.
   volumes:
     - ./content:/app/content

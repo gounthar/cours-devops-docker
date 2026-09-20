@@ -5,6 +5,15 @@ DIST_DIR ?= $(CURDIR)/dist
 REPOSITORY_URL ?= file://$(CURDIR)
 export REPOSITORY_URL DIST_DIR
 
+# Les conteneurs de construction écrivent dans dist/ à travers un montage bind :
+# ils doivent donc tourner sous l'utilisateur qui lance make. Laissés en root, ils
+# y déposent des fichiers que `clean` ne peut plus supprimer depuis l'hôte, et
+# `make all` meurt sur sa première cible. Calculé ici plutôt qu'écrit en dur : cet
+# identifiant n'est pas le même sur un poste, dans un Codespace ou sur un agent
+# d'intégration continue.
+CURRENT_UID ?= $(shell id -u):$(shell id -g)
+export CURRENT_UID
+
 # Activer Docker BuildKit pour une construction plus rapide et la mise en cache des images.
 DOCKER_BUILDKIT ?= 1
 COMPOSE_DOCKER_CLI_BUILD ?= 1
@@ -38,41 +47,46 @@ all: clean build verify
 # Si le service 'build' se termine avec un code de sortie non nul (ce qui signifie qu'une erreur s'est produite), alors 'docker compose up' se terminera également avec un code de sortie non nul.
 # Cela permet à Make de savoir si la construction du projet a réussi ou non.
 build:
- @$(call compose_up,--exit-code-from=build build)
+	@$(call compose_up,--exit-code-from=build build)
 
 # Vérifier le projet. Actuellement désactivé.
 verify:
- @echo "Vérification désactivée"
+	@echo "Vérification désactivée"
 
 # Démarrer les services 'serve' et 'qrcode'.
 serve:
- @$(call compose_up, --force-recreate serve qrcode)
+	@$(call compose_up, --force-recreate serve qrcode)
 
 # Démarrer un shell à l'intérieur du conteneur du service 'serve'.
 shell:
- @$(call compose_run,--entrypoint=sh --rm serve)
+	@$(call compose_run,--entrypoint=sh --rm serve)
 
 # Mettre à jour le fichier de verrouillage pour les dépendances npm.
 dependencies-lock-update:
- @$(call compose_run,--entrypoint=npm --rm serve install --package-lock)
+	@$(call compose_run,--entrypoint=npm --rm serve install --package-lock)
 
 # Mettre à jour les dépendances npm et le fichier de verrouillage.
 dependencies-update:
- @$(call compose_run,--entrypoint=ncu --workdir=/app/npm-packages --rm serve -u)
- @make -C $(CURDIR) dependencies-lock-update
+	@$(call compose_run,--entrypoint=ncu --workdir=/app/npm-packages --rm serve -u)
+	@make -C $(CURDIR) dependencies-lock-update
 
 # Construire une version PDF du projet.
 pdf:
- @$(call compose_up, --exit-code-from=pdf pdf)
+	@$(call compose_up, --exit-code-from=pdf pdf)
 
 # Nettoyer le projet en arrêtant et en supprimant les conteneurs Docker, les réseaux et les volumes.
 clean:
- @$(call compose_cmd, down -v --remove-orphans)
- @rm -rf $(DIST_DIR)
+	@$(call compose_cmd, down -v --remove-orphans)
+	@rm -rf $(DIST_DIR) 2>/dev/null || { \
+	  echo "NOTE: dist/ contient des fichiers appartenant à root, suppression depuis un conteneur"; \
+	  docker run --rm --volume $(DIST_DIR):/dist alpine:3 \
+	    sh -c 'rm -rf /dist/* /dist/.[!.]*' >/dev/null 2>&1; \
+	  rm -rf $(DIST_DIR); \
+	}
 
 # Démarrer le service 'qrcode'.
 qrcode:
- @$(call compose_up, qrcode)
+	@$(call compose_up, qrcode)
 
 # Déclarer des cibles factices.
-.PHONY: all build verify serve qrcode pdf dependencies-update dependencies-lock-update
+.PHONY: all build verify serve shell clean qrcode pdf dependencies-update dependencies-lock-update
