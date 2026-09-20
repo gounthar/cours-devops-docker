@@ -254,11 +254,8 @@ check-links:
 ## on gets ignored, then switched off. That is how this repository ended up with
 ## `verify: @echo "Verify disabled"` for two years.
 ##
-## NOT in `verify`. Ten errors are left after this commit, and they split in two:
+## NOT in `verify`. Four errors are left, and they are now all of one kind:
 ##
-##   6  the `http://...` autolink of issue #532, at compose.adoc:730 and :734 --
-##      two anchors, each worth one bad `href` plus two unterminated character
-##      references. Fixable in content, and that is what #532 is for.
 ##   4  `width="100%"` / `height="100%"` emitted on `<video>`. Not fixable in
 ##      content: the converter substitutes the literal string for whichever
 ##      dimension the source leaves unset. Read in
@@ -268,10 +265,15 @@ check-links:
 ##      Setting both on every video would silence it, at the cost of pinning an
 ##      aspect ratio by hand on each one. Not done, deliberately.
 ##
+## The six errors that issue #532 accounted for are gone. They came from the
+## `http://...` autolink at compose.adoc:730 and :734: two anchors, each worth
+## one bad `href` plus two unterminated character references. Both cells are
+## literal monospace now, `+...+`, so no substitution runs inside them.
+##
 ## So this check is offline and deterministic -- it meets the criterion written
 ## above check-assets -- but it cannot reach zero while the converter behaves
 ## this way, and a gate that is red by design is a gate nobody reads. Moving it
-## into `verify` needs #532 fixed AND a decision on those four videos.
+## into `verify` now needs only a decision on those four videos.
 ##
 ## Pinned by digest, not by tag: the validator project tags releases
 ## irregularly. Its newest version tag is 24.10.17 (October 2024) while `latest`
@@ -314,9 +316,8 @@ check-html:
 	if [ $$status -ne 0 ]; then \
 	  echo ""; \
 	  echo "ERROR: the built HTML does not validate (see issue #530)."; \
-	  echo "       Ten errors are expected today: six from the http://... autolink of"; \
-	  echo "       compose.adoc:730 and :734 (issue #532), and four 100% dimensions"; \
-	  echo "       that the converter writes on <video> (see the comment above)."; \
+	  echo "       Four errors are expected today: the 100% dimensions that the"; \
+	  echo "       converter writes on <video> (see the comment above)."; \
 	  exit 1; \
 	fi; \
 	echo "OK: the built HTML validates (errors only, warnings not reported -- see issue #530)"

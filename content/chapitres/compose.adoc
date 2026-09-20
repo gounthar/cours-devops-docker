@@ -727,11 +727,11 @@ Utilisez les outils **déjà présents** dans l'image.
 `cat < /dev/tcp/localhost/8080` (bash uniquement)
 
 | Tester fichier existe
-| `curl -f http://...`
+| `+curl -f http://...+`
 | `[ -f /path/to/file ] \|\| exit 1`
 
 | Tester processus
-| `curl http://...`
+| `+curl http://...+`
 | `ps aux \| grep "mon-process"`
 |===
 
