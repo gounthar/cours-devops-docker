@@ -1,6 +1,6 @@
 = 🐋🐙 Docker compose
 
-image::2073552164-image2.png[height=550px]
+image::2073552164-image2.png[height=550]
 
 == 🌐🏡 Un cas de la vraie vie
 
@@ -1193,9 +1193,9 @@ include::../code-samples/compose/tp12-bis.yml[]
 == 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
 
 [.column]
-image::when.png[height=500px]
+image::when.png[height=500]
 [.column]
-video::gitlab-logs.speed.very.small.mp4[height=500px,options=autoplay,loop,nocontrols]
+video::gitlab-logs.speed.very.small.mp4[height=500,options="autoplay,loop,nocontrols"]
 
 [%auto-animate]
 [background-video="2000_years_later.mp4",background-video-loop=true,background-video-muted=true]
@@ -1209,7 +1209,7 @@ Il va falloir se logguer, lier les runners au serveur, créer un projet, etc...
 == 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
 
 [.column]
-image::gitlab-login.png[height=500px]
+image::gitlab-login.png[height=500]
 
 [.column]
 --
@@ -1575,7 +1575,7 @@ include::../code-samples/compose/cours/docker-compose.yml[lines=3..28]
 - La mise en cache en ligne est une fonctionnalité de Docker BuildKit qui permet de réutiliser les couches de cache existantes lors de la construction d'une image Docker.
 
 [%step]
-image::multi-layered-cake-removebg-preview.png[height=100px]
+image::multi-layered-cake-removebg-preview.png[height=100]
 --
 [.column.is-one-third]
 --
@@ -1784,4 +1784,4 @@ include::../code-samples/compose/cours/Makefile[lines=35..41]
 
 == 📖🔚 Fin du chapitre docker compose 🐋🐙
 
-image::bitmoji-whale friend.png[height=500px]
+image::bitmoji-whale friend.png[height=500]

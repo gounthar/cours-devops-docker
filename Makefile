@@ -242,6 +242,85 @@ check-links:
 	fi; \
 	$(call lychee_run,--exclude '^file://' $(LYCHEE_EXTRA) $$decks)
 
+## Validation HTML (W3C), deliberately outside `verify` -- see issue #530.
+##
+## Measured 2026-09-20 with vnu 26.9.16, on the published pages: 24 errors and
+## 37 warnings on index.html, 0 and 5 on index-examen.html. Not the hundreds
+## the ticket feared, which is why the check is worth having at all.
+##
+## `--errors-only`: 33 of the 37 warnings are "Section lacks heading", which is
+## inherent to Reveal.js -- every slide is a `<section>`, and a full-bleed image
+## slide has no heading by design. A check that prints 33 lines nobody can act
+## on gets ignored, then switched off. That is how this repository ended up with
+## `verify: @echo "Verify disabled"` for two years.
+##
+## NOT in `verify`. Ten errors are left after this commit, and they split in two:
+##
+##   6  the `http://...` autolink of issue #532, at compose.adoc:730 and :734 --
+##      two anchors, each worth one bad `href` plus two unterminated character
+##      references. Fixable in content, and that is what #532 is for.
+##   4  `width="100%"` / `height="100%"` emitted on `<video>`. Not fixable in
+##      content: the converter substitutes the literal string for whichever
+##      dimension the source leaves unset. Read in
+##      node_modules/@asciidoctor/reveal.js/dist/main.js, convert_video:
+##        width  = attr?("width")  ? attr("width")  : "100%"
+##        height = attr?("height") ? attr("height") : "100%"
+##      Setting both on every video would silence it, at the cost of pinning an
+##      aspect ratio by hand on each one. Not done, deliberately.
+##
+## So this check is offline and deterministic -- it meets the criterion written
+## above check-assets -- but it cannot reach zero while the converter behaves
+## this way, and a gate that is red by design is a gate nobody reads. Moving it
+## into `verify` needs #532 fixed AND a decision on those four videos.
+##
+## Pinned by digest, not by tag: the validator project tags releases
+## irregularly. Its newest version tag is 24.10.17 (October 2024) while `latest`
+## carries vnu 26.9.16, and the 24.10.17 image does not even keep the jar at the
+## same path -- `java -jar /vnu.jar` fails there with "Unable to access
+## jarfile". A digest is the only form that is both reproducible and current.
+## Bump it by hand, as LYCHEE_IMAGE is bumped.
+VNU_IMAGE ?= ghcr.io/validator/validator@sha256:6c9c0782c07357df8fa83f90acbe2b2a09bf51293e8e228bf0fdab81d723d5ff
+
+vnu_run = docker run --rm --user $(CURRENT_UID) \
+	--volume $(DIST_DIR):/input:ro \
+	--workdir /input $(VNU_IMAGE) \
+	java -jar /vnu.jar --errors-only --format gnu $(1)
+
+## The image sets JAVA_TOOL_OPTIONS, so the JVM announces "Picked up
+## JAVA_TOOL_OPTIONS:" on every launch -- on stderr, which is also where vnu
+## writes its findings, so the line lands in the middle of them. It is filtered
+## out below.
+##
+## The filtering is done on a captured string rather than through a pipe on
+## purpose. A pipe would hand back grep's exit code instead of the validator's,
+## and the check would pass while reporting errors. That is exactly the
+## regression of issue #533, and it comes back through this door if forgotten.
+check-html:
+	@docker pull --quiet $(VNU_IMAGE) >/dev/null 2>&1 || true
+	@decks=""; \
+	for deck in index index-examen; do \
+	  if [ -f $(DIST_DIR)/$$deck.html ]; then \
+	    decks="$$decks $$deck.html"; \
+	  else \
+	    echo "NOTE: $$deck.html not built, its markup is not checked"; \
+	  fi; \
+	done; \
+	if [ -z "$$decks" ]; then \
+	  echo "ERROR: no built deck in $(DIST_DIR). Run 'make build' first (see issue #530)."; \
+	  exit 1; \
+	fi; \
+	out=$$($(call vnu_run,$$decks) 2>&1); status=$$?; \
+	printf '%s\n' "$$out" | grep -v '^Picked up JAVA_TOOL_OPTIONS:' | grep -v '^$$' || true; \
+	if [ $$status -ne 0 ]; then \
+	  echo ""; \
+	  echo "ERROR: the built HTML does not validate (see issue #530)."; \
+	  echo "       Ten errors are expected today: six from the http://... autolink of"; \
+	  echo "       compose.adoc:730 and :734 (issue #532), and four 100% dimensions"; \
+	  echo "       that the converter writes on <video> (see the comment above)."; \
+	  exit 1; \
+	fi; \
+	echo "OK: the built HTML validates (errors only, warnings not reported -- see issue #530)"
+
 verify: check-dashes check-diagrams check-prune check-opacity check-assets
 	@echo "NOTE: external links are checked by 'make check-links', not here (see issue #486)"
 
@@ -323,4 +402,4 @@ clean:
 qrcode:
 	@$(call compose_up, qrcode)
 
-.PHONY: all build anatomy clean verify check-dashes check-diagrams check-opacity check-prune check-assets check-links diagrams serve qrcode pdf exam-pdf exam-html dependencies-update dependencies-lock-update
+.PHONY: all build anatomy clean verify check-dashes check-diagrams check-opacity check-prune check-assets check-links check-html diagrams serve qrcode pdf exam-pdf exam-html dependencies-update dependencies-lock-update
