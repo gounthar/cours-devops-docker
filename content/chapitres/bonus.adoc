@@ -208,9 +208,9 @@ Lancer un conteneur nginx et concentrez ses logs dans ELK
 == GitLab et Dependabot
 
 [.column]
-image::https://about.gitlab.com/images/press/press-kit-icon.svg[height=200px]
+image::https://about.gitlab.com/images/press/press-kit-icon.svg[height=200]
 [.column]
-image::https://avatars.githubusercontent.com/u/27347476?s=200&v=4[height=200px]
+image::https://avatars.githubusercontent.com/u/27347476?s=200&v=4[height=200]
 
 == 🤔 Qu'est-ce que Dependabot ?
 
@@ -870,7 +870,7 @@ https://blog.stephane-robert.info/docs/conteneurs/moteurs-conteneurs/lazydocker/
 == Conseils pour l'éval'
 [.column]
 --
-image::final answer.png[height=500px]
+image::final answer.png[height=500]
 --
 [.column]
 --
@@ -882,7 +882,7 @@ image::final answer.png[height=500px]
 [%auto-animate]
 == Conseils pour l'eval'
 
-image::dont panic.png[height=500px]
+image::dont panic.png[height=500]
 
 == Vous devez avoir les compétences suivantes:
 
@@ -914,4 +914,4 @@ https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
 
 == 🤔👉 One more thing
 
-image::415439355-image7.png[height=500px]
+image::415439355-image7.png[height=500]

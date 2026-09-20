@@ -1,7 +1,7 @@
 [background-color="Navy"]
 = Sécurité et Production Docker
 
-image::security-production-header.png[height=400px]
+image::security-production-header.png[height=400]
 
 [.notes]
 --
