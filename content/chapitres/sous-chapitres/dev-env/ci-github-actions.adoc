@@ -74,9 +74,17 @@ démarre vide. Sans `actions/checkout`, `ls` ne montre rien.
 
 **Sur la version épinglée :**
 
-`actions/checkout@v7` — le `@v7` est une référence Git. L'épingler évite qu'une mise à jour
-amont change le comportement du jour au lendemain. C'est la même logique que le tag d'une image
-Docker, vue au chapitre sur les images.
+`actions/checkout@v7` : le `@v7` est une référence Git, et c'est un tag *mouvant*. Les
+mainteneurs le font avancer à chaque publication de la série 7. L'épingler protège d'un saut
+en version 8, pas d'une mise à jour du jour au lendemain. Pour figer pour de bon, il faut un
+SHA de commit complet, la seule référence immuable, et c'est ce que GitHub recommande pour un
+workflow sensible.
+
+Même mécanique que le tag d'une image, vue au chapitre sur les images : `:TAG` désigne un nom
+que le publieur déplace, `@DIGEST` désigne un contenu. L'exemple est sous leurs yeux, et il
+vaut la peine d'être montré en direct : `mcr.microsoft.com/devcontainers/base:ubuntu` rend
+aujourd'hui une Ubuntu 26.04.1, là où la documentation qu'ils liront parle encore de 24.04.
+Le nom n'a pas bougé, le contenu si.
 --
 
 === Le runner n'est pas votre Codespace ⚠️
