@@ -1,0 +1,391 @@
+=== La même image, ailleurs 🤖
+
+Votre Codespace tourne. Docker répond. Tout marche.
+
+[%step]
+Et sur la machine du voisin ?
+
+[%step]
+[.small]
+Et sur le serveur qui construira le projet à 3 h du matin, sans vous ?
+
+[.notes]
+--
+**Objectif de cette section :**
+
+Faire le pont entre « mon environnement marche » et « mon environnement marche partout ».
+C'est le même raisonnement que celui qui a justifié Docker au début du cours, appliqué cette
+fois à l'intégration continue.
+
+**Accroche à utiliser à l'oral :**
+
+"Vous avez passé cinq minutes à démarrer un Codespace, et tout fonctionnait. C'est confortable.
+Maintenant, imaginez que vous rendiez votre projet et que l'enseignant le lance chez lui. Ou
+qu'un collègue le récupère dans deux ans. Est-ce que ça marchera encore ?"
+
+**Le point à faire passer :**
+
+Un environnement reproductible n'a d'intérêt que s'il est reproduit. Codespaces reproduit
+l'environnement pour *vous*. L'intégration continue le reproduit pour *la machine*, à chaque
+`git push`, sans intervention humaine.
+
+**Lien avec ce qui précède :**
+
+Le chapitre Codespaces a montré `.devcontainer/devcontainer.json` et l'image
+`mcr.microsoft.com/devcontainers/base:ubuntu`. Cette section reprend exactement cette image :
+il n'y a rien de neuf à apprendre côté Docker, seulement un nouvel endroit où l'utiliser.
+--
+
+=== GitHub Actions en une diapo 📄
+
+Un fichier dans `.github/workflows/`, et GitHub exécute vos commandes à chaque `push`.
+
+[source,yaml]
+----
+include::../../../code-samples/gh-actions/ci-docker-image.yml[tags="common,checkout"]
+----
+
+[%step]
+[.small]
+`runs-on` : la machine que GitHub vous prête. `steps` : ce qu'elle fait.
+
+[.notes]
+--
+**Décomposer le fichier, dans cet ordre :**
+
+- `name:` — le nom affiché dans l'onglet Actions du dépôt. Purement cosmétique.
+- `on:` — l'événement déclencheur. Ici `push` : à chaque poussée, sur n'importe quelle branche.
+- `jobs:` — un workflow contient un ou plusieurs *jobs*, exécutés en parallèle par défaut.
+- `dire_bonjour:` — l'identifiant du job. C'est vous qui le choisissez.
+- `runs-on:` — le *runner*, c'est-à-dire la machine virtuelle fournie par GitHub.
+- `steps:` — la liste ordonnée des étapes. Chacune est soit un `uses:`, soit un `run:`.
+
+**`uses:` contre `run:` — la distinction qui compte :**
+
+- `run:` exécute une commande shell. C'est du bash, rien de plus.
+- `uses:` réutilise une *action*, c'est-à-dire du code publié par quelqu'un d'autre.
+  `actions/checkout` est la plus courante : elle clone le dépôt dans le répertoire de travail.
+
+**Pourquoi `checkout` n'est pas automatique :**
+
+Question fréquente, et légitime : « pourquoi faut-il demander le code, le workflow est déjà
+dans le dépôt ? » Parce que GitHub lit le fichier de workflow sans cloner le dépôt. Le runner
+démarre vide. Sans `actions/checkout`, `ls` ne montre rien.
+
+**Sur la version épinglée :**
+
+`actions/checkout@v7` — le `@v7` est une référence Git. L'épingler évite qu'une mise à jour
+amont change le comportement du jour au lendemain. C'est la même logique que le tag d'une image
+Docker, vue au chapitre sur les images.
+--
+
+=== Le runner n'est pas votre Codespace ⚠️
+
+[.columns]
+--
+[.column]
+****
+**Votre Codespace**
+
+`devcontainers/base:ubuntu`
+
+Vos outils, votre version
+****
+
+[.column]
+****
+**Le runner par défaut**
+
+`ubuntu-latest`
+
+Les outils de GitHub, leurs versions
+****
+--
+
+[%step]
+[.small]
+Deux environnements différents. Les mêmes commandes n'y donnent pas le même résultat.
+
+[.notes]
+--
+**Le problème, énoncé simplement :**
+
+`ubuntu-latest` est une image maintenue par GitHub, garnie d'un jeu d'outils que GitHub choisit
+et fait évoluer. Elle ne contient pas forcément ce que contient votre environnement de
+développement, et pas forcément dans la même version.
+
+**Les symptômes classiques, à raconter :**
+
+- « Ça marche chez moi » — la version locale d'un outil diffère de celle du runner.
+- Un `npm run build` qui passe en local et casse en CI parce que Node n'a pas la même version.
+- Un script qui utilise une commande absente du runner.
+
+**La réponse historique, et pourquoi elle ne suffit pas :**
+
+La première réaction est d'aligner le runner : `runs-on: ubuntu-20.04` pour coller à la version
+utilisée en développement. Cela marche un temps, puis casse — parce que GitHub retire les
+anciennes images de runner, et parce qu'aligner la version d'Ubuntu n'aligne pas les versions
+des outils installés dessus.
+
+**Vers la solution :**
+
+Docker a déjà répondu à cette question au début du cours. Si l'environnement est décrit par une
+image, il suffit d'utiliser la même image des deux côtés. C'est l'objet de la diapo suivante.
+
+**Question à poser à l'assistance avant de tourner la page :**
+
+"On a passé le cours à dire que Docker rend un environnement reproductible. Comment on s'en sert
+ici ?" — laisser venir la réponse, elle arrive presque toujours.
+--
+
+=== La même image, en CI ✅
+
+[source,yaml]
+----
+include::../../../code-samples/gh-actions/ci-docker-image.yml[tags="container"]
+----
+
+[%step]
+[.small]
+Trois lignes. Le job ne tourne plus *sur* le runner, mais *dans* le conteneur.
+
+[.notes]
+--
+**Ce que fait la clé `container:` :**
+
+GitHub démarre le conteneur à partir de l'image indiquée, puis exécute chaque `step` à
+l'intérieur. Le runner ne sert plus que d'hôte Docker. Le répertoire de travail est monté dans
+le conteneur, donc `actions/checkout` fonctionne exactement pareil.
+
+**Pourquoi cette image-là :**
+
+C'est celle du chapitre précédent, `mcr.microsoft.com/devcontainers/base:ubuntu`, celle que
+`.devcontainer/devcontainer.json` donne au Codespace. Développement et CI partagent désormais la
+même base. C'est tout l'intérêt, et c'est la raison de la mettre ici plutôt qu'une autre.
+
+**Ce que `runs-on` devient :**
+
+Presque indifférent. Le runner ne fournit plus que Docker. On le laisse à `ubuntu-latest` sans
+plus y penser — ce qui est précisément le soulagement recherché.
+
+**Le prix à payer, à dire honnêtement :**
+
+- Le conteneur doit être tiré à chaque exécution : quelques secondes à quelques dizaines de
+  secondes selon la taille de l'image.
+- Les outils pré-installés par GitHub sur `ubuntu-latest` ne sont plus là. Si le workflow en
+  dépendait, il faut les installer dans le conteneur.
+
+**Écho au reste du cours :**
+
+C'est le même raisonnement que `docker run` contre « installer sur sa machine », vu au premier
+chapitre. Rien de neuf, un nouveau terrain.
+--
+
+=== Trois pièges, mesurés 🔍
+
+[%step]
+[.small]
+`sudo` : inutile, dans un conteneur le job tourne déjà en `root` (`uid=0`)
+
+[%step]
+[.small]
+`cowsay` — installé dans `/usr/games`, **absent du `PATH`** d'un shell non interactif
+
+[%step]
+[.small]
+`README.md` — ce dépôt n'en a pas. Il a un `README.adoc`
+
+[.notes]
+--
+**Pourquoi cette diapo existe :**
+
+Ces trois points ne s'inventent pas, ils se constatent. Ils ont tous été vérifiés en exécutant
+l'image, pas en la lisant. C'est la leçon de méthode à faire passer autant que le contenu.
+
+**Détail 1 — l'utilisateur :**
+
+`docker run --rm mcr.microsoft.com/devcontainers/base:ubuntu id` rend `uid=0(root)`. L'image
+*contient* `sudo` (`/usr/bin/sudo` existe), donc un `sudo apt-get` ne produirait pas d'erreur :
+il serait simplement superflu. Beaucoup d'images minimales, elles, n'ont pas `sudo` du tout, et
+là le workflow casse.
+
+À rapprocher du chapitre sécurité : tourner en `root` dans un conteneur de CI est courant et
+généralement accepté — le conteneur est jeté à la fin du job. Ce n'est pas une licence pour
+faire pareil en production.
+
+**Détail 2 — le `PATH` :**
+
+Sur Ubuntu, `cowsay` s'installe dans `/usr/games/`. Ce répertoire est ajouté au `PATH` par les
+fichiers de profil d'un shell *interactif*. Un `run:` de GitHub Actions n'est pas interactif :
+le `PATH` y vaut `/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin`, sans
+`/usr/games`. D'où le chemin complet dans l'exemple.
+
+C'est le piège le plus instructif des trois, parce que la commande marche quand on la teste à la
+main dans le terminal du conteneur, et échoue en CI. Le test à la main donne raison à ce qu'on
+croyait déjà.
+
+**Détail 3 — le nom du fichier :**
+
+Un détail, mais il illustre la même chose : le workflow ne devine rien. `cat README.md` sur un
+dépôt qui n'a qu'un `README.adoc` rend un code de sortie non nul, et le job échoue.
+
+**La morale, à énoncer :**
+
+"Un workflow ne se relit pas, il s'exécute. Les trois erreurs de cette diapo étaient invisibles
+à la lecture et évidentes dès la première exécution."
+--
+
+=== 🎓 Exercice : la même image partout
+
+* **But** : faire dire le `README` du dépôt par une vache, depuis la CI
+
+* 👷🏽‍♀️ À vous d'écrire le workflow :
+** 💡 le job doit tourner dans la même image que votre Codespace
+** 💡 `cowsay` n'est pas installé dans l'image : il faut l'ajouter
+** 💡 pensez à récupérer le contenu du dépôt avant de le lire
+
+[.notes]
+--
+**Consignes pratiques :**
+
+Le fichier est à créer dans `.github/workflows/bonjour.yml` de leur propre dépôt. Un `git push`
+suffit à le déclencher, et l'onglet « Actions » du dépôt montre l'exécution en direct.
+
+**Ce qu'ils vont rater, dans l'ordre de fréquence :**
+
+1. Oublier `actions/checkout` — `cat README.adoc` échoue sur un répertoire vide.
+2. Écrire `cowsay` sans le chemin — `command not found`, alors que le paquet est bien installé.
+3. Garder `sudo`, sans conséquence ici, mais l'occasion de demander *pourquoi* c'est inutile.
+4. Copier `README.md` depuis un exemple trouvé en ligne.
+
+**Laisser échouer.** Les quatre erreurs donnent un message clair dans les journaux, et lire un
+journal de CI est exactement la compétence visée. Le réflexe à installer : ouvrir l'onglet
+Actions, déplier l'étape rouge, lire la dernière ligne avant le code de sortie.
+
+**Durée indicative :** 15 à 20 minutes, en binôme.
+
+**Si un poste n'a pas de dépôt utilisable**, le workflow marche sur n'importe quel dépôt
+contenant un fichier à afficher — leur adapter la dernière commande.
+--
+
+=== ✅ Solution
+
+[source,yaml]
+----
+include::../../../code-samples/gh-actions/ci-docker-image.yml[tags="common,container,checkout,apt-cowsay,run-cowsay"]
+----
+
+[.notes]
+--
+**Lire la solution dans l'ordre d'exécution, pas dans l'ordre du fichier :**
+
+1. GitHub voit le `push`, lit le workflow, réserve un runner `ubuntu-latest`.
+2. Le runner tire `mcr.microsoft.com/devcontainers/base:ubuntu` et démarre le conteneur.
+3. `actions/checkout@v7` clone le dépôt dans le répertoire de travail.
+4. `apt-get update` puis `apt-get install -y cowsay` : sans `sudo`, on est `root`.
+5. `cat README.adoc | /usr/games/cowsay` affiche le résultat dans les journaux.
+
+**Variantes acceptables, à valider si elles remontent :**
+
+- `export PATH="$PATH:/usr/games"` dans un `run:` précédent plutôt que le chemin complet. C'est
+  correct, mais chaque `run:` est un shell neuf : l'export doit être dans le *même* `run:`, ou
+  passer par `$GITHUB_PATH`.
+- `/usr/games/cowsay < README.adoc` sans le `cat`. Plus propre pour un correcteur shell, et
+  l'occasion de mentionner que `shellcheck` signale le « useless cat » de la solution proposée.
+- Une autre image contenant déjà `cowsay` — parfaitement valide, mais on perd l'alignement avec
+  le Codespace, qui est le sujet de la section.
+
+**Le point à ne pas laisser passer :**
+
+Ce workflow ne teste rien. Il affiche une vache. C'est un squelette : on y remplace la dernière
+étape par `make build`, `npm test` ou `docker build`, et le reste ne bouge pas.
+--
+
+=== Ce cours est construit comme ça 🏗️
+
+Les diapos que vous regardez sortent de `.github/workflows/build-workflow.yml`
+
+[%step]
+[.small]
+`docker compose version` → `make build` → `make verify` → publication
+
+[%step]
+[.small]
+À chaque `push`. Y compris celui qui a corrigé la faute de frappe que vous venez de lire.
+
+[.notes]
+--
+**Pourquoi finir là-dessus :**
+
+L'exemple de la vache est un jouet. Celui-ci tourne pour de vrai, sur le dépôt qu'ils ont sous
+les yeux, et produit l'objet qu'ils sont en train de regarder. C'est la démonstration la moins
+contestable qu'on puisse leur offrir.
+
+**À montrer en direct si le réseau le permet :**
+
+Ouvrir l'onglet « Actions » du dépôt du cours. Les exécutions y sont publiques. Déplier la
+dernière, montrer les étapes : construction du HTML, construction du PDF, vérification,
+publication sur GitHub Pages.
+
+**Les points du workflow réel qui méritent un mot :**
+
+- Il commence par `docker compose version` : le cours entier est construit par Compose, vu au
+  chapitre précédent. Rien de ce qui est en CI n'est étranger à ce qu'ils ont appris.
+- `make verify` : la CI ne se contente pas de construire, elle vérifie. Un lien mort ou un
+  fichier absent fait échouer la publication plutôt que de publier une page cassée.
+- Le travail est découpé en deux jobs, `build-slides` puis `deploy`. Seul le second a le droit
+  d'écrire dans le dépôt. C'est du moindre privilège, la même idée qu'au chapitre sécurité.
+
+**La question qui vient souvent :**
+
+« Est-ce que ça coûte quelque chose ? » — GitHub Actions est gratuit sur les dépôts publics.
+Sur un dépôt privé, il y a un quota mensuel, du même ordre d'idée que celui de Codespaces.
+
+**Transition vers la suite :**
+
+"Vous savez maintenant démarrer un environnement, et le faire rejouer par une machine. Il reste
+à savoir ce qu'on met dedans — c'est tout le reste du cours."
+--
+
+=== Récapitulatif 📌
+
+[%step]
+[.small]
+Un workflow, c'est un fichier YAML dans `.github/workflows/`
+
+[%step]
+[.small]
+`container:` fait tourner le job dans **votre** image, pas celle de GitHub
+
+[%step]
+[.small]
+Ce qui marche à la main ne marche pas forcément en CI. Exécuter, pas relire.
+
+[.notes]
+--
+**Les trois points à retenir, et rien de plus :**
+
+1. **Le format.** Un fichier YAML, un répertoire imposé, un événement déclencheur. La syntaxe
+   s'oublie et se retrouve dans la documentation ; l'idée, non.
+
+2. **`container:`.** C'est la seule ligne de cette section qui relève vraiment du cours Docker.
+   Elle transforme un runner générique en l'environnement de leur choix, et elle réutilise tout
+   ce qu'ils savent déjà sur les images.
+
+3. **La méthode.** Les trois pièges de la diapo « mesurés » venaient tous d'une exécution, aucun
+   d'une relecture. C'est transposable bien au-delà de la CI.
+
+**Ce que cette section ne couvre volontairement pas :**
+
+Les matrices, le cache, les artefacts entre jobs, les environnements protégés, les actions
+réutilisables, les secrets. Tout cela existe et est utile ; rien de tout cela n'est nécessaire
+pour comprendre le lien entre une image Docker et l'intégration continue, qui est le seul objet
+de cette section dans un cours Docker.
+
+Les secrets sont abordés plus loin, au chapitre sécurité et production.
+
+**Pour aller plus loin, à donner en fin de séance :**
+
+- https://docs.github.com/en/actions — la documentation de référence
+- `.github/workflows/` du dépôt du cours — quatre workflows réels, commentés
+--

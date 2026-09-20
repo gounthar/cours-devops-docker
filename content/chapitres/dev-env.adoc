@@ -13,3 +13,8 @@ include::./sous-chapitres/dev-env/github-codespaces.adoc[leveloffset=0]
 == 🐳 Installation locale de Docker
 
 include::./sous-chapitres/dev-env/installation-locale.adoc[leveloffset=0]
+
+// Intégration continue : la même image, exécutée par une machine
+== 🤖 Et quand une machine s'en charge : GitHub Actions
+
+include::./sous-chapitres/dev-env/ci-github-actions.adoc[leveloffset=0]
