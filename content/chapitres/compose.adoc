@@ -1527,7 +1527,7 @@ include::../code-samples/compose/cours/docker-compose.yml[lines=52..59]
 [%auto-animate]
 == Autre étude de cas 📚🔍
 
-Le service qui construit les slides à partir d'`asciidoc` avec `reveal.js`.
+Le service qui construit les slides à partir de `asciidoc` avec `reveal.js`.
 [%step]
 [source,yaml]
 ----
@@ -1537,7 +1537,7 @@ include::../code-samples/compose/cours/docker-compose.yml[lines=40..50]
 [%auto-animate]
 == Autre étude de cas 📚🔍
 
-Le service qui construit les slides à partir d'`asciidoc` avec `reveal.js`.
+Le service qui construit les slides à partir de `asciidoc` avec `reveal.js`.
 [%step]
 [source,yaml]
 ----
