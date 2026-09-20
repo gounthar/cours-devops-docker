@@ -1648,9 +1648,17 @@ include::../code-samples/compose/cours/docker-compose.yml[lines=16..17]
 
 == 🛡️ Rendre une variable vraiment obligatoire
 
+Permissif :
+
 [source,yaml]
 ----
 user: ${CURRENT_UID}
+----
+
+Obligatoire :
+
+[source,yaml]
+----
 user: ${CURRENT_UID:?CURRENT_UID est obligatoire}
 ----
 [%step]
