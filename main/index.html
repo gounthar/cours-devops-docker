@@ -1432,7 +1432,196 @@ Compose sur plusieurs points. Le cours suppose Docker.</p></div>
 "Installez Docker par le dépôt apt officiel : c&#8217;est la seule méthode qui donne Docker Engine,
 Compose et Buildx d&#8217;un coup, et qui se met à jour avec le système. Si Podman est présent sur la
 machine, choisissez-en un des deux — les deux ensemble, sans configuration, produisent des erreurs
-difficiles à lire."</p></div></aside></div></section></section>
+difficiles à lire."</p></div></aside></div></section><section id="et_quand_une_machine_sen_charge_github_actions"><h2>🤖 Et quand une machine s&#8217;en charge : GitHub Actions</h2></section><section id="la_même_image_ailleurs"><h2>La même image, ailleurs 🤖</h2><div class="slide-content"><div class="paragraph"><p>Votre Codespace tourne. Docker répond. Tout marche.</p></div>
+<div class="paragraph fragment"><p>Et sur la machine du voisin ?</p></div>
+<div class="paragraph small fragment"><small>Et sur le serveur qui construira le projet à 3 h du matin, sans vous ?</small></div>
+<aside class="notes"><div class="paragraph"><p><strong>Objectif de cette section :</strong></p></div>
+<div class="paragraph"><p>Faire le pont entre « mon environnement marche » et « mon environnement marche partout ».
+C&#8217;est le même raisonnement que celui qui a justifié Docker au début du cours, appliqué cette
+fois à l&#8217;intégration continue.</p></div>
+<div class="paragraph"><p><strong>Accroche à utiliser à l&#8217;oral :</strong></p></div>
+<div class="paragraph"><p>"Vous avez passé cinq minutes à démarrer un Codespace, et tout fonctionnait. C&#8217;est confortable.
+Maintenant, imaginez que vous rendiez votre projet et que l&#8217;enseignant le lance chez lui. Ou
+qu&#8217;un collègue le récupère dans deux ans. Est-ce que ça marchera encore ?"</p></div>
+<div class="paragraph"><p><strong>Le point à faire passer :</strong></p></div>
+<div class="paragraph"><p>Un environnement reproductible n&#8217;a d&#8217;intérêt que s&#8217;il est reproduit. Codespaces reproduit
+l&#8217;environnement pour <strong>vous</strong>. L&#8217;intégration continue le reproduit pour <strong>la machine</strong>, à chaque
+<code>git push</code>, sans intervention humaine.</p></div>
+<div class="paragraph"><p><strong>Lien avec ce qui précède :</strong></p></div>
+<div class="paragraph"><p>Le chapitre Codespaces a montré <code>.devcontainer/devcontainer.json</code> et l&#8217;image
+<code>mcr.microsoft.com/devcontainers/base:ubuntu</code>. Cette section reprend exactement cette image :
+il n&#8217;y a rien de neuf à apprendre côté Docker, seulement un nouvel endroit où l&#8217;utiliser.</p></div></aside></div></section><section id="github_actions_en_une_diapo"><h2>GitHub Actions en une diapo 📄</h2><div class="slide-content"><div class="paragraph"><p>Un fichier dans <code>.github/workflows/</code>, et GitHub exécute vos commandes à chaque <code>push</code>.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">name: Bonjour
+on:
+  - push
+jobs:
+  dire_bonjour:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7 # Récupère le contenu du dépôt correspondant au commit du workflow en cours</code></pre></div></div>
+<div class="paragraph small fragment"><small><code>runs-on</code> : la machine que GitHub vous prête. <code>steps</code> : ce qu&#8217;elle fait.</small></div>
+<aside class="notes"><div class="paragraph"><p><strong>Décomposer le fichier, dans cet ordre :</strong></p></div>
+<div class="ulist"><ul><li><p><code>name:</code> — le nom affiché dans l&#8217;onglet Actions du dépôt. Purement cosmétique.</p></li><li><p><code>on:</code> — l&#8217;événement déclencheur. Ici <code>push</code> : à chaque poussée, sur n&#8217;importe quelle branche.</p></li><li><p><code>jobs:</code> — un workflow contient un ou plusieurs <strong>jobs</strong>, exécutés en parallèle par défaut.</p></li><li><p><code>dire_bonjour:</code> — l&#8217;identifiant du job. C&#8217;est vous qui le choisissez.</p></li><li><p><code>runs-on:</code> — le <strong>runner</strong>, c&#8217;est-à-dire la machine virtuelle fournie par GitHub.</p></li><li><p><code>steps:</code> — la liste ordonnée des étapes. Chacune est soit un <code>uses:</code>, soit un <code>run:</code>.</p></li></ul></div>
+<div class="paragraph"><p><strong><code>uses:</code> contre <code>run:</code> — la distinction qui compte :</strong></p></div>
+<div class="ulist"><ul><li><p><code>run:</code> exécute une commande shell. C&#8217;est du bash, rien de plus.</p></li><li><p><code>uses:</code> réutilise une <strong>action</strong>, c&#8217;est-à-dire du code publié par quelqu&#8217;un d&#8217;autre.
+<code>actions/checkout</code> est la plus courante : elle clone le dépôt dans le répertoire de travail.</p></li></ul></div>
+<div class="paragraph"><p><strong>Pourquoi <code>checkout</code> n&#8217;est pas automatique :</strong></p></div>
+<div class="paragraph"><p>Question fréquente, et légitime : « pourquoi faut-il demander le code, le workflow est déjà
+dans le dépôt ? » Parce que GitHub lit le fichier de workflow sans cloner le dépôt. Le runner
+démarre vide. Sans <code>actions/checkout</code>, <code>ls</code> ne montre rien.</p></div>
+<div class="paragraph"><p><strong>Sur la version épinglée :</strong></p></div>
+<div class="paragraph"><p><code>actions/checkout@v7</code> : le <code>@v7</code> est une référence Git, et c&#8217;est un tag <strong>mouvant</strong>. Les
+mainteneurs le font avancer à chaque publication de la série 7. L&#8217;épingler protège d&#8217;un saut
+en version 8, pas d&#8217;une mise à jour du jour au lendemain. Pour figer pour de bon, il faut un
+SHA de commit complet, la seule référence immuable, et c&#8217;est ce que GitHub recommande pour un
+workflow sensible.</p></div>
+<div class="paragraph"><p>Même mécanique que le tag d&#8217;une image, vue au chapitre sur les images : <code>:TAG</code> désigne un nom
+que le publieur déplace, <code>@DIGEST</code> désigne un contenu. L&#8217;exemple est sous leurs yeux, et il
+vaut la peine d&#8217;être montré en direct : <code>mcr.microsoft.com/devcontainers/base:ubuntu</code> rend
+aujourd&#8217;hui une Ubuntu 26.04.1, là où la documentation qu&#8217;ils liront parle encore de 24.04.
+Le nom n&#8217;a pas bougé, le contenu si.</p></div></aside></div></section><section id="le_runner_nest_pas_votre_codespace"><h2>Le runner n&#8217;est pas votre Codespace ⚠️</h2><div class="slide-content"><div class="openblock columns"><div class="content"><div class="sidebarblock column"><div class="content"><div class="paragraph"><p><strong>Votre Codespace</strong></p></div>
+<div class="paragraph"><p><code>devcontainers/base:ubuntu</code></p></div>
+<div class="paragraph"><p>Vos outils, votre version</p></div></div></div>
+<div class="sidebarblock column"><div class="content"><div class="paragraph"><p><strong>Le runner par défaut</strong></p></div>
+<div class="paragraph"><p><code>ubuntu-latest</code></p></div>
+<div class="paragraph"><p>Les outils de GitHub, leurs versions</p></div></div></div></div></div>
+<div class="paragraph small fragment"><small>Deux environnements différents. Les mêmes commandes n&#8217;y donnent pas le même résultat.</small></div>
+<aside class="notes"><div class="paragraph"><p><strong>Le problème, énoncé simplement :</strong></p></div>
+<div class="paragraph"><p><code>ubuntu-latest</code> est une image maintenue par GitHub, garnie d&#8217;un jeu d&#8217;outils que GitHub choisit
+et fait évoluer. Elle ne contient pas forcément ce que contient votre environnement de
+développement, et pas forcément dans la même version.</p></div>
+<div class="paragraph"><p><strong>Les symptômes classiques, à raconter :</strong></p></div>
+<div class="ulist"><ul><li><p>« Ça marche chez moi » — la version locale d&#8217;un outil diffère de celle du runner.</p></li><li><p>Un <code>npm run build</code> qui passe en local et casse en CI parce que Node n&#8217;a pas la même version.</p></li><li><p>Un script qui utilise une commande absente du runner.</p></li></ul></div>
+<div class="paragraph"><p><strong>La réponse historique, et pourquoi elle ne suffit pas :</strong></p></div>
+<div class="paragraph"><p>La première réaction est d&#8217;aligner le runner : <code>runs-on: ubuntu-20.04</code> pour coller à la version
+utilisée en développement. Cela marche un temps, puis casse — parce que GitHub retire les
+anciennes images de runner, et parce qu&#8217;aligner la version d&#8217;Ubuntu n&#8217;aligne pas les versions
+des outils installés dessus.</p></div>
+<div class="paragraph"><p><strong>Vers la solution :</strong></p></div>
+<div class="paragraph"><p>Docker a déjà répondu à cette question au début du cours. Si l&#8217;environnement est décrit par une
+image, il suffit d&#8217;utiliser la même image des deux côtés. C&#8217;est l&#8217;objet de la diapo suivante.</p></div>
+<div class="paragraph"><p><strong>Question à poser à l&#8217;assistance avant de tourner la page :</strong></p></div>
+<div class="paragraph"><p>"On a passé le cours à dire que Docker rend un environnement reproductible. Comment on s&#8217;en sert
+ici ?" — laisser venir la réponse, elle arrive presque toujours.</p></div></aside></div></section><section id="la_même_image_en_ci"><h2>La même image, en CI ✅</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">    container:
+      image: mcr.microsoft.com/devcontainers/base:ubuntu # La même image que le Codespace</code></pre></div></div>
+<div class="paragraph small fragment"><small>Trois lignes. Le job ne tourne plus <strong>sur</strong> le runner, mais <strong>dans</strong> le conteneur.</small></div>
+<aside class="notes"><div class="paragraph"><p><strong>Ce que fait la clé <code>container:</code> :</strong></p></div>
+<div class="paragraph"><p>GitHub démarre le conteneur à partir de l&#8217;image indiquée, puis exécute chaque <code>step</code> à
+l&#8217;intérieur. Le runner ne sert plus que d&#8217;hôte Docker. Le répertoire de travail est monté dans
+le conteneur, donc <code>actions/checkout</code> fonctionne exactement pareil.</p></div>
+<div class="paragraph"><p><strong>Pourquoi cette image-là :</strong></p></div>
+<div class="paragraph"><p>C&#8217;est celle du chapitre précédent, <code>mcr.microsoft.com/devcontainers/base:ubuntu</code>, celle que
+<code>.devcontainer/devcontainer.json</code> donne au Codespace. Développement et CI partagent désormais la
+même base. C&#8217;est tout l&#8217;intérêt, et c&#8217;est la raison de la mettre ici plutôt qu&#8217;une autre.</p></div>
+<div class="paragraph"><p><strong>Ce que <code>runs-on</code> devient :</strong></p></div>
+<div class="paragraph"><p>Presque indifférent. Le runner ne fournit plus que Docker. On le laisse à <code>ubuntu-latest</code> sans
+plus y penser — ce qui est précisément le soulagement recherché.</p></div>
+<div class="paragraph"><p><strong>Le prix à payer, à dire honnêtement :</strong></p></div>
+<div class="ulist"><ul><li><p>Le conteneur doit être tiré à chaque exécution : quelques secondes à quelques dizaines de
+secondes selon la taille de l&#8217;image.</p></li><li><p>Les outils pré-installés par GitHub sur <code>ubuntu-latest</code> ne sont plus là. Si le workflow en
+dépendait, il faut les installer dans le conteneur.</p></li></ul></div>
+<div class="paragraph"><p><strong>Écho au reste du cours :</strong></p></div>
+<div class="paragraph"><p>C&#8217;est le même raisonnement que <code>docker run</code> contre « installer sur sa machine », vu au premier
+chapitre. Rien de neuf, un nouveau terrain.</p></div></aside></div></section><section id="trois_pièges_mesurés"><h2>Trois pièges, mesurés 🔍</h2><div class="slide-content"><div class="paragraph small fragment"><small><code>sudo</code> : inutile, dans un conteneur le job tourne déjà en <code>root</code> (<code>uid=0</code>)</small></div>
+<div class="paragraph small fragment"><small><code>cowsay</code> — installé dans <code>/usr/games</code>, <strong>absent du <code>PATH</code></strong> d&#8217;un shell non interactif</small></div>
+<div class="paragraph small fragment"><small><code>README.md</code> — ce dépôt n&#8217;en a pas. Il a un <code>README.adoc</code></small></div>
+<aside class="notes"><div class="paragraph"><p><strong>Pourquoi cette diapo existe :</strong></p></div>
+<div class="paragraph"><p>Ces trois points ne s&#8217;inventent pas, ils se constatent. Ils ont tous été vérifiés en exécutant
+l&#8217;image, pas en la lisant. C&#8217;est la leçon de méthode à faire passer autant que le contenu.</p></div>
+<div class="paragraph"><p><strong>Détail 1 — l&#8217;utilisateur :</strong></p></div>
+<div class="paragraph"><p><code>docker run --rm mcr.microsoft.com/devcontainers/base:ubuntu id</code> rend <code>uid=0(root)</code>. L&#8217;image
+<strong>contient</strong> <code>sudo</code> (<code>/usr/bin/sudo</code> existe), donc un <code>sudo apt-get</code> ne produirait pas d&#8217;erreur :
+il serait simplement superflu. Beaucoup d&#8217;images minimales, elles, n&#8217;ont pas <code>sudo</code> du tout, et
+là le workflow casse.</p></div>
+<div class="paragraph"><p>À rapprocher du chapitre sécurité : tourner en <code>root</code> dans un conteneur de CI est courant et
+généralement accepté — le conteneur est jeté à la fin du job. Ce n&#8217;est pas une licence pour
+faire pareil en production.</p></div>
+<div class="paragraph"><p><strong>Détail 2 — le <code>PATH</code> :</strong></p></div>
+<div class="paragraph"><p>Sur Ubuntu, <code>cowsay</code> s&#8217;installe dans <code>/usr/games/</code>. Ce répertoire est ajouté au <code>PATH</code> par les
+fichiers de profil d&#8217;un shell <strong>interactif</strong>. Un <code>run:</code> de GitHub Actions n&#8217;est pas interactif :
+le <code>PATH</code> y vaut <code>/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin</code>, sans
+<code>/usr/games</code>. D&#8217;où le chemin complet dans l&#8217;exemple.</p></div>
+<div class="paragraph"><p>C&#8217;est le piège le plus instructif des trois, parce que la commande marche quand on la teste à la
+main dans le terminal du conteneur, et échoue en CI. Le test à la main donne raison à ce qu&#8217;on
+croyait déjà.</p></div>
+<div class="paragraph"><p><strong>Détail 3 — le nom du fichier :</strong></p></div>
+<div class="paragraph"><p>Un détail, mais il illustre la même chose : le workflow ne devine rien. <code>cat README.md</code> sur un
+dépôt qui n&#8217;a qu&#8217;un <code>README.adoc</code> rend un code de sortie non nul, et le job échoue.</p></div>
+<div class="paragraph"><p><strong>La morale, à énoncer :</strong></p></div>
+<div class="paragraph"><p>"Un workflow ne se relit pas, il s&#8217;exécute. Les trois erreurs de cette diapo étaient invisibles
+à la lecture et évidentes dès la première exécution."</p></div></aside></div></section><section id="exercice_la_même_image_partout"><h2>🎓 Exercice : la même image partout</h2><div class="slide-content"><div class="ulist"><ul><li><p><strong>But</strong> : faire dire le <code>README</code> du dépôt par une vache, depuis la CI</p></li><li><p>👷🏽‍♀️ À vous d&#8217;écrire le workflow :</p><div class="ulist"><ul><li><p>💡 le job doit tourner dans la même image que votre Codespace</p></li><li><p>💡 <code>cowsay</code> n&#8217;est pas installé dans l&#8217;image : il faut l&#8217;ajouter</p></li><li><p>💡 pensez à récupérer le contenu du dépôt avant de le lire</p></li></ul></div></li></ul></div>
+<aside class="notes"><div class="paragraph"><p><strong>Consignes pratiques :</strong></p></div>
+<div class="paragraph"><p>Le fichier est à créer dans <code>.github/workflows/bonjour.yml</code> de leur propre dépôt. Un <code>git push</code>
+suffit à le déclencher, et l&#8217;onglet « Actions » du dépôt montre l&#8217;exécution en direct.</p></div>
+<div class="paragraph"><p><strong>Ce qu&#8217;ils vont rater, dans l&#8217;ordre de fréquence :</strong></p></div>
+<div class="olist arabic"><ol class="arabic"><li><p>Oublier <code>actions/checkout</code> — <code>cat README.adoc</code> échoue sur un répertoire vide.</p></li><li><p>Écrire <code>cowsay</code> sans le chemin — <code>command not found</code>, alors que le paquet est bien installé.</p></li><li><p>Garder <code>sudo</code>, sans conséquence ici, mais l&#8217;occasion de demander <strong>pourquoi</strong> c&#8217;est inutile.</p></li><li><p>Copier <code>README.md</code> depuis un exemple trouvé en ligne.</p></li></ol></div>
+<div class="paragraph"><p><strong>Laisser échouer.</strong> Les quatre erreurs donnent un message clair dans les journaux, et lire un
+journal de CI est exactement la compétence visée. Le réflexe à installer : ouvrir l&#8217;onglet
+Actions, déplier l&#8217;étape rouge, lire la dernière ligne avant le code de sortie.</p></div>
+<div class="paragraph"><p><strong>Durée indicative :</strong> 15 à 20 minutes, en binôme.</p></div>
+<div class="paragraph"><p><strong>Si un poste n&#8217;a pas de dépôt utilisable</strong>, le workflow marche sur n&#8217;importe quel dépôt
+contenant un fichier à afficher — leur adapter la dernière commande.</p></div></aside></div></section><section id="solution"><h2>✅ Solution</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">name: Bonjour
+on:
+  - push
+jobs:
+  dire_bonjour:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/devcontainers/base:ubuntu # La même image que le Codespace
+    steps:
+      - uses: actions/checkout@v7 # Récupère le contenu du dépôt correspondant au commit du workflow en cours
+      - run: | # Pas de `sudo` : dans un conteneur, le job tourne déjà en root
+          apt-get update
+          apt-get install -y cowsay
+      - run: cat README.adoc | /usr/games/cowsay # `cowsay` s'installe dans /usr/games, absent du PATH</code></pre></div></div>
+<aside class="notes"><div class="paragraph"><p><strong>Lire la solution dans l&#8217;ordre d&#8217;exécution, pas dans l&#8217;ordre du fichier :</strong></p></div>
+<div class="olist arabic"><ol class="arabic"><li><p>GitHub voit le <code>push</code>, lit le workflow, réserve un runner <code>ubuntu-latest</code>.</p></li><li><p>Le runner tire <code>mcr.microsoft.com/devcontainers/base:ubuntu</code> et démarre le conteneur.</p></li><li><p><code>actions/checkout@v7</code> clone le dépôt dans le répertoire de travail.</p></li><li><p><code>apt-get update</code> puis <code>apt-get install -y cowsay</code> : sans <code>sudo</code>, on est <code>root</code>.</p></li><li><p><code>cat README.adoc | /usr/games/cowsay</code> affiche le résultat dans les journaux.</p></li></ol></div>
+<div class="paragraph"><p><strong>Variantes acceptables, à valider si elles remontent :</strong></p></div>
+<div class="ulist"><ul><li><p><code>export PATH="$PATH:/usr/games"</code> dans un <code>run:</code> précédent plutôt que le chemin complet. C&#8217;est
+correct, mais chaque <code>run:</code> est un shell neuf : l&#8217;export doit être dans le <strong>même</strong> <code>run:</code>, ou
+passer par <code>$GITHUB_PATH</code>.</p></li><li><p><code>/usr/games/cowsay &lt; README.adoc</code> sans le <code>cat</code>. Plus propre pour un correcteur shell, et
+l&#8217;occasion de mentionner que <code>shellcheck</code> signale le « useless cat » de la solution proposée.</p></li><li><p>Une autre image contenant déjà <code>cowsay</code> — parfaitement valide, mais on perd l&#8217;alignement avec
+le Codespace, qui est le sujet de la section.</p></li></ul></div>
+<div class="paragraph"><p><strong>Le point à ne pas laisser passer :</strong></p></div>
+<div class="paragraph"><p>Ce workflow ne teste rien. Il affiche une vache. C&#8217;est un squelette : on y remplace la dernière
+étape par <code>make build</code>, <code>npm test</code> ou <code>docker build</code>, et le reste ne bouge pas.</p></div></aside></div></section><section id="ce_cours_est_construit_comme_ça"><h2>Ce cours est construit comme ça 🏗️</h2><div class="slide-content"><div class="paragraph"><p>Les diapos que vous regardez sortent de <code>.github/workflows/build-workflow.yml</code></p></div>
+<div class="paragraph small fragment"><small><code>docker compose version</code> → <code>make build</code> → <code>make verify</code> → publication</small></div>
+<div class="paragraph small fragment"><small>À chaque <code>push</code>. Y compris celui qui a corrigé la faute de frappe que vous venez de lire.</small></div>
+<aside class="notes"><div class="paragraph"><p><strong>Pourquoi finir là-dessus :</strong></p></div>
+<div class="paragraph"><p>L&#8217;exemple de la vache est un jouet. Celui-ci tourne pour de vrai, sur le dépôt qu&#8217;ils ont sous
+les yeux, et produit l&#8217;objet qu&#8217;ils sont en train de regarder. C&#8217;est la démonstration la moins
+contestable qu&#8217;on puisse leur offrir.</p></div>
+<div class="paragraph"><p><strong>À montrer en direct si le réseau le permet :</strong></p></div>
+<div class="paragraph"><p>Ouvrir l&#8217;onglet « Actions » du dépôt du cours. Les exécutions y sont publiques. Déplier la
+dernière, montrer les étapes : construction du HTML, construction du PDF, vérification,
+publication sur GitHub Pages.</p></div>
+<div class="paragraph"><p><strong>Les points du workflow réel qui méritent un mot :</strong></p></div>
+<div class="ulist"><ul><li><p>Il commence par <code>docker compose version</code> : le cours entier est construit par Compose, vu au
+chapitre précédent. Rien de ce qui est en CI n&#8217;est étranger à ce qu&#8217;ils ont appris.</p></li><li><p><code>make verify</code> : la CI ne se contente pas de construire, elle vérifie. Un lien mort ou un
+fichier absent fait échouer la publication plutôt que de publier une page cassée.</p></li><li><p>Le travail est découpé en deux jobs, <code>build-slides</code> puis <code>deploy</code>. Seul le second a le droit
+d&#8217;écrire dans le dépôt. C&#8217;est du moindre privilège, la même idée qu&#8217;au chapitre sécurité.</p></li></ul></div>
+<div class="paragraph"><p><strong>La question qui vient souvent :</strong></p></div>
+<div class="paragraph"><p>« Est-ce que ça coûte quelque chose ? » — GitHub Actions est gratuit sur les dépôts publics.
+Sur un dépôt privé, il y a un quota mensuel, du même ordre d&#8217;idée que celui de Codespaces.</p></div>
+<div class="paragraph"><p><strong>Transition vers la suite :</strong></p></div>
+<div class="paragraph"><p>"Vous savez maintenant démarrer un environnement, et le faire rejouer par une machine. Il reste
+à savoir ce qu&#8217;on met dedans — c&#8217;est tout le reste du cours."</p></div></aside></div></section><section id="récapitulatif"><h2>Récapitulatif 📌</h2><div class="slide-content"><div class="paragraph small fragment"><small>Un workflow, c&#8217;est un fichier YAML dans <code>.github/workflows/</code></small></div>
+<div class="paragraph small fragment"><small><code>container:</code> fait tourner le job dans <strong>votre</strong> image, pas celle de GitHub</small></div>
+<div class="paragraph small fragment"><small>Ce qui marche à la main ne marche pas forcément en CI. Exécuter, pas relire.</small></div>
+<aside class="notes"><div class="paragraph"><p><strong>Les trois points à retenir, et rien de plus :</strong></p></div>
+<div class="olist arabic"><ol class="arabic"><li><p><strong>Le format.</strong> Un fichier YAML, un répertoire imposé, un événement déclencheur. La syntaxe
+s&#8217;oublie et se retrouve dans la documentation ; l&#8217;idée, non.</p></li><li><p><strong><code>container:</code>.</strong> C&#8217;est la seule ligne de cette section qui relève vraiment du cours Docker.
+Elle transforme un runner générique en l&#8217;environnement de leur choix, et elle réutilise tout
+ce qu&#8217;ils savent déjà sur les images.</p></li><li><p><strong>La méthode.</strong> Les trois pièges de la diapo « mesurés » venaient tous d&#8217;une exécution, aucun
+d&#8217;une relecture. C&#8217;est transposable bien au-delà de la CI.</p></li></ol></div>
+<div class="paragraph"><p><strong>Ce que cette section ne couvre volontairement pas :</strong></p></div>
+<div class="paragraph"><p>Les matrices, le cache, les artefacts entre jobs, les environnements protégés, les actions
+réutilisables, les secrets. Tout cela existe et est utile ; rien de tout cela n&#8217;est nécessaire
+pour comprendre le lien entre une image Docker et l&#8217;intégration continue, qui est le seul objet
+de cette section dans un cours Docker.</p></div>
+<div class="paragraph"><p>Les secrets sont abordés plus loin, au chapitre sécurité et production.</p></div>
+<div class="paragraph"><p><strong>Pour aller plus loin, à donner en fin de séance :</strong></p></div>
+<div class="ulist"><ul><li><p><a href="https://docs.github.com/en/actions" class="bare">https://docs.github.com/en/actions</a> — la documentation de référence</p></li><li><p><code>.github/workflows/</code> du dépôt du cours — quatre workflows réels, commentés</p></li></ul></div></aside></div></section></section>
 <section><section id="ligne_de_commande" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Ligne de commande</h2><div class="slide-content"><div class="paragraph"><p>Guide de survie</p></div></div></section><section id="problématique"><h2>🤔 Problématique</h2><div class="slide-content"><div class="ulist"><ul><li><p>Communication Humain &lt;&#8594; Machine</p></li><li><p>Base commune de TOUS les outils</p></li></ul></div></div></section><section id="cli" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>CLI</h2><div class="slide-content"><div class="ulist"><ul><li><p>🇬🇧 CLI == "Command Line Interface"</p></li><li><p>🇫🇷 "Interface de Ligne de Commande"</p></li></ul></div></div></section><section id="repl"><h2>REPL</h2><div class="slide-content"><div class="paragraph"><p>Pour les théoriciens et curieux :</p></div>
 <div class="ulist"><ul><li><p>🇬🇧 REPL == "Read–eval–print loop"</p></li></ul></div>
 <div class="paragraph"><p><a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop" class="bare">https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop</a></p></div></div></section><section id="anatomie_dune_commande"><h2>Anatomie d&#8217;une commande</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">ls --color=always -l /bin</code></pre></div></div>
