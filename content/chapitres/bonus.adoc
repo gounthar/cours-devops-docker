@@ -428,7 +428,7 @@ build arm64, cloud et buildx
 
 == Debugging : docker exec
 
-rappel : `docker container exec `permet de lancer une commande dans un container
+rappel : `docker container exec` permet de lancer une commande dans un container
 
 [source,bash]
 ----
@@ -443,7 +443,7 @@ docker exec -it <containerID> bash
 
 == Debugging : docker inspect
 
-rappel : `docker inspect `permet de lister toutes les caractéristiques d'une image ou d'un container.
+rappel : `docker inspect` permet de lister toutes les caractéristiques d'une image ou d'un container.
 
 On peut filtrer le retour de la commande avec `jq` ou l'option `--format`.
 

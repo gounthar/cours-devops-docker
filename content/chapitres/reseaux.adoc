@@ -560,7 +560,7 @@ Cette commande permet d'attacher un container à un réseau après sa création.
 
 [%step]
 * Lister et inspecter les réseaux existants
-* Lancer un container `nginx `nommé "web1"
+* Lancer un container `nginx` nommé "web1"
 * A quel réseau est-il attaché ?
 * Créer un réseau de type bridge et l'inspecter
 * Lancer un container `nginx` nommé "web2" et l'attacher au réseau créé
