@@ -52,10 +52,12 @@ import sys
 import time
 from pathlib import Path
 
-# Palette relevée au pixel sur `content/media/output10_with_transparency.png`
-# plutôt qu'estimée à l'œil, comme pour gen_dockerfile_card.py. Les trois
-# couleurs d'annotation sont d'ailleurs EXACTEMENT celles de ce script : les
-# deux illustrations viennent du même thème PowerPoint.
+# Palette relevée au pixel sur `output10_with_transparency.png` plutôt
+# qu'estimée à l'œil, comme pour gen_dockerfile_card.py. Les trois couleurs
+# d'annotation sont d'ailleurs EXACTEMENT celles de ce script : les deux
+# illustrations viennent du même thème PowerPoint.
+# Le PNG a été supprimé par #540 une fois le SVG jugé bon ; pour refaire le
+# relevé : git show f998555:content/media/output10_with_transparency.png
 PANEL_FILL = "#D9D9D9"
 PANEL_BORDER = "#1C334E"
 INK = "#000000"

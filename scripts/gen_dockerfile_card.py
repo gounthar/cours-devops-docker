@@ -27,10 +27,12 @@ import re
 import sys
 from pathlib import Path
 
-# Palette relevée au pixel sur `content/media/images-output56_with_transparency.png`,
+# Palette relevée au pixel sur `images-output56_with_transparency.png`,
 # l'image exportée du support d'origine, plutôt qu'estimée à l'œil :
 #   convert <png> -alpha remove txt:- puis comptage par bande de ligne.
 # Les valeurs ci-dessous sont donc celles du support, pas une approximation.
+# Le PNG a été supprimé par #540 une fois le SVG jugé bon ; pour refaire le
+# relevé : git show f998555:content/media/images-output56_with_transparency.png
 BORDER = "#2496ED"
 FOLD = "#D1D2D4"
 INK = "#000000"
