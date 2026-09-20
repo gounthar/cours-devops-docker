@@ -1627,7 +1627,8 @@ Lorsque Docker Compose rencontre cette syntaxe, il cherche la valeur de la varia
 include::../code-samples/compose/cours/docker-compose.yml[lines=12..15]
 ----
 * Si la variable n'est définie ni dans le shell ni dans le fichier `.env`, Docker Compose utilise la valeur par défaut spécifiée dans le fichier `docker-compose.yml` (s'il y en a une).
-* Dans notre cas, aucune valeur par défaut n'est spécifiée, donc si la variable n'est définie ni dans le shell ni dans le fichier `.env`, Docker Compose générera une erreur.
+* Dans notre cas, aucune valeur par défaut n'est spécifiée. Docker Compose n'échoue pas pour autant : il émet un avertissement, substitue une *chaîne vide*, et continue.
+* `The "PRESENTATION_URL" variable is not set. Defaulting to a blank string.` — code de sortie 0.
 
 [%auto-animate]
 == Autre étude de cas 📚🔍
@@ -1642,7 +1643,29 @@ include::../code-samples/compose/cours/docker-compose.yml[lines=16..17]
 * Cette ligne définit l'ID de l'utilisateur qui exécutera les commandes à l'intérieur du conteneur Docker à la valeur de la variable d'environnement `CURRENT_UID`.
 * La syntaxe `${CURRENT_UID}` est utilisée pour accéder à la valeur d'une variable d'environnement.
 * Dans ce cas, Docker Compose recherchera une variable d'environnement nommée `CURRENT_UID` et utilisera sa valeur.
-* Si `CURRENT_UID` n'est pas défini dans l'environnement où Docker Compose est exécuté, Docker Compose renverra une erreur.
+* Si `CURRENT_UID` n'est pas défini, Docker Compose *n'échoue pas* : même avertissement, même chaîne vide. `user:` reçoit une valeur vide.
+* Le conteneur démarre donc *en root* — exactement l'inverse de ce que cette ligne cherchait à obtenir.
+
+== 🛡️ Rendre une variable vraiment obligatoire
+
+Permissif :
+
+[source,yaml]
+----
+user: ${CURRENT_UID}
+----
+
+Obligatoire :
+
+[source,yaml]
+----
+user: ${CURRENT_UID:?CURRENT_UID est obligatoire}
+----
+[%step]
+* `+${VAR}+` est permissif : variable absente, valeur vide, on continue.
+* `+${VAR:?message}+` échoue pour de bon, dès `docker compose config` : le message s'affiche et le code de sortie est 1.
+* Rien ne démarre, donc rien ne démarre en root.
+* C'est la forme à écrire quand la valeur est obligatoire.
 
 [%auto-animate]
 == Autre étude de cas 📚🔍
@@ -1748,7 +1771,19 @@ include::../code-samples/compose/cours/Makefile[]
 
 [source,makefile]
 ----
-include::../code-samples/compose/cours/Makefile[lines=8..11]
+include::../code-samples/compose/cours/Makefile[lines=8..15]
+----
+[%step]
+* Voilà d'où vient le `CURRENT_UID` que `docker-compose.yml` consomme quelques diapos plus haut.
+* Compose ne le calcule pas, et ne se plaint pas non plus s'il manque : c'est au `Makefile` de le poser.
+* `$(shell id -u):$(shell id -g)` le lit à chaque appel, au lieu de le figer dans `.env`.
+
+[%auto-animate]
+== 🐋 Docker peut travailler main dans la main avec d'autres outils... 👫🤝
+
+[source,makefile]
+----
+include::../code-samples/compose/cours/Makefile[lines=17..20]
 ----
 
 Cette configuration de docker compose concerne Docker BuildKit, une fonctionnalité de Docker qui améliore les performances de construction des images Docker.
@@ -1767,7 +1802,7 @@ En résumé, ces deux lignes de code activent Docker BuildKit pour améliorer le
 
 [source,makefile]
 ----
-include::../code-samples/compose/cours/Makefile[lines=13..30]
+include::../code-samples/compose/cours/Makefile[lines=22..39]
 ----
 
 [%auto-animate]
@@ -1775,7 +1810,7 @@ include::../code-samples/compose/cours/Makefile[lines=13..30]
 
 [source,makefile]
 ----
-include::../code-samples/compose/cours/Makefile[lines=35..41]
+include::../code-samples/compose/cours/Makefile[lines=44..50]
 ----
 [%step]
 * Cette règle `Makefile` est utilisée pour construire le projet à l'intérieur d'un conteneur Docker.
