@@ -402,4 +402,4 @@ clean:
 qrcode:
 	@$(call compose_up, qrcode)
 
-.PHONY: all build anatomy clean verify check-dashes check-diagrams check-opacity check-prune check-assets check-links diagrams serve qrcode pdf exam-pdf exam-html dependencies-update dependencies-lock-update
+.PHONY: all build anatomy clean verify check-dashes check-diagrams check-opacity check-prune check-assets check-links check-html diagrams serve qrcode pdf exam-pdf exam-html dependencies-update dependencies-lock-update
