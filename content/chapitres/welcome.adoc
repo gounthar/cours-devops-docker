@@ -89,7 +89,7 @@ video::ohno.mp4[width="200",options="autoplay,loop,nocontrols"]
 
 * Pourquoi ? s'assurer que vous avez acquis un minimum de concepts
 * Quoi ? Sans doute une note sur 20, basée sur une liste de critères exhaustifs
-* Comment ? Un projet Gitlab (fort probable) ou GitHub (peu probable) à me rendre (timing à déterminer ensemble)
+* Comment ? Un projet Gitlab à me rendre
 
 [background-video="plan.mp4",background-video-loop=true,background-video-muted=true]
 [{dark-background}]
