@@ -38,10 +38,24 @@ ANATOMY_CARD = $(CURDIR)/content/media/anatomie
 anatomy:
 	@python3 $(CURDIR)/scripts/gen_anatomy_card.py $(ANATOMY_CARD) --steps
 
+## La carte 📛 Nommage listait un conteneur `centos` dans une sortie de
+## `docker container ls` enfermee dans un PNG, invisible a tout garde-fou du
+## depot -- il a fallu un balayage OCR pour la trouver (#550). Elle est
+## desormais du texte, donc `grep` la voit.
+##
+## Contrairement a check-diagrams, pas de copie commitee ni de `--check` : la
+## source de verite est le script, la sortie en est une fonction pure, et une
+## copie commitee serait une seconde copie qui ne peut que se perimer. Meme
+## traitement que la carte Anatomie ci-dessus, pour une raison differente.
+NAMING_CARD = $(CURDIR)/content/media/nommage
+
+naming:
+	@python3 $(CURDIR)/scripts/gen_naming_card.py $(NAMING_CARD) --steps
+
 # Generate documents inside a container, all *.adoc in parallel
 ## mkdir before compose: the daemon creates a missing bind mount source as
 ## root, which the non-root container then cannot write into.
-build: anatomy
+build: anatomy naming
 	@mkdir -p $(DIST_DIR)
 	@$(call compose_up,--exit-code-from=build build)
 
@@ -325,7 +339,7 @@ check-html:
 verify: check-dashes check-diagrams check-prune check-opacity check-assets
 	@echo "NOTE: external links are checked by 'make check-links', not here (see issue #486)"
 
-serve: anatomy
+serve: anatomy naming
 	@$(call compose_up, --force-recreate serve qrcode)
 
 shell:
@@ -338,7 +352,7 @@ dependencies-update:
 	@$(call compose_run,--entrypoint=ncu --workdir=/app/npm-packages --rm serve -u)
 	@make -C $(CURDIR) dependencies-lock-update
 
-pdf: anatomy
+pdf: anatomy naming
 	@mkdir -p $(DIST_DIR)
 	@$(call compose_up, --exit-code-from=pdf pdf)
 
@@ -403,4 +417,4 @@ clean:
 qrcode:
 	@$(call compose_up, qrcode)
 
-.PHONY: all build anatomy clean verify check-dashes check-diagrams check-opacity check-prune check-assets check-links check-html diagrams serve qrcode pdf exam-pdf exam-html dependencies-update dependencies-lock-update
+.PHONY: all build anatomy naming clean verify check-dashes check-diagrams check-opacity check-prune check-assets check-links check-html diagrams serve qrcode pdf exam-pdf exam-html dependencies-update dependencies-lock-update
