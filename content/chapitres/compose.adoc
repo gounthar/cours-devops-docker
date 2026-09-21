@@ -1459,7 +1459,7 @@ Et pourquoi pas s'attaquer au docker compose qui a généré ce cours ?
 
 [source,yaml]
 ----
-include::../code-samples/compose/cours/docker-compose.yml[]
+include::../code-samples/compose/cours/docker-compose.yml[tags=**]
 ----
 
 [%auto-animate]
@@ -1476,7 +1476,7 @@ Les ancres...
 [%step]
 [source,yaml]
 ----
-include::../code-samples/compose/cours/docker-compose.yml[lines=1..28]
+include::../code-samples/compose/cours/docker-compose.yml[tags="entete,ancre"]
 ----
 
 [%auto-animate]
@@ -1521,7 +1521,7 @@ Le fameux qrcode...
 [%step]
 [source,yaml]
 ----
-include::../code-samples/compose/cours/docker-compose.yml[lines=52..59]
+include::../code-samples/compose/cours/docker-compose.yml[tags=qrcode]
 ----
 
 [%auto-animate]
@@ -1531,7 +1531,7 @@ Le service qui construit les slides à partir de `asciidoc` avec `reveal.js`.
 [%step]
 [source,yaml]
 ----
-include::../code-samples/compose/cours/docker-compose.yml[lines=40..50]
+include::../code-samples/compose/cours/docker-compose.yml[tags=build]
 ----
 
 [%auto-animate]
@@ -1541,7 +1541,7 @@ Le service qui construit les slides à partir de `asciidoc` avec `reveal.js`.
 [%step]
 [source,yaml]
 ----
-include::../code-samples/compose/cours/docker-compose.yml[lines=32..38]
+include::../code-samples/compose/cours/docker-compose.yml[tags=serve]
 ----
 
 [%auto-animate]
@@ -1551,8 +1551,18 @@ Le service qui construit le pdf à partir des slides.
 [%step]
 [source,yaml]
 ----
-include::../code-samples/compose/cours/docker-compose.yml[lines=61..77]
+include::../code-samples/compose/cours/docker-compose.yml[tags=pdf]
 ----
+
+== Pourquoi une image construite, et pas l'image publiée ? 📄
+
+L'image publiée `ghcr.io/astefanutti/decktape` ne suffit plus telle quelle.
+[%step]
+* Le PDF passe par deux étapes : decktape rend les diapositives en 2048x1536, puis `ghostscript` réduit le fichier. L'image publiée n'a pas `ghostscript`.
+* Chromium ne démarre dans le conteneur qu'avec `--no-sandbox` et `--disable-gpu`. Ces options vivent dans `entrypoint.sh`, d'où l'absence de `command:` dans le service.
+* L'image ne déclare un `HOME` que pour l'uid 1000. Avec un autre uid, Chromium échoue sur `chrome_crashpad_handler: --database is required` : d'où `HOME=/tmp`.
+[%step]
+Un petit `Dockerfile` `FROM ghcr.io/astefanutti/decktape` règle les deux premiers points ; Compose le construit avec `build:`.
 
 [%auto-animate]
 == Autre étude de cas 📚🔍
@@ -1561,7 +1571,7 @@ Pour rappel, l'ancre contenait :
 [%step]
 [source,yaml]
 ----
-include::../code-samples/compose/cours/docker-compose.yml[lines=3..28]
+include::../code-samples/compose/cours/docker-compose.yml[tags=ancre]
 ----
 
 [%auto-animate]
@@ -1597,12 +1607,13 @@ args:
 --
 [source,yaml]
 ----
-include::../code-samples/compose/cours/docker-compose.yml[lines=12..15]
+include::../code-samples/compose/cours/docker-compose.yml[tags=environnement]
 ----
 --
 [.column]
 --
-Deux variables d'environnement sont définies pour le conteneur Docker : `PRESENTATION_URL` et `REPOSITORY_URL`.
+Trois variables d'environnement sont définies pour le conteneur Docker : `PRESENTATION_URL`, `REPOSITORY_URL` et `SOURCE_FILE`.
+`SOURCE_FILE` choisit le fichier racine : `SOURCE_FILE=index-examen.adoc make build` construit le sujet d'examen.
 [%step]
 Ces variables sont définies à l'aide de la syntaxe `${VARIABLE_NAME}`, qui est une manière standard d'accéder aux variables d'environnement dans les fichiers de configuration YAML.
 --
@@ -1611,7 +1622,7 @@ Ces variables sont définies à l'aide de la syntaxe `${VARIABLE_NAME}`, qui est
 == ➡️🔄 Environnement 🌍🌿
 [source,yaml]
 ----
-include::../code-samples/compose/cours/docker-compose.yml[lines=12..15]
+include::../code-samples/compose/cours/docker-compose.yml[tags=environnement]
 ----
 Lorsque Docker Compose rencontre cette syntaxe, il cherche la valeur de la variable d'environnement dans plusieurs endroits, en suivant un ordre spécifique :
 [%step]
@@ -1624,7 +1635,7 @@ Lorsque Docker Compose rencontre cette syntaxe, il cherche la valeur de la varia
 == ➡️🔄 Environnement 🌍🌿
 [source,yaml]
 ----
-include::../code-samples/compose/cours/docker-compose.yml[lines=12..15]
+include::../code-samples/compose/cours/docker-compose.yml[tags=environnement]
 ----
 * Si la variable n'est définie ni dans le shell ni dans le fichier `.env`, Docker Compose utilise la valeur par défaut spécifiée dans le fichier `docker-compose.yml` (s'il y en a une).
 * Dans notre cas, aucune valeur par défaut n'est spécifiée. Docker Compose n'échoue pas pour autant : il émet un avertissement, substitue une *chaîne vide*, et continue.
@@ -1635,7 +1646,7 @@ include::../code-samples/compose/cours/docker-compose.yml[lines=12..15]
 
 [source,yaml]
 ----
-include::../code-samples/compose/cours/docker-compose.yml[lines=16..17]
+include::../code-samples/compose/cours/docker-compose.yml[tags=utilisateur]
 ----
 [%step]
 * Dans Docker, chaque instruction dans le Dockerfile est exécutée par un utilisateur particulier.
