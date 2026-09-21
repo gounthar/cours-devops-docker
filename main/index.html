@@ -4302,6 +4302,8 @@ x-slides-base: &amp;slides-base
   environment:
     - PRESENTATION_URL=${PRESENTATION_URL}
     - REPOSITORY_URL=${REPOSITORY_URL}
+    # Le fichier racine à construire : SOURCE_FILE=index-examen.adoc make build
+    - SOURCE_FILE=${SOURCE_FILE}
   # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
   user: ${CURRENT_UID}
   # Un montage tmpfs pour des E/S plus rapides ; 1777 car le conteneur n'est pas root.
@@ -4349,8 +4351,9 @@ services:
 
   # Le service 'pdf'.
   pdf:
-    # L'image Docker pour ce service.
-    image: ghcr.io/astefanutti/decktape:3.7.0
+    # L'image est construite localement, à partir de decktape : voir dockerfiles/pdf/.
+    build:
+      context: ./dockerfiles/pdf
     # Ce service dépend du service 'build'.
     depends_on:
       build:
@@ -4358,12 +4361,14 @@ services:
         condition: service_completed_successfully
     # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
     user: ${CURRENT_UID}
+    environment:
+      # Chromium veut un HOME inscriptible pour sa base crashpad. L'image n'en
+      # déclare un que pour l'uid 1000 : tout autre uid tombe sur HOME=/ et le
+      # navigateur refuse de démarrer.
+      - HOME=/tmp
     # Volumes pour le conteneur Docker.
     volumes:
-      - ${DIST_DIR}:/slides
-    # La commande à exécuter dans le conteneur Docker.
-    command: &gt;
-      /slides/index.html /slides/slides.pdf --size='1024x768' --pause 0</code></pre></div></div></div></section><section id="autre_étude_de_cas_3" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker compose qui a généré ce cours ?</p></div>
+      - ${DIST_DIR}:/slides</code></pre></div></div></div></section><section id="autre_étude_de_cas_3" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker compose qui a généré ce cours ?</p></div>
 <div class="paragraph fragment"><p>Indigeste? 😨</p></div>
 <div class="paragraph fragment"><p>Ne relevons que les points importants:</p></div>
 <div class="paragraph fragment"><p>Les ancres&#8230;&#8203;</p></div>
@@ -4382,6 +4387,8 @@ x-slides-base: &amp;slides-base
   environment:
     - PRESENTATION_URL=${PRESENTATION_URL}
     - REPOSITORY_URL=${REPOSITORY_URL}
+    # Le fichier racine à construire : SOURCE_FILE=index-examen.adoc make build
+    - SOURCE_FILE=${SOURCE_FILE}
   # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
   user: ${CURRENT_UID}
   # Un montage tmpfs pour des E/S plus rapides ; 1777 car le conteneur n'est pas root.
@@ -4433,8 +4440,9 @@ Elle est définie en utilisant l&#8217;opérateur <code>&amp;</code> suivi d&#82
       - "8000:8000"</code></pre></div></div></div></section><section id="autre_étude_de_cas_7" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Le service qui construit le pdf à partir des slides.</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service 'pdf'.
   pdf:
-    # L'image Docker pour ce service.
-    image: ghcr.io/astefanutti/decktape:3.7.0
+    # L'image est construite localement, à partir de decktape : voir dockerfiles/pdf/.
+    build:
+      context: ./dockerfiles/pdf
     # Ce service dépend du service 'build'.
     depends_on:
       build:
@@ -4442,12 +4450,16 @@ Elle est définie en utilisant l&#8217;opérateur <code>&amp;</code> suivi d&#82
         condition: service_completed_successfully
     # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
     user: ${CURRENT_UID}
+    environment:
+      # Chromium veut un HOME inscriptible pour sa base crashpad. L'image n'en
+      # déclare un que pour l'uid 1000 : tout autre uid tombe sur HOME=/ et le
+      # navigateur refuse de démarrer.
+      - HOME=/tmp
     # Volumes pour le conteneur Docker.
     volumes:
-      - ${DIST_DIR}:/slides
-    # La commande à exécuter dans le conteneur Docker.
-    command: &gt;
-      /slides/index.html /slides/slides.pdf --size='1024x768' --pause 0</code></pre></div></div></div></section><section id="autre_étude_de_cas_8" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Pour rappel, l&#8217;ancre contenait :</p></div>
+      - ${DIST_DIR}:/slides</code></pre></div></div></div></section><section id="pourquoi_une_image_construite_et_pas_limage_publiée"><h2>Pourquoi une image construite, et pas l&#8217;image publiée ? 📄</h2><div class="slide-content"><div class="paragraph"><p>L&#8217;image publiée <code>ghcr.io/astefanutti/decktape</code> ne suffit plus telle quelle.</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Le PDF passe par deux étapes : decktape rend les diapositives en 2048x1536, puis <code>ghostscript</code> réduit le fichier. L&#8217;image publiée n&#8217;a pas <code>ghostscript</code>.</p></li><li class="fragment"><p>Chromium ne démarre dans le conteneur qu&#8217;avec <code>--no-sandbox</code> et <code>--disable-gpu</code>. Ces options vivent dans <code>entrypoint.sh</code>, d&#8217;où l&#8217;absence de <code>command:</code> dans le service.</p></li><li class="fragment"><p>L&#8217;image ne déclare un <code>HOME</code> que pour l&#8217;uid 1000. Avec un autre uid, Chromium échoue sur <code>chrome_crashpad_handler: --database is required</code> : d&#8217;où <code>HOME=/tmp</code>.
+Un petit <code>Dockerfile</code> <code>FROM ghcr.io/astefanutti/decktape</code> règle les deux premiers points ; Compose le construit avec <code>build:</code>.</p></li></ul></div></div></section><section id="autre_étude_de_cas_8" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Pour rappel, l&#8217;ancre contenait :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># 'x-slides-base' est une ancre YAML qui définit une configuration commune pour plusieurs services.
 x-slides-base: &amp;slides-base
   # La configuration de construction pour l'image Docker.
@@ -4461,6 +4473,8 @@ x-slides-base: &amp;slides-base
   environment:
     - PRESENTATION_URL=${PRESENTATION_URL}
     - REPOSITORY_URL=${REPOSITORY_URL}
+    # Le fichier racine à construire : SOURCE_FILE=index-examen.adoc make build
+    - SOURCE_FILE=${SOURCE_FILE}
   # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
   user: ${CURRENT_UID}
   # Un montage tmpfs pour des E/S plus rapides ; 1777 car le conteneur n'est pas root.
@@ -4480,17 +4494,24 @@ x-slides-base: &amp;slides-base
   BUILDKIT_INLINE_CACHE: 1</code></pre></div></div></div></div></div></section><section id="environnement" class="columns" data-auto-animate><h2>➡️🔄 Environnement 🌍🌿</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Variables d'environnement pour le conteneur Docker.
   environment:
     - PRESENTATION_URL=${PRESENTATION_URL}
-    - REPOSITORY_URL=${REPOSITORY_URL}</code></pre></div></div></div></div>
-<div class="openblock column"><div class="content"><div class="paragraph"><p>Deux variables d&#8217;environnement sont définies pour le conteneur Docker : <code>PRESENTATION_URL</code> et <code>REPOSITORY_URL</code>.</p></div>
+    - REPOSITORY_URL=${REPOSITORY_URL}
+    # Le fichier racine à construire : SOURCE_FILE=index-examen.adoc make build
+    - SOURCE_FILE=${SOURCE_FILE}</code></pre></div></div></div></div>
+<div class="openblock column"><div class="content"><div class="paragraph"><p>Trois variables d&#8217;environnement sont définies pour le conteneur Docker : <code>PRESENTATION_URL</code>, <code>REPOSITORY_URL</code> et <code>SOURCE_FILE</code>.
+<code>SOURCE_FILE</code> choisit le fichier racine : <code>SOURCE_FILE=index-examen.adoc make build</code> construit le sujet d&#8217;examen.</p></div>
 <div class="paragraph fragment"><p>Ces variables sont définies à l&#8217;aide de la syntaxe <code>${VARIABLE_NAME}</code>, qui est une manière standard d&#8217;accéder aux variables d&#8217;environnement dans les fichiers de configuration YAML.</p></div></div></div></div></section><section id="environnement_2" data-auto-animate><h2>➡️🔄 Environnement 🌍🌿</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Variables d'environnement pour le conteneur Docker.
   environment:
     - PRESENTATION_URL=${PRESENTATION_URL}
-    - REPOSITORY_URL=${REPOSITORY_URL}</code></pre></div></div>
+    - REPOSITORY_URL=${REPOSITORY_URL}
+    # Le fichier racine à construire : SOURCE_FILE=index-examen.adoc make build
+    - SOURCE_FILE=${SOURCE_FILE}</code></pre></div></div>
 <div class="paragraph"><p>Lorsque Docker Compose rencontre cette syntaxe, il cherche la valeur de la variable d&#8217;environnement dans plusieurs endroits, en suivant un ordre spécifique :</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Il vérifie d&#8217;abord si la variable est définie dans le shell courant.</p></li><li class="fragment"><p>Si c&#8217;est le cas, il utilise cette valeur.</p></li><li class="fragment"><p>Si la variable n&#8217;est pas définie dans le shell, Docker Compose cherche ensuite dans un fichier <code>.env</code> situé dans le même répertoire que le fichier <code>docker-compose.yml</code>.</p></li><li class="fragment"><p>Si la variable est définie dans ce fichier, Docker Compose utilise cette valeur.</p></li></ul></div></div></section><section id="environnement_3" data-auto-animate><h2>➡️🔄 Environnement 🌍🌿</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Variables d'environnement pour le conteneur Docker.
   environment:
     - PRESENTATION_URL=${PRESENTATION_URL}
-    - REPOSITORY_URL=${REPOSITORY_URL}</code></pre></div></div>
+    - REPOSITORY_URL=${REPOSITORY_URL}
+    # Le fichier racine à construire : SOURCE_FILE=index-examen.adoc make build
+    - SOURCE_FILE=${SOURCE_FILE}</code></pre></div></div>
 <div class="ulist"><ul><li><p>Si la variable n&#8217;est définie ni dans le shell ni dans le fichier <code>.env</code>, Docker Compose utilise la valeur par défaut spécifiée dans le fichier <code>docker-compose.yml</code> (s&#8217;il y en a une).</p></li><li><p>Dans notre cas, aucune valeur par défaut n&#8217;est spécifiée. Docker Compose n&#8217;échoue pas pour autant : il émet un avertissement, substitue une <strong>chaîne vide</strong>, et continue.</p></li><li><p><code>The "PRESENTATION_URL" variable is not set. Defaulting to a blank string.</code> — code de sortie 0.</p></li></ul></div></div></section><section id="autre_étude_de_cas_9" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
   user: ${CURRENT_UID}</code></pre></div></div>
 <div class="ulist"><ul><li class="fragment"><p>Dans Docker, chaque instruction dans le Dockerfile est exécutée par un utilisateur particulier.</p></li><li class="fragment"><p>Par défaut, cet utilisateur est root, mais pour des raisons de sécurité, il est souvent recommandé d&#8217;exécuter les processus en tant qu&#8217;utilisateur non root.</p></li><li class="fragment"><p>Cette ligne définit l&#8217;ID de l&#8217;utilisateur qui exécutera les commandes à l&#8217;intérieur du conteneur Docker à la valeur de la variable d&#8217;environnement <code>CURRENT_UID</code>.</p></li><li class="fragment"><p>La syntaxe <code>${CURRENT_UID}</code> est utilisée pour accéder à la valeur d&#8217;une variable d&#8217;environnement.</p></li><li class="fragment"><p>Dans ce cas, Docker Compose recherchera une variable d&#8217;environnement nommée <code>CURRENT_UID</code> et utilisera sa valeur.</p></li><li class="fragment"><p>Si <code>CURRENT_UID</code> n&#8217;est pas défini, Docker Compose <strong>n&#8217;échoue pas</strong> : même avertissement, même chaîne vide. <code>user:</code> reçoit une valeur vide.</p></li><li class="fragment"><p>Le conteneur démarre donc <strong>en root</strong> — exactement l&#8217;inverse de ce que cette ligne cherchait à obtenir.</p></li></ul></div></div></section><section id="rendre_une_variable_vraiment_obligatoire"><h2>🛡️ Rendre une variable vraiment obligatoire</h2><div class="slide-content"><div class="paragraph"><p>Permissif :</p></div>
