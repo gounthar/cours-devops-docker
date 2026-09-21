@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3233 1080" width="3233" height="1080" role="img" aria-label="Sortie de docker container ls : un conteneur alpine, nommé festive_poitras. Annotation : Une première alternative ! Par défaut, Docker génère un nom en combinant une humeur et un inventeur.">
+  <style>
+    .cmd { font-family: "DejaVu Sans Mono", Menlo, Consolas, monospace; font-size: 62.1px; font-weight: bold; fill: #022144; }
+    .out { font-family: "DejaVu Sans Mono", Menlo, Consolas, monospace; font-size: 43.7px; fill: #000000; }
+    .pill { font-family: "Trebuchet MS", "Century Gothic", Verdana, sans-serif; font-size: 61.0px; text-anchor: middle; fill: #FFFFFF; }
+    .prose { font-family: "Trebuchet MS", "Century Gothic", Verdana, sans-serif; font-size: 110.0px; fill: #000000; }
+  </style>
+  <rect x="6.0" y="11.0" width="3213.0" height="556.0" fill="#D9D9D9"/>
+  <text x="32.0" y="98.0" class="cmd" xml:space="preserve">$ docker container ls</text>
+  <text x="32.0" y="189.8" class="out" xml:space="preserve">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS</text>
+  <text x="32.0" y="246.8" class="out" xml:space="preserve">NAMES</text>
+  <text x="32.0" y="303.8" class="out" xml:space="preserve">793906a4c2d2        alpine              &quot;/bin/sh&quot;           3 hours ago         Up 3 hours</text>
+  <text x="32.0" y="360.8" class="out" xml:space="preserve">festive_poitras</text>
+  <path d="M 27.0 384.0 L 489.0 384.0" stroke="#7030A0" stroke-width="10.0" stroke-linecap="round" fill="none"/>
+  <path d="M 284.0 386.0 L 1911.0 522.0" stroke="#7030A0" stroke-width="9.0" stroke-linecap="round" fill="none"/>
+  <rect x="1511.0" y="520.0" width="802.0" height="235.0" rx="85.0" fill="#8064A2"/>
+  <text x="1912.0" y="622.0" class="pill">Une première</text>
+  <text x="1912.0" y="697.0" class="pill">alternative !</text>
+  <text x="442.0" y="677.0" class="prose">Par défaut, Docker</text>
+  <text x="442.0" y="808.0" class="prose">génère un nom en</text>
+  <text x="442.0" y="939.0" class="prose">combinant une humeur et</text>
+  <text x="442.0" y="1070.0" class="prose">un inventeur.</text>
+</svg>
