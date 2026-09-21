@@ -10,3 +10,8 @@ CONTEXT.md
 # Cartes 🩻 Anatomie : regenerees a chaque `make build` et horodatees, donc non
 # deterministes. Les commiter ferait un fichier perime des le commit. Voir #548.
 content/media/anatomie-*.svg
+
+# Cartes 📛 Nommage : la source de verite est scripts/gen_naming_card.py et la
+# sortie en est une fonction pure. Une copie commitee serait une seconde copie,
+# qui ne peut que se perimer. Regenerees a chaque `make build`. Voir #550.
+content/media/nommage-*.svg

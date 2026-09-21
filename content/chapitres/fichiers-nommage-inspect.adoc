@@ -492,23 +492,27 @@ Ne peut-on pas trouver plus 'user-friendly'?
 [%auto-animate]
 == 📛 Nommage des containers
 
-image::fichiers-output47_with_transparency.png[]
+image::nommage-1.svg[]
 
 [%auto-animate]
 == 📛 Nommage des containers
 
-image::fichiers-output48_with_transparency.png[]
+image::nommage-2.svg[]
 
 [%auto-animate]
 == 📛 Nommage des containers
 
-image::fichiers-output49_with_transparency.png[]
+image::nommage-3.svg[]
 
 [.notes]
 --
+Les trois cartes sont produites par `scripts/gen_naming_card.py`, appelé par
+`make build`. Elles remplacent trois PNG exportés d'un PowerPoint, qui listaient
+un conteneur `centos` (#550). Pour les régénérer à la main :
+
 [source,bash]
 ----
-for i in {46..49}; do convert Diapositive${i}.PNG -crop 13243x4424+61+2040 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done
+python3 scripts/gen_naming_card.py content/media/nommage --steps
 ----
 
 Jean-Claude Poitras est un créateur de mode, un designer multidisciplinaire, un chroniqueur, un conférencier et un artiste né à Montréal au Canada le 18 juin 1949.
