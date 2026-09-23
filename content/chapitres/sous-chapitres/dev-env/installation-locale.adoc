@@ -37,6 +37,26 @@ aux côtés de `podman-docker`.
 ➡️ On utilise donc le **dépôt apt officiel Docker**
 --
 
+=== ⚠️ D'abord : êtes-vous derrière le proxy ? 🏫
+
+Sur le réseau de l'université, `apt` et `curl` doivent passer par le proxy.
+Définir `http_proxy` dans son shell **ne suffit pas** : `sudo` efface les
+variables d'environnement.
+
+[source,bash]
+----
+sudo tee /etc/apt/apt.conf.d/99proxy <<'PROXY'
+Acquire::http::Proxy "http://cache-etu.univ-artois.fr:3128/";
+Acquire::https::Proxy "http://cache-etu.univ-artois.fr:3128/";
+PROXY
+
+export http_proxy=http://cache-etu.univ-artois.fr:3128/
+export https_proxy=http://cache-etu.univ-artois.fr:3128/
+----
+
+[.small]
+🏠 Chez vous, rien de tout ça : passez directement à l'étape 1
+
 === Étape 1 : retirer les paquets en conflit 🧹
 
 [source,bash]
@@ -57,13 +77,16 @@ sudo apt remove $(dpkg --get-selections \
 sudo apt update
 sudo apt install ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
-  -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /tmp/docker.asc
+sudo install -m 0644 /tmp/docker.asc /etc/apt/keyrings/docker.asc
 ----
 
 [.small]
 🔑 La clé GPG sert à vérifier la signature des paquets téléchargés
+
+[.small]
+⚠️ `curl` sans `sudo`, volontairement : lancé en root il perdrait votre proxy
 
 === Étape 2 (suite) : déclarer la source 📝
 
@@ -135,6 +158,39 @@ sudo apt remove podman-docker
 
 [.small]
 ⚠️ Ubuntu **n'installe pas** Podman par défaut : ce cas ne concerne que qui l'a installé lui-même
+--
+
+[.columns]
+=== Et si le téléchargement bloque ? 🕳️
+
+[.column]
+--
+**Symptôme :** `curl` ou `apt` restent muets, puis expirent. Pourtant
+`echo $http_proxy` affiche bien le proxy, et la même commande **sans** `sudo` passe.
+
+[.small]
+`sudo` repart d'un environnement neuf : `sudoers(5)` appelle ça `env_reset`, actif
+par défaut. `http_proxy` n'est dans aucune liste conservée, donc le `curl` lancé en
+root sort en direct et se fait jeter par le réseau.
+--
+
+[.column]
+--
+[source,bash]
+----
+# Le proxy est-il visible par root ?
+sudo printenv http_proxy
+# (aucune sortie)
+
+# Trois sorties possibles
+sudo -E curl ...
+curl ... puis sudo install ...
+/etc/apt/apt.conf.d/99proxy
+----
+
+[.small]
+💡 Rien dans le message d'erreur ne nomme `sudo` : c'est ce qui rend la panne longue
+à diagnostiquer
 --
 
 === Environnement prêt ! ✅
