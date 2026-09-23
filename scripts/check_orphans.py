@@ -56,8 +56,13 @@ MEDIA_DIR = "content/media/"
 # Ce qui peut prolonger un nom de fichier de part et d'autre. Un point final
 # seul reste permis derrière le nom, pour qu'une phrase qui se termine sur
 # `logo.png.` compte ; un point suivi d'une extension (`logo.png.bak`), non.
-BEFORE = r"(?<![A-Za-z0-9_.~-])"
-AFTER = r"(?![A-Za-z0-9_~-])(?!\.[A-Za-z0-9])"
+# `\w` et non `[A-Za-z0-9_]` : sur une chaîne, il couvre les lettres accentuées,
+# sans quoi `été.png` passerait pour cité dans `préété.png`. Les diacritiques
+# combinants sont ajoutés à part, `\w` ne les couvre pas ; le texte est en NFC,
+# mais un nom saisi en NFD dans un outil qui ne normalise pas y échapperait.
+NAME_CHAR = r"\w\u0300-\u036f~\-"
+BEFORE = rf"(?<![{NAME_CHAR}.])"
+AFTER = rf"(?![{NAME_CHAR}])(?!\.[\w\u0300-\u036f])"
 
 
 def nfc(text: str) -> str:
@@ -70,7 +75,10 @@ def tracked_files(root: Path) -> list[str]:
         check=True,
         capture_output=True,
     ).stdout
-    return [nfc(p) for p in out.decode("utf-8").split("\0") if p]
+    # Chemins rendus tels que git les stocke : ils servent à ouvrir les
+    # fichiers, et une version normalisée peut ne pas exister sur le disque.
+    # La normalisation se fait sur une copie, pour la seule comparaison.
+    return [p for p in out.decode("utf-8").split("\0") if p]
 
 
 def read_text(path: Path) -> str | None:
@@ -96,12 +104,12 @@ def main() -> int:
         print(f"ERROR: git ls-files failed, nothing was measured: {exc}")
         return 2
 
-    media = [p for p in files if p.startswith(MEDIA_DIR)]
+    media = [p for p in files if nfc(p).startswith(MEDIA_DIR)]
     if not media:
         print(f"ERROR: no tracked file under {MEDIA_DIR}, nothing was measured.")
         return 2
 
-    names = [p[len(MEDIA_DIR) :] for p in media]
+    names = [nfc(p)[len(MEDIA_DIR) :] for p in media]
     nested = [n for n in names if "/" in n]
     dupes = {n for n in names if names.count(n) > 1}
     if nested or dupes:
@@ -111,11 +119,20 @@ def main() -> int:
         )
         return 2
 
+    # Un fichier suivi mais absent de l'arbre de travail (supprimé sans
+    # commit) : le compte serait faux, donc pas de compte du tout.
     sources = {}
-    for p in files:
-        text = read_text(root / p)
-        if text is not None:
-            sources[p] = text
+    sizes = {}
+    try:
+        for p in files:
+            text = read_text(root / p)
+            if text is not None:
+                sources[nfc(p)] = text
+        for p in media:
+            sizes[p] = (root / p).stat().st_size
+    except OSError as exc:
+        print(f"ERROR: cannot read a tracked file, nothing was measured: {exc}")
+        return 2
 
     # Une seule expression pour tous les noms : 336 expressions passées sur
     # chaque source prenaient dix secondes, celle-ci une fraction.
@@ -129,7 +146,7 @@ def main() -> int:
                 referenced.add(name)
 
     orphans = [
-        (path, (root / path).stat().st_size)
+        (path, sizes[path])
         for path, name in zip(media, names)
         if name not in referenced
     ]
