@@ -18,8 +18,9 @@ docker container run hello-world
 
 == 🧭 Deux écritures pour la même commande
 
-Depuis Docker 1.13 (2017), chaque commande s'écrit aussi sous la forme
-`docker OBJET VERBE`, qui dit sur quel type d'objet on agit.
+Depuis Docker 1.13 (2017), les commandes qui agissent sur un objet (conteneur,
+image, réseau, volume) s'écrivent aussi `docker OBJET VERBE`, qui dit sur quel
+type d'objet on agit.
 
 [cols="1,1", options="header"]
 |===
@@ -49,6 +50,9 @@ Depuis Docker 1.13 (2017), chaque commande s'écrit aussi sous la forme
 
 * ⚠️ Le raccourci cache parfois l'objet : `docker pull` télécharge une **image**,
 donc la forme longue est `docker image pull`, pas `docker container pull`
+
+* 🚫 Les commandes qui n'agissent sur aucun objet gardent leur forme unique :
+`docker login`, `docker version`, `docker search`
 
 * 📏 **Dans ce cours, on écrit toujours la forme de gestion.**
 Vous rencontrerez les raccourcis partout ailleurs : sachez les lire.
