@@ -336,6 +336,17 @@ check-html:
 	fi; \
 	echo "OK: the built HTML validates (errors only, warnings not reported -- see issue #530)"
 
+## L'inverse de check-assets : check-assets verifie que tout fichier reference
+## existe, check-orphans liste les fichiers de content/media que rien ne
+## reference. Hors de `verify` et toujours vert : le depot porte une centaine
+## d'orphelins, un garde-fou rouge des le premier jour finirait ignore. Il ne
+## supprime rien, ce tri se fait a la main. Pas besoin de `make build` : il lit
+## les sources suivies par git, ce qui voit aussi le deck d'examen sans le
+## construire. Voir issue #573 et l'en-tete du script pour les deux pieges de
+## mesure qu'il evite.
+check-orphans:
+	@python3 $(CURDIR)/scripts/check_orphans.py
+
 verify: check-dashes check-diagrams check-prune check-opacity check-assets
 	@echo "NOTE: external links are checked by 'make check-links', not here (see issue #486)"
 
@@ -417,4 +428,4 @@ clean:
 qrcode:
 	@$(call compose_up, qrcode)
 
-.PHONY: all build anatomy naming clean verify check-dashes check-diagrams check-opacity check-prune check-assets check-links check-html diagrams serve qrcode pdf exam-pdf exam-html dependencies-update dependencies-lock-update
+.PHONY: all build anatomy naming clean verify check-dashes check-diagrams check-opacity check-prune check-assets check-links check-html check-orphans diagrams serve qrcode pdf exam-pdf exam-html dependencies-update dependencies-lock-update
