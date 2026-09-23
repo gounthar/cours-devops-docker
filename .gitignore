@@ -15,3 +15,6 @@ content/media/anatomie-*.svg
 # sortie en est une fonction pure. Une copie commitee serait une seconde copie,
 # qui ne peut que se perimer. Regenerees a chaque `make build`. Voir #550.
 content/media/nommage-*.svg
+
+# Sauvegardes d'éditeur (#573)
+*~
