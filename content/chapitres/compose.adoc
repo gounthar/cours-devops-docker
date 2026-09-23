@@ -636,7 +636,7 @@ myapp-backend   python:3.11-slim      Up 30 seconds (unhealthy)
 
 [source,bash]
 ----
-docker inspect myapp-backend | grep -A 10 Health
+docker container inspect myapp-backend | grep -A 10 Health
 ----
 
 [source,json]
@@ -811,7 +811,7 @@ Avant d'écrire un health check :
 
 [%step]
 1. ✅ **Vérifier** : La commande existe-t-elle dans l'image ?
-2. ✅ **Tester** : `docker run --rm image commande` pour vérifier
+2. ✅ **Tester** : `docker container run --rm image commande` pour vérifier
 3. ✅ **Choisir une solution** :
    * Installer l'outil (Solution 1) → Recommandé pour production
    * Utiliser alternative native (Solution 2) → Léger, pas d'install
@@ -828,7 +828,7 @@ Avant d'écrire un health check :
 
 [TIP]
 ====
-**Règle d'or** : `docker run --rm mon-image commande`
+**Règle d'or** : `docker container run --rm mon-image commande`
 
 Si la commande échoue → Elle échouera aussi dans le health check !
 ====

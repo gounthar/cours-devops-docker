@@ -23,14 +23,14 @@ Les données sont stockées sur le système hôte, mais sont accessibles depuis 
 Ils sont gérés par Docker et offrent une plus grande flexibilité que le simple mappage de système de fichiers.
 **Utilisation** : Idéaux pour stocker des données qui doivent survivre à l'arrêt ou à la suppression d'un conteneur.
 Les volumes sont indépendants du cycle de vie du conteneur.
-**Exemple** : `docker run -v nom_du_volume:/chemin/dans/le/conteneur`
+**Exemple** : `docker container run -v nom_du_volume:/chemin/dans/le/conteneur`
 
 3. Système de Fichiers RAM (RAM Filesystem) :
 **Description** : Il s'agit d'un système de fichiers temporaire stocké en mémoire RAM.
 Les données sont stockées de manière éphémère, ce qui signifie qu'elles sont perdues lorsque le conteneur est arrêté.
 **Utilisation** : Utile lorsque des données temporaires doivent être stockées en mémoire pour des performances élevées.
 Les données n'existent que tant que le conteneur est en cours d'exécution.
-**Exemple** : `docker run --tmpfs /chemin/dans/le/conteneur`
+**Exemple** : `docker container run --tmpfs /chemin/dans/le/conteneur`
 
 En résumé, ces trois méthodes de gestion des données en Docker offrent des avantages différents en fonction des besoins spécifiques d'un conteneur. Le mappage de système de fichiers est utile pour partager des fichiers depuis le système hôte, les volumes sont idéaux pour la persistance des données, tandis que les systèmes de fichiers RAM sont parfaits pour des données temporaires à haute performance.
 --
@@ -202,7 +202,7 @@ docker volume create --name my-data
 [%step]
 [source,bash]
 ----
-docker run -v my-data:/data busybox ls /data
+docker container run -v my-data:/data busybox ls /data
 ----
 
 [%step]

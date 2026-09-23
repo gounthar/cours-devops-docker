@@ -290,7 +290,7 @@ docker --version
 # Résultat attendu : Docker version XX.XX.X
 
 # Tester Docker
-docker run hello-world
+docker container run hello-world
 ----
 
 [.small]
@@ -314,13 +314,13 @@ image::codespaces-terminal-output.png[width=550]
 - Version récente (généralement > 20.x)
 - Pas besoin d'installer quoi que ce soit !
 
-**`docker run hello-world` :**
+**`docker container run hello-world` :**
 - Premier conteneur Docker classique
 - Télécharge l'image `hello-world` depuis Docker Hub
 - Exécute le conteneur qui affiche un message
 - Permet de vérifier que tout fonctionne
 
-**Résultat attendu de `docker run hello-world` :**
+**Résultat attendu de `docker container run hello-world` :**
 ```
 Unable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world
@@ -441,7 +441,7 @@ Vérifiez que tout fonctionne :
 [%step]
 3. ✓ Commande `docker --version` affiche la version
 [%step]
-4. ✓ Commande `docker run hello-world` s'exécute avec succès
+4. ✓ Commande `docker container run hello-world` s'exécute avec succès
 
 [%step]
 [.small]
@@ -479,7 +479,7 @@ Ce checkpoint permet de s'assurer que :
 - Solution : Créer un `.devcontainer/devcontainer.json` avec feature docker-in-docker
 - Ou utiliser l'image `mcr.microsoft.com/devcontainers/base:ubuntu`
 
-**4. `docker run hello-world` échoue :**
+**4. `docker container run hello-world` échoue :**
 - "Cannot connect to Docker daemon" :
   - Le daemon Docker n'est pas démarré
   - Essayer : `sudo service docker start`
@@ -918,7 +918,7 @@ URL : https://docs.docker.com
 "Ça marche pas, help !"
 
 **Exemple de bonne question :**
-"J'essaie de lancer `docker run nginx` mais j'obtiens l'erreur 'Cannot connect to the Docker daemon'. J'ai vérifié avec `docker --version` et ça fonctionne. Que dois-je faire ?"
+"J'essaie de lancer `docker container run nginx` mais j'obtiens l'erreur 'Cannot connect to the Docker daemon'. J'ai vérifié avec `docker --version` et ça fonctionne. Que dois-je faire ?"
 
 **5. Forum / Discord du cours :**
 

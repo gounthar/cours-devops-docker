@@ -51,7 +51,7 @@ http_access allow all
 On peut ensuite lancer le proxy:
 [source,bash]
 ----
-docker run --name squid -d --restart=always --publish 3128:3128 -v $(pwd)/squid.conf:/etc/squid/squid.conf sameersbn/squid:3.5.27-2
+docker container run --name squid -d --restart=always --publish 3128:3128 -v $(pwd)/squid.conf:/etc/squid/squid.conf sameersbn/squid:3.5.27-2
 ----
 
 Puis changer la commande en:

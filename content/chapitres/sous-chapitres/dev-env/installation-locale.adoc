@@ -101,7 +101,7 @@ sudo usermod -aG docker $USER
 docker --version
 docker compose version
 docker buildx version
-docker run hello-world
+docker container run hello-world
 ----
 
 [.small]

@@ -300,7 +300,7 @@ En résumé, avec ces commandes, vous avez créé un nouveau réseau Docker nomm
 
 [source,bash]
 ----
-docker run -d --net=mon-reseau --name=app img
+docker container run -d --net=mon-reseau --name=app img
 ----
 
 [%step]
@@ -852,7 +852,7 @@ C'est le même piège qu'au-dessus, avec une cause de plus : ici le port *est* p
 
 [source,console]
 ----
-docker port <conteneur>    # montre les familles réellement écoutées
+docker container port <conteneur>    # montre les familles réellement écoutées
 ----
 
 En cas de doute, écrire `127.0.0.1` plutôt que `localhost` : la famille est explicite, la résolution ne peut plus surprendre.
