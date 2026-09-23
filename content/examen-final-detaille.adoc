@@ -561,7 +561,7 @@ test/
 
 * Utiliser des variables d'environnement passées au runtime
 * Utiliser Docker Secrets (pour Swarm) ou des outils externes (Vault)
-* Vérifier avec `docker history <image>` qu'aucun secret n'est visible
+* Vérifier avec `docker image history <image>` qu'aucun secret n'est visible
 ====
 
 === 3. Health Checks
@@ -928,7 +928,7 @@ curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/inst
 brew install trivy
 
 # Docker
-docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+docker container run --rm -v /var/run/docker.sock:/var/run/docker.sock \
   aquasec/trivy image myimage:latest
 ----
 
@@ -1336,22 +1336,22 @@ http:
       - '{"status":"UP"}'
 
 # L'état des conteneurs passe par `command:`, seule porte de sortie vers le
-# démon Docker. Noter la forme `docker ps --filter` : `docker inspect
+# démon Docker. Noter la forme `docker container ls --filter` : `docker container inspect
 # --format` serait plus direct, mais Goss traite d'abord le fichier comme un
 # template Go et consomme les accolades, ce qui donne
 # `can't evaluate field State in type *goss.TmplVars`.
 command:
-  docker ps --filter name=reverse-proxy --filter status=running --filter health=healthy --quiet:
+  docker container ls --filter name=reverse-proxy --filter status=running --filter health=healthy --quiet:
     exit-status: 0
     stdout:
       - "/[0-9a-f]{12}/"
 
-  docker ps --filter name=app-server --filter health=healthy --quiet:
+  docker container ls --filter name=app-server --filter health=healthy --quiet:
     exit-status: 0
     stdout:
       - "/[0-9a-f]{12}/"
 
-  docker ps --filter name=database --filter health=healthy --quiet:
+  docker container ls --filter name=database --filter health=healthy --quiet:
     exit-status: 0
     stdout:
       - "/[0-9a-f]{12}/"
@@ -1369,7 +1369,7 @@ façons de le lui donner — à choisir, pas à cumuler :
   ne définit ni `DOCKER_HOST` ni les variables TLS, donc tel quel il ne joint
   aucun démon. Voir #472, qui porte sur ce pipeline.
 
-Un conteneur absent ou non sain fait sortir `docker ps` sans identifiant, la
+Un conteneur absent ou non sain fait sortir `docker container ls` sans identifiant, la
 sortie ne correspond plus au motif, et Goss compte l'échec. Vérification que
 le rouge sort bien — c'est le point de barème plus haut :
 
@@ -1565,7 +1565,7 @@ export default function () {
 # Installer k6
 brew install k6  # macOS
 # ou
-docker pull grafana/k6
+docker image pull grafana/k6
 
 # Exécuter le test
 k6 run load-test.js
@@ -1659,7 +1659,7 @@ for instance in app-server-1 app-server-2 app-server-3; do
   docker compose up -d $instance
 
   # Attendre que l'instance soit healthy
-  until [ "$(docker inspect --format='{{.State.Health.Status}}' $instance)" == "healthy" ]; do
+  until [ "$(docker container inspect --format='{{.State.Health.Status}}' $instance)" == "healthy" ]; do
     echo "Waiting for $instance to be healthy..."
     sleep 5
   done

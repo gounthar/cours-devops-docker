@@ -15,7 +15,7 @@ image::902050214-image2.png[]
 
 [source,bash]
 ----
-docker history nginx
+docker image history nginx
 IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
 f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daemon…   0B
 <missing>           4 weeks ago         /bin/sh -c #(nop)  STOPSIGNAL SIGTERM           0B
@@ -38,7 +38,7 @@ f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "da
 
 [source,bash]
 ----
-docker history nginx
+docker image history nginx
 IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
 f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daemon…   0B
 <missing>           4 weeks ago         /bin/sh -c #(nop)  STOPSIGNAL SIGTERM           0B
@@ -107,7 +107,7 @@ Il est possible de lister toutes les modifications qui ont été apportées au f
 
 [source,bash]
 ----
-docker diff 29f1c4
+docker container diff 29f1c4
 C /run
 A /run/nginx.pid
 C /var
@@ -157,10 +157,10 @@ Les logs
 [source,bash]
 ----
 docker container exec
-docker inspect
-docker cp
-docker history
-docker stats
+docker container inspect
+docker container cp
+docker image history
+docker container stats
 ----
 
 == Debugging : Les logs
@@ -296,7 +296,7 @@ Vous vous souvenez du chapitre sur les réseaux Docker ?
 
 [%step]
 * Dans notre cas, le conteneur `web` et le conteneur `gitlab-instance-gitlab-1` ne sont pas dans le même réseau Docker.
-* Vous pouvez vérifier cela en inspectant les réseaux de chaque conteneur à l'aide de la commande `docker inspect`.
+* Vous pouvez vérifier cela en inspectant les réseaux de chaque conteneur à l'aide de la commande `docker container inspect`.
 * S'ils ne sont pas dans le même réseau, nous pouvons créer un réseau et ajouter les deux services à celui-ci dans notre fichier `docker-compose.yml`.
 
 [%auto-animate]
@@ -426,50 +426,56 @@ services ashutosh mix and match de conteneurs
 build arm64, cloud et buildx
 --
 
-== Debugging : docker exec
+== Debugging : docker container exec
 
 rappel : `docker container exec` permet de lancer une commande dans un container
 
 [source,bash]
 ----
-docker exec <containerID> echo "hello"
+docker container exec <containerID> echo "hello"
 ----
 
 
 [source,bash]
 ----
-docker exec -it <containerID> bash
+docker container exec -it <containerID> bash
 ----
 
-== Debugging : docker inspect
+== Debugging : docker container inspect
 
-rappel : `docker inspect` permet de lister toutes les caractéristiques d'une image ou d'un container.
+rappel : `docker container inspect` et `docker image inspect` listent toutes les caractéristiques d'un conteneur ou d'une image.
 
 On peut filtrer le retour de la commande avec `jq` ou l'option `--format`.
 
 
-== Debugging : docker cp
+== Debugging : docker container cp
 
 Cette commande permet d'échanger des fichiers entre un conteneur et la machine hôte.
 
 [source,bash]
 ----
-docker cp --help
-Usage:  docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-
+docker container cp --help
+Usage:  docker container cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-
         docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH
+
 Copy files/folders between a container and the local filesystem
+
+Aliases:
+  docker container cp, docker cp
+
 Options:
   -a, --archive       Archive mode (copy all uid/gid information)
-  -L, --follow-link   Always follow symbol link in SRC_PATH
+  -L, --follow-link   Always follow symlinks in SRC_PATH
+  -q, --quiet         Suppress progress output during copy
 ----
 
-== Debugging : docker history
+== Debugging : docker image history
 
 Cette commande permet d'afficher la concaténation de tous les Dockerfiles qui ont abouti à cette image.
 
 [source,bash]
 ----
-docker history nginx
+docker image history nginx
 IMAGE               CREATED             CREATED BY                                      SIZE                f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daemon…   0B
 <missing>           4 weeks ago         /bin/sh -c #(nop)  STOPSIGNAL SIGTERM           0B
 <missing>           4 weeks ago         /bin/sh -c #(nop)  EXPOSE 80                    0B
@@ -486,13 +492,13 @@ IMAGE               CREATED             CREATED BY                              
 <missing>           4 weeks ago         /bin/sh -c #(nop) ADD file:0dc53e7886c35bc21…   69.2MB
 ----
 
-== Debugging : docker stats
+== Debugging : docker container stats
 
 Cette commande permet d'avoir les stats en temps réel d'un conteneur.
 
 [source,bash]
 ----
-docker stats 42f128
+docker container stats 42f128
 CONTAINER           CPU %     MEM USAGE/LIMIT     MEM %     NET I/O
 42f128              0.00%     1.454 MB/4.145 GB   0.04%     648 B/648 B
 ----
@@ -507,14 +513,14 @@ Désormais, nous n'avons que le binaire de son chef-d'œuvre, accessible à cett
 
 https://owncloud.univ-artois.fr/index.php/s/9s8XBLXvRwBJsrm
 
-Rassurez-vous, on nous a dit que `docker load` est la première étape de la formule magique pour percer les secrets de son œuvre.
+Rassurez-vous, on nous a dit que `docker image load` est la première étape de la formule magique pour percer les secrets de son œuvre.
 
 À vos claviers ! 🧙‍♂️✨
 
 [%auto-animate]
 == ✅ Solution travaux pratiques #14🕵️‍♂️🔍
 
-`docker load` est la première étape de la formule magique
+`docker image load` est la première étape de la formule magique
 [%step]
 Okay...
 [%step]
@@ -522,7 +528,7 @@ Okay...
 [%step]
 [source,bash]
 ----
-docker load -i bad-nginx.dkr
+docker image load -i bad-nginx.dkr
 Loaded image: bad-nginx:1
 ----
 [%step]
@@ -578,7 +584,7 @@ Est-ce un problème de permission, de dépendance, de version, de compilation 
 [%step]
 En tous cas, c'est cassé.
 [%step]
-Regardons un peu ce que nous dit docker inspect de tout ça...
+Regardons un peu ce que nous dit docker image inspect de tout ça...
 [%step]
 [source,json]
 ----
@@ -697,7 +703,7 @@ image::https://img.20mn.fr/JejnWnikSbSj5suCAo9pug/1200x768_stephane-bern-arrive-
 [%step]
 [source,bash]
 ----
-docker history bad-nginx:1
+docker image history bad-nginx:1
 IMAGE          CREATED       CREATED BY                                      SIZE      COMMENT
 a469e4d1cb0c   3 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0B
 <missing>      3 years ago   /bin/sh -c #(nop)  ENTRYPOINT ["/bin/sh" "-c…   0B
@@ -717,7 +723,7 @@ La deuxième ligne, c'est une métadata, on s'en fiche un peu.
 [%step]
 La troisième ligne, c'est le `CMD` de l'image de base, qui est `bash`.
 [%step]
-La quatrième ligne, c'est l'installation de Nginx par l'infâme `yum` de Centos (déjà repéré dans le `docker inspect`).
+La quatrième ligne, c'est l'installation de Nginx par l'infâme `yum` de Centos (déjà repéré dans le `docker image inspect`).
 --
 
 [%auto-animate]
@@ -725,7 +731,7 @@ La quatrième ligne, c'est l'installation de Nginx par l'infâme `yum` de Centos
 
 [source,bash]
 ----
-docker history bad-nginx:1
+docker image history bad-nginx:1
 IMAGE          CREATED       CREATED BY                                      SIZE      COMMENT
 a469e4d1cb0c   3 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0B
 <missing>      3 years ago   /bin/sh -c #(nop)  ENTRYPOINT ["/bin/sh" "-c…   0B
@@ -739,9 +745,9 @@ a469e4d1cb0c   3 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0
 [%step]
 La cinquième ligne, c'est sans doute la copie du fichier `index.html`.
 [%step]
-La sixième ligne, c'est l' `EXPOSE` de l'image finale, qui est `80` (déjà repéré dans le `docker inspect`).
+La sixième ligne, c'est l' `EXPOSE` de l'image finale, qui est `80` (déjà repéré dans le `docker image inspect`).
 [%step]
-La septième ligne, c'est le `ENTRYPOINT` de l'image finale, qui est `/bin/sh -c /tmp/entrypoint.sh` (déjà repéré dans le `docker inspect`).
+La septième ligne, c'est le `ENTRYPOINT` de l'image finale, qui est `/bin/sh -c /tmp/entrypoint.sh` (déjà repéré dans le `docker image inspect`).
 
 [%auto-animate]
 == ✅ Solution travaux pratiques #14🕵️‍♂️🔍
@@ -806,7 +812,7 @@ docker container create --name temp_container bad-nginx:1
 9149745197df413f7966181f6ca517b68713edd32ff7c35cea6e958d549a7553
 ----
 [%step]
-Utilisons maintenant docker cp pour récupérer le fichier HTML.
+Utilisons maintenant docker container cp pour récupérer le fichier HTML.
 [%step]
 Quel est le répertoire où nginx s'attend à trouver ses fichiers HTML à servir?
 [%step]
@@ -815,7 +821,7 @@ Quel est le répertoire où nginx s'attend à trouver ses fichiers HTML à servi
 [source,bash]
 ----
 mkdir /tmp/html && cd /tmp/html
-docker cp temp_container:/usr/share/nginx/html .
+docker container cp temp_container:/usr/share/nginx/html .
 ----
 
 [%auto-animate]

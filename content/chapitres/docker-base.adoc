@@ -16,6 +16,47 @@ docker container run hello-world
 # Equivalent de l'ancienne commande 'docker run'
 ----
 
+== 🧭 Deux écritures pour la même commande
+
+Depuis Docker 1.13 (2017), les commandes qui agissent sur un objet (conteneur,
+image, réseau, volume) s'écrivent aussi `docker OBJET VERBE`, qui dit sur quel
+type d'objet on agit.
+
+[cols="1,1", options="header"]
+|===
+| Raccourci historique
+| Forme de gestion
+
+| `docker run`
+| `docker container run`
+
+| `docker ps`
+| `docker container ls`
+
+| `docker images`
+| `docker image ls`
+
+| `docker rmi`
+| `docker image rm`
+
+| `docker pull`
+| `docker image pull`
+|===
+
+== 🧭 Laquelle utiliser ?
+
+* Les deux formes marchent, et les raccourcis ne sont pas dépréciés
+** `docker container cp --help` liste d'ailleurs les deux sous `Aliases:`
+
+* ⚠️ Le raccourci cache parfois l'objet : `docker pull` télécharge une **image**,
+donc la forme longue est `docker image pull`, pas `docker container pull`
+
+* 🚫 Les commandes qui n'agissent sur aucun objet gardent leur forme unique :
+`docker login`, `docker version`, `docker search`
+
+* 📏 **Dans ce cours, on écrit toujours la forme de gestion.**
+Vous rencontrerez les raccourcis partout ailleurs : sachez les lire.
+
 [%auto-animate]
 == 🩻 Anatomie
 
