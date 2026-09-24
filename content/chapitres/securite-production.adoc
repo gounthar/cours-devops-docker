@@ -979,7 +979,8 @@ Le point à faire voir sur le schéma : le proxy est HORS de la VM, dans le dém
 - Toutes les requêtes HTTP(S) de la VM passent par ce proxy (HTTPS_PROXY=http://gateway.docker.internal:3128 dans la sandbox).
 - Pour l'hôte déclaré, le proxy remplace la substitution par la valeur réelle dans l'en-tête. Pour tout autre hôte, la substitution part telle quelle.
 
-Idée clé : le secret n'entre jamais dans l'environnement d'exécution. C'est un modèle différent des cinq autres, pas une sixième ligne du tableau.
+Idée clé : le proxy ne place jamais le secret dans l'environnement d'exécution (ni variable, ni fichier). C'est un modèle différent des cinq autres, pas une sixième ligne du tableau.
+Nuance, deux diapositives plus loin : un hôte déclaré qui renvoie l'en-tête fait quand même entrer la valeur dans la sandbox.
 
 Sources : docs.docker.com/ai/sandboxes/security (« host-side proxy ») et docs.docker.com/ai/sandboxes/configuration/credentials.
 --
@@ -1036,13 +1037,13 @@ Faire remarquer : echo affiche la substitution, et c'est pourtant la valeur rée
 * Le proxy déchiffre le HTTPS : il installe sa propre autorité de certification dans la sandbox
 * Le secret réel reste sur l'hôte : sans trousseau, dans un fichier
 
-TIP: Le proxy empêche le secret de **sortir**, pas d'**être utilisé**.
+TIP: Le proxy garde la valeur hors de la sandbox, tant que l'hôte déclaré ne la renvoie pas. Il n'empêche jamais de **l'utiliser**.
 
 [.notes]
 --
 Chaque point a été mesuré le 2026-09-24 :
 
-1. Usage : la sandbox ne connaît pas la valeur, mais toute requête vers httpbin.org part avec. Un agent compromis peut donc agir avec le jeton (créer une issue, pousser du code...) sur le service déclaré. Ce qu'il ne peut pas, c'est emporter la valeur ailleurs.
+1. Usage : la sandbox ne connaît pas la valeur, mais toute requête vers httpbin.org part avec. Un agent compromis peut donc agir avec le jeton (créer une issue, pousser du code...) sur le service déclaré. Il ne peut pas lire la valeur, sauf si l'hôte déclaré la renvoie (point 2) : il pourrait alors l'envoyer vers n'importe quel autre domaine autorisé par la politique réseau.
 2. Écho : httpbin.org/headers renvoie les en-têtes reçus, donc la réponse contenait "Bearer valeur-reelle-576" DANS la sandbox. Une vraie API (api.github.com) ne renvoie pas l'en-tête Authorization, mais la protection dépend de ce comportement du service distant. Question aux étudiants : quel type d'hôte faut-il éviter de déclarer ?
 3. HTTPS : pour réécrire un en-tête chiffré, le proxy fait l'intermédiaire. La sandbox reçoit son certificat d'autorité (variable PROXY_CA_CERT_B64). C'est le même mécanisme qu'un proxy d'entreprise.
 4. Stockage : dans le Codespace de test, sbx a affiché « No keychain detected », et le secret est stocké sur disque, protégé par les permissions du fichier. Le secret sort de la VM, pas de la machine.
