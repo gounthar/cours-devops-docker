@@ -5452,7 +5452,32 @@ docker compose up -d
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose ps &amp;&amp; \
 docker compose logs --tail=50 &amp;&amp; \
 docker events --filter type=container</code></pre></div></div>
-<div class="paragraph"><p>Affiche : statuts, logs récents, et écoute les événements !</p></div></td></tr></table></div></div></section><section id="aller_plus_loin"><h2>Aller plus loin</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p><strong>Orchestration</strong> : Kubernetes, Docker Swarm</p></li><li class="fragment"><p><strong>Secrets Management</strong> : Vault, Sealed Secrets</p></li><li class="fragment"><p><strong>Image Signing</strong> : Docker Content Trust, Cosign</p></li><li class="fragment"><p><strong>Runtime Security</strong> : Falco, Aqua Security</p></li></ul></div></div></section><section id="ressources_utiles"><h2>Ressources utiles</h2><div class="slide-content"><div class="ulist"><ul><li><p>Docker Security: <a href="https://docs.docker.com/engine/security/" class="bare">https://docs.docker.com/engine/security/</a></p></li><li><p>CIS Docker Benchmark</p></li><li><p>Trivy: <a href="https://github.com/aquasecurity/trivy" class="bare">https://github.com/aquasecurity/trivy</a></p></li><li><p>OWASP Docker Security Cheat Sheet</p></li></ul></div></div></section><section id="fin_de_la_session" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Fin de la session</h2><div class="slide-content"><div class="paragraph"><p>Bravo, vous avez transformé SecureVote en application sécurisée et production-ready !</p></div>
+<div class="paragraph"><p>Affiche : statuts, logs récents, et écoute les événements !</p></div></td></tr></table></div></div></section><section id="vérifier_la_signature_dune_image"><h2>Vérifier la signature d&#8217;une image</h2><div class="slide-content"><div class="paragraph"><p>Cosign (projet Sigstore) vérifie qui a signé une image, pas seulement qu&#8217;elle est signée :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm ghcr.io/sigstore/cosign/cosign:v3.1.3 verify \
+  --certificate-identity=krel-trust@k8s-releng-prod.iam.gserviceaccount.com \
+  --certificate-oidc-issuer=https://accounts.google.com \
+  registry.k8s.io/pause:3.10</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-text hljs" data-noescape="true" data-lang="text">Verification for registry.k8s.io/pause:3.10 --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The code-signing certificate was verified using trusted certificate authority certificates</code></pre></div></div>
+<div class="paragraph"><p>Avec <code>--certificate-identity=<a href="mailto:someone@example.com">someone@example.com</a></code>, la commande échoue (code de sortie 12) : <code>no matching signatures</code>.</p></div>
+<aside class="notes"><div class="paragraph"><p>Sortie réelle, relevée le 2026-09-24 avec Docker 29.8.0 et Cosign v3.1.3. L&#8217;image vérifiée
+est une image Kubernetes, signée en mode « keyless » par le compte de publication du projet
+(<code>krel-trust@k8s-releng-prod</code>, celui que la documentation Kubernetes donne pour cette vérification).</p></div>
+<div class="paragraph"><p>Limite de l&#8217;exemple : l&#8217;outil de vérification vient lui-même d&#8217;une image téléchargée. Une
+vérification qui établit vraiment la confiance suppose un Cosign obtenu par un canal vérifié
+séparément (paquet de la distribution, ou binaire dont la somme de contrôle a été vérifiée).
+Faire vérifier une image par elle-même ne prouve rien : une image modifiée peut afficher
+« Verified ».</p></div>
+<div class="paragraph"><p>Les tutoriels antérieurs montrent souvent Docker Content Trust (<code>DOCKER_CONTENT_TRUST=1</code>,
+<code>docker trust sign</code>). Ne pas le suivre : la CLI Docker 29 n&#8217;a plus de sous-commande
+<code>docker trust</code>, et le service Notary v1 de Docker Hub (<code>notary.docker.io</code>) ferme le
+8 décembre 2026. Docker oriente vers Sigstore/Cosign ou Notation.</p></div>
+<div class="paragraph"><p>Signer soi-même : <code>cosign sign &lt;image&gt;</code> en mode « keyless » ouvre une authentification OIDC
+(GitHub, Google…) et inscrit la signature dans le journal de transparence Rekor.
+En CI, l&#8217;identité est celle du workflow.</p></div></aside></div></section><section id="aller_plus_loin"><h2>Aller plus loin</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p><strong>Orchestration</strong> : Kubernetes, Docker Swarm</p></li><li class="fragment"><p><strong>Secrets Management</strong> : Vault, Sealed Secrets</p></li><li class="fragment"><p><strong>Image Signing</strong> : Cosign (Sigstore), Notation</p></li><li class="fragment"><p><strong>Runtime Security</strong> : Falco, Aqua Security</p></li></ul></div></div></section><section id="ressources_utiles"><h2>Ressources utiles</h2><div class="slide-content"><div class="ulist"><ul><li><p>Docker Security: <a href="https://docs.docker.com/engine/security/" class="bare">https://docs.docker.com/engine/security/</a></p></li><li><p>CIS Docker Benchmark</p></li><li><p>Trivy: <a href="https://github.com/aquasecurity/trivy" class="bare">https://github.com/aquasecurity/trivy</a></p></li><li><p>OWASP Docker Security Cheat Sheet</p></li></ul></div></div></section><section id="fin_de_la_session" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Fin de la session</h2><div class="slide-content"><div class="paragraph"><p>Bravo, vous avez transformé SecureVote en application sécurisée et production-ready !</p></div>
 <aside class="notes"><div class="paragraph"><p>Questions et discussion finale
 Retours sur expérience
 Difficultés rencontrées</p></div></aside></div></section><section id="questions"><h2>Questions ?</h2><div class="slide-content"><div class="paragraph"><p><span class="icon"><i class="fa fa-envelope"></i></span> <a href="mailto:gounthar@gmail.com">gounthar@gmail.com</a></p></div></div></section></section>
