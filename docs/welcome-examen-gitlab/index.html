@@ -415,7 +415,7 @@ ul.byline li + li {
 }
 </style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/v4-shims.min.css"><link rel="stylesheet" href="./styles/build.css"></head><body><div class="reveal"><div class="slides"><section class="title" data-state="title"><h1>🇫🇷 Devops </h1><h2>Docker</h2><div class="preamble"><div class="paragraph title"><p>2026/2027</p></div>
 <div class="imageblock"><img src="media/qrcode.png" alt="QRCode to this presentation" height="150"></div>
-<div class="ulist small"><ul><li><p>Présentation disponible à l’adresse: <a href="https://gounthar.github.io/cours-devops-docker/docs/welcome-examen-gitlab">https://gounthar.github.io/cours-devops-docker/docs/welcome-examen-gitlab</a></p></li><li><p>Version PDF de la présentation : <a href="slides.pdf" target="_blank"><span class="icon"><i class="fa fa-file-pdf"></i></span> Cliquez ici</a></p></li><li><p>Contenu sous licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">Creative Commons Attribution 4.0 International License</a></p></li><li><p>Code source de la présentation: <a href="https://github.com/gounthar/cours-devops-docker" target="_blank"><span class="icon"><i class="fab fa-github"></i></span> https://github.com/gounthar/cours-devops-docker</a></p></li><li><p>Mis à jour le&#160;: 21 septembre 2026</p></li></ul></div></div></section>
+<div class="ulist small"><ul><li><p>Présentation disponible à l’adresse: <a href="https://gounthar.github.io/cours-devops-docker/docs/welcome-examen-gitlab">https://gounthar.github.io/cours-devops-docker/docs/welcome-examen-gitlab</a></p></li><li><p>Version PDF de la présentation : <a href="slides.pdf" target="_blank"><span class="icon"><i class="fa fa-file-pdf"></i></span> Cliquez ici</a></p></li><li><p>Contenu sous licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">Creative Commons Attribution 4.0 International License</a></p></li><li><p>Code source de la présentation: <a href="https://github.com/gounthar/cours-devops-docker" target="_blank"><span class="icon"><i class="fab fa-github"></i></span> https://github.com/gounthar/cours-devops-docker</a></p></li><li><p>Mis à jour le&#160;: 24 septembre 2026</p></li></ul></div></div></section>
 <section id="comment_utiliser_cette_présentation" class="dark background columns" data-background-color="MediumBlue" data-background-image="media/logo-t-shirt-transparent-1080.png" data-background-size="contain" data-background-position="left" data-background-opacity="0.1"><h2>Comment utiliser cette présentation ?</h2><div class="slide-content"><div class="openblock column"><div class="content"></div></div>
 <div class="openblock column"><div class="content"><div class="ulist"><ul><li><p>Pour naviguer, utilisez les flèches en bas à droite (ou celles de votre clavier)</p><div class="ulist"><ul><li><p>Gauche/Droite: changer de chapitre</p></li><li><p>Haut/Bas: naviguer dans un chapitre</p></li></ul></div></li><li><p>Pour avoir une vue globale : utiliser la touche "o" (pour "<strong>Overview</strong>")</p></li></ul></div></div></div></div></section>
 <section><section id="bonjour" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Bonjour !</h2><div class="slide-content"><div class="imageblock"><img src="media/bitmoji-hello.png" alt="bitmoji hello" width="200"></div><div class="imageblock"><img src="media/hello-from-docker.svg" alt="hello from docker"></div><div class="paragraph small"><small>La suite: vers le bas ⬇️</small></div></div></section><section data-background-color="rgb(248, 228, 130)" data-background-image="media/docker_love.png" data-background-size="contain" data-background-position="center" data-state="invert"><div class="slide-content">
@@ -557,8 +557,8 @@ Cela permet une flexibilité accrue dans la gestion des ressources et des charge
 <section><section id="préparer_votre_environnement_de_travail" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Préparer votre environnement de travail</h2></section><section id="particularités_du_réseau"><h2>Particularités du réseau</h2></section><section id="utiliser_docker_derrière_un_proxy_ou_un_cache_universitaire"><h2>Utiliser Docker derrière un proxy ou un cache universitaire</h2></section><section id="pourquoi_le_problème" data-auto-animate><h2>Pourquoi ? – Le Problème</h2><div class="slide-content"><div class="paragraph"><p>Lorsque nous sommes sur le réseau de l’université, Docker a du mal à télécharger directement les images depuis Docker Hub à cause des restrictions réseau. Nous sortons tous avec la même adresse IP, et en peu de temps, elle sera blacklistée pour un moment, ce qui nous pénalisera tous.
 Pour résoudre ce problème, l’université met à disposition un serveur de cache local.</p></div></div></section><section id="1_concepts_de_base_docker" data-auto-animate><h2>1. Concepts de base Docker</h2><div class="slide-content"><div class="paragraph"><p>Avant toute configuration, introduisons les notions essentielles, que nous verrons en détail par la suite :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Que sont les images Docker ?
-docker pull hello-world
-docker run hello-world
+docker image pull hello-world
+docker container run hello-world
 
 # Comment les images Docker sont nommées ?
 [registry/][username/]image-name[:tag]
@@ -568,11 +568,11 @@ library/ubuntu:22.04   # Image officielle (library est implicite)
 ubuntu:22.04           # Identique à ci-dessus
 user/mon-app:latest    # Image personnalisée</code></pre></div></div></div></section><section id="2_le_concept_de_cache_de_registre" data-auto-animate><h2>2. Le concept de cache de registre</h2><div class="slide-content"><div class="paragraph"><p>Au lieu de récupérer les images directement depuis Docker Hub, nous utilisons le cache fourni par l&#8217;université.</p></div></div></section><section id="2_le_concept_de_cache_de_registre_2" data-auto-animate><h2>2. Le concept de cache de registre</h2><div class="slide-content"><div class="paragraph"><p>Au lieu de récupérer les images directement depuis Docker Hub, nous utilisons le cache fourni par l&#8217;université.</p></div>
 <div class="paragraph"><p>Avant (problème) :</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker pull ubuntu:22.04   # Échec sur le réseau universitaire, ou succès temporaire avant d'être blacklistés</code></pre></div></div></div></section><section id="2_le_concept_de_cache_de_registre_3" data-auto-animate><h2>2. Le concept de cache de registre</h2><div class="slide-content"><div class="paragraph"><p>Au lieu de récupérer les images directement depuis Docker Hub, nous utilisons le cache fourni par l&#8217;université.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image pull ubuntu:22.04   # Échec sur le réseau universitaire, ou succès temporaire avant d'être blacklistés</code></pre></div></div></div></section><section id="2_le_concept_de_cache_de_registre_3" data-auto-animate><h2>2. Le concept de cache de registre</h2><div class="slide-content"><div class="paragraph"><p>Au lieu de récupérer les images directement depuis Docker Hub, nous utilisons le cache fourni par l&#8217;université.</p></div>
 <div class="paragraph"><p>Avant (problème) :</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker pull ubuntu:22.04   # Échec sur le réseau universitaire, ou succès temporaire avant d'être blacklistés</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image pull ubuntu:22.04   # Échec sur le réseau universitaire, ou succès temporaire avant d'être blacklistés</code></pre></div></div>
 <div class="paragraph"><p>Après (solution) :</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker pull cache-ili.univ-artois.fr:80/proxy_cache/library/ubuntu:22.04</code></pre></div></div></div></section><section id="3_approche_simplifiée_de_configuration" data-auto-animate><h2>3. Approche simplifiée de configuration</h2><div class="slide-content"><div class="paragraph"><p>Option A : utiliser un <strong>registry mirror</strong>.</p></div></div></section><section id="3_approche_simplifiée_de_configuration_2" data-auto-animate><h2>3. Approche simplifiée de configuration</h2><div class="slide-content"><div class="paragraph"><p>Option A : utiliser un <strong>registry mirror</strong>.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image pull cache-ili.univ-artois.fr:80/proxy_cache/library/ubuntu:22.04</code></pre></div></div></div></section><section id="3_approche_simplifiée_de_configuration" data-auto-animate><h2>3. Approche simplifiée de configuration</h2><div class="slide-content"><div class="paragraph"><p>Option A : utiliser un <strong>registry mirror</strong>.</p></div></div></section><section id="3_approche_simplifiée_de_configuration_2" data-auto-animate><h2>3. Approche simplifiée de configuration</h2><div class="slide-content"><div class="paragraph"><p>Option A : utiliser un <strong>registry mirror</strong>.</p></div>
 <div class="paragraph"><p>Modifier <code>/etc/docker/daemon.json</code> :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">{
   "registry-mirrors": ["http://cache-ili.univ-artois.fr:80/proxy_cache/"],
@@ -584,8 +584,8 @@ user/mon-app:latest    # Image personnalisée</code></pre></div></div></div></se
   "insecure-registries": ["cache-ili.univ-artois.fr:80"]
 }</code></pre></div></div>
 <div class="paragraph"><p>Désormais, les commandes Docker standards fonctionnent :</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker pull ubuntu:22.04   # Utilise automatiquement le cache !
-docker run gradle          # Fonctionne de manière transparente</code></pre></div></div></div></section><section id="4_script_étape_par_étape" data-auto-animate><h2>4. Script étape par étape</h2><div class="slide-content"><h3>Étape 1 – Comprendre le problème</h3><div class="ulist"><ul><li><p>Docker Hub nous voit tous avec la même adresse IP, qui mène au blacklist</p></li><li><p>Nous devons utiliser le serveur de cache local.</p></li></ul></div></div></section><section id="4_script_étape_par_étape_2" data-auto-animate><h2>4. Script étape par étape</h2><div class="slide-content"><h3>Étape 1 – Comprendre le problème</h3><div class="ulist"><ul><li><p>Docker Hub nous voit tous avec la même adresse IP, qui mène au blacklist</p></li><li><p>Nous devons utiliser le serveur de cache local.</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image pull ubuntu:22.04   # Utilise automatiquement le cache !
+docker container run gradle      # Fonctionne de manière transparente</code></pre></div></div></div></section><section id="4_script_étape_par_étape" data-auto-animate><h2>4. Script étape par étape</h2><div class="slide-content"><h3>Étape 1 – Comprendre le problème</h3><div class="ulist"><ul><li><p>Docker Hub nous voit tous avec la même adresse IP, qui mène au blacklist</p></li><li><p>Nous devons utiliser le serveur de cache local.</p></li></ul></div></div></section><section id="4_script_étape_par_étape_2" data-auto-animate><h2>4. Script étape par étape</h2><div class="slide-content"><h3>Étape 1 – Comprendre le problème</h3><div class="ulist"><ul><li><p>Docker Hub nous voit tous avec la même adresse IP, qui mène au blacklist</p></li><li><p>Nous devons utiliser le serveur de cache local.</p></li></ul></div>
 <h3>Étape 2 – Configurer Docker une seule fois</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo nano /etc/docker/daemon.json</code></pre></div></div></div></section><section id="4_script_étape_par_étape_3" data-auto-animate><h2>4. Script étape par étape</h2><div class="slide-content"><h3>Étape 1 – Comprendre le problème</h3><div class="ulist"><ul><li><p>Docker Hub nous voit tous avec la même adresse IP, qui mène au blacklist</p></li><li><p>Nous devons utiliser le serveur de cache local.</p></li></ul></div>
 <h3>Étape 2 – Configurer Docker une seule fois</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo nano /etc/docker/daemon.json</code></pre></div></div>
 <div class="paragraph"><p>Ajouter :</p></div>
@@ -600,9 +600,9 @@ docker run gradle          # Fonctionne de manière transparente</code></pre></d
   "insecure-registries": ["cache-ili.univ-artois.fr:80"]
 }</code></pre></div></div>
 <h3>Étape 3 – Redémarrer Docker</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo systemctl restart docker</code></pre></div></div></div></section><section id="4_script_étape_par_étape_5" data-auto-animate><h2>4. Script étape par étape</h2><div class="slide-content"><h3>Étape 3 – Redémarrer Docker</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo systemctl restart docker</code></pre></div></div>
-<h3>Étape 4 – Utiliser Docker normalement</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker pull ubuntu:22.04    # Utilise automatiquement le cache
-docker run python:3.9       # Fonctionne sans problème</code></pre></div></div></div></section><section id="4_script_étape_par_étape_6" data-auto-animate><h2>4. Script étape par étape</h2><div class="slide-content"><h3>Étape 4 – Utiliser Docker normalement</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker pull ubuntu:22.04    # Utilise automatiquement le cache
-docker run python:3.9       # Fonctionne sans problème</code></pre></div></div>
+<h3>Étape 4 – Utiliser Docker normalement</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image pull ubuntu:22.04    # Utilise automatiquement le cache
+docker container run python:3.9   # Fonctionne sans problème</code></pre></div></div></div></section><section id="4_script_étape_par_étape_6" data-auto-animate><h2>4. Script étape par étape</h2><div class="slide-content"><h3>Étape 4 – Utiliser Docker normalement</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image pull ubuntu:22.04    # Utilise automatiquement le cache
+docker container run python:3.9   # Fonctionne sans problème</code></pre></div></div>
 <h3>Étape 5 – Explication visuelle</h3><div class="paragraph"><p>Votre client Docker → Cache universitaire → Docker Hub (si nécessaire)
 (cache-ili.univ-artois.fr)</p></div>
 <div class="paragraph"><p><strong>Avantages</strong> :
@@ -619,7 +619,7 @@ sudo usermod -aG docker $USER
 newgrp docker   # Ou déconnectez-vous / reconnectez-vous
 
 # Toujours un souci ? Testez le cache :
-docker pull cache-ili.univ-artois.fr:80/proxy_cache/library/hello-world</code></pre></div></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><div class="paragraph"><p>Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d&#8217;images.</p></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache_2" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><div class="paragraph"><p>Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d&#8217;images.</p></div>
+docker image pull cache-ili.univ-artois.fr:80/proxy_cache/library/hello-world</code></pre></div></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><div class="paragraph"><p>Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d&#8217;images.</p></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache_2" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><div class="paragraph"><p>Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d&#8217;images.</p></div>
 <h3>Option 1 – Utiliser ENV dans le Dockerfile (Recommandé)</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:latest
 
 # IMPORTANT: ENV doit être APRÈS FROM et AVANT RUN
@@ -640,7 +640,7 @@ RUN apk add --no-cache build-dependencies
 
 # Étape finale sans proxy
 FROM alpine:latest
-COPY --from=builder /built-artifacts /app</code></pre></div></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache_4" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><h3>Option 3 – Variables d&#8217;environnement passées au build</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker build --build-arg https_proxy=http://cache-etu.univ-artois.fr:3128/ .</code></pre></div></div>
+COPY --from=builder /built-artifacts /app</code></pre></div></div></div></section><section id="5_configurations_avancées_pour_les_proxys_au_delà_du_cache_4" data-auto-animate><h2>5. Configurations avancées pour les proxys (au-delà du cache)</h2><div class="slide-content"><h3>Option 3 – Variables d&#8217;environnement passées au build</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --build-arg https_proxy=http://cache-etu.univ-artois.fr:3128/ .</code></pre></div></div>
 <div class="paragraph"><p>Dockerfile correspondant :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">ARG https_proxy
 ARG http_proxy
@@ -815,7 +815,7 @@ docker --version
 # Résultat attendu : Docker version XX.XX.X
 
 # Tester Docker
-docker run hello-world</code></pre></div></div>
+docker container run hello-world</code></pre></div></div>
 <div class="paragraph small"><small>⚠️ Passez à la slide suivante pour comprendre la configuration</small></div></div></div>
 <div class="imageblock column"><img src="media/codespaces-terminal-output.png" alt="codespaces terminal output" width="550"></div>
 <aside class="notes"><div class="paragraph"><p><strong>Explication des commandes de vérification :</strong></p></div>
@@ -827,12 +827,12 @@ docker run hello-world</code></pre></div></div>
 - Vérifie que Docker CLI est installé
 - Version récente (généralement &gt; 20.x)
 - Pas besoin d&#8217;installer quoi que ce soit !</p></div>
-<div class="paragraph"><p><strong><code>docker run hello-world</code> :</strong>
+<div class="paragraph"><p><strong><code>docker container run hello-world</code> :</strong>
 - Premier conteneur Docker classique
 - Télécharge l&#8217;image <code>hello-world</code> depuis Docker Hub
 - Exécute le conteneur qui affiche un message
 - Permet de vérifier que tout fonctionne</p></div>
-<div class="paragraph"><p><strong>Résultat attendu de <code>docker run hello-world</code> :</strong></p></div>
+<div class="paragraph"><p><strong>Résultat attendu de <code>docker container run hello-world</code> :</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-none hljs" data-noescape="true">Unable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world
 ...
@@ -905,7 +905,7 @@ This message shows that your installation appears to be working correctly.
 <a href="https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces" class="bare">https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces</a></p></div>
 <div class="paragraph"><p><strong>Message pédagogique :</strong>
 "Pas besoin de vous préoccuper de la configuration pour ce cours. Mais sachez que dans un contexte professionnel, <code>.devcontainer</code> permet de garantir que toute l&#8217;équipe travaille dans exactement le même environnement, ce qui est une excellente pratique DevOps !"</p></div></aside></div></section><section id="checkpoint"><h2>Checkpoint 🎯</h2><div class="slide-content"><div class="paragraph"><p>Vérifiez que tout fonctionne :</p></div>
-<div class="olist arabic"><ol class="arabic"><li class="fragment"><p>✓ Terminal ouvert (Ctrl+`)</p></li><li class="fragment"><p>✓ Commande <code>whoami</code> retourne <code>codespace</code></p></li><li class="fragment"><p>✓ Commande <code>docker --version</code> affiche la version</p></li><li class="fragment"><p>✓ Commande <code>docker run hello-world</code> s&#8217;exécute avec succès</p></li></ol></div>
+<div class="olist arabic"><ol class="arabic"><li class="fragment"><p>✓ Terminal ouvert (Ctrl+`)</p></li><li class="fragment"><p>✓ Commande <code>whoami</code> retourne <code>codespace</code></p></li><li class="fragment"><p>✓ Commande <code>docker --version</code> affiche la version</p></li><li class="fragment"><p>✓ Commande <code>docker container run hello-world</code> s&#8217;exécute avec succès</p></li></ol></div>
 <div class="paragraph small fragment"><small>✅ Si tout fonctionne : vous êtes prêt pour la suite ! 🚀</small></div>
 <div class="paragraph small fragment"><small>❌ Si un problème : levez la main ou consultez la documentation</small></div>
 <aside class="notes"><div class="paragraph"><p><strong>Pourquoi ces vérifications sont importantes :</strong></p></div>
@@ -928,7 +928,7 @@ This message shows that your installation appears to be working correctly.
 - Erreur "command not found" : Le Codespace n&#8217;a pas Docker (très rare)
 - Solution : Créer un <code>.devcontainer/devcontainer.json</code> avec feature docker-in-docker
 - Ou utiliser l&#8217;image <code>mcr.microsoft.com/devcontainers/base:ubuntu</code></p></div>
-<div class="paragraph"><p><strong>4. <code>docker run hello-world</code> échoue :</strong>
+<div class="paragraph"><p><strong>4. <code>docker container run hello-world</code> échoue :</strong>
 - "Cannot connect to Docker daemon" :
   - Le daemon Docker n&#8217;est pas démarré
   - Essayer : <code>sudo service docker start</code>
@@ -1204,7 +1204,7 @@ URL : <a href="https://docs.docker.com" class="bare">https://docs.docker.com</a>
 <div class="paragraph"><p><strong>Exemple de mauvaise question :</strong>
 "Ça marche pas, help !"</p></div>
 <div class="paragraph"><p><strong>Exemple de bonne question :</strong>
-"J&#8217;essaie de lancer <code>docker run nginx</code> mais j&#8217;obtiens l&#8217;erreur 'Cannot connect to the Docker daemon'. J&#8217;ai vérifié avec <code>docker --version</code> et ça fonctionne. Que dois-je faire ?"</p></div>
+"J&#8217;essaie de lancer <code>docker container run nginx</code> mais j&#8217;obtiens l&#8217;erreur 'Cannot connect to the Docker daemon'. J&#8217;ai vérifié avec <code>docker --version</code> et ça fonctionne. Que dois-je faire ?"</p></div>
 <div class="paragraph"><p><strong>5. Forum / Discord du cours :</strong></p></div>
 <div class="paragraph"><p>Si un forum ou Discord est mis en place :</p></div>
 <div class="paragraph"><p><strong>Avantages :</strong>
@@ -1333,17 +1333,28 @@ docker buildx version
 <div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Et la doc Docker demande de le retirer</strong></p></div>
 <div class="paragraph small"><small><code>docker.io</code> figure sur la liste officielle des paquets à désinstaller <strong>avant</strong> d&#8217;installer Docker,
 aux côtés de <code>podman-docker</code>.</small></div>
-<div class="paragraph small"><small>➡️ On utilise donc le <strong>dépôt apt officiel Docker</strong></small></div></div></div></div></section><section id="étape_1_retirer_les_paquets_en_conflit"><h2>Étape 1 : retirer les paquets en conflit 🧹</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo apt remove $(dpkg --get-selections \
+<div class="paragraph small"><small>➡️ On utilise donc le <strong>dépôt apt officiel Docker</strong></small></div></div></div></div></section><section id="dabord_êtes_vous_derrière_le_proxy"><h2>⚠️ D&#8217;abord : êtes-vous derrière le proxy ? 🏫</h2><div class="slide-content"><div class="paragraph"><p>Sur le réseau de l&#8217;université, <code>apt</code> et <code>curl</code> doivent passer par le proxy.
+Définir <code>http_proxy</code> dans son shell <strong>ne suffit pas</strong> : <code>sudo</code> efface les
+variables d&#8217;environnement.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo tee /etc/apt/apt.conf.d/99proxy &lt;&lt;'PROXY'
+Acquire::http::Proxy "http://cache-etu.univ-artois.fr:3128/";
+Acquire::https::Proxy "http://cache-etu.univ-artois.fr:3128/";
+PROXY
+
+export http_proxy=http://cache-etu.univ-artois.fr:3128/
+export https_proxy=http://cache-etu.univ-artois.fr:3128/</code></pre></div></div>
+<div class="paragraph small"><small>🏠 Chez vous, rien de tout ça : passez directement à l&#8217;étape 1</small></div></div></section><section id="étape_1_retirer_les_paquets_en_conflit"><h2>Étape 1 : retirer les paquets en conflit 🧹</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo apt remove $(dpkg --get-selections \
   docker.io docker-compose docker-compose-v2 \
   docker-doc docker-buildx podman-docker \
   containerd runc | cut -f1)</code></pre></div></div>
 <div class="paragraph small"><small>✅ Sans effet si aucun n&#8217;est installé — la commande ne retire rien et se termine normalement</small></div></div></section><section id="étape_2_ajouter_le_dépôt_officiel"><h2>Étape 2 : ajouter le dépôt officiel 🔑</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo apt update
 sudo apt install ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
-  -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc</code></pre></div></div>
-<div class="paragraph small"><small>🔑 La clé GPG sert à vérifier la signature des paquets téléchargés</small></div></div></section><section id="étape_2_suite_déclarer_la_source"><h2>Étape 2 (suite) : déclarer la source 📝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo tee /etc/apt/sources.list.d/docker.sources &lt;&lt;EOF
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /tmp/docker.asc
+sudo install -m 0644 /tmp/docker.asc /etc/apt/keyrings/docker.asc</code></pre></div></div>
+<div class="paragraph small"><small>🔑 La clé GPG sert à vérifier la signature des paquets téléchargés</small></div>
+<div class="paragraph small"><small>⚠️ <code>curl</code> sans <code>sudo</code>, volontairement : lancé en root il perdrait votre proxy</small></div></div></section><section id="étape_2_suite_déclarer_la_source"><h2>Étape 2 (suite) : déclarer la source 📝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">sudo tee /etc/apt/sources.list.d/docker.sources &lt;&lt;EOF
 Types: deb
 URIs: https://download.docker.com/linux/ubuntu
 Suites: $(. /etc/os-release &amp;&amp; echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
@@ -1359,7 +1370,7 @@ sudo usermod -aG docker $USER</code></pre></div></div>
 <div class="paragraph small"><small>⚠️ Logout/login requis pour que le groupe <code>docker</code> s&#8217;applique</small></div></div></section><section id="ça_marche"><h2>Ça marche ? 🎯</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker --version
 docker compose version
 docker buildx version
-docker run hello-world</code></pre></div></div>
+docker container run hello-world</code></pre></div></div>
 <div class="paragraph small"><small>✅ Cette fois <code>docker compose</code> et <code>docker buildx</code> répondent</small></div></div></section><section id="et_si_podman_est_installé" class="columns"><h2>Et si Podman est installé ? 🤔</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Symptôme :</strong> <code>docker</code> semble installé, mais répond
 <code>Cannot connect to the Docker daemon</code></p></div>
 <div class="paragraph small"><small>C&#8217;est le paquet <code>podman-docker</code> qui pose un <code>/usr/bin/docker</code> redirigeant vers Podman. Podman seul
@@ -1371,7 +1382,21 @@ docker context ls
 
 # Retirer le wrapper suffit
 sudo apt remove podman-docker</code></pre></div></div>
-<div class="paragraph small"><small>⚠️ Ubuntu <strong>n&#8217;installe pas</strong> Podman par défaut : ce cas ne concerne que qui l&#8217;a installé lui-même</small></div></div></div></div></section><section id="environnement_prêt"><h2>Environnement prêt ! ✅</h2><div class="slide-content"><div class="paragraph"><p>Votre environnement Docker est maintenant configuré 🎉</p></div>
+<div class="paragraph small"><small>⚠️ Ubuntu <strong>n&#8217;installe pas</strong> Podman par défaut : ce cas ne concerne que qui l&#8217;a installé lui-même</small></div></div></div></div></section><section id="et_si_le_téléchargement_bloque" class="columns"><h2>Et si le téléchargement bloque ? 🕳️</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Symptôme :</strong> <code>curl</code> ou <code>apt</code> restent muets, puis expirent. Pourtant
+<code>echo $http_proxy</code> affiche bien le proxy, et la même commande <strong>sans</strong> <code>sudo</code> passe.</p></div>
+<div class="paragraph small"><small><code>sudo</code> repart d&#8217;un environnement neuf : <code>sudoers(5)</code> appelle ça <code>env_reset</code>, actif
+par défaut. <code>http_proxy</code> n&#8217;est dans aucune liste conservée, donc le <code>curl</code> lancé en
+root sort en direct et se fait jeter par le réseau.</small></div></div></div>
+<div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Le proxy est-il visible par root ?
+sudo printenv http_proxy
+# (aucune sortie)
+
+# Trois sorties possibles
+sudo -E curl ...
+curl ... puis sudo install ...
+/etc/apt/apt.conf.d/99proxy</code></pre></div></div>
+<div class="paragraph small"><small>💡 Rien dans le message d&#8217;erreur ne nomme <code>sudo</code> : c&#8217;est ce qui rend la panne longue
+à diagnostiquer</small></div></div></div></div></section><section id="environnement_prêt"><h2>Environnement prêt ! ✅</h2><div class="slide-content"><div class="paragraph"><p>Votre environnement Docker est maintenant configuré 🎉</p></div>
 <div class="ulist small"><ul><li><p>✅ GitHub Codespaces : Docker déjà installé</p></li><li><p>✅ Ubuntu 26.04 : Docker installé par le dépôt officiel</p></li><li><p>✅ Prêt pour la suite !</p></li></ul></div></div></section><section id="prochaine_étape"><h2>Prochaine étape 🚀</h2><div class="slide-content"><div class="paragraph"><p>Avant de découvrir Docker, un détour essentiel&#8230;&#8203;</p></div>
 <div class="paragraph fragment"><p><strong>La ligne de commande (CLI)</strong></p></div>
 <div class="paragraph small fragment"><small>Docker s&#8217;utilise exclusivement en ligne de commande !</small></div></div></section><section id="pourquoi_la_cli"><h2>Pourquoi la CLI ? 💻</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>🖥️ Interface fondamentale pour Docker</p></li><li class="fragment"><p>🔧 Base de tous les outils DevOps</p></li><li class="fragment"><p>💪 Compétence indispensable pour automatiser</p></li></ul></div>
@@ -1521,7 +1546,7 @@ plus y penser — ce qui est précisément le soulagement recherché.</p></div>
 secondes selon la taille de l&#8217;image.</p></li><li><p>Les outils pré-installés par GitHub sur <code>ubuntu-latest</code> ne sont plus là. Si le workflow en
 dépendait, il faut les installer dans le conteneur.</p></li></ul></div>
 <div class="paragraph"><p><strong>Écho au reste du cours :</strong></p></div>
-<div class="paragraph"><p>C&#8217;est le même raisonnement que <code>docker run</code> contre « installer sur sa machine », vu au premier
+<div class="paragraph"><p>C&#8217;est le même raisonnement que <code>docker container run</code> contre « installer sur sa machine », vu au premier
 chapitre. Rien de neuf, un nouveau terrain.</p></div></aside></div></section><section id="trois_pièges_mesurés"><h2>Trois pièges, mesurés 🔍</h2><div class="slide-content"><div class="paragraph small fragment"><small><code>sudo</code> : inutile, dans un conteneur le job tourne déjà en <code>root</code> (<code>uid=0</code>)</small></div>
 <div class="paragraph small fragment"><small><code>cowsay</code> — installé dans <code>/usr/games</code>, <strong>absent du <code>PATH</code></strong> d&#8217;un shell non interactif</small></div>
 <div class="paragraph small fragment"><small><code>README.md</code> — ce dépôt n&#8217;en a pas. Il a un <code>README.adoc</code></small></div>
@@ -1529,7 +1554,7 @@ chapitre. Rien de neuf, un nouveau terrain.</p></div></aside></div></section><se
 <div class="paragraph"><p>Ces trois points ne s&#8217;inventent pas, ils se constatent. Ils ont tous été vérifiés en exécutant
 l&#8217;image, pas en la lisant. C&#8217;est la leçon de méthode à faire passer autant que le contenu.</p></div>
 <div class="paragraph"><p><strong>Détail 1 — l&#8217;utilisateur :</strong></p></div>
-<div class="paragraph"><p><code>docker run --rm mcr.microsoft.com/devcontainers/base:ubuntu id</code> rend <code>uid=0(root)</code>. L&#8217;image
+<div class="paragraph"><p><code>docker container run --rm mcr.microsoft.com/devcontainers/base:ubuntu id</code> rend <code>uid=0(root)</code>. L&#8217;image
 <strong>contient</strong> <code>sudo</code> (<code>/usr/bin/sudo</code> existe), donc un <code>sudo apt-get</code> ne produirait pas d&#8217;erreur :
 il serait simplement superflu. Beaucoup d&#8217;images minimales, elles, n&#8217;ont pas <code>sudo</code> du tout, et
 là le workflow casse.</p></div>
@@ -1584,7 +1609,7 @@ l&#8217;occasion de mentionner que <code>shellcheck</code> signale le « useless
 le Codespace, qui est le sujet de la section.</p></li></ul></div>
 <div class="paragraph"><p><strong>Le point à ne pas laisser passer :</strong></p></div>
 <div class="paragraph"><p>Ce workflow ne teste rien. Il affiche une vache. C&#8217;est un squelette : on y remplace la dernière
-étape par <code>make build</code>, <code>npm test</code> ou <code>docker build</code>, et le reste ne bouge pas.</p></div></aside></div></section><section id="ce_cours_est_construit_comme_ça"><h2>Ce cours est construit comme ça 🏗️</h2><div class="slide-content"><div class="paragraph"><p>Les diapos que vous regardez sortent de <code>.github/workflows/build-workflow.yml</code></p></div>
+étape par <code>make build</code>, <code>npm test</code> ou <code>docker image build</code>, et le reste ne bouge pas.</p></div></aside></div></section><section id="ce_cours_est_construit_comme_ça"><h2>Ce cours est construit comme ça 🏗️</h2><div class="slide-content"><div class="paragraph"><p>Les diapos que vous regardez sortent de <code>.github/workflows/build-workflow.yml</code></p></div>
 <div class="paragraph small fragment"><small><code>docker compose version</code> → <code>make build</code> → <code>make verify</code> → publication</small></div>
 <div class="paragraph small fragment"><small>À chaque <code>push</code>. Y compris celui qui a corrigé la faute de frappe que vous venez de lire.</small></div>
 <aside class="notes"><div class="paragraph"><p><strong>Pourquoi finir là-dessus :</strong></p></div>
@@ -1740,7 +1765,13 @@ git log --graph
 <section><section id="containers" data-background-image="media/blue-shipping-container.png" data-background-size="contain" data-background-position="left" data-background-opacity="0.1"><h2>Containers</h2><div class="slide-content"></div></section><section id="exercice_votre_premier_conteneur"><h2>🎓 Exercice : Votre premier conteneur</h2><div class="slide-content"><div class="paragraph"><p>C&#8217;est à vous (ouf) !</p></div>
 <div class="ulist"><ul><li><p>Allez dans votre Codespace</p></li><li><p>Dans un terminal, tapez la commande suivante :</p></li></ul></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run hello-world
-# Equivalent de l'ancienne commande 'docker run'</code></pre></div></div></div></section><section id="anatomie" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="ulist"><ul><li><p>Un service "Docker Engine" tourne en tâche de fond et publie une API REST</p></li><li><p>La commande <code>docker container run &#8230;&#8203;</code> a lancé un client docker qui a envoyé une requête <code>POST</code> au service docker</p></li><li><p>Le service a téléchargé une <strong>Image</strong> Docker depuis le registre <strong>DockerHub</strong>,</p></li><li><p>Puis a exécuté un <strong>conteneur</strong> basé sur cette image</p></li></ul></div></div></section><section id="anatomie_2" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/anatomie-1.svg" alt="anatomie 1"></div></div></section><section id="anatomie_3" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/anatomie-2.svg" alt="anatomie 2"></div></div></section><section id="anatomie_4" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/anatomie-3.svg" alt="anatomie 3"></div></div></section><section id="anatomie_5" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/anatomie-4.svg" alt="anatomie 4"></div></div></section><section id="anatomie_6" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/anatomie-5.svg" alt="anatomie 5"></div></div></section><section id="anatomie_7" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/anatomie-6.svg" alt="anatomie 6"></div></div></section><section id="anatomie_8" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/anatomie-7.svg" alt="anatomie 7"></div></div></section><section id="anatomie_9" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/anatomie-8.svg" alt="anatomie 8"></div></div></section><section id="anatomie_10" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/dollar_date.png" alt="dollar date"></div></div></section><section id="anatomie_11" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/shell_dans_shell_pour_date.png" alt="shell dans shell pour date"></div></div></section><section id="exercice_où_est_mon_conteneur"><h2>🎓 Exercice : Où est mon conteneur ?</h2><div class="slide-content"><div class="paragraph"><p>C&#8217;est à vous !</p></div>
+# Equivalent de l'ancienne commande 'docker run'</code></pre></div></div></div></section><section id="deux_écritures_pour_la_même_commande"><h2>🧭 Deux écritures pour la même commande</h2><div class="slide-content"><div class="paragraph"><p>Depuis Docker 1.13 (2017), les commandes qui agissent sur un objet (conteneur,
+image, réseau, volume) s&#8217;écrivent aussi <code>docker OBJET VERBE</code>, qui dit sur quel
+type d&#8217;objet on agit.</p></div>
+<table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:50%"><col style="width:50%"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Raccourci historique</th><th class="tableblock halign-left valign-top">Forme de gestion</th></tr><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>docker run</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>docker container run</code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>docker ps</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>docker container ls</code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>docker images</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>docker image ls</code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>docker rmi</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>docker image rm</code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>docker pull</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>docker image pull</code></p></td></tr></table></div></section><section id="laquelle_utiliser"><h2>🧭 Laquelle utiliser ?</h2><div class="slide-content"><div class="ulist"><ul><li><p>Les deux formes marchent, et les raccourcis ne sont pas dépréciés</p><div class="ulist"><ul><li><p><code>docker container cp --help</code> liste d&#8217;ailleurs les deux sous <code>Aliases:</code></p></li></ul></div></li><li><p>⚠️ Le raccourci cache parfois l&#8217;objet : <code>docker pull</code> télécharge une <strong>image</strong>,
+donc la forme longue est <code>docker image pull</code>, pas <code>docker container pull</code></p></li><li><p>🚫 Les commandes qui n&#8217;agissent sur aucun objet gardent leur forme unique :
+<code>docker login</code>, <code>docker version</code>, <code>docker search</code></p></li><li><p>📏 <strong>Dans ce cours, on écrit toujours la forme de gestion.</strong>
+Vous rencontrerez les raccourcis partout ailleurs : sachez les lire.</p></li></ul></div></div></section><section id="anatomie" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="ulist"><ul><li><p>Un service "Docker Engine" tourne en tâche de fond et publie une API REST</p></li><li><p>La commande <code>docker container run &#8230;&#8203;</code> a lancé un client docker qui a envoyé une requête <code>POST</code> au service docker</p></li><li><p>Le service a téléchargé une <strong>Image</strong> Docker depuis le registre <strong>DockerHub</strong>,</p></li><li><p>Puis a exécuté un <strong>conteneur</strong> basé sur cette image</p></li></ul></div></div></section><section id="anatomie_2" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/anatomie-1.svg" alt="anatomie 1"></div></div></section><section id="anatomie_3" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/anatomie-2.svg" alt="anatomie 2"></div></div></section><section id="anatomie_4" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/anatomie-3.svg" alt="anatomie 3"></div></div></section><section id="anatomie_5" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/anatomie-4.svg" alt="anatomie 4"></div></div></section><section id="anatomie_6" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/anatomie-5.svg" alt="anatomie 5"></div></div></section><section id="anatomie_7" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/anatomie-6.svg" alt="anatomie 6"></div></div></section><section id="anatomie_8" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/anatomie-7.svg" alt="anatomie 7"></div></div></section><section id="anatomie_9" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/anatomie-8.svg" alt="anatomie 8"></div></div></section><section id="anatomie_10" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/dollar_date.png" alt="dollar date"></div></div></section><section id="anatomie_11" data-auto-animate><h2>🩻 Anatomie</h2><div class="slide-content"><div class="imageblock"><img src="media/shell_dans_shell_pour_date.png" alt="shell dans shell pour date"></div></div></section><section id="exercice_où_est_mon_conteneur"><h2>🎓 Exercice : Où est mon conteneur ?</h2><div class="slide-content"><div class="paragraph"><p>C&#8217;est à vous !</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls --help
 # ...
 docker container ls
@@ -1902,9 +1933,9 @@ Mon Sep 25 10:33:56 UTC 2023
 <div class="paragraph"><p><em>" </em><em>Okay</em><em>, maintenant il n&#8217;écrit la date nulle part… mais toutes les secondes… à l&#8217;aide ! "</em></p></div></div></section><section id="conteneur_en_tâche_de_fond_9" data-auto-animate><h2>⛅ Conteneur en tâche de fond</h2><div class="slide-content"><div class="paragraph"><p>Le processus principal de ce container écrit dans la sortie standard… du container !</p></div>
 <div class="paragraph"><p>Comment retrouver le contenu de la sortie standard du container ?</p></div></div></section><section id="conteneur_en_tâche_de_fond_10" data-auto-animate><h2>⛅ Conteneur en tâche de fond</h2><div class="slide-content"><div class="paragraph"><p>Le processus principal de ce container écrit dans la sortie standard… du container !</p></div>
 <div class="paragraph"><p>Comment retrouver le contenu de la sortie standard du container ?</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker logs 399f3</code></pre></div></div></div></section><section id="conteneur_en_tâche_de_fond_11" data-auto-animate><h2>⛅ Conteneur en tâche de fond</h2><div class="slide-content"><div class="paragraph"><p>Le processus principal de ce container écrit dans la sortie standard… du container !</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container logs 399f3</code></pre></div></div></div></section><section id="conteneur_en_tâche_de_fond_11" data-auto-animate><h2>⛅ Conteneur en tâche de fond</h2><div class="slide-content"><div class="paragraph"><p>Le processus principal de ce container écrit dans la sortie standard… du container !</p></div>
 <div class="paragraph"><p>Comment retrouver le contenu de la sortie standard du container ?</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker logs 399f3
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container logs 399f3
 Tue Sep 12 12:37:01 UTC 2023
 Tue Sep 12 12:37:02 UTC 2023
 Tue Sep 12 12:37:03 UTC 2023
@@ -1917,7 +1948,7 @@ Tue Sep 12 12:37:09 UTC 2023
 Tue Sep 12 12:37:10 UTC 2023
 Tue Sep 12 12:37:11 UTC 2023</code></pre></div></div></div></section><section id="conteneur_en_tâche_de_fond_12" data-auto-animate><h2>⛅ Conteneur en tâche de fond</h2><div class="slide-content"><div class="paragraph"><p>Le processus principal de ce container écrit dans la sortie standard… du container !</p></div>
 <div class="paragraph"><p>Comment retrouver le contenu de la sortie standard du container ?</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker logs 399f3
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container logs 399f3
 Tue Sep 12 12:37:01 UTC 2023
 Tue Sep 12 12:37:02 UTC 2023
 Tue Sep 12 12:37:03 UTC 2023
@@ -1975,9 +2006,9 @@ ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container run  --interactive --tty --rm jpetazzo/clock</code></pre></div></div>
 <div class="paragraph small"><small>Aussitôt stoppé, aussitôt supprimé !</small></div></div></section><section id="rappel_cycle_de_vie_dun_container" data-auto-animate><h2>⏰ Rappel: cycle de vie d&#8217;un container</h2><div class="slide-content"><div class="imageblock"><img src="media/output68_with_transparency.png" alt="output68 with transparency"></div></div></section><section id="rappel_cycle_de_vie_dun_container_2" data-auto-animate><h2>⏰ Rappel: cycle de vie d&#8217;un container</h2><div class="slide-content"><div class="imageblock"><img src="media/output69_with_transparency.png" alt="output69 with transparency"></div></div></section><section id="rappel_cycle_de_vie_dun_container_3" data-auto-animate><h2>⏰ Rappel: cycle de vie d&#8217;un container</h2><div class="slide-content"><div class="imageblock"><img src="media/output70_with_transparency.png" alt="output70 with transparency"></div></div></section><section id="rappel_cycle_de_vie_dun_container_4" data-auto-animate><h2>⏰ Rappel: cycle de vie d&#8217;un container</h2><div class="slide-content"><div class="imageblock"><img src="media/output71_with_transparency.png" alt="output71 with transparency"></div></div></section><section id="rappel_cycle_de_vie_dun_container_5" data-auto-animate><h2>⏰ Rappel: cycle de vie d&#8217;un container</h2><div class="slide-content"><div class="imageblock"><img src="media/output72_with_transparency.png" alt="output72 with transparency"></div>
 <aside class="notes"><div class="paragraph"><p><code>docker container create</code> is used to create a new container but without starting it immediately.
-When you run docker create, Docker creates a container based on the specified image and prepares it to run, but it remains in a stopped state.
+When you run docker container create, Docker creates a container based on the specified image and prepares it to run, but it remains in a stopped state.
 You can then start the container using the <code>docker container start</code> command.</p></div>
-<div class="paragraph"><p>Here&#8217;s the basic syntax of the docker create command:</p></div>
+<div class="paragraph"><p>Here&#8217;s the basic syntax of the docker container create command:</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container create [OPTIONS] IMAGE [COMMAND] [ARG...]</code></pre></div></div>
 <div class="ulist"><ul><li><p><code>OPTIONS</code> are various flags and settings you can apply to the container creation.</p></li><li><p><code>IMAGE</code> is the name or ID of the Docker image to use for creating the container.</p></li><li><p><code>COMMAND</code> (optional) specifies the command to run when the container starts.</p></li><li><p><code>ARG</code> (optional) provides arguments to pass to the command.</p></li></ul></div>
 <div class="paragraph"><p>For example, to create a new container from an image called <code>myapp-image</code> without starting it immediately, you would use:</p></div>
@@ -2034,7 +2065,7 @@ docker container stop "$container_id"
 docker container ls
 
 # Afficher les containers arrêtés 🛑📦
-docker container ls --filter "status=exited"</code></pre></div></div></div></section><section id="exercice_conteneur_en_tâche_de_fond_2"><h2>🎓 Exercice : conteneur en tâche de fond</h2><div class="slide-content"><div class="ulist"><ul><li><p>Relancer un des containers arrêtés.</p></li><li><p>Exécuter un <code>ps -ef</code> dans ce container</p></li><li><p>Quel est le PID du process principal ?</p></li><li><p>Vérifier que le container "tourne" toujours</p></li><li><p>Supprimer l&#8217;image (tip : <code>docker rmi</code>)</p></li><li><p>Supprimer les containers</p></li><li><p>Supprimer l&#8217;image (pour de vrai cette fois)</p></li></ul></div></div></section><section id="solution_conteneur_en_tâche_de_fond_2"><h2>✅ Solution : conteneur en tâche de fond</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Relancer un des containers arrêtés.
+docker container ls --filter "status=exited"</code></pre></div></div></div></section><section id="exercice_conteneur_en_tâche_de_fond_2"><h2>🎓 Exercice : conteneur en tâche de fond</h2><div class="slide-content"><div class="ulist"><ul><li><p>Relancer un des containers arrêtés.</p></li><li><p>Exécuter un <code>ps -ef</code> dans ce container</p></li><li><p>Quel est le PID du process principal ?</p></li><li><p>Vérifier que le container "tourne" toujours</p></li><li><p>Supprimer l&#8217;image (tip : <code>docker image rm</code>)</p></li><li><p>Supprimer les containers</p></li><li><p>Supprimer l&#8217;image (pour de vrai cette fois)</p></li></ul></div></div></section><section id="solution_conteneur_en_tâche_de_fond_2"><h2>✅ Solution : conteneur en tâche de fond</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Relancer un des containers arrêtés.
 docker container start second-clock
 
 # Exécuter un `ps -ef` dans ce container
@@ -2054,18 +2085,18 @@ CONTAINER ID   IMAGE                           COMMAND                  CREATED 
 edea0c46c6d8   jpetazzo/clock                  "/bin/sh -c 'while d…"   9 minutes ago   Up About a minute                            second-clock
 ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago    Up 11 hours                                  buildx_buildkit_exciting_williams0
 
-# Supprimer l'image (tip : `docker rmi`)
-docker rmi jpetazzo/clock
+# Supprimer l'image (tip : `docker image rm`)
+docker image rm jpetazzo/clock
 Error response from daemon: conflict: unable to remove repository reference "jpetazzo/clock" (must force) - container edea0c46c6d8 is using its referenced image 7a8965d6553e
 
 # Supprimer les containers
-docker stop second-clock
+docker container stop second-clock
 second-clock
 
-docker rm second-clockl
+docker container rm second-clockl
 second-clock
 # Supprimer l'image (pour de vrai cette fois)
-docker rmi jpetazzo/clock
+docker image rm jpetazzo/clock
 
 Untagged: jpetazzo/clock:latest
 Untagged: jpetazzo/clock@sha256:dc06bbc3744f7200404bff0bbb2516925e7adea115e07de9da8b36bf15fe3dd3
@@ -2160,7 +2191,7 @@ RUN apk add --no-cache openjdk17-jre-headless</code></pre></div></div></div></di
 <div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t myjava:1.42 .</code></pre></div></div></div></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t myjava:1.42 .</code></pre></div></div></aside></div></section><section id="étapes_de_construction" data-auto-animate><h2>🪜 Étapes de construction</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output60_with_transparency.png" alt="images output60 with transparency"></div></div></section><section id="étapes_de_construction_2" data-auto-animate><h2>🪜 Étapes de construction</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output61_with_transparency.png" alt="images output61 with transparency"></div></div></section><section id="étapes_de_construction_3" data-auto-animate><h2>🪜 Étapes de construction</h2><div class="slide-content"><div class="imageblock"><img src="media/images-output62_with_transparency.png" alt="images output62 with transparency"></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {60..62}; do convert Diapositive${i}.PNG -crop 9068x5265+1920+1827 -transparent white -resize x1080 images-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="et_après"><h2>Et après ?</h2><div class="slide-content"><div class="paragraph fragment"><p>Quand le build se termine, il se trouve dans le registre local.</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker images
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image ls
 REPOSITORY       TAG                 IMAGE ID
 myjava           1.42                d3017f59d5e2</code></pre></div></div></div></section><section id="limage_est_dispo"><h2>L&#8217;image est dispo !</h2><div class="slide-content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --interactive --tty myjava:1.42 sh
 / $</code></pre></div></div>
@@ -2171,7 +2202,7 @@ OpenJDK 64-Bit Server VM (build 17.0.8+7-alpine-r0, mixed mode, sharing)</code><
 <div class="imageblock fragment"><img src="media/278458282-image10.gif" alt="278458282 image10"></div></div></section><section id="registre_local_mais_encore"><h2>Registre local, mais encore?</h2><div class="slide-content"><div class="paragraph"><p>On les trouve où, ces images ?</p></div>
 <div class="paragraph fragment"><p>En local, on l&#8217;a vu.</p></div>
 <div class="paragraph fragment"><p>Dans les registres Docker.</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker images
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker image ls
 REPOSITORY                            TAG                     IMAGE ID       CREATED         SIZE
 cours-devops-docker-serve             latest                  654fc65c0913   13 hours ago    668MB
 cours-devops-docker-qrcode            latest                  a3ff53e5d677   13 hours ago    668MB
@@ -2300,9 +2331,9 @@ docker image build -t docker-git:1.2.0 ./docker-git/
 
 ## Vérification
 # Renvoie une erreur
-docker run --rm docker-git:1.1.0 make --version
+docker container run --rm docker-git:1.1.0 make --version
 # Doit fonctionner
-docker run --rm docker-git:1.2.0 make --version</code></pre></div></div></div></section><section id="comportement_par_défaut_des_containers" data-auto-animate><h2>Comportement par défaut des containers</h2><div class="slide-content"><div class="paragraph"><p>Deux instructions permettent de définir la commande à lancer au démarrage du container.</p></div>
+docker container run --rm docker-git:1.2.0 make --version</code></pre></div></div></div></section><section id="comportement_par_défaut_des_containers" data-auto-animate><h2>Comportement par défaut des containers</h2><div class="slide-content"><div class="paragraph"><p>Deux instructions permettent de définir la commande à lancer au démarrage du container.</p></div>
 <div class="imageblock fragment"><img src="media/cmd.png" alt="cmd"></div></div></section><section id="comportement_par_défaut_des_containers_2" data-auto-animate><h2>Comportement par défaut des containers</h2><div class="slide-content"><div class="paragraph"><p>Deux instructions permettent de définir la commande à lancer au démarrage du container.</p></div>
 <div class="imageblock"><img src="media/cmd-entrypoint.png" alt="cmd entrypoint"></div>
 <div class="paragraph fragment"><p>Laquelle choisir ???</p></div></div></section><section id="cmd_vs_entrypoint" data-auto-animate><h2>CMD vs ENTRYPOINT</h2><div class="slide-content"><div class="paragraph"><p>Cas d&#8217;usage : énoncé du besoin.</p></div>
@@ -2316,7 +2347,7 @@ Tout d&#8217;abord, créer un fichier <code>squid.conf</code> avec comme contenu
 acl all src all
 http_access allow all</code></pre></div></div>
 <div class="paragraph"><p>On peut ensuite lancer le proxy:</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker run --name squid -d --restart=always --publish 3128:3128 -v $(pwd)/squid.conf:/etc/squid/squid.conf sameersbn/squid:3.5.27-2</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --name squid -d --restart=always --publish 3128:3128 -v $(pwd)/squid.conf:/etc/squid/squid.conf sameersbn/squid:3.5.27-2</code></pre></div></div>
 <div class="paragraph"><p>Puis changer la commande en:</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm curlimages/curl curl -x http://host.docker.internal:3128 -L --connect-timeout 60  "http://google.com"</code></pre></div></div></aside></div></section><section id="cmd_vs_entrypoint_2" class="columns" data-auto-animate><h2>CMD vs ENTRYPOINT</h2><div class="slide-content"><div class="openblock column is-one-fifth"><div class="content"><div class="paragraph"><p>Cas d&#8217;usage.
 On va s&#8217;outiller!</p></div></div></div>
@@ -2568,7 +2599,7 @@ un conteneur <code>centos</code> (#550). Pour les régénérer à la main :</p><
 <div class="paragraph"><p>source : <a href="https://github.com/docker/engine/blob/master/pkg/namesgenerator/names-generator.go" class="bare">https://github.com/docker/engine/blob/master/pkg/namesgenerator/names-generator.go</a></p></div></div></section><section id="nommage_des_containers_6"><h2>📛 Nommage des containers</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach --name my-web httpd</code></pre></div></div>
 <div class="paragraph fragment"><p>Nom du container explicite</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container logs my-web</code></pre></div></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker exec --interactive --tty my-web sh</code></pre></div></div></div></section><section id="renommage_des_containers" class="columns" data-auto-animate><h2>🦸‍♂️ Renommage des containers</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p>Attention, spoiler pour les n00bs de DC Comics</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container exec --interactive --tty my-web sh</code></pre></div></div></div></section><section id="renommage_des_containers" class="columns" data-auto-animate><h2>🦸‍♂️ Renommage des containers</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p>Attention, spoiler pour les n00bs de DC Comics</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container rename clark_kent superman</code></pre></div></div></div></div>
 <div class="openblock column"><div class="content"><div class="imageblock fragment"><img src="media/kent_and_superman.jpeg" alt="kent and superman"></div></div></div></div></section><section id="renommage_des_containers_2" data-auto-animate><h2>🦸‍♂️ Renommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output55_with_transparency.png" alt="fichiers output55 with transparency"></div></div></section><section id="renommage_des_containers_3" data-auto-animate><h2>🦸‍♂️ Renommage des containers</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output56_with_transparency.png" alt="fichiers output56 with transparency"></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"> for i in {55..56}; do convert Diapositive${i}.PNG -crop 8883x3982+2104+2080 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="inspection_des_containers" class="columns"><h2>🔍 Inspection des containers</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="imageblock"><img src="media/inspecting-containers.jpeg" alt="inspecting containers"></div></div></div>
@@ -2675,14 +2706,14 @@ docker container ls --filter "name=my-web" --no-trunc | awk 'NR==1 {cmd=index($0
 # So, to sum up, this command will give us the command used to start the 'my-web' container, extracted from the output of 'docker container ls'.
 docker container ls --filter "name=my-web" --no-trunc | awk 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")} NR&gt;1 {print substr($0, cmd, created-cmd)}'</code></pre></div></div>
 <div class="paragraph fragment"><p>qui donnerait <code>"/docker-entrypoint.sh nginx -g 'daemon off;'"</code>.</p></div>
-<aside class="notes"><div class="paragraph"><p>Dans le contexte de l&#8217;utilisation de la commande docker inspect ou docker ps, l&#8217;une des principales différences entre ENTRYPOINT et CMD réside dans leur rôle et leur impact sur la visibilité des informations.</p></div>
+<aside class="notes"><div class="paragraph"><p>Dans le contexte de l&#8217;utilisation de la commande docker container inspect ou docker container ls, l&#8217;une des principales différences entre ENTRYPOINT et CMD réside dans leur rôle et leur impact sur la visibilité des informations.</p></div>
 <div class="olist arabic"><ol class="arabic"><li><p><strong>ENTRYPOINT</strong> :
-Lorsque vous utilisez docker inspect ou docker ps pour examiner un conteneur qui utilise ENTRYPOINT, vous verrez que ENTRYPOINT apparaît en tant que commande principale du conteneur. Cela signifie que l&#8217;entrée principale de l&#8217;application, généralement un exécutable ou un script, est affichée.
+Lorsque vous utilisez docker container inspect ou docker container ls pour examiner un conteneur qui utilise ENTRYPOINT, vous verrez que ENTRYPOINT apparaît en tant que commande principale du conteneur. Cela signifie que l&#8217;entrée principale de l&#8217;application, généralement un exécutable ou un script, est affichée.
 Les options et les arguments passés en ligne de commande lors du lancement du conteneur sont ajoutés après l&#8217;entrée principale, comme des arguments à cette commande.
-Si un ENTRYPOINT est défini, la commande spécifiée en utilisant docker run est ignorée.</p></li><li><p><strong>CMD</strong> :
-Lorsque vous utilisez docker inspect ou docker ps pour examiner un conteneur qui utilise CMD, vous verrez que la commande CMD est répertoriée sous forme d&#8217;argument pour /bin/sh -c, ce qui signifie qu&#8217;elle est exécutée par le shell par défaut du conteneur.
+Si un ENTRYPOINT est défini, la commande spécifiée en utilisant docker container run est ignorée.</p></li><li><p><strong>CMD</strong> :
+Lorsque vous utilisez docker container inspect ou docker container ls pour examiner un conteneur qui utilise CMD, vous verrez que la commande CMD est répertoriée sous forme d&#8217;argument pour /bin/sh -c, ce qui signifie qu&#8217;elle est exécutée par le shell par défaut du conteneur.
 Les options et les arguments passés en ligne de commande lors du lancement du conteneur remplacent la commande CMD.
-Vous pouvez également ajouter des arguments supplémentaires à la commande CMD en utilisant docker run.</p></li></ol></div>
+Vous pouvez également ajouter des arguments supplémentaires à la commande CMD en utilisant docker container run.</p></li></ol></div>
 <div class="paragraph"><p>En résumé, ENTRYPOINT est généralement utilisé pour spécifier la commande principale de l&#8217;application dans le conteneur, et les arguments fournis lors du lancement du conteneur sont traités comme des arguments pour cette commande. En revanche, CMD est utilisé pour spécifier une commande par défaut qui peut être écrasée en passant d&#8217;autres commandes lors du lancement du conteneur. L&#8217;utilisation de l&#8217;un ou de l&#8217;autre dépend des besoins spécifiques de votre application et de la manière dont vous souhaitez gérer la personnalisation des commandes dans vos conteneurs.</p></div></aside></div></section><section id="trouver_son_container_en_réseau"><h2>🌐 Trouver son container en réseau</h2><div class="slide-content"><div class="imageblock"><img src="media/1233103020-image17.jpeg" alt="1233103020 image17"></div></div></section><section id="le_container_en_réseau"><h2>🌐 Le Container en réseau</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach nginx
 bd12c4d7110d17ce80...`</code></pre></div></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls
@@ -2746,7 +2777,7 @@ Accept-Ranges: bytes</code></pre></div></div>
 &lt;li&gt;&lt;a href="http://home.web.cern.ch/about"&gt;Learn about CERN, the physics laboratory where the web was born&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</code></pre></div></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker run --name my-nginx -v /fully/qualified/path/on/my/computer/:/usr/share/nginx/html:ro -d -p 8000:80 nginx:1.31.6-alpine3.24</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --name my-nginx -v /fully/qualified/path/on/my/computer/:/usr/share/nginx/html:ro -d -p 8000:80 nginx:1.31.6-alpine3.24</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">curl --noproxy '*' http://localhost:8000
 &lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;header&gt;
 &lt;title&gt;http://info.cern.ch&lt;/title&gt;
@@ -2768,7 +2799,7 @@ Accept-Ranges: bytes</code></pre></div></div>
 # path within the container. This allows the Tomcat server running inside the container to access and deploy the
 # "sample.war" file. The "-d" flag is used to run the container in detached mode, meaning it will run in the
 # background.
-docker run -d -p 8080:8080 --name tomcat-container -v /fully/qualified/path/on/my/computer/sample.war:/usr/local/tomcat/webapps/sample.war tomcat:11.0.26-jdk25-temurin-noble</code></pre></div></div>
+docker container run -d -p 8080:8080 --name tomcat-container -v /fully/qualified/path/on/my/computer/sample.war:/usr/local/tomcat/webapps/sample.war tomcat:11.0.26-jdk25-temurin-noble</code></pre></div></div>
 <div class="paragraph fragment"><p>Visitez avec votre navigateur <code><a href="http://localhost:8080/sample/" class="bare">http://localhost:8080/sample/</a></code>.</p></div></div></section><section id="solution_travaux_pratiques_7_3" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">git clone https://github.com/spring-guides/gs-spring-boot.git</code></pre></div></div>
 <div class="paragraph"><p>C&#8217;est un début&#8230;&#8203;</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cd gs-spring-boot/complete</code></pre></div></div>
@@ -2793,9 +2824,9 @@ WORKDIR /app/gs-spring-boot/complete/target
 # Command to run the Spring Boot application
 CMD ["java", "-jar", "spring-boot-complete-0.0.1-SNAPSHOT.jar"]</code></pre></div></div>
 <div class="paragraph fragment"><p>Spoiler alert: le nom de fichier donne une indication&#8230;&#8203;</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker build -t spring-boot-app --file Dockerfile.ugly .</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t spring-boot-app --file Dockerfile.ugly .</code></pre></div></div>
 <div class="paragraph fragment"><p>Et logiquement&#8230;&#8203;</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker run -d -p 8080:8080 --name spring-boot-container spring-boot-app</code></pre></div></div></div></section><section id="attends_un_peu"><h2>⏳ Attends un peu…</h2><div class="slide-content"><div class="imageblock"><img src="media/1779074283-image19.gif" alt="1779074283 image19"></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 8080:8080 --name spring-boot-container spring-boot-app</code></pre></div></div></div></section><section id="attends_un_peu"><h2>⏳ Attends un peu…</h2><div class="slide-content"><div class="imageblock"><img src="media/1779074283-image19.gif" alt="1779074283 image19"></div>
 <div class="paragraph"><p><em>Ça fonctionne, mais c&#8217;est comme si  je laissais la grue dans la chambre une fois que j&#8217;avais fini de construire ma maison !</em></p></div></div></section><section id="solution_travaux_pratiques_7_5" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="paragraph"><p>On essaye un <code>Dockerfile</code> moins BTP?</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Use a Maven image for building the application
 FROM maven:3.9.15-eclipse-temurin-26-alpine AS build
@@ -2916,12 +2947,12 @@ Les données sont stockées sur le système hôte, mais sont accessibles depuis 
 Ils sont gérés par Docker et offrent une plus grande flexibilité que le simple mappage de système de fichiers.
 <strong>Utilisation</strong> : Idéaux pour stocker des données qui doivent survivre à l&#8217;arrêt ou à la suppression d&#8217;un conteneur.
 Les volumes sont indépendants du cycle de vie du conteneur.
-<strong>Exemple</strong> : <code>docker run -v nom_du_volume:/chemin/dans/le/conteneur</code></p></li><li><p>Système de Fichiers RAM (RAM Filesystem) :
+<strong>Exemple</strong> : <code>docker container run -v nom_du_volume:/chemin/dans/le/conteneur</code></p></li><li><p>Système de Fichiers RAM (RAM Filesystem) :
 <strong>Description</strong> : Il s&#8217;agit d&#8217;un système de fichiers temporaire stocké en mémoire RAM.
 Les données sont stockées de manière éphémère, ce qui signifie qu&#8217;elles sont perdues lorsque le conteneur est arrêté.
 <strong>Utilisation</strong> : Utile lorsque des données temporaires doivent être stockées en mémoire pour des performances élevées.
 Les données n&#8217;existent que tant que le conteneur est en cours d&#8217;exécution.
-<strong>Exemple</strong> : <code>docker run --tmpfs /chemin/dans/le/conteneur</code></p></li></ol></div>
+<strong>Exemple</strong> : <code>docker container run --tmpfs /chemin/dans/le/conteneur</code></p></li></ol></div>
 <div class="paragraph"><p>En résumé, ces trois méthodes de gestion des données en Docker offrent des avantages différents en fonction des besoins spécifiques d&#8217;un conteneur. Le mappage de système de fichiers est utile pour partager des fichiers depuis le système hôte, les volumes sont idéaux pour la persistance des données, tandis que les systèmes de fichiers RAM sont parfaits pour des données temporaires à haute performance.</p></div></aside></div></section><section id="3_types_de_gestion_de_données_2" class="columns" data-auto-animate><h2>🔴🔵🟢 3 types de gestion de données</h2><div class="slide-content"><div class="openblock column is-one-third"><div class="content"><div class="imageblock"><img src="media/mapping_fs.png" alt="mapping fs"></div></div></div>
 <div class="openblock column"><div class="content"><div class="paragraph"><p>Partage d&#8217;un répertoire de votre système hôte avec un conteneur Docker.</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Utile pour partager des fichiers ou des données de configuration avec un conteneur.</p></li><li class="fragment"><p>Données stockées sur le système hôte, mais accessibles depuis le conteneur.</p></li></ul></div>
@@ -2961,7 +2992,7 @@ Les données n&#8217;existent que tant que le conteneur est en cours d&#8217;ex�
 <div class="admonitionblock caution fragment"><table><tr><td class="icon"><i class="fa fa-fire" title="Caution"></i></td><td class="content">Le chemin dans la machine hôte doit être un chemin absolu !</td></tr></table></div>
 <div class="admonitionblock warning fragment"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">L&#8217;exemple ci-dessus ne peut donc pas fonctionner</td></tr></table></div></div></section><section id="les_volumes_2"><h2>📦📁 Les volumes</h2><div class="slide-content"><div class="imageblock"><img src="media/726805516-image8.png" alt="726805516 image8" height="600"></div></div></section><section id="les_volumes_3"><h2>📦📁 Les volumes</h2><div class="slide-content"><div class="paragraph"><p>Il est possible de créer des "espaces mémoire" que l&#8217;on peut mettre à disposition des containers.</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume create --name my-data</code></pre></div></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker run -v my-data:/data busybox ls /data</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -v my-data:/data busybox ls /data</code></pre></div></div>
 <div class="admonitionblock caution fragment"><table><tr><td class="icon"><i class="fa fa-fire" title="Caution"></i></td><td class="content"><strong>my_data</strong> n&#8217;est plus un chemin absolu, mais juste le nom du volume</td></tr></table></div></div></section><section id="les_volumes_4"><h2>📦📁 Les volumes</h2><div class="slide-content"><div class="paragraph"><p>Lister tous les volumes</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume ls</code></pre></div></div>
 <div class="paragraph fragment"><p>Supprimer un volume</p></div>
@@ -3143,7 +3174,7 @@ La portée détermine la manière dont les conteneurs peuvent communiquer avec c
 <div class="olist arabic"><ol class="arabic"><li><p><strong>NETWORK ID (Identifiant du réseau)</strong> : C&#8217;est un identifiant unique attribué au réseau que Docker utilise en interne pour le gérer. Il est généré automatiquement.</p></li><li><p><strong>NAME (Nom)</strong> : Il s&#8217;agit du nom que vous avez choisi pour votre réseau, dans ce cas, "mon-reseau."</p></li><li><p><strong>DRIVER (Pilote)</strong> : Le pilote de ce réseau est "bridge." Le pilote "bridge" est utilisé pour connecter des conteneurs sur le même hôte.</p></li><li><p><strong>SCOPE (Portée)</strong> : Dans cet exemple, la portée est "local," ce qui signifie que le réseau "mon-reseau" est uniquement accessible localement sur l&#8217;hôte Docker. Les conteneurs sur cet hôte peuvent se connecter à "mon-reseau," mais les conteneurs sur d&#8217;autres hôtes Docker ne le peuvent pas.</p></li></ol></div>
 <div class="paragraph"><p>Ensuite, lorsque vous exécutez "docker network ls," vous obtenez une liste de tous les réseaux Docker existants, y compris celui que vous venez de créer ("mon-reseau").
 Vous pouvez voir les détails de ce réseau dans le tableau, y compris son identifiant, son nom, son pilote, et sa portée.</p></div>
-<div class="paragraph"><p>En résumé, avec ces commandes, vous avez créé un nouveau réseau Docker nommé "mon-reseau" qui peut être utilisé pour connecter des conteneurs sur le même hôte.</p></div></aside></div></section><section id="attacher_un_container_à_un_réseau_particulier"><h2>🐳🔗 Attacher un container à un réseau particulier</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker run -d --net=mon-reseau --name=app img</code></pre></div></div>
+<div class="paragraph"><p>En résumé, avec ces commandes, vous avez créé un nouveau réseau Docker nommé "mon-reseau" qui peut être utilisé pour connecter des conteneurs sur le même hôte.</p></div></aside></div></section><section id="attacher_un_container_à_un_réseau_particulier"><h2>🐳🔗 Attacher un container à un réseau particulier</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d --net=mon-reseau --name=app img</code></pre></div></div>
 <div class="paragraph fragment"><p>Il est opportun de nommer un container quand on l&#8217;attache à un réseau.</p></div>
 <div class="paragraph fragment"><p>Docker fournit un DNS interne dans les réseaux custom. Les containers d&#8217;un même réseau peuvent se "voir" et "s&#8217;appeler" par leur noms.</p></div></div></section><section id="microdns" data-auto-animate><h2>🖥️🔍 MicroDNS</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker network create mynet</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d --name web --net mynet nginx</code></pre></div></div>
@@ -3348,7 +3379,7 @@ logstash:12201 dial udp: lookup logstash on ...: no such host</code></pre></div>
 <div class="paragraph"><p><code>localhost</code> peut être résolu en <code>127.0.0.1</code> (IPv4) ou en <code>::1</code> (IPv6). La publication <code>12201:12201/udp</code> écoute sur les deux familles — <code>0.0.0.0:12201</code> <strong>et</strong> <code>[::]:12201</code> — donc <code>localhost</code> tombe juste quoi qu&#8217;il arrive.</p></div>
 <div class="paragraph"><p>Restreindre la publication à une seule famille change tout. Avec <code>127.0.0.1:12201:12201/udp</code>, le démon n&#8217;écoute plus qu&#8217;en IPv4 : si <code>localhost</code> est résolu en <code>::1</code>, les datagrammes ne trouvent personne. Mesuré sur un démon 27.5.1 : zéro log reçu, trois essais sur trois, sans un message d&#8217;erreur nulle part.</p></div>
 <div class="paragraph"><p>C&#8217;est le même piège qu&#8217;au-dessus, avec une cause de plus : ici le port <strong>est</strong> publié, et l&#8217;écriture <code>localhost</code> suffit à le manquer.</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-console hljs" data-noescape="true" data-lang="console">docker port &lt;conteneur&gt;    # montre les familles réellement écoutées</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-console hljs" data-noescape="true" data-lang="console">docker container port &lt;conteneur&gt;    # montre les familles réellement écoutées</code></pre></div></div>
 <div class="paragraph"><p>En cas de doute, écrire <code>127.0.0.1</code> plutôt que <code>localhost</code> : la famille est explicite, la résolution ne peut plus surprendre.</p></div></td></tr></table></div>
 <h4>Erreur #2 : Health Check avec localhost IPv6</h4><div class="paragraph"><p><strong>Code cassé</strong> :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
@@ -3699,7 +3730,7 @@ Common student failure: +1.5 points average impact</p></div></aside>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose ps</code></pre></div></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-text hljs" data-noescape="true" data-lang="text">NAME            IMAGE                  STATUS
 myapp-backend   python:3.11-slim      Up 30 seconds (unhealthy)</code></pre></div></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker inspect myapp-backend | grep -A 10 Health</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect myapp-backend | grep -A 10 Health</code></pre></div></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">"Health": {
     "Status": "unhealthy",
     "FailingStreak": 5,
@@ -3783,10 +3814,10 @@ RUN apk add --no-cache curl</code></pre></div></div></td></tr></table></div>
 <div class="paragraph"><p><strong>3 solutions possibles</strong> :</p></div>
 <div class="olist arabic"><ol class="arabic"><li><p>Ajouter <code>RUN apt-get update &amp;&amp; apt-get install -y curl</code> dans Dockerfile</p></li><li><p>Remplacer par <code>wget --spider --quiet <a href="http://localhost:5000/health" class="bare">http://localhost:5000/health</a></code></p></li><li><p>Remplacer par health check Python natif (Solution 3)</p></li></ol></div>
 <h3>📊 En Résumé (Checklist)</h3><div class="paragraph"><p>Avant d&#8217;écrire un health check :</p></div>
-<div class="olist arabic"><ol class="arabic"><li class="fragment"><p>✅ <strong>Vérifier</strong> : La commande existe-t-elle dans l&#8217;image ?</p></li><li class="fragment"><p>✅ <strong>Tester</strong> : <code>docker run --rm image commande</code> pour vérifier</p></li><li class="fragment"><p>✅ <strong>Choisir une solution</strong> :</p><div class="ulist"><ul><li><p>Installer l&#8217;outil (Solution 1) → Recommandé pour production</p></li><li><p>Utiliser alternative native (Solution 2) → Léger, pas d&#8217;install</p></li><li><p>Utiliser Python/Node built-in (Solution 3) → Images avec runtime uniquement</p></li></ul></div></li></ol></div>
+<div class="olist arabic"><ol class="arabic"><li class="fragment"><p>✅ <strong>Vérifier</strong> : La commande existe-t-elle dans l&#8217;image ?</p></li><li class="fragment"><p>✅ <strong>Tester</strong> : <code>docker container run --rm image commande</code> pour vérifier</p></li><li class="fragment"><p>✅ <strong>Choisir une solution</strong> :</p><div class="ulist"><ul><li><p>Installer l&#8217;outil (Solution 1) → Recommandé pour production</p></li><li><p>Utiliser alternative native (Solution 2) → Léger, pas d&#8217;install</p></li><li><p>Utiliser Python/Node built-in (Solution 3) → Images avec runtime uniquement</p></li></ul></div></li></ol></div>
 <div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content"><div class="paragraph"><p><strong>Erreurs fréquentes</strong> :</p></div>
 <div class="ulist"><ul><li><p>❌ <code>curl</code> dans <code>python:3.11-slim</code> → ExitCode 127</p></li><li><p>❌ <code>bash</code> dans Alpine → Utiliser <code>sh</code></p></li><li><p>❌ Oublier <code>--no-cache</code> lors de l&#8217;install → Image plus lourde</p></li></ul></div></td></tr></table></div>
-<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content"><div class="paragraph"><p><strong>Règle d&#8217;or</strong> : <code>docker run --rm mon-image commande</code></p></div>
+<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content"><div class="paragraph"><p><strong>Règle d&#8217;or</strong> : <code>docker container run --rm mon-image commande</code></p></div>
 <div class="paragraph"><p>Si la commande échoue → Elle échouera aussi dans le health check !</p></div></td></tr></table></div></div></section><section id="étude_de_cas_5" class="columns" data-auto-animate><h2>🏁🔢 Étude de cas 📚🔍</h2><div class="slide-content"><div class="openblock column is-two-thirds"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   sidekick_service: [...]
 
@@ -4302,6 +4333,8 @@ x-slides-base: &amp;slides-base
   environment:
     - PRESENTATION_URL=${PRESENTATION_URL}
     - REPOSITORY_URL=${REPOSITORY_URL}
+    # Le fichier racine à construire : SOURCE_FILE=index-examen.adoc make build
+    - SOURCE_FILE=${SOURCE_FILE}
   # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
   user: ${CURRENT_UID}
   # Un montage tmpfs pour des E/S plus rapides ; 1777 car le conteneur n'est pas root.
@@ -4349,8 +4382,9 @@ services:
 
   # Le service 'pdf'.
   pdf:
-    # L'image Docker pour ce service.
-    image: ghcr.io/astefanutti/decktape:3.7.0
+    # L'image est construite localement, à partir de decktape : voir dockerfiles/pdf/.
+    build:
+      context: ./dockerfiles/pdf
     # Ce service dépend du service 'build'.
     depends_on:
       build:
@@ -4358,12 +4392,14 @@ services:
         condition: service_completed_successfully
     # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
     user: ${CURRENT_UID}
+    environment:
+      # Chromium veut un HOME inscriptible pour sa base crashpad. L'image n'en
+      # déclare un que pour l'uid 1000 : tout autre uid tombe sur HOME=/ et le
+      # navigateur refuse de démarrer.
+      - HOME=/tmp
     # Volumes pour le conteneur Docker.
     volumes:
-      - ${DIST_DIR}:/slides
-    # La commande à exécuter dans le conteneur Docker.
-    command: &gt;
-      /slides/index.html /slides/slides.pdf --size='1024x768' --pause 0</code></pre></div></div></div></section><section id="autre_étude_de_cas_3" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker compose qui a généré ce cours ?</p></div>
+      - ${DIST_DIR}:/slides</code></pre></div></div></div></section><section id="autre_étude_de_cas_3" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker compose qui a généré ce cours ?</p></div>
 <div class="paragraph fragment"><p>Indigeste? 😨</p></div>
 <div class="paragraph fragment"><p>Ne relevons que les points importants:</p></div>
 <div class="paragraph fragment"><p>Les ancres&#8230;&#8203;</p></div>
@@ -4382,6 +4418,8 @@ x-slides-base: &amp;slides-base
   environment:
     - PRESENTATION_URL=${PRESENTATION_URL}
     - REPOSITORY_URL=${REPOSITORY_URL}
+    # Le fichier racine à construire : SOURCE_FILE=index-examen.adoc make build
+    - SOURCE_FILE=${SOURCE_FILE}
   # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
   user: ${CURRENT_UID}
   # Un montage tmpfs pour des E/S plus rapides ; 1777 car le conteneur n'est pas root.
@@ -4433,8 +4471,9 @@ Elle est définie en utilisant l&#8217;opérateur <code>&amp;</code> suivi d&#82
       - "8000:8000"</code></pre></div></div></div></section><section id="autre_étude_de_cas_7" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Le service qui construit le pdf à partir des slides.</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service 'pdf'.
   pdf:
-    # L'image Docker pour ce service.
-    image: ghcr.io/astefanutti/decktape:3.7.0
+    # L'image est construite localement, à partir de decktape : voir dockerfiles/pdf/.
+    build:
+      context: ./dockerfiles/pdf
     # Ce service dépend du service 'build'.
     depends_on:
       build:
@@ -4442,12 +4481,16 @@ Elle est définie en utilisant l&#8217;opérateur <code>&amp;</code> suivi d&#82
         condition: service_completed_successfully
     # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
     user: ${CURRENT_UID}
+    environment:
+      # Chromium veut un HOME inscriptible pour sa base crashpad. L'image n'en
+      # déclare un que pour l'uid 1000 : tout autre uid tombe sur HOME=/ et le
+      # navigateur refuse de démarrer.
+      - HOME=/tmp
     # Volumes pour le conteneur Docker.
     volumes:
-      - ${DIST_DIR}:/slides
-    # La commande à exécuter dans le conteneur Docker.
-    command: &gt;
-      /slides/index.html /slides/slides.pdf --size='1024x768' --pause 0</code></pre></div></div></div></section><section id="autre_étude_de_cas_8" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Pour rappel, l&#8217;ancre contenait :</p></div>
+      - ${DIST_DIR}:/slides</code></pre></div></div></div></section><section id="pourquoi_une_image_construite_et_pas_limage_publiée"><h2>Pourquoi une image construite, et pas l&#8217;image publiée ? 📄</h2><div class="slide-content"><div class="paragraph"><p>L&#8217;image publiée <code>ghcr.io/astefanutti/decktape</code> ne suffit plus telle quelle.</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Le PDF passe par deux étapes : decktape rend les diapositives en 2048x1536, puis <code>ghostscript</code> réduit le fichier. L&#8217;image publiée n&#8217;a pas <code>ghostscript</code>.</p></li><li class="fragment"><p>Chromium ne démarre dans le conteneur qu&#8217;avec <code>--no-sandbox</code> et <code>--disable-gpu</code>. Ces options vivent dans <code>entrypoint.sh</code>, d&#8217;où l&#8217;absence de <code>command:</code> dans le service.</p></li><li class="fragment"><p>L&#8217;image ne déclare un <code>HOME</code> que pour l&#8217;uid 1000. Avec un autre uid, Chromium échoue sur <code>chrome_crashpad_handler: --database is required</code> : d&#8217;où <code>HOME=/tmp</code>.
+Un petit <code>Dockerfile</code> <code>FROM ghcr.io/astefanutti/decktape</code> règle les deux premiers points ; Compose le construit avec <code>build:</code>.</p></li></ul></div></div></section><section id="autre_étude_de_cas_8" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Pour rappel, l&#8217;ancre contenait :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># 'x-slides-base' est une ancre YAML qui définit une configuration commune pour plusieurs services.
 x-slides-base: &amp;slides-base
   # La configuration de construction pour l'image Docker.
@@ -4461,6 +4504,8 @@ x-slides-base: &amp;slides-base
   environment:
     - PRESENTATION_URL=${PRESENTATION_URL}
     - REPOSITORY_URL=${REPOSITORY_URL}
+    # Le fichier racine à construire : SOURCE_FILE=index-examen.adoc make build
+    - SOURCE_FILE=${SOURCE_FILE}
   # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
   user: ${CURRENT_UID}
   # Un montage tmpfs pour des E/S plus rapides ; 1777 car le conteneur n'est pas root.
@@ -4480,17 +4525,24 @@ x-slides-base: &amp;slides-base
   BUILDKIT_INLINE_CACHE: 1</code></pre></div></div></div></div></div></section><section id="environnement" class="columns" data-auto-animate><h2>➡️🔄 Environnement 🌍🌿</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Variables d'environnement pour le conteneur Docker.
   environment:
     - PRESENTATION_URL=${PRESENTATION_URL}
-    - REPOSITORY_URL=${REPOSITORY_URL}</code></pre></div></div></div></div>
-<div class="openblock column"><div class="content"><div class="paragraph"><p>Deux variables d&#8217;environnement sont définies pour le conteneur Docker : <code>PRESENTATION_URL</code> et <code>REPOSITORY_URL</code>.</p></div>
+    - REPOSITORY_URL=${REPOSITORY_URL}
+    # Le fichier racine à construire : SOURCE_FILE=index-examen.adoc make build
+    - SOURCE_FILE=${SOURCE_FILE}</code></pre></div></div></div></div>
+<div class="openblock column"><div class="content"><div class="paragraph"><p>Trois variables d&#8217;environnement sont définies pour le conteneur Docker : <code>PRESENTATION_URL</code>, <code>REPOSITORY_URL</code> et <code>SOURCE_FILE</code>.
+<code>SOURCE_FILE</code> choisit le fichier racine : <code>SOURCE_FILE=index-examen.adoc make build</code> construit le sujet d&#8217;examen.</p></div>
 <div class="paragraph fragment"><p>Ces variables sont définies à l&#8217;aide de la syntaxe <code>${VARIABLE_NAME}</code>, qui est une manière standard d&#8217;accéder aux variables d&#8217;environnement dans les fichiers de configuration YAML.</p></div></div></div></div></section><section id="environnement_2" data-auto-animate><h2>➡️🔄 Environnement 🌍🌿</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Variables d'environnement pour le conteneur Docker.
   environment:
     - PRESENTATION_URL=${PRESENTATION_URL}
-    - REPOSITORY_URL=${REPOSITORY_URL}</code></pre></div></div>
+    - REPOSITORY_URL=${REPOSITORY_URL}
+    # Le fichier racine à construire : SOURCE_FILE=index-examen.adoc make build
+    - SOURCE_FILE=${SOURCE_FILE}</code></pre></div></div>
 <div class="paragraph"><p>Lorsque Docker Compose rencontre cette syntaxe, il cherche la valeur de la variable d&#8217;environnement dans plusieurs endroits, en suivant un ordre spécifique :</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Il vérifie d&#8217;abord si la variable est définie dans le shell courant.</p></li><li class="fragment"><p>Si c&#8217;est le cas, il utilise cette valeur.</p></li><li class="fragment"><p>Si la variable n&#8217;est pas définie dans le shell, Docker Compose cherche ensuite dans un fichier <code>.env</code> situé dans le même répertoire que le fichier <code>docker-compose.yml</code>.</p></li><li class="fragment"><p>Si la variable est définie dans ce fichier, Docker Compose utilise cette valeur.</p></li></ul></div></div></section><section id="environnement_3" data-auto-animate><h2>➡️🔄 Environnement 🌍🌿</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Variables d'environnement pour le conteneur Docker.
   environment:
     - PRESENTATION_URL=${PRESENTATION_URL}
-    - REPOSITORY_URL=${REPOSITORY_URL}</code></pre></div></div>
+    - REPOSITORY_URL=${REPOSITORY_URL}
+    # Le fichier racine à construire : SOURCE_FILE=index-examen.adoc make build
+    - SOURCE_FILE=${SOURCE_FILE}</code></pre></div></div>
 <div class="ulist"><ul><li><p>Si la variable n&#8217;est définie ni dans le shell ni dans le fichier <code>.env</code>, Docker Compose utilise la valeur par défaut spécifiée dans le fichier <code>docker-compose.yml</code> (s&#8217;il y en a une).</p></li><li><p>Dans notre cas, aucune valeur par défaut n&#8217;est spécifiée. Docker Compose n&#8217;échoue pas pour autant : il émet un avertissement, substitue une <strong>chaîne vide</strong>, et continue.</p></li><li><p><code>The "PRESENTATION_URL" variable is not set. Defaulting to a blank string.</code> — code de sortie 0.</p></li></ul></div></div></section><section id="autre_étude_de_cas_9" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
   user: ${CURRENT_UID}</code></pre></div></div>
 <div class="ulist"><ul><li class="fragment"><p>Dans Docker, chaque instruction dans le Dockerfile est exécutée par un utilisateur particulier.</p></li><li class="fragment"><p>Par défaut, cet utilisateur est root, mais pour des raisons de sécurité, il est souvent recommandé d&#8217;exécuter les processus en tant qu&#8217;utilisateur non root.</p></li><li class="fragment"><p>Cette ligne définit l&#8217;ID de l&#8217;utilisateur qui exécutera les commandes à l&#8217;intérieur du conteneur Docker à la valeur de la variable d&#8217;environnement <code>CURRENT_UID</code>.</p></li><li class="fragment"><p>La syntaxe <code>${CURRENT_UID}</code> est utilisée pour accéder à la valeur d&#8217;une variable d&#8217;environnement.</p></li><li class="fragment"><p>Dans ce cas, Docker Compose recherchera une variable d&#8217;environnement nommée <code>CURRENT_UID</code> et utilisera sa valeur.</p></li><li class="fragment"><p>Si <code>CURRENT_UID</code> n&#8217;est pas défini, Docker Compose <strong>n&#8217;échoue pas</strong> : même avertissement, même chaîne vide. <code>user:</code> reçoit une valeur vide.</p></li><li class="fragment"><p>Le conteneur démarre donc <strong>en root</strong> — exactement l&#8217;inverse de ce que cette ligne cherchait à obtenir.</p></li></ul></div></div></section><section id="rendre_une_variable_vraiment_obligatoire"><h2>🛡️ Rendre une variable vraiment obligatoire</h2><div class="slide-content"><div class="paragraph"><p>Permissif :</p></div>
@@ -4769,7 +4821,7 @@ Ne pas leur donner les réponses tout de suite - les laisser chercher 5-10 minut
 L&#8217;application FONCTIONNE : c&#8217;est volontaire, montrer qu&#8217;une app vulnérable peut sembler normale.
 Circuler entre les groupes : certains vont paniquer si nginx redémarre.</p></div></aside></div></section><section id="analyse_des_vulnérabilités"><h2>Analyse des vulnérabilités</h2><div class="slide-content"><div class="paragraph"><p>Explorez les fichiers et identifiez les problèmes :</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Qui exécute les conteneurs ?</p></li><li class="fragment"><p>Où sont stockés les secrets ?</p></li><li class="fragment"><p>Les images sont-elles à jour ?</p></li><li class="fragment"><p>Y a-t-il des ports exposés inutilement ?</p></li></ul></div></div></section><section id="points_dattention"><h2>Points d&#8217;attention</h2><div class="slide-content"><div class="paragraph"><p><strong>À vérifier :</strong></p></div>
-<div class="ulist"><ul><li class="fragment"><p><code>docker compose ps</code></p></li><li class="fragment"><p><code>docker inspect &lt;container&gt;</code></p></li><li class="fragment"><p>Contenu des Dockerfile</p></li><li class="fragment"><p>Variables d&#8217;environnement</p></li></ul></div>
+<div class="ulist"><ul><li class="fragment"><p><code>docker compose ps</code></p></li><li class="fragment"><p><code>docker container inspect &lt;container&gt;</code></p></li><li class="fragment"><p>Contenu des Dockerfile</p></li><li class="fragment"><p>Variables d&#8217;environnement</p></li></ul></div>
 <div class="paragraph fragment"><p><strong>Questions :</strong> Quels risques identifiez-vous ? Comment exploiter ces failles ?</p></div></div></section><section id="sécurité_docker_les_fondamentaux" data-background-color="OrangeRed"><h2>Sécurité Docker : Les fondamentaux</h2><div class="slide-content"><div class="paragraph"><p>Les 3 piliers de la sécurité Docker :</p></div>
 <div class="olist arabic"><ol class="arabic"><li class="fragment"><p><strong>Images sûres</strong> : Bases fiables, sans vulnérabilités</p></li><li class="fragment"><p><strong>Runtime sécurisé</strong> : Isolation, utilisateurs non-root</p></li><li class="fragment"><p><strong>Secrets protégés</strong> : Pas de mots de passe en clair</p></li></ol></div>
 <aside class="notes"><div class="paragraph"><p>Framework simple pour mémoriser : 3 piliers = 3 zones d&#8217;intervention.
@@ -4787,7 +4839,7 @@ docker scout compare python:3.11 --to python:3.11-slim</code></pre></div></div>
 <div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Démonstration live recommandée</td></tr></table></div>
 <aside class="notes"><div class="paragraph"><p>DÉMONSTRATION LIVE ESSENTIELLE ici ! Les étudiants doivent VOIR les CVE en temps réel.
 Comparer python:3.11 vs python:3.11-slim : différence spectaculaire (150+ CVE vs 20-30).
-Si Docker Scout ne fonctionne pas, basculer sur Trivy : "docker run aquasec/trivy image python:3.11"
+Si Docker Scout ne fonctionne pas, basculer sur Trivy : "docker container run aquasec/trivy image python:3.11"
 Montrer que le scan prend 10-30 secondes : c&#8217;est acceptable pour un pipeline CI/CD.
 Insister : ce n&#8217;est pas paranoïaque, c&#8217;est STANDARD en 2025.</p></div></aside></div></section><section id="installation_de_trivy"><h2>Installation de Trivy</h2><div class="slide-content"><div class="paragraph"><p><strong>Méthode rapide (pour le TP) :</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Installation directe du binaire
@@ -4828,7 +4880,7 @@ Sur Debian Trixie/Testing : c&#8217;est LA méthode à utiliser (le repo apt ne 
 <div class="olist arabic"><ol class="arabic"><li><p><strong>Version pinning</strong> : Pin une version spécifique au lieu de "latest"</p><div class="ulist"><ul><li><p>Évite les breaking changes inattendus</p></li><li><p>Le script d&#8217;installation supporte la sélection de release</p></li><li><p>Exemple : <code>curl -sfL &#8230;&#8203; | sudo sh -s&#8201;&#8212;&#8201;-b /usr/local/bin v0.54.0</code></p></li></ul></div></li><li><p><strong>Vérification d&#8217;intégrité</strong> : Checksum ou signature avant exécution</p><div class="ulist"><ul><li><p>Télécharger le checksum depuis GitHub releases</p></li><li><p>Vérifier avec <code>sha256sum --check</code></p></li><li><p>Garantit que le binaire n&#8217;a pas été altéré</p></li></ul></div></li></ol></div>
 <div class="paragraph"><p>Ces étapes sont omises dans le TP pour simplicité, mais OBLIGATOIRES en production CI/CD.</p></div></aside></div></section><section id="installation_trivy_alternatives"><h2>Installation Trivy : Alternatives</h2><div class="slide-content"><div class="paragraph"><p><strong>Si vous n&#8217;avez pas les droits sudo :</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Via Docker (aucune installation nécessaire)
-docker run --rm \
+docker container run --rm \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v $HOME/.cache/trivy:/root/.cache \
   aquasec/trivy:0.54.1 image python:3.11</code></pre></div></div>
@@ -4864,7 +4916,7 @@ CMD ["python", "/app/app.py"]  # Root !</code></pre></div></div>
 Analogie : c&#8217;est comme lancer toutes vos apps Windows en "Administrateur" en permanence.
 Si un attaquant exploite une faille dans votre app Python, il a root sur le conteneur.
 Avec root, il peut : installer des outils, scanner le réseau, pivoter vers d&#8217;autres conteneurs.
-Montrer docker exec &lt;container&gt; whoami → retourne "root" = MAUVAIS !</p></div></aside></div></section><section id="solution_utilisateur_dédié"><h2>Solution : Utilisateur dédié</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM python:3.11-slim
+Montrer docker container exec &lt;container&gt; whoami → retourne "root" = MAUVAIS !</p></div></aside></div></section><section id="solution_utilisateur_dédié"><h2>Solution : Utilisateur dédié</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM python:3.11-slim
 
 RUN groupadd -r appuser &amp;&amp; useradd -r -g appuser appuser
 WORKDIR /app
@@ -4872,7 +4924,7 @@ COPY app.py /app/
 RUN chown -R appuser:appuser /app
 
 USER appuser
-CMD ["python", "/app/app.py"]</code></pre></div></div></div></section><section id="bonnes_pratiques_utilisateur"><h2>Bonnes pratiques utilisateur</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Toujours créer un utilisateur dédié</p></li><li class="fragment"><p>UID &gt; 1000 (éviter conflits système)</p></li><li class="fragment"><p>Ne jamais revenir à root après USER</p></li><li class="fragment"><p>Vérifier : <code>docker exec &lt;container&gt; whoami</code></p></li></ul></div></div></section><section id="comprendre_les_uid_linux"><h2>Comprendre les UID Linux</h2><div class="slide-content"><div class="paragraph"><p>Linux numérote les utilisateurs (User ID) :</p></div>
+CMD ["python", "/app/app.py"]</code></pre></div></div></div></section><section id="bonnes_pratiques_utilisateur"><h2>Bonnes pratiques utilisateur</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Toujours créer un utilisateur dédié</p></li><li class="fragment"><p>UID &gt; 1000 (éviter conflits système)</p></li><li class="fragment"><p>Ne jamais revenir à root après USER</p></li><li class="fragment"><p>Vérifier : <code>docker container exec &lt;container&gt; whoami</code></p></li></ul></div></div></section><section id="comprendre_les_uid_linux"><h2>Comprendre les UID Linux</h2><div class="slide-content"><div class="paragraph"><p>Linux numérote les utilisateurs (User ID) :</p></div>
 <div class="ulist"><ul><li class="fragment"><p><strong>UID 0</strong> : root (super-utilisateur)</p></li><li class="fragment"><p><strong>UID 1-999</strong> : comptes système (www-data, postgres, redis&#8230;&#8203;)</p></li><li class="fragment"><p><strong>UID ≥ 1000</strong> : utilisateurs normaux et applications</p></li></ul></div>
 <div class="admonitionblock warning fragment"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Avec volumes montés, UID &lt; 1000 peut créer des conflits de sécurité !</td></tr></table></div>
 <aside class="notes"><div class="paragraph"><p><strong>POURQUOI C&#8217;EST IMPORTANT :</strong></p></div>
@@ -4891,7 +4943,7 @@ RUN useradd -u 1001 appuser
 
 # OU laisser le système choisir (sera ≥ 1000)
 RUN useradd appuser</code></pre></div></div>
-<div class="paragraph fragment"><p>Vérifier : <code>docker exec &lt;container&gt; id appuser</code></p></div>
+<div class="paragraph fragment"><p>Vérifier : <code>docker container exec &lt;container&gt; id appuser</code></p></div>
 <aside class="notes"><div class="paragraph"><p>Montrer la commande <code>id</code> dans un conteneur pour voir l&#8217;UID assigné.
 Exemple de résultat : uid=1001(appuser) gid=1001(appuser) groups=1001(appuser)</p></div>
 <div class="paragraph"><p>Pour les étudiants : expliquer que c&#8217;est comme les numéros de téléphone -
@@ -4910,11 +4962,11 @@ USER 1001:1001</code></pre></div></div>
 <div class="paragraph"><p>Cette approche numérique est LA meilleure pratique pour production/Kubernetes.</p></div></aside></div></section><section id="gestion_des_secrets"><h2>Gestion des secrets</h2><div class="slide-content"><div class="paragraph"><p><strong>Mauvaise pratique :</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">environment:
   - POSTGRES_PASSWORD=super_secret_123  # NON !</code></pre></div></div>
-<div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Visible dans <code>docker inspect</code>, logs, historique !</td></tr></table></div>
+<div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Visible dans <code>docker container inspect</code>, logs, historique !</td></tr></table></div>
 <aside class="notes"><div class="paragraph"><p>Piège classique : secrets en clair dans docker-compose.yml = COMMITÉS sur Git = PUBLICS.
 Anecdote : chercher "removed password" sur GitHub = des millions de résultats.
 Les secrets restent dans l&#8217;historique Git même après suppression !
-docker inspect montre TOUTES les variables d&#8217;env = un attaquant peut lire.
+docker container inspect montre TOUTES les variables d&#8217;env = un attaquant peut lire.
 Les logs peuvent accidentellement afficher les secrets lors du démarrage.
 Message clé : les secrets ne doivent JAMAIS être versionnés.</p></div></aside></div></section><section id="bonne_pratique_fichiers_env"><h2>Bonne pratique : Fichiers .env</h2><div class="slide-content"><div class="paragraph"><p><strong>Étape 1 : Créer le fichier .env</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># .env (à ne JAMAIS commiter)
@@ -5199,7 +5251,7 @@ En prod, TOUJOURS définir des limites. C&#8217;est comme les ceintures de sécu
           memory: 512M     # Max 512 Mo RAM
         reservations:
           cpus: '0.25'     # Min garanti
-          memory: 256M</code></pre></div></div></div></section><section id="choisir_les_bonnes_valeurs"><h2>Choisir les bonnes valeurs</h2><div class="slide-content"><div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Démarrer sans limites</p></li><li class="fragment"><p>Observer : <code>docker stats</code></p></li><li class="fragment"><p>Ajouter 20-30% de marge</p></li><li class="fragment"><p>Tester sous charge</p></li><li class="fragment"><p>Ajuster</p></li></ol></div></div></section><section id="politiques_de_redémarrage"><h2>Politiques de redémarrage</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+          memory: 256M</code></pre></div></div></div></section><section id="choisir_les_bonnes_valeurs"><h2>Choisir les bonnes valeurs</h2><div class="slide-content"><div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Démarrer sans limites</p></li><li class="fragment"><p>Observer : <code>docker container stats</code></p></li><li class="fragment"><p>Ajouter 20-30% de marge</p></li><li class="fragment"><p>Tester sous charge</p></li><li class="fragment"><p>Ajuster</p></li></ol></div></div></section><section id="politiques_de_redémarrage"><h2>Politiques de redémarrage</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   backend:
     restart: no              # Jamais
     restart: always          # Toujours
@@ -5219,7 +5271,7 @@ En prod, TOUJOURS définir des limites. C&#8217;est comme les ceintures de sécu
       start_period: 40s</code></pre></div></div>
 <aside class="notes"><div class="paragraph"><p>Health check = le contrôle aérien de vos conteneurs.
 Un conteneur peut être "running" mais MORT à l&#8217;intérieur (app crashée, connexion DB perdue).
-docker ps montre "Up" mais healthcheck montre "unhealthy" = problème détecté !
+docker container ls montre "Up" mais healthcheck montre "unhealthy" = problème détecté !
 Exemple concret : backend démarre en 5s, mais connexion DB prend 30s → start_period: 40s.
 interval: 30s = vérifier toutes les 30s, c&#8217;est raisonnable (pas trop fréquent, pas trop lent).
 retries: 3 = tolérer 3 échecs avant de marquer "unhealthy" = évite les faux positifs.
@@ -5257,10 +5309,10 @@ C&#8217;est ici qu&#8217;on voit si l&#8217;auto-healing fonctionne vraiment !
 Les scripts load_test.sh et kill_test.sh sont fournis dans phase3/scripts/.
 Encourager l&#8217;expérimentation : "cassez votre app volontairement pour voir ce qui se passe".
 Temps : 1h = 3 exercices de 15-25 min chacun + checkpoint final.</p></div></aside></div></section><section id="exercice_4_limites_de_ressources_20_min"><h2>Exercice 4 : Limites de ressources (20 min)</h2><div class="slide-content"><div class="paragraph"><p><strong>Mission :</strong></p></div>
-<div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Observer avec <code>docker stats</code></p></li><li class="fragment"><p>Définir limites appropriées</p></li><li class="fragment"><p>Tester sous charge (script fourni)</p></li><li class="fragment"><p>Ajuster</p></li></ol></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker stats --no-stream
+<div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Observer avec <code>docker container stats</code></p></li><li class="fragment"><p>Définir limites appropriées</p></li><li class="fragment"><p>Tester sous charge (script fourni)</p></li><li class="fragment"><p>Ajuster</p></li></ol></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container stats --no-stream
 ./load_test.sh
-docker stats</code></pre></div></div></div></section><section id="exercice_5_restart_et_health_25_min"><h2>Exercice 5 : Restart et Health (25 min)</h2><div class="slide-content"><div class="paragraph"><p><strong>Mission :</strong></p></div>
+docker container stats</code></pre></div></div></div></section><section id="exercice_5_restart_et_health_25_min"><h2>Exercice 5 : Restart et Health (25 min)</h2><div class="slide-content"><div class="paragraph"><p><strong>Mission :</strong></p></div>
 <div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Ajouter politiques de redémarrage</p></li><li class="fragment"><p>Créer endpoint <code>/health</code> dans backend</p></li><li class="fragment"><p>Configurer healthchecks</p></li><li class="fragment"><p>Tester en tuant un conteneur</p></li></ol></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose kill backend
 docker compose ps
@@ -5269,16 +5321,16 @@ docker compose logs backend</code></pre></div></div></div></section><section id=
 <div class="ulist"><ul><li class="fragment"><p>Limites de ressources ✅</p></li><li class="fragment"><p>Auto-healing ✅</p></li><li class="fragment"><p>Health checks ✅</p></li><li class="fragment"><p>Dépendances ordonnées ✅</p></li><li class="fragment"><p>Logs optimisés ✅</p></li></ul></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose config --services
 docker compose ps
-docker stats --no-stream</code></pre></div></div></div></section><section id="registres_et_distribution" data-background-color="Navy"><h2>Registres et Distribution</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Serveur de stockage d&#8217;images Docker</p></li><li class="fragment"><p>Équivalent de npm pour Node, PyPI pour Python</p></li><li class="fragment"><p>Public (Docker Hub) ou privé (self-hosted)</p></li><li class="fragment"><p>Gestion des versions (tags)</p></li></ul></div></div></section><section id="docker_hub_2"><h2>Docker Hub</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker pull nginx:latest
+docker container stats --no-stream</code></pre></div></div></div></section><section id="registres_et_distribution" data-background-color="Navy"><h2>Registres et Distribution</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Serveur de stockage d&#8217;images Docker</p></li><li class="fragment"><p>Équivalent de npm pour Node, PyPI pour Python</p></li><li class="fragment"><p>Public (Docker Hub) ou privé (self-hosted)</p></li><li class="fragment"><p>Gestion des versions (tags)</p></li></ul></div></div></section><section id="docker_hub_2"><h2>Docker Hub</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image pull nginx:latest
 # Équivalent à :
-docker pull docker.io/library/nginx:latest</code></pre></div></div>
+docker image pull docker.io/library/nginx:latest</code></pre></div></div>
 <div class="ulist"><ul><li class="fragment"><p>Gratuit pour images publiques</p></li><li class="fragment"><p>Limites de rate (pull anonyme)</p></li></ul></div></div></section><section id="registres_privés"><h2>Registres privés</h2><div class="slide-content"><div class="paragraph"><p><strong>Pourquoi ?</strong></p></div>
-<div class="ulist"><ul><li class="fragment"><p>Images propriétaires</p></li><li class="fragment"><p>Contrôle d&#8217;accès</p></li><li class="fragment"><p>Compliance et sécurité</p></li><li class="fragment"><p>Pas de limite de rate</p></li></ul></div></div></section><section id="solutions_de_registres"><h2>Solutions de registres</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p><strong>Docker Registry</strong> (open source)</p></li><li class="fragment"><p><strong>Harbor</strong> (CNCF, avec scan)</p></li><li class="fragment"><p><strong>AWS ECR</strong>, <strong>Azure ACR</strong>, <strong>GCP GCR</strong></p></li><li class="fragment"><p><strong>GitLab / GitHub Container Registry</strong></p></li></ul></div></div></section><section id="démarrer_un_registre_local"><h2>Démarrer un registre local</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker run -d -p 5000:5000 --name registry registry:2
-docker tag securevote-backend:latest localhost:5000/securevote-backend:latest
-docker push localhost:5000/securevote-backend:latest</code></pre></div></div></div></section><section id="tags_et_versions"><h2>Tags et versions</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Bonne pratique : versionner
-docker tag myapp:latest myregistry.com/myapp:1.2.3
-docker tag myapp:latest myregistry.com/myapp:1.2
-docker tag myapp:latest myregistry.com/myapp:latest</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Images propriétaires</p></li><li class="fragment"><p>Contrôle d&#8217;accès</p></li><li class="fragment"><p>Compliance et sécurité</p></li><li class="fragment"><p>Pas de limite de rate</p></li></ul></div></div></section><section id="solutions_de_registres"><h2>Solutions de registres</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p><strong>Docker Registry</strong> (open source)</p></li><li class="fragment"><p><strong>Harbor</strong> (CNCF, avec scan)</p></li><li class="fragment"><p><strong>AWS ECR</strong>, <strong>Azure ACR</strong>, <strong>GCP GCR</strong></p></li><li class="fragment"><p><strong>GitLab / GitHub Container Registry</strong></p></li></ul></div></div></section><section id="démarrer_un_registre_local"><h2>Démarrer un registre local</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 5000:5000 --name registry registry:2
+docker image tag securevote-backend:latest localhost:5000/securevote-backend:latest
+docker image push localhost:5000/securevote-backend:latest</code></pre></div></div></div></section><section id="tags_et_versions"><h2>Tags et versions</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Bonne pratique : versionner
+docker image tag myapp:latest myregistry.com/myapp:1.2.3
+docker image tag myapp:latest myregistry.com/myapp:1.2
+docker image tag myapp:latest myregistry.com/myapp:latest</code></pre></div></div>
 <div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Plusieurs tags → même image</td></tr></table></div></div></section><section id="exercice_7_registre_local_bonus"><h2>Exercice 7 : Registre local (Bonus)</h2><div class="slide-content"><div class="paragraph"><p><strong>Si le temps le permet :</strong></p></div>
 <div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Démarrer registre local (port 5000)</p></li><li class="fragment"><p>Tagger images SecureVote</p></li><li class="fragment"><p>Pousser vers registre</p></li><li class="fragment"><p>Modifier docker-compose.yml</p></li><li class="fragment"><p>Re-déployer</p></li></ol></div></div></section><section id="récapitulatif_et_bonnes_pratiques" data-background-color="MediumBlue"><h2>Récapitulatif et bonnes pratiques</h2></section><section id="checklist_sécurité"><h2>Checklist sécurité</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>✅ Images officielles et à jour</p></li><li class="fragment"><p>✅ Scan régulier des vulnérabilités</p></li><li class="fragment"><p>✅ Utilisateurs non-root systématiques</p></li><li class="fragment"><p>✅ Secrets jamais en clair</p></li><li class="fragment"><p>✅ Réseau isolé par défaut</p></li></ul></div></div></section><section id="checklist_production"><h2>Checklist production</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>✅ Limites de ressources CPU/RAM</p></li><li class="fragment"><p>✅ Politiques de redémarrage</p></li><li class="fragment"><p>✅ Health checks implémentés</p></li><li class="fragment"><p>✅ Dépendances ordonnées</p></li><li class="fragment"><p>✅ Logs structurés et rotation</p></li></ul></div></div></section><section id="ce_quon_a_appris"><h2>Ce qu&#8217;on a appris</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Sécuriser une application Docker de bout en bout</p></li><li class="fragment"><p>Scanner et corriger les vulnérabilités</p></li><li class="fragment"><p>Gérer les secrets correctement</p></li><li class="fragment"><p>Configurer pour la production</p></li><li class="fragment"><p>Distribuer via registres</p></li></ul></div></div></section><section id="securevote_avantaprès"><h2>SecureVote : Avant/Après</h2><div class="slide-content"><div class="exampleblock columns"><div class="content"><div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Avant :</strong></p></div>
 <div class="ulist"><ul><li><p>Images non scannées</p></li><li><p>Root partout</p></li><li><p>Secrets en clair</p></li><li><p>Pas de limites</p></li></ul></div></div></div>
@@ -5286,18 +5338,18 @@ docker tag myapp:latest myregistry.com/myapp:latest</code></pre></div></div>
 <div class="ulist"><ul><li><p>Images slim, scannées</p></li><li><p>Utilisateurs dédiés</p></li><li><p>Secrets protégés</p></li><li><p>Production-ready ✅</p></li></ul></div></div></div></div></div></div></section><section id="troubleshooting_production"><h2>🔧 Troubleshooting Production</h2><div class="slide-content"><aside class="notes"><div class="paragraph"><p>Section duration: 5 minutes
 Practical debugging guide for common production issues</p></div></aside>
 <h3>Conteneurs qui ne démarrent pas</h3><div class="paragraph"><p><strong>Étape 1</strong> : Vérifier les logs</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker logs nom-conteneur
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container logs nom-conteneur
 
 # OU pour suivre en temps réel
-docker logs -f nom-conteneur</code></pre></div></div>
+docker container logs -f nom-conteneur</code></pre></div></div>
 <div class="paragraph"><p><strong>Étape 2</strong> : Inspecter le conteneur</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker inspect nom-conteneur
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect nom-conteneur
 
 # Voir seulement l'état
-docker inspect --format='{{.State.Status}}' nom-conteneur
+docker container inspect --format='{{.State.Status}}' nom-conteneur
 
 # Voir le code de sortie
-docker inspect --format='{{.State.ExitCode}}' nom-conteneur</code></pre></div></div>
+docker container inspect --format='{{.State.ExitCode}}' nom-conteneur</code></pre></div></div>
 <div class="paragraph"><p><strong>Problèmes courants</strong> :</p></div>
 <table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:28.5714%"><col style="width:42.8571%"><col style="width:28.5715%"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Symptôme</th><th class="tableblock halign-left valign-top">Cause probable</th><th class="tableblock halign-left valign-top">Solution</th></tr><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>host not found in upstream</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">NGINX : résolution DNS statique</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Utiliser variables : <code>set $backend "app:8080"</code> + <code>proxy_pass <a href="http://$backend" class="bare">http://$backend</a></code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>cannot assign requested address</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Port déjà utilisé</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Changer port ou arrêter service conflictuel</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>no such file or directory</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Volume mal configuré</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Vérifier chemin absolu dans volumes</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>permission denied</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Problème permissions fichier</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Vérifier propriétaire et chmod</p></td></tr></table>
 <h3>Health Checks qui échouent</h3><div class="paragraph"><p><strong>Étape 1</strong> : Vérifier le status des services</p></div>
@@ -5306,13 +5358,13 @@ docker inspect --format='{{.State.ExitCode}}' nom-conteneur</code></pre></div></
 # Voir seulement les unhealthy
 docker compose ps | grep unhealthy</code></pre></div></div>
 <div class="paragraph"><p><strong>Étape 2</strong> : Inspecter le health check</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker inspect nom-conteneur | grep -A 20 Health
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect nom-conteneur | grep -A 20 Health
 
 # Voir uniquement le status
-docker inspect --format='{{.State.Health.Status}}' nom-conteneur
+docker container inspect --format='{{.State.Health.Status}}' nom-conteneur
 
 # Voir les derniers logs du health check
-docker inspect --format='{{json .State.Health.Log}}' nom-conteneur | jq</code></pre></div></div>
+docker container inspect --format='{{json .State.Health.Log}}' nom-conteneur | jq</code></pre></div></div>
 <div class="paragraph"><p><strong>Codes de sortie importants</strong> :</p></div>
 <div class="ulist"><ul><li><p><strong>0</strong> : Health check réussi ✅</p></li><li><p><strong>1</strong> : Health check échoué (erreur applicative)</p></li><li><p><strong>127</strong> : Commande non trouvée (outil manquant dans l&#8217;image)</p></li><li><p><strong>137</strong> : Tué par signal (timeout)</p></li></ul></div>
 <div class="paragraph"><p><strong>Problèmes courants</strong> :</p></div>
@@ -5349,7 +5401,7 @@ docker compose up -d
 
 # Observer en temps réel les changements de santé</code></pre></div></div>
 <h3>📊 Checklist de Debugging</h3><div class="paragraph"><p>Quand un problème survient en production :</p></div>
-<div class="olist arabic"><ol class="arabic"><li class="fragment"><p>✅ <code>docker compose ps</code> → Identifier les services en erreur</p></li><li class="fragment"><p>✅ <code>docker logs &lt;service&gt;</code> → Lire les logs d&#8217;erreur</p></li><li class="fragment"><p>✅ <code>docker inspect &lt;service&gt;</code> → Vérifier la configuration</p></li><li class="fragment"><p>✅ Si unhealthy : <code>docker inspect</code> pour voir Health.Log</p></li><li class="fragment"><p>✅ <code>docker events</code> en parallèle pour monitoring temps réel</p></li></ol></div>
+<div class="olist arabic"><ol class="arabic"><li class="fragment"><p>✅ <code>docker compose ps</code> → Identifier les services en erreur</p></li><li class="fragment"><p>✅ <code>docker container logs &lt;service&gt;</code> → Lire les logs d&#8217;erreur</p></li><li class="fragment"><p>✅ <code>docker container inspect &lt;service&gt;</code> → Vérifier la configuration</p></li><li class="fragment"><p>✅ Si unhealthy : <code>docker container inspect</code> pour voir Health.Log</p></li><li class="fragment"><p>✅ <code>docker events</code> en parallèle pour monitoring temps réel</p></li></ol></div>
 <div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content"><div class="paragraph"><p><strong>Commande magique de debugging</strong> :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose ps &amp;&amp; \
 docker compose logs --tail=50 &amp;&amp; \
@@ -5363,7 +5415,7 @@ Difficultés rencontrées</p></div></aside></div></section><section id="question
 <div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
 <div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
 <div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
-<div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div></div></section><section id="il_en_remet_une_couche" data-auto-animate><h2>"Il en remet une couche"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker history nginx
+<div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div></div></section><section id="il_en_remet_une_couche" data-auto-animate><h2>"Il en remet une couche"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image history nginx
 IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
 f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daemon…   0B
 &lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  STOPSIGNAL SIGTERM           0B
@@ -5378,7 +5430,7 @@ f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "da
 &lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV NGINX_VERSION=1.19.3     0B
 &lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  LABEL maintainer=NGINX Do…   0B
 &lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  CMD ["bash"]                 0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) ADD file:0dc53e7886c35bc21…   69.2MB</code></pre></div></div></div></section><section id="il_en_remet_une_couche_2" data-auto-animate><h2>"Il en remet une couche"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker history nginx
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) ADD file:0dc53e7886c35bc21…   69.2MB</code></pre></div></div></div></section><section id="il_en_remet_une_couche_2" data-auto-animate><h2>"Il en remet une couche"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image history nginx
 IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
 f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daemon…   0B
 &lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  STOPSIGNAL SIGTERM           0B
@@ -5417,7 +5469,7 @@ f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "da
  &amp;&amp; rm -rf /tmp/*</code></pre></div></div>
 <div class="paragraph fragment"><p>Il est utile, pour des raisons d&#8217;espace, de nettoyer le filesystem de ses futurs containers, en donnant les bonnes instructions dans le Dockerfile.</p></div></div></section><section id="documentez"><h2>Documentez !</h2><div class="slide-content"><div class="paragraph"><p>Les mots clés <code>EXPOSE</code> et <code>LABEL</code> peuvent fournir de précieuses informations aux utilisateurs de vos images !</p></div>
 <div class="paragraph"><p>(les ports exposés par défaut, les auteurs de l&#8217;image, la version d&#8217;un middleware embarqué, …)</p></div></div></section><section id="préparez_vous_au_read_only"><h2>Préparez-vous au read-only</h2><div class="slide-content"><div class="paragraph"><p>Il est possible de lister toutes les modifications qui ont été apportées au filesystem d&#8217;un container.</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker diff 29f1c4
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container diff 29f1c4
 C /run
 A /run/nginx.pid
 C /var
@@ -5442,10 +5494,10 @@ HEALTHCHECK --interval=1m --timeout=30s --retries=3 CMD curl --fail http://local
 <div class="paragraph"><p>source : <a href="https://www.grottedubarbu.fr/docker-healthcheck/" class="bare">https://www.grottedubarbu.fr/docker-healthcheck/</a></p></div></div></section><section id="debugging"><h2>Debugging</h2><div class="slide-content"><div class="imageblock"><img src="media/1939424428-image3.gif" alt="1939424428 image3"></div></div></section><section id="une_tonne_doutils"><h2>Une tonne d&#8217;outils !</h2><div class="slide-content"><div class="paragraph"><p>Les logs</p></div>
 <div class="ulist"><ul><li><p>des containers</p></li><li><p>du démon Docker</p></li></ul></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container exec
-docker inspect
-docker cp
-docker history
-docker stats</code></pre></div></div></div></section><section id="debugging_les_logs"><h2>Debugging : Les logs</h2><div class="slide-content"><div class="paragraph"><p>rappel : <code>docker container logs</code> permet de lister les logs des conteneurs.</p></div>
+docker container inspect
+docker container cp
+docker image history
+docker container stats</code></pre></div></div></div></section><section id="debugging_les_logs"><h2>Debugging : Les logs</h2><div class="slide-content"><div class="paragraph"><p>rappel : <code>docker container logs</code> permet de lister les logs des conteneurs.</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container logs 47d6
 Fri Nov 20 00:39:52 UTC 2023
 Fri Nov 20 00:39:53 UTC 2023</code></pre></div></div></div></section><section id="concentrateur_de_logs"><h2>Concentrateur de logs</h2><div class="slide-content"><div class="paragraph"><p>Par défaut, les logs des conteneurs sont stockés dans des fichiers json. Mais comment faire pour les envoyer vers un concentrateur ?</p></div>
@@ -5472,7 +5524,7 @@ export SETTINGS__GITLAB_ACCESS_TOKEN=glpat-XXXXXXXXXXXXXXXXXXXX</code></pre></di
 <div class="imageblock fragment"><img src="media/dependabot-cant-see-gitlab.png" alt="dependabot cant see gitlab"></div>
 <div class="paragraph fragment"><p>😢</p></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_4" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="paragraph"><p>Vous vous souvenez du chapitre sur les réseaux Docker ?</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Dans Docker, chaque conteneur a son propre espace de nom réseau, ce qui signifie que localhost à l&#8217;intérieur d&#8217;un conteneur fait référence au conteneur lui-même, et non à la machine hôte ou à d&#8217;autres conteneurs.</p></li><li class="fragment"><p>Lorsque vous essayez de faire un <code>ping</code> sur <code>gitlab-instance-gitlab-1</code> depuis le conteneur web, il ne connaît pas le nom d&#8217;hôte <code>gitlab-instance-gitlab-1</code> car il n&#8217;est pas dans le même espace de nom réseau.</p></li><li class="fragment"><p>Pour permettre aux conteneurs de communiquer entre eux, ils doivent être dans le même réseau Docker.</p></li></ul></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_5" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="ulist"><ul><li><p>Lorsque vous utilisez Docker Compose, il crée automatiquement un réseau par défaut pour votre application et tout service défini dans le <code>docker-compose.yml</code> peut atteindre les autres en utilisant le nom du service comme nom d&#8217;hôte.</p></li></ul></div>
-<div class="ulist"><ul><li class="fragment"><p>Dans notre cas, le conteneur <code>web</code> et le conteneur <code>gitlab-instance-gitlab-1</code> ne sont pas dans le même réseau Docker.</p></li><li class="fragment"><p>Vous pouvez vérifier cela en inspectant les réseaux de chaque conteneur à l&#8217;aide de la commande <code>docker inspect</code>.</p></li><li class="fragment"><p>S&#8217;ils ne sont pas dans le même réseau, nous pouvons créer un réseau et ajouter les deux services à celui-ci dans notre fichier <code>docker-compose.yml</code>.</p></li></ul></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_6" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="ulist"><ul><li><p>Voici un exemple :</p></li></ul></div>
+<div class="ulist"><ul><li class="fragment"><p>Dans notre cas, le conteneur <code>web</code> et le conteneur <code>gitlab-instance-gitlab-1</code> ne sont pas dans le même réseau Docker.</p></li><li class="fragment"><p>Vous pouvez vérifier cela en inspectant les réseaux de chaque conteneur à l&#8217;aide de la commande <code>docker container inspect</code>.</p></li><li class="fragment"><p>S&#8217;ils ne sont pas dans le même réseau, nous pouvons créer un réseau et ajouter les deux services à celui-ci dans notre fichier <code>docker-compose.yml</code>.</p></li></ul></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_6" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="ulist"><ul><li><p>Voici un exemple :</p></li></ul></div>
 <div class="listingblock"><div class="content"><pre>version: '3'
 services:
   web:
@@ -5550,18 +5602,24 @@ renovabot gitlab</p></div>
 jenkins complet docker compose
 Kube?</p></div>
 <div class="paragraph"><p>services ashutosh mix and match de conteneurs</p></div>
-<div class="paragraph"><p>build arm64, cloud et buildx</p></div></aside></div></section><section id="debugging_docker_exec"><h2>Debugging : docker exec</h2><div class="slide-content"><div class="paragraph"><p>rappel : <code>docker container exec</code> permet de lancer une commande dans un container</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker exec &lt;containerID&gt; echo "hello"</code></pre></div></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker exec -it &lt;containerID&gt; bash</code></pre></div></div></div></section><section id="debugging_docker_inspect"><h2>Debugging : docker inspect</h2><div class="slide-content"><div class="paragraph"><p>rappel : <code>docker inspect</code> permet de lister toutes les caractéristiques d&#8217;une image ou d&#8217;un container.</p></div>
-<div class="paragraph"><p>On peut filtrer le retour de la commande avec <code>jq</code> ou l&#8217;option <code>--format</code>.</p></div></div></section><section id="debugging_docker_cp"><h2>Debugging : docker cp</h2><div class="slide-content"><div class="paragraph"><p>Cette commande permet d&#8217;échanger des fichiers entre un conteneur et la machine hôte.</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker cp --help
-Usage:  docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-
+<div class="paragraph"><p>build arm64, cloud et buildx</p></div></aside></div></section><section id="debugging_docker_container_exec"><h2>Debugging : docker container exec</h2><div class="slide-content"><div class="paragraph"><p>rappel : <code>docker container exec</code> permet de lancer une commande dans un container</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container exec &lt;containerID&gt; echo "hello"</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container exec -it &lt;containerID&gt; bash</code></pre></div></div></div></section><section id="debugging_docker_container_inspect"><h2>Debugging : docker container inspect</h2><div class="slide-content"><div class="paragraph"><p>rappel : <code>docker container inspect</code> et <code>docker image inspect</code> listent toutes les caractéristiques d&#8217;un conteneur ou d&#8217;une image.</p></div>
+<div class="paragraph"><p>On peut filtrer le retour de la commande avec <code>jq</code> ou l&#8217;option <code>--format</code>.</p></div></div></section><section id="debugging_docker_container_cp"><h2>Debugging : docker container cp</h2><div class="slide-content"><div class="paragraph"><p>Cette commande permet d&#8217;échanger des fichiers entre un conteneur et la machine hôte.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container cp --help
+Usage:  docker container cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-
         docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH
+
 Copy files/folders between a container and the local filesystem
+
+Aliases:
+  docker container cp, docker cp
+
 Options:
   -a, --archive       Archive mode (copy all uid/gid information)
-  -L, --follow-link   Always follow symbol link in SRC_PATH</code></pre></div></div></div></section><section id="debugging_docker_history"><h2>Debugging : docker history</h2><div class="slide-content"><div class="paragraph"><p>Cette commande permet d&#8217;afficher la concaténation de tous les Dockerfiles qui ont abouti à cette image.</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker history nginx
+  -L, --follow-link   Always follow symlinks in SRC_PATH
+  -q, --quiet         Suppress progress output during copy</code></pre></div></div></div></section><section id="debugging_docker_image_history"><h2>Debugging : docker image history</h2><div class="slide-content"><div class="paragraph"><p>Cette commande permet d&#8217;afficher la concaténation de tous les Dockerfiles qui ont abouti à cette image.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image history nginx
 IMAGE               CREATED             CREATED BY                                      SIZE                f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daemon…   0B
 &lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  STOPSIGNAL SIGTERM           0B
 &lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  EXPOSE 80                    0B
@@ -5575,18 +5633,18 @@ IMAGE               CREATED             CREATED BY                              
 &lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV NGINX_VERSION=1.19.3     0B
 &lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  LABEL maintainer=NGINX Do…   0B
 &lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  CMD ["bash"]                 0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) ADD file:0dc53e7886c35bc21…   69.2MB</code></pre></div></div></div></section><section id="debugging_docker_stats"><h2>Debugging : docker stats</h2><div class="slide-content"><div class="paragraph"><p>Cette commande permet d&#8217;avoir les stats en temps réel d&#8217;un conteneur.</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker stats 42f128
+&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) ADD file:0dc53e7886c35bc21…   69.2MB</code></pre></div></div></div></section><section id="debugging_docker_container_stats"><h2>Debugging : docker container stats</h2><div class="slide-content"><div class="paragraph"><p>Cette commande permet d&#8217;avoir les stats en temps réel d&#8217;un conteneur.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container stats 42f128
 CONTAINER           CPU %     MEM USAGE/LIMIT     MEM %     NET I/O
 42f128              0.00%     1.454 MB/4.145 GB   0.04%     648 B/648 B</code></pre></div></div></div></section><section id="travaux_pratiques_14"><h2>🎓 Travaux pratiques #14</h2><div class="slide-content"><div class="paragraph"><p>Notre valeureux collègue Jean-Michel s&#8217;initiait à l&#8217;art mystérieux de Docker, et généreusement partageait ses créations sous forme d&#8217;images Docker pour l&#8217;entreprise.</p></div>
 <div class="paragraph"><p>Michel a soudainement décroché le jackpot du Loto, laissant derrière lui son bureau du jour au lendemain, alors qu&#8217;il était sur le point de nous offrir une image Nginx.</p></div>
 <div class="paragraph"><p>Désormais, nous n&#8217;avons que le binaire de son chef-d&#8217;œuvre, accessible à cette adresse :</p></div>
 <div class="paragraph"><p><a href="https://owncloud.univ-artois.fr/index.php/s/9s8XBLXvRwBJsrm" class="bare">https://owncloud.univ-artois.fr/index.php/s/9s8XBLXvRwBJsrm</a></p></div>
-<div class="paragraph"><p>Rassurez-vous, on nous a dit que <code>docker load</code> est la première étape de la formule magique pour percer les secrets de son œuvre.</p></div>
-<div class="paragraph"><p>À vos claviers ! 🧙‍♂️✨</p></div></div></section><section id="solution_travaux_pratiques_14" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="paragraph"><p><code>docker load</code> est la première étape de la formule magique</p></div>
+<div class="paragraph"><p>Rassurez-vous, on nous a dit que <code>docker image load</code> est la première étape de la formule magique pour percer les secrets de son œuvre.</p></div>
+<div class="paragraph"><p>À vos claviers ! 🧙‍♂️✨</p></div></div></section><section id="solution_travaux_pratiques_14" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="paragraph"><p><code>docker image load</code> est la première étape de la formule magique</p></div>
 <div class="paragraph fragment"><p>Okay&#8230;&#8203;</p></div>
 <div class="paragraph fragment"><p>🧙‍♂️✨</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker load -i bad-nginx.dkr
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image load -i bad-nginx.dkr
 Loaded image: bad-nginx:1</code></pre></div></div>
 <div class="paragraph fragment"><p>Nous voilà bien avancés&#8230;&#8203;</p></div>
 <div class="paragraph fragment"><p>On essaye de lancer un conteneur basé dessus ?</p></div>
@@ -5605,7 +5663,7 @@ Error : nginx is not executable</code></pre></div></div>
 <div class="paragraph fragment"><p>Spoiler alert : on a trouvé UN problème, pas LE problème.</p></div></div></section><section id="solution_travaux_pratiques_14_3" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="paragraph"><p>Je ne sais pas ce qu&#8217;a fait Jean-Michel, mais il a cassé le binaire de Nginx.</p></div>
 <div class="paragraph fragment"><p>Est-ce un problème de permission, de dépendance, de version, de compilation ?</p></div>
 <div class="paragraph fragment"><p>En tous cas, c&#8217;est cassé.</p></div>
-<div class="paragraph fragment"><p>Regardons un peu ce que nous dit docker inspect de tout ça&#8230;&#8203;</p></div>
+<div class="paragraph fragment"><p>Regardons un peu ce que nous dit docker image inspect de tout ça&#8230;&#8203;</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">docker image inspect bad-nginx:1
 [
     {
@@ -5668,7 +5726,7 @@ Error : nginx is not executable</code></pre></div></div>
 <div class="paragraph fragment"><p>Ça a été construit avec une vieille version de Docker.</p></div>
 <div class="paragraph fragment"><p>Qu&#8217;est-ce qu&#8217;on fait maintenant ?</p></div></div></section><section id="solution_travaux_pratiques_14_7" class="columns" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p>Tournons-nous vers l&#8217;histoire !</p></div>
 <div class="imageblock"><img src="https://img.20mn.fr/JejnWnikSbSj5suCAo9pug/1200x768_stephane-bern-arrive-elysee-4-octobre-2017.jpg" alt="1200x768 stephane bern arrive elysee 4 octobre 2017"></div></div></div>
-<div class="openblock column"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker history bad-nginx:1
+<div class="openblock column"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image history bad-nginx:1
 IMAGE          CREATED       CREATED BY                                      SIZE      COMMENT
 a469e4d1cb0c   3 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0B
 &lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  ENTRYPOINT ["/bin/sh" "-c…   0B
@@ -5682,7 +5740,7 @@ a469e4d1cb0c   3 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0
 <div class="paragraph fragment"><p>Le premier <code>ADD</code> est l&#8217;image de base, CentOS.</p></div>
 <div class="paragraph fragment"><p>La deuxième ligne, c&#8217;est une métadata, on s&#8217;en fiche un peu.</p></div>
 <div class="paragraph fragment"><p>La troisième ligne, c&#8217;est le <code>CMD</code> de l&#8217;image de base, qui est <code>bash</code>.</p></div>
-<div class="paragraph fragment"><p>La quatrième ligne, c&#8217;est l&#8217;installation de Nginx par l&#8217;infâme <code>yum</code> de Centos (déjà repéré dans le <code>docker inspect</code>).</p></div></div></div></div></section><section id="solution_travaux_pratiques_14_8" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker history bad-nginx:1
+<div class="paragraph fragment"><p>La quatrième ligne, c&#8217;est l&#8217;installation de Nginx par l&#8217;infâme <code>yum</code> de Centos (déjà repéré dans le <code>docker image inspect</code>).</p></div></div></div></div></section><section id="solution_travaux_pratiques_14_8" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image history bad-nginx:1
 IMAGE          CREATED       CREATED BY                                      SIZE      COMMENT
 a469e4d1cb0c   3 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0B
 &lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  ENTRYPOINT ["/bin/sh" "-c…   0B
@@ -5693,8 +5751,8 @@ a469e4d1cb0c   3 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0
 &lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B
 &lt;missing&gt;      3 years ago   /bin/sh -c #(nop) ADD file:538afc0c5c964ce0d…   215MB</code></pre></div></div>
 <div class="paragraph fragment"><p>La cinquième ligne, c&#8217;est sans doute la copie du fichier <code>index.html</code>.</p></div>
-<div class="paragraph fragment"><p>La sixième ligne, c&#8217;est l' <code>EXPOSE</code> de l&#8217;image finale, qui est <code>80</code> (déjà repéré dans le <code>docker inspect</code>).</p></div>
-<div class="paragraph fragment"><p>La septième ligne, c&#8217;est le <code>ENTRYPOINT</code> de l&#8217;image finale, qui est <code>/bin/sh -c /tmp/entrypoint.sh</code> (déjà repéré dans le <code>docker inspect</code>).</p></div></div></section><section id="solution_travaux_pratiques_14_9" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="paragraph"><p>Résumons-nous&#8230;&#8203; On a:</p></div>
+<div class="paragraph fragment"><p>La sixième ligne, c&#8217;est l' <code>EXPOSE</code> de l&#8217;image finale, qui est <code>80</code> (déjà repéré dans le <code>docker image inspect</code>).</p></div>
+<div class="paragraph fragment"><p>La septième ligne, c&#8217;est le <code>ENTRYPOINT</code> de l&#8217;image finale, qui est <code>/bin/sh -c /tmp/entrypoint.sh</code> (déjà repéré dans le <code>docker image inspect</code>).</p></div></div></section><section id="solution_travaux_pratiques_14_9" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="paragraph"><p>Résumons-nous&#8230;&#8203; On a:</p></div>
 <div class="ulist"><ul><li class="fragment"><p>une image de base CentOS (à remplacer par Alpine ou Debian)</p></li><li class="fragment"><p>une installation de <code>nginx</code>.</p></li><li class="fragment"><p>un port <code>80</code> exposé</p></li><li class="fragment"><p>un <code>ENTRYPOINT</code> qui lance un script <code>nginx</code></p></li><li class="fragment"><p>un fichier HTML, qu&#8217;on n&#8217;a pas encore récupéré
 Ça progresse&#8230;&#8203; On peut donc créer un premier 💀 Dockerfile</p></li></ul></div></div></section><section id="solution_travaux_pratiques_14_10" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍💀</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Utiliser Alpine ou Debian comme image de base
 FROM alpine
@@ -5720,11 +5778,11 @@ ENTRYPOINT ["nginx", "-g", "daemon off;"]</code></pre></div></div>
 <div class="paragraph fragment"><p>Mais on a d&#8217;autres armes en réserve&#8230;&#8203; Le <code>docker container create</code> par exemple !</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container create --name temp_container bad-nginx:1
 9149745197df413f7966181f6ca517b68713edd32ff7c35cea6e958d549a7553</code></pre></div></div>
-<div class="paragraph fragment"><p>Utilisons maintenant docker cp pour récupérer le fichier HTML.</p></div>
+<div class="paragraph fragment"><p>Utilisons maintenant docker container cp pour récupérer le fichier HTML.</p></div>
 <div class="paragraph fragment"><p>Quel est le répertoire où nginx s&#8217;attend à trouver ses fichiers HTML à servir?</p></div>
 <div class="paragraph fragment"><p><code>/usr/share/nginx/html</code></p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">mkdir /tmp/html &amp;&amp; cd /tmp/html
-docker cp temp_container:/usr/share/nginx/html .</code></pre></div></div></div></section><section id="solution_travaux_pratiques_14_13" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">head html/index.html</code></pre></div></div>
+docker container cp temp_container:/usr/share/nginx/html .</code></pre></div></div></div></section><section id="solution_travaux_pratiques_14_13" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">head html/index.html</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"&gt;
 
 &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"&gt;
