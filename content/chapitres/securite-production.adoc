@@ -1758,25 +1758,33 @@ Cosign (projet Sigstore) vérifie qui a signé une image, pas seulement qu'elle 
 [source,bash]
 ----
 docker container run --rm ghcr.io/sigstore/cosign/cosign:v3.1.3 verify \
-  --certificate-identity=keyless@projectsigstore.iam.gserviceaccount.com \
+  --certificate-identity=krel-trust@k8s-releng-prod.iam.gserviceaccount.com \
   --certificate-oidc-issuer=https://accounts.google.com \
-  ghcr.io/sigstore/cosign/cosign:v3.1.3
+  registry.k8s.io/pause:3.10
 ----
 
 [source,text]
 ----
-Verification for ghcr.io/sigstore/cosign/cosign:v3.1.3 --
+Verification for registry.k8s.io/pause:3.10 --
 The following checks were performed on each of these signatures:
   - The cosign claims were validated
   - Existence of the claims in the transparency log was verified offline
   - The code-signing certificate was verified using trusted certificate authority certificates
 ----
 
-Avec une autre identité attendue, la commande échoue (code de sortie 1) : `no matching CertificateIdentity found`.
+Avec `--certificate-identity=someone@example.com`, la commande échoue (code de sortie 12) : `no matching signatures`.
 
 [.notes]
 --
-Sortie réelle, relevée le 2026-09-24 avec Docker 29.8.0.
+Sortie réelle, relevée le 2026-09-24 avec Docker 29.8.0 et Cosign v3.1.3. L'image vérifiée
+est une image Kubernetes, signée en mode « keyless » par le compte de publication du projet
+(`krel-trust@k8s-releng-prod`, celui que la documentation Kubernetes donne pour cette vérification).
+
+Limite de l'exemple : l'outil de vérification vient lui-même d'une image téléchargée. Une
+vérification qui établit vraiment la confiance suppose un Cosign obtenu par un canal vérifié
+séparément (paquet de la distribution, ou binaire dont la somme de contrôle a été vérifiée).
+Faire vérifier une image par elle-même ne prouve rien : une image modifiée peut afficher
+« Verified ».
 
 Les tutoriels antérieurs montrent souvent Docker Content Trust (`DOCKER_CONTENT_TRUST=1`,
 `docker trust sign`). Ne pas le suivre : la CLI Docker 29 n'a plus de sous-commande
