@@ -1757,22 +1757,22 @@ Cosign (projet Sigstore) vérifie qui a signé une image, pas seulement qu'elle 
 
 [source,bash]
 ----
-docker container run --rm ghcr.io/sigstore/cosign/cosign:v2.6.1 verify \
+docker container run --rm ghcr.io/sigstore/cosign/cosign:v3.1.3 verify \
   --certificate-identity=keyless@projectsigstore.iam.gserviceaccount.com \
   --certificate-oidc-issuer=https://accounts.google.com \
-  ghcr.io/sigstore/cosign/cosign:v2.6.1
+  ghcr.io/sigstore/cosign/cosign:v3.1.3
 ----
 
 [source,text]
 ----
-Verification for ghcr.io/sigstore/cosign/cosign:v2.6.1 --
+Verification for ghcr.io/sigstore/cosign/cosign:v3.1.3 --
 The following checks were performed on each of these signatures:
   - The cosign claims were validated
   - Existence of the claims in the transparency log was verified offline
   - The code-signing certificate was verified using trusted certificate authority certificates
 ----
 
-Avec une autre identité attendue, la commande échoue (code de sortie 12) : `no matching signatures`.
+Avec une autre identité attendue, la commande échoue (code de sortie 1) : `no matching CertificateIdentity found`.
 
 [.notes]
 --
