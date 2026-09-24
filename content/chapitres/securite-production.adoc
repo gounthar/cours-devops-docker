@@ -940,6 +940,119 @@ Le principe reste le même : JAMAIS de secrets en clair dans Git !"
 - Exercice bonus si temps : migrer vers Docker Secrets (Phase 3+)
 --
 
+== Le point commun des cinq solutions
+
+À la fin, le secret est **dans** le conteneur :
+
+[%step]
+* en variable d'environnement (`.env`, variables shell)
+* en fichier sous `/run/secrets/` (Docker Secrets)
+* ou en mémoire, lu par l'application via une API (Vault, cloud)
+* dans tous les cas, le programme a la valeur en clair
+
+[.step]
+**Et si le programme ne recevait jamais le secret ?**
+
+[.notes]
+--
+Transition : les cinq solutions du tableau règlent le problème du STOCKAGE (ne pas commiter, chiffrer au repos, contrôler l'accès).
+Aucune ne règle celui de l'USAGE : le programme finit par détenir la valeur en clair (variable, fichier, ou réponse de l'API Vault/cloud), et un programme compromis (dépendance piégée, agent d'IA qui se trompe, injection de prompt) peut la lire et l'envoyer ailleurs.
+Rappel de la diapositive « Mauvaise pratique » : docker container inspect montre toutes les variables d'environnement.
+Faire deviner avant la diapositive suivante : où mettre le secret pour que le programme puisse s'en servir sans jamais le voir ?
+--
+
+== Docker Sandboxes : le proxy d'identifiants
+
+image::sbx-proxy-identifiants.svg[Proxy d'identifiants hors de la microVM]
+
+[.small]
+_État au 2026-09-24, `sbx` v0.45.1. Outil récent : les commandes peuvent changer._
+
+[.notes]
+--
+Docker Sandboxes (commande sbx) lance chaque sandbox dans une microVM : noyau propre, démon Docker propre.
+Mesuré le 2026-09-24 : noyau 7.0.12 dans la sandbox, 6.8 sur l'hôte. C'est bien une VM, pas un conteneur.
+
+Le point à faire voir sur le schéma : le proxy est HORS de la VM, dans le démon sbx de l'hôte.
+- Le secret réel est stocké côté hôte (sbx secret set-custom, ou sbx secret set pour les services connus).
+- La VM ne reçoit qu'une valeur de substitution (sbx-cs-... pour un secret personnalisé).
+- Toutes les requêtes HTTP(S) de la VM passent par ce proxy (HTTPS_PROXY=http://gateway.docker.internal:3128 dans la sandbox).
+- Pour l'hôte déclaré, le proxy remplace la substitution par la valeur réelle dans l'en-tête. Pour tout autre hôte, la substitution part telle quelle.
+
+Idée clé : le proxy ne place jamais le secret dans l'environnement d'exécution (ni variable, ni fichier). C'est un modèle différent des cinq autres, pas une sixième ligne du tableau.
+Nuance, deux diapositives plus loin : un hôte déclaré qui renvoie l'en-tête fait quand même entrer la valeur dans la sandbox.
+
+Sources : docs.docker.com/ai/sandboxes/security (« host-side proxy ») et docs.docker.com/ai/sandboxes/configuration/credentials.
+--
+
+== Démo : ce que voit la sandbox
+
+Sur l'hôte, un secret factice lié à un seul domaine :
+
+[source,bash]
+----
+sbx policy init balanced
+sbx secret set-custom --host httpbin.org --env DEMO_TOKEN --value valeur-reelle-576
+sbx create shell --name demo .
+sbx policy allow network httpbin.org
+----
+
+Dans la sandbox :
+
+[source,bash]
+----
+sbx exec demo sh -c 'echo $DEMO_TOKEN'
+# sbx-cs-oQlw2y1oLoOzfg5D
+sbx exec demo sh -c 'curl -sS -H "Authorization: Bearer $DEMO_TOKEN" https://httpbin.org/headers'
+# "Authorization": "Bearer valeur-reelle-576"
+----
+
+[.notes]
+--
+DÉMO SEULEMENT, pas de TP : chaque étudiant aurait besoin d'un compte Docker (sbx login), et d'un poste avec KVM.
+
+Prérequis sur le poste de démo (d'après docs.docker.com/ai/sandboxes/install) :
+- Ubuntu 24.04 ou plus récent (le paquet docker-sbx n'existe que dans le dépôt Ubuntu de Docker)
+- /dev/kvm accessible, utilisateur dans le groupe kvm
+- sbx login fait AVANT le cours (ouvre un navigateur)
+- sbx daemon start lancé dans un terminal à part (il reste au premier plan)
+À VÉRIFIER sur un poste de l'université avant la séance : rien de tout ça n'y a été testé.
+
+Déroulé mesuré le 2026-09-24 dans un Codespace :
+- sbx policy init balanced : sans lui, sbx create refuse de démarrer.
+- La valeur de substitution est générée par sbx et change à chaque set-custom : lire la vraie dans la sortie de la commande.
+- sbx create shell : environ 1 min 15 au premier lancement (téléchargement de l'image). Lancer AVANT le cours.
+- La politique balanced bloque tout domaine non autorisé, d'où sbx policy allow network.
+- Guillemets simples autour de sh -c : c'est la sandbox qui développe $DEMO_TOKEN, pas l'hôte.
+- --value sur la ligne de commande : acceptable pour une valeur factice, mais elle finit dans l'historique du shell. Ne jamais faire ça avec un vrai secret.
+
+Faire remarquer : echo affiche la substitution, et c'est pourtant la valeur réelle qui arrive chez httpbin.
+--
+
+== Ce que le proxy ne protège pas
+
+[%step]
+* Le programme peut toujours **utiliser** le secret vers l'hôte déclaré
+* Un hôte qui renvoie l'en-tête le révèle : httpbin.org vient de le faire !
+* Le proxy déchiffre le HTTPS : il installe sa propre autorité de certification dans la sandbox
+* Le secret réel reste sur l'hôte : sans trousseau, dans un fichier
+
+TIP: Le proxy garde la valeur hors de la sandbox, tant que l'hôte déclaré ne la renvoie pas. Il n'empêche jamais de **l'utiliser**.
+
+[.notes]
+--
+Chaque point a été mesuré le 2026-09-24 :
+
+1. Usage : la sandbox ne connaît pas la valeur, mais toute requête vers httpbin.org part avec. Un agent compromis peut donc agir avec le jeton (créer une issue, pousser du code...) sur le service déclaré. Il ne peut pas lire la valeur, sauf si l'hôte déclaré la renvoie (point 2) : il pourrait alors l'envoyer vers n'importe quel autre domaine autorisé par la politique réseau.
+2. Écho : httpbin.org/headers renvoie les en-têtes reçus, donc la réponse contenait "Bearer valeur-reelle-576" DANS la sandbox. Une vraie API (api.github.com) ne renvoie pas l'en-tête Authorization, mais la protection dépend de ce comportement du service distant. Question aux étudiants : quel type d'hôte faut-il éviter de déclarer ?
+3. HTTPS : pour réécrire un en-tête chiffré, le proxy fait l'intermédiaire. La sandbox reçoit son certificat d'autorité (variable PROXY_CA_CERT_B64). C'est le même mécanisme qu'un proxy d'entreprise.
+4. Stockage : dans le Codespace de test, sbx a affiché « No keychain detected », et le secret est stocké sur disque, protégé par les permissions du fichier. Le secret sort de la VM, pas de la machine.
+
+Détail observé : même sans aucun secret posé, la sandbox reçoit des substitutions pour les services connus, par exemple OPENAI_API_KEY=proxy-managed, et GH_TOKEN=gho_sbxproxymanaged000... qui imite le format d'un vrai jeton GitHub.
+
+Pour un service connu (github, openai, anthropic...), la documentation donne sbx secret set github, la valeur étant demandée de façon interactive. Cette commande-là n'a pas été lancée pour le cours.
+--
+
 [background-color="DarkOrange"]
 == Phase 2 : Sécurisation (1h15)
 
