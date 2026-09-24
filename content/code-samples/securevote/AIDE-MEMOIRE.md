@@ -373,7 +373,7 @@ docker compose logs backend
 - Secrets Management : HashiCorp Vault
 - Monitoring : Prometheus + Grafana
 - CI/CD : GitHub Actions, GitLab CI
-- Image Signing : Docker Content Trust, Cosign
+- Image Signing : Cosign (Sigstore), Notation (Docker Content Trust est retiré)
 - Runtime Security : Falco
 
 ---

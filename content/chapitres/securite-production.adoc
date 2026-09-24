@@ -1751,12 +1751,49 @@ docker events --filter type=container
 Affiche : statuts, logs récents, et écoute les événements !
 ====
 
+== Vérifier la signature d'une image
+
+Cosign (projet Sigstore) vérifie qui a signé une image, pas seulement qu'elle est signée :
+
+[source,bash]
+----
+docker container run --rm ghcr.io/sigstore/cosign/cosign:v2.6.1 verify \
+  --certificate-identity=keyless@projectsigstore.iam.gserviceaccount.com \
+  --certificate-oidc-issuer=https://accounts.google.com \
+  ghcr.io/sigstore/cosign/cosign:v2.6.1
+----
+
+[source,text]
+----
+Verification for ghcr.io/sigstore/cosign/cosign:v2.6.1 --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The code-signing certificate was verified using trusted certificate authority certificates
+----
+
+Avec une autre identité attendue, la commande échoue (code de sortie 12) : `no matching signatures`.
+
+[.notes]
+--
+Sortie réelle, relevée le 2026-09-24 avec Docker 29.8.0.
+
+Les tutoriels antérieurs montrent souvent Docker Content Trust (`DOCKER_CONTENT_TRUST=1`,
+`docker trust sign`). Ne pas le suivre : la CLI Docker 29 n'a plus de sous-commande
+`docker trust`, et le service Notary v1 de Docker Hub (`notary.docker.io`) ferme le
+8 décembre 2026. Docker oriente vers Sigstore/Cosign ou Notation.
+
+Signer soi-même : `cosign sign <image>` en mode « keyless » ouvre une authentification OIDC
+(GitHub, Google…) et inscrit la signature dans le journal de transparence Rekor.
+En CI, l'identité est celle du workflow.
+--
+
 == Aller plus loin
 
 [%step]
 * **Orchestration** : Kubernetes, Docker Swarm
 * **Secrets Management** : Vault, Sealed Secrets
-* **Image Signing** : Docker Content Trust, Cosign
+* **Image Signing** : Cosign (Sigstore), Notation
 * **Runtime Security** : Falco, Aqua Security
 
 == Ressources utiles
