@@ -187,7 +187,7 @@ Explorez les fichiers et identifiez les problèmes :
 
 [%step]
 * `docker compose ps`
-* `docker inspect <container>`
+* `docker container inspect <container>`
 * Contenu des Dockerfile
 * Variables d'environnement
 
@@ -254,7 +254,7 @@ TIP: Démonstration live recommandée
 --
 DÉMONSTRATION LIVE ESSENTIELLE ici ! Les étudiants doivent VOIR les CVE en temps réel.
 Comparer python:3.11 vs python:3.11-slim : différence spectaculaire (150+ CVE vs 20-30).
-Si Docker Scout ne fonctionne pas, basculer sur Trivy : "docker run aquasec/trivy image python:3.11"
+Si Docker Scout ne fonctionne pas, basculer sur Trivy : "docker container run aquasec/trivy image python:3.11"
 Montrer que le scan prend 10-30 secondes : c'est acceptable pour un pipeline CI/CD.
 Insister : ce n'est pas paranoïaque, c'est STANDARD en 2025.
 --
@@ -339,7 +339,7 @@ Ces étapes sont omises dans le TP pour simplicité, mais OBLIGATOIRES en produc
 [source,bash]
 ----
 # Via Docker (aucune installation nécessaire)
-docker run --rm \
+docker container run --rm \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v $HOME/.cache/trivy:/root/.cache \
   aquasec/trivy:0.54.1 image python:3.11
@@ -408,7 +408,7 @@ Erreur N°1 des débutants Docker : tout tourne en root par défaut.
 Analogie : c'est comme lancer toutes vos apps Windows en "Administrateur" en permanence.
 Si un attaquant exploite une faille dans votre app Python, il a root sur le conteneur.
 Avec root, il peut : installer des outils, scanner le réseau, pivoter vers d'autres conteneurs.
-Montrer docker exec <container> whoami → retourne "root" = MAUVAIS !
+Montrer docker container exec <container> whoami → retourne "root" = MAUVAIS !
 --
 
 == Solution : Utilisateur dédié
@@ -432,7 +432,7 @@ CMD ["python", "/app/app.py"]
 * Toujours créer un utilisateur dédié
 * UID > 1000 (éviter conflits système)
 * Ne jamais revenir à root après USER
-* Vérifier : `docker exec <container> whoami`
+* Vérifier : `docker container exec <container> whoami`
 
 == Comprendre les UID Linux
 
@@ -477,7 +477,7 @@ RUN useradd appuser
 ----
 
 [%step]
-Vérifier : `docker exec <container> id appuser`
+Vérifier : `docker container exec <container> id appuser`
 
 [.notes]
 --
@@ -517,14 +517,14 @@ environment:
   - POSTGRES_PASSWORD=super_secret_123  # NON !
 ----
 
-WARNING: Visible dans `docker inspect`, logs, historique !
+WARNING: Visible dans `docker container inspect`, logs, historique !
 
 [.notes]
 --
 Piège classique : secrets en clair dans docker-compose.yml = COMMITÉS sur Git = PUBLICS.
 Anecdote : chercher "removed password" sur GitHub = des millions de résultats.
 Les secrets restent dans l'historique Git même après suppression !
-docker inspect montre TOUTES les variables d'env = un attaquant peut lire.
+docker container inspect montre TOUTES les variables d'env = un attaquant peut lire.
 Les logs peuvent accidentellement afficher les secrets lors du démarrage.
 Message clé : les secrets ne doivent JAMAIS être versionnés.
 --
@@ -1123,7 +1123,7 @@ services:
 
 [%step]
 . Démarrer sans limites
-. Observer : `docker stats`
+. Observer : `docker container stats`
 . Ajouter 20-30% de marge
 . Tester sous charge
 . Ajuster
@@ -1174,7 +1174,7 @@ services:
 --
 Health check = le contrôle aérien de vos conteneurs.
 Un conteneur peut être "running" mais MORT à l'intérieur (app crashée, connexion DB perdue).
-docker ps montre "Up" mais healthcheck montre "unhealthy" = problème détecté !
+docker container ls montre "Up" mais healthcheck montre "unhealthy" = problème détecté !
 Exemple concret : backend démarre en 5s, mais connexion DB prend 30s → start_period: 40s.
 interval: 30s = vérifier toutes les 30s, c'est raisonnable (pas trop fréquent, pas trop lent).
 retries: 3 = tolérer 3 échecs avant de marquer "unhealthy" = évite les faux positifs.
@@ -1280,16 +1280,16 @@ Temps : 1h = 3 exercices de 15-25 min chacun + checkpoint final.
 **Mission :**
 
 [%step]
-. Observer avec `docker stats`
+. Observer avec `docker container stats`
 . Définir limites appropriées
 . Tester sous charge (script fourni)
 . Ajuster
 
 [source,bash]
 ----
-docker stats --no-stream
+docker container stats --no-stream
 ./load_test.sh
-docker stats
+docker container stats
 ----
 
 == Exercice 5 : Restart et Health (25 min)
@@ -1334,7 +1334,7 @@ Application production-ready :
 ----
 docker compose config --services
 docker compose ps
-docker stats --no-stream
+docker container stats --no-stream
 ----
 
 [background-color="Navy"]
@@ -1350,9 +1350,9 @@ docker stats --no-stream
 
 [source,bash]
 ----
-docker pull nginx:latest
+docker image pull nginx:latest
 # Équivalent à :
-docker pull docker.io/library/nginx:latest
+docker image pull docker.io/library/nginx:latest
 ----
 
 [%step]
@@ -1381,9 +1381,9 @@ docker pull docker.io/library/nginx:latest
 
 [source,bash]
 ----
-docker run -d -p 5000:5000 --name registry registry:2
-docker tag securevote-backend:latest localhost:5000/securevote-backend:latest
-docker push localhost:5000/securevote-backend:latest
+docker container run -d -p 5000:5000 --name registry registry:2
+docker image tag securevote-backend:latest localhost:5000/securevote-backend:latest
+docker image push localhost:5000/securevote-backend:latest
 ----
 
 == Tags et versions
@@ -1391,9 +1391,9 @@ docker push localhost:5000/securevote-backend:latest
 [source,bash]
 ----
 # Bonne pratique : versionner
-docker tag myapp:latest myregistry.com/myapp:1.2.3
-docker tag myapp:latest myregistry.com/myapp:1.2
-docker tag myapp:latest myregistry.com/myapp:latest
+docker image tag myapp:latest myregistry.com/myapp:1.2.3
+docker image tag myapp:latest myregistry.com/myapp:1.2
+docker image tag myapp:latest myregistry.com/myapp:latest
 ----
 
 TIP: Plusieurs tags → même image
@@ -1478,23 +1478,23 @@ Practical debugging guide for common production issues
 
 [source,bash]
 ----
-docker logs nom-conteneur
+docker container logs nom-conteneur
 
 # OU pour suivre en temps réel
-docker logs -f nom-conteneur
+docker container logs -f nom-conteneur
 ----
 
 **Étape 2** : Inspecter le conteneur
 
 [source,bash]
 ----
-docker inspect nom-conteneur
+docker container inspect nom-conteneur
 
 # Voir seulement l'état
-docker inspect --format='{{.State.Status}}' nom-conteneur
+docker container inspect --format='{{.State.Status}}' nom-conteneur
 
 # Voir le code de sortie
-docker inspect --format='{{.State.ExitCode}}' nom-conteneur
+docker container inspect --format='{{.State.ExitCode}}' nom-conteneur
 ----
 
 **Problèmes courants** :
@@ -1538,13 +1538,13 @@ docker compose ps | grep unhealthy
 
 [source,bash]
 ----
-docker inspect nom-conteneur | grep -A 20 Health
+docker container inspect nom-conteneur | grep -A 20 Health
 
 # Voir uniquement le status
-docker inspect --format='{{.State.Health.Status}}' nom-conteneur
+docker container inspect --format='{{.State.Health.Status}}' nom-conteneur
 
 # Voir les derniers logs du health check
-docker inspect --format='{{json .State.Health.Log}}' nom-conteneur | jq
+docker container inspect --format='{{json .State.Health.Log}}' nom-conteneur | jq
 ----
 
 **Codes de sortie importants** :
@@ -1619,9 +1619,9 @@ Quand un problème survient en production :
 
 [%step]
 1. ✅ `docker compose ps` → Identifier les services en erreur
-2. ✅ `docker logs <service>` → Lire les logs d'erreur
-3. ✅ `docker inspect <service>` → Vérifier la configuration
-4. ✅ Si unhealthy : `docker inspect` pour voir Health.Log
+2. ✅ `docker container logs <service>` → Lire les logs d'erreur
+3. ✅ `docker container inspect <service>` → Vérifier la configuration
+4. ✅ Si unhealthy : `docker container inspect` pour voir Health.Log
 5. ✅ `docker events` en parallèle pour monitoring temps réel
 
 [TIP]

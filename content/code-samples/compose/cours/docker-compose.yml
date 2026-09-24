@@ -1,5 +1,8 @@
+# tag::entete[]
 # Ceci est un fichier Docker Compose pour un projet qui comprend plusieurs services.
 
+# end::entete[]
+# tag::ancre[]
 # 'x-slides-base' est une ancre YAML qui définit une configuration commune pour plusieurs services.
 x-slides-base: &slides-base
   # La configuration de construction pour l'image Docker.
@@ -9,12 +12,18 @@ x-slides-base: &slides-base
     args:
       # Active la fonction de mise en cache en ligne de Docker BuildKit.
       BUILDKIT_INLINE_CACHE: 1
+  # tag::environnement[]
   # Variables d'environnement pour le conteneur Docker.
   environment:
     - PRESENTATION_URL=${PRESENTATION_URL}
     - REPOSITORY_URL=${REPOSITORY_URL}
+    # Le fichier racine à construire : SOURCE_FILE=index-examen.adoc make build
+    - SOURCE_FILE=${SOURCE_FILE}
+  # end::environnement[]
+  # tag::utilisateur[]
   # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
   user: ${CURRENT_UID}
+  # end::utilisateur[]
   # Un montage tmpfs pour des E/S plus rapides ; 1777 car le conteneur n'est pas root.
   tmpfs:
     - ${BUILD_DIR}:mode=1777
@@ -26,9 +35,11 @@ x-slides-base: &slides-base
     - ./gulp/gulpfile.js:/app/gulpfile.js
     - ./gulp/tasks:/app/tasks
     - ./npm-packages:/app/npm-packages
+# end::ancre[]
 
 # Les services qui composent l'application.
 services:
+  # tag::serve[]
   # Le service 'serve'.
   serve:
     # Utilise la configuration commune définie par l'ancre 'x-slides-base'.
@@ -36,7 +47,9 @@ services:
     # Expose le port 8000 du conteneur à l'hôte.
     ports:
       - "8000:8000"
+  # end::serve[]
 
+  # tag::build[]
   # Le service 'build'.
   build:
     <<: *slides-base
@@ -48,7 +61,9 @@ services:
     # Le point d'entrée pour le conteneur Docker.
     entrypoint: >
       sh -xc 'gulp build && cp -r "${BUILD_DIR}"/* /app/dist/'
+  # end::build[]
 
+  # tag::qrcode[]
   # Le service 'qrcode'.
   qrcode:
     <<: *slides-base
@@ -57,11 +72,14 @@ services:
     # La commande à exécuter dans le conteneur Docker.
     command: >
       -t png -o /app/content/media/qrcode.png ${PRESENTATION_URL}
+  # end::qrcode[]
 
+  # tag::pdf[]
   # Le service 'pdf'.
   pdf:
-    # L'image Docker pour ce service.
-    image: ghcr.io/astefanutti/decktape:3.7.0
+    # L'image est construite localement, à partir de decktape : voir dockerfiles/pdf/.
+    build:
+      context: ./dockerfiles/pdf
     # Ce service dépend du service 'build'.
     depends_on:
       build:
@@ -69,9 +87,12 @@ services:
         condition: service_completed_successfully
     # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
     user: ${CURRENT_UID}
+    environment:
+      # Chromium veut un HOME inscriptible pour sa base crashpad. L'image n'en
+      # déclare un que pour l'uid 1000 : tout autre uid tombe sur HOME=/ et le
+      # navigateur refuse de démarrer.
+      - HOME=/tmp
     # Volumes pour le conteneur Docker.
     volumes:
       - ${DIST_DIR}:/slides
-    # La commande à exécuter dans le conteneur Docker.
-    command: >
-      /slides/index.html /slides/slides.pdf --size='1024x768' --pause 0
+  # end::pdf[]

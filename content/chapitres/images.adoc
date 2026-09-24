@@ -347,7 +347,7 @@ Quand le build se termine, il se trouve dans le registre local.
 [%step]
 [source,bash]
 ----
-docker images
+docker image ls
 REPOSITORY       TAG                 IMAGE ID
 myjava           1.42                d3017f59d5e2
 ----
@@ -386,7 +386,7 @@ Dans les registres Docker.
 [%step]
 [source,bash]
 ----
-$ docker images
+$ docker image ls
 REPOSITORY                            TAG                     IMAGE ID       CREATED         SIZE
 cours-devops-docker-serve             latest                  654fc65c0913   13 hours ago    668MB
 cours-devops-docker-qrcode            latest                  a3ff53e5d677   13 hours ago    668MB
@@ -745,9 +745,9 @@ docker image build -t docker-git:1.2.0 ./docker-git/
 
 ## Vérification
 # Renvoie une erreur
-docker run --rm docker-git:1.1.0 make --version
+docker container run --rm docker-git:1.1.0 make --version
 # Doit fonctionner
-docker run --rm docker-git:1.2.0 make --version
+docker container run --rm docker-git:1.2.0 make --version
 ----
 
 include::sous-chapitres/images/entrypoint.adoc[]

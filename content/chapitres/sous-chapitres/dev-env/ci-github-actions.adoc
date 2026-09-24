@@ -185,7 +185,7 @@ plus y penser — ce qui est précisément le soulagement recherché.
 
 **Écho au reste du cours :**
 
-C'est le même raisonnement que `docker run` contre « installer sur sa machine », vu au premier
+C'est le même raisonnement que `docker container run` contre « installer sur sa machine », vu au premier
 chapitre. Rien de neuf, un nouveau terrain.
 --
 
@@ -212,7 +212,7 @@ l'image, pas en la lisant. C'est la leçon de méthode à faire passer autant qu
 
 **Détail 1 — l'utilisateur :**
 
-`docker run --rm mcr.microsoft.com/devcontainers/base:ubuntu id` rend `uid=0(root)`. L'image
+`docker container run --rm mcr.microsoft.com/devcontainers/base:ubuntu id` rend `uid=0(root)`. L'image
 *contient* `sudo` (`/usr/bin/sudo` existe), donc un `sudo apt-get` ne produirait pas d'erreur :
 il serait simplement superflu. Beaucoup d'images minimales, elles, n'ont pas `sudo` du tout, et
 là le workflow casse.
@@ -306,7 +306,7 @@ include::../../../code-samples/gh-actions/ci-docker-image.yml[tags="common,conta
 **Le point à ne pas laisser passer :**
 
 Ce workflow ne teste rien. Il affiche une vache. C'est un squelette : on y remplace la dernière
-étape par `make build`, `npm test` ou `docker build`, et le reste ne bouge pas.
+étape par `make build`, `npm test` ou `docker image build`, et le reste ne bouge pas.
 --
 
 === Ce cours est construit comme ça 🏗️

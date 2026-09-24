@@ -138,7 +138,7 @@ Comment retrouver le contenu de la sortie standard du container ?
 
 [source,shell]
 ----
-docker logs 399f3
+docker container logs 399f3
 ----
 
 [%auto-animate]
@@ -150,7 +150,7 @@ Comment retrouver le contenu de la sortie standard du container ?
 
 [source,shell]
 ----
-docker logs 399f3
+docker container logs 399f3
 Tue Sep 12 12:37:01 UTC 2023
 Tue Sep 12 12:37:02 UTC 2023
 Tue Sep 12 12:37:03 UTC 2023
@@ -173,7 +173,7 @@ Comment retrouver le contenu de la sortie standard du container ?
 
 [source,shell]
 ----
-docker logs 399f3
+docker container logs 399f3
 Tue Sep 12 12:37:01 UTC 2023
 Tue Sep 12 12:37:02 UTC 2023
 Tue Sep 12 12:37:03 UTC 2023
@@ -397,10 +397,10 @@ image::output72_with_transparency.png[]
 [.notes]
 --
 `docker container create` is used to create a new container but without starting it immediately.
-When you run docker create, Docker creates a container based on the specified image and prepares it to run, but it remains in a stopped state.
+When you run docker container create, Docker creates a container based on the specified image and prepares it to run, but it remains in a stopped state.
 You can then start the container using the `docker container start` command.
 
-Here's the basic syntax of the docker create command:
+Here's the basic syntax of the docker container create command:
 
 [source,bash]
 ----
@@ -578,7 +578,7 @@ docker container ls --filter "status=exited"
 * Exécuter un `ps -ef` dans ce container
 * Quel est le PID du process principal ?
 * Vérifier que le container "tourne" toujours
-* Supprimer l'image (tip : `docker rmi`)
+* Supprimer l'image (tip : `docker image rm`)
 * Supprimer les containers
 * Supprimer l'image (pour de vrai cette fois)
 
@@ -606,18 +606,18 @@ CONTAINER ID   IMAGE                           COMMAND                  CREATED 
 edea0c46c6d8   jpetazzo/clock                  "/bin/sh -c 'while d…"   9 minutes ago   Up About a minute                            second-clock
 ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago    Up 11 hours                                  buildx_buildkit_exciting_williams0
 
-# Supprimer l'image (tip : `docker rmi`)
-docker rmi jpetazzo/clock
+# Supprimer l'image (tip : `docker image rm`)
+docker image rm jpetazzo/clock
 Error response from daemon: conflict: unable to remove repository reference "jpetazzo/clock" (must force) - container edea0c46c6d8 is using its referenced image 7a8965d6553e
 
 # Supprimer les containers
-docker stop second-clock
+docker container stop second-clock
 second-clock
 
-docker rm second-clockl
+docker container rm second-clockl
 second-clock
 # Supprimer l'image (pour de vrai cette fois)
-docker rmi jpetazzo/clock
+docker image rm jpetazzo/clock
 
 Untagged: jpetazzo/clock:latest
 Untagged: jpetazzo/clock@sha256:dc06bbc3744f7200404bff0bbb2516925e7adea115e07de9da8b36bf15fe3dd3
