@@ -1751,12 +1751,57 @@ docker events --filter type=container
 Affiche : statuts, logs récents, et écoute les événements !
 ====
 
+== Vérifier la signature d'une image
+
+Cosign (projet Sigstore) vérifie qui a signé une image, pas seulement qu'elle est signée :
+
+[source,bash]
+----
+docker container run --rm ghcr.io/sigstore/cosign/cosign:v3.1.3 verify \
+  --certificate-identity=krel-trust@k8s-releng-prod.iam.gserviceaccount.com \
+  --certificate-oidc-issuer=https://accounts.google.com \
+  registry.k8s.io/pause:3.10
+----
+
+[source,text]
+----
+Verification for registry.k8s.io/pause:3.10 --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The code-signing certificate was verified using trusted certificate authority certificates
+----
+
+Avec `--certificate-identity=someone@example.com`, la commande échoue (code de sortie 12) : `no matching signatures`.
+
+[.notes]
+--
+Sortie réelle, relevée le 2026-09-24 avec Docker 29.8.0 et Cosign v3.1.3. L'image vérifiée
+est une image Kubernetes, signée en mode « keyless » par le compte de publication du projet
+(`krel-trust@k8s-releng-prod`, celui que la documentation Kubernetes donne pour cette vérification).
+
+Limite de l'exemple : l'outil de vérification vient lui-même d'une image téléchargée. Une
+vérification qui établit vraiment la confiance suppose un Cosign obtenu par un canal vérifié
+séparément (paquet de la distribution, ou binaire dont la somme de contrôle a été vérifiée).
+Faire vérifier une image par elle-même ne prouve rien : une image modifiée peut afficher
+« Verified ».
+
+Les tutoriels antérieurs montrent souvent Docker Content Trust (`DOCKER_CONTENT_TRUST=1`,
+`docker trust sign`). Ne pas le suivre : la CLI Docker 29 n'a plus de sous-commande
+`docker trust`, et le service Notary v1 de Docker Hub (`notary.docker.io`) ferme le
+8 décembre 2026. Docker oriente vers Sigstore/Cosign ou Notation.
+
+Signer soi-même : `cosign sign <image>` en mode « keyless » ouvre une authentification OIDC
+(GitHub, Google…) et inscrit la signature dans le journal de transparence Rekor.
+En CI, l'identité est celle du workflow.
+--
+
 == Aller plus loin
 
 [%step]
 * **Orchestration** : Kubernetes, Docker Swarm
 * **Secrets Management** : Vault, Sealed Secrets
-* **Image Signing** : Docker Content Trust, Cosign
+* **Image Signing** : Cosign (Sigstore), Notation
 * **Runtime Security** : Falco, Aqua Security
 
 == Ressources utiles
