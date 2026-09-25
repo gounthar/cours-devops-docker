@@ -7,7 +7,7 @@ x-slides-base: &slides-base
     - PRESENTATION_URL=${PRESENTATION_URL}
     - REPOSITORY_URL=${REPOSITORY_URL}
     - SOURCE_FILE=${SOURCE_FILE}
-  user: ${CURRENT_UID}
+  user: "${CURRENT_UID:?CURRENT_UID non défini, lancer via make}"
   tmpfs:
     - ${BUILD_DIR}:mode=1777 # Faster gulp I/O operations
   volumes:
@@ -44,7 +44,7 @@ services:
     depends_on:
       build:
         condition: service_completed_successfully
-    user: ${CURRENT_UID}
+    user: "${CURRENT_UID:?CURRENT_UID non défini, lancer via make}"
     environment:
       # Chromium needs a writable HOME for its crashpad database. The image
       # only declares a home for uid 1000, so any other id -- a CI runner,
