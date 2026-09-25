@@ -198,7 +198,7 @@ on configure le driver
 
 Lancer une stack ELK grâce aux fichiers fournis dans le repo https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp13
 
-Alimenter en logs avec la commande `docker container run --log-driver=gelf --log-opt gelf-address=udp://localhost:12201 alpine bash -c 'seq 1 100'`
+Alimenter en logs avec la commande `docker container run --log-driver=gelf --log-opt gelf-address=udp://localhost:12201 alpine sh -c 'seq 1 100'`
 
 Créer un index "timestamp" sur Kibana puis aller à l'écran "discover"
 
