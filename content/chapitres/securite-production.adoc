@@ -434,6 +434,15 @@ CMD ["python", "/app/app.py"]
 * Ne jamais revenir à root après USER
 * Vérifier : `docker container exec <container> id`
 
+[.notes]
+--
+Pourquoi `id` et pas `whoami` ? `whoami` traduit l'UID en nom via `/etc/passwd`.
+Avec `docker container run --user 1001:1001`, l'UID 1001 n'existe pas dans l'image :
+`whoami: cannot find name for user ID 1001` (image Debian comme python:3.11-slim).
+`id` affiche l'UID dans tous les cas : `uid=1001 gid=1001 groups=1001`.
+Point à faire passer : le noyau ne connaît que des numéros, le nom n'est qu'une étiquette dans `/etc/passwd`.
+--
+
 == Comprendre les UID Linux
 
 Linux numérote les utilisateurs (User ID) :
@@ -477,7 +486,7 @@ RUN useradd appuser
 ----
 
 [%step]
-Vérifier : `docker container exec <container> id appuser`
+Vérifier : `docker container exec <container> id`
 
 [.notes]
 --
