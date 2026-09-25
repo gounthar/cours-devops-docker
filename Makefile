@@ -413,9 +413,9 @@ exam-html:
 	@test -f $(DIST_DIR)/examen-final-detaille.html || { echo "ERROR: exam HTML was not generated"; exit 1; }
 	@echo "HTML generated: $(DIST_DIR)/examen-final-detaille.html"
 
-## The fallback recovers a dist/ left root-owned by an older build, or by a
-## `docker compose up` run outside make with CURRENT_UID unset. Deleting the
-## content from a root container is the only way to do it without sudo.
+## The fallback recovers a dist/ left root-owned by an older build, from before
+## docker-compose.yml made CURRENT_UID required (#589). Deleting the content
+## from a root container is the only way to do it without sudo.
 clean:
 	@$(call compose_cmd, down -v --remove-orphans)
 	@rm -rf $(DIST_DIR) 2>/dev/null || { \
