@@ -5517,28 +5517,27 @@ f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "da
 &lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  LABEL maintainer=NGINX Do…   0B
 &lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  CMD ["bash"]                 0B
 &lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) ADD file:0dc53e7886c35bc21…   69.2MB</code></pre></div></div>
-<div class="paragraph"><p>Il est préférable de limiter le nombre de couches pour limiter la bande passante.</p></div></div></section><section id="il_en_remet_une_couche_3" data-auto-animate><h2>"Il en remet une couche"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">RUN apk add \
+<div class="paragraph"><p>Il est préférable de limiter le nombre de couches pour limiter la bande passante.</p></div></div></section><section id="il_en_remet_une_couche_3" data-auto-animate><h2>"Il en remet une couche"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">RUN apk add --no-cache \
      patch \
      tar \
      mercurial \
      git \
      ruby \
-     ruby-devel \
-     rubygem-bundler \
+     ruby-dev \
+     ruby-bundler \
      make \
-     gcc-c++ \
-     zlib-devel \
-     libxml2-devel \
+     g++ \
+     zlib-dev \
+     libxml2-dev \
      docker \
      nodejs \
      npm \
-     sssd \
  &amp;&amp; mkdir -p /var/lib/docker-builder \
- &amp;&amp; mkdir -p /etc/docker-builder</code></pre></div></div></div></section><section id="ne_pas_charger_inutilement"><h2>Ne pas charger inutilement !</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"> &amp;&amp; apk remove make gcc maven ... \
+ &amp;&amp; mkdir -p /etc/docker-builder</code></pre></div></div></div></section><section id="ne_pas_charger_inutilement"><h2>Ne pas charger inutilement !</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"> &amp;&amp; apk del make g++ zlib-dev libxml2-dev ruby-dev \
  &amp;&amp; rm -f previously-downloaded.tar.gz \
- &amp;&amp; apk clean all \
  &amp;&amp; rm -rf /tmp/*</code></pre></div></div>
-<div class="paragraph fragment"><p>Il est utile, pour des raisons d&#8217;espace, de nettoyer le filesystem de ses futurs containers, en donnant les bonnes instructions dans le Dockerfile.</p></div></div></section><section id="documentez"><h2>Documentez !</h2><div class="slide-content"><div class="paragraph"><p>Les mots clés <code>EXPOSE</code> et <code>LABEL</code> peuvent fournir de précieuses informations aux utilisateurs de vos images !</p></div>
+<div class="paragraph fragment"><p>Il est utile, pour des raisons d&#8217;espace, de nettoyer le filesystem de ses futurs containers, en donnant les bonnes instructions dans le Dockerfile.</p></div>
+<div class="paragraph fragment"><p>Avec <code>apk add --no-cache</code>, l&#8217;index des paquets n&#8217;est jamais écrit dans l&#8217;image : il n&#8217;y a pas de cache à vider ensuite.</p></div></div></section><section id="documentez"><h2>Documentez !</h2><div class="slide-content"><div class="paragraph"><p>Les mots clés <code>EXPOSE</code> et <code>LABEL</code> peuvent fournir de précieuses informations aux utilisateurs de vos images !</p></div>
 <div class="paragraph"><p>(les ports exposés par défaut, les auteurs de l&#8217;image, la version d&#8217;un middleware embarqué, …)</p></div></div></section><section id="préparez_vous_au_read_only"><h2>Préparez-vous au read-only</h2><div class="slide-content"><div class="paragraph"><p>Il est possible de lister toutes les modifications qui ont été apportées au filesystem d&#8217;un container.</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container diff 29f1c4
 C /run
