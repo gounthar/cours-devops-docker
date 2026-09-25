@@ -408,7 +408,7 @@ Erreur N°1 des débutants Docker : tout tourne en root par défaut.
 Analogie : c'est comme lancer toutes vos apps Windows en "Administrateur" en permanence.
 Si un attaquant exploite une faille dans votre app Python, il a root sur le conteneur.
 Avec root, il peut : installer des outils, scanner le réseau, pivoter vers d'autres conteneurs.
-Montrer docker container exec <container> whoami → retourne "root" = MAUVAIS !
+Montrer docker container exec <container> id → retourne "uid=0(root)" = MAUVAIS !
 --
 
 == Solution : Utilisateur dédié
@@ -432,7 +432,7 @@ CMD ["python", "/app/app.py"]
 * Toujours créer un utilisateur dédié
 * UID > 1000 (éviter conflits système)
 * Ne jamais revenir à root après USER
-* Vérifier : `docker container exec <container> whoami`
+* Vérifier : `docker container exec <container> id`
 
 == Comprendre les UID Linux
 
