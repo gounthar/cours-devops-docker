@@ -63,22 +63,21 @@ Il est préférable de limiter le nombre de couches pour limiter la bande passan
 
 [source,bash]
 ----
-RUN apk add \
+RUN apk add --no-cache \
      patch \
      tar \
      mercurial \
      git \
      ruby \
-     ruby-devel \
-     rubygem-bundler \
+     ruby-dev \
+     ruby-bundler \
      make \
-     gcc-c++ \
-     zlib-devel \
-     libxml2-devel \
+     g++ \
+     zlib-dev \
+     libxml2-dev \
      docker \
      nodejs \
      npm \
-     sssd \
  && mkdir -p /var/lib/docker-builder \
  && mkdir -p /etc/docker-builder
 ----
@@ -87,13 +86,15 @@ RUN apk add \
 
 [source,bash]
 ----
- && apk remove make gcc maven ... \
+ && apk del make g++ zlib-dev libxml2-dev ruby-dev \
  && rm -f previously-downloaded.tar.gz \
- && apk clean all \
  && rm -rf /tmp/*
 ----
 [%step]
 Il est utile, pour des raisons d'espace, de nettoyer le filesystem de ses futurs containers, en donnant les bonnes instructions dans le Dockerfile.
+
+[%step]
+Avec `apk add --no-cache`, l'index des paquets n'est jamais écrit dans l'image : il n'y a pas de cache à vider ensuite.
 
 == Documentez !
 
