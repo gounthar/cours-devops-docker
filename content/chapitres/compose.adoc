@@ -1677,7 +1677,7 @@ user: ${CURRENT_UID:?CURRENT_UID est obligatoire}
 * `+${VAR:?message}+` échoue pour de bon, dès `docker compose config` : le message s'affiche et le code de sortie est 1.
 * Rien ne démarre, donc rien ne démarre en root.
 * C'est la forme à écrire quand la valeur est obligatoire.
-* C'est celle qu'utilise le `docker-compose.yml` à la racine de ce dépôt : lancé hors de `make`, il s'arrête au lieu de construire en root.
+* C'est celle qu'utilise le `docker-compose.yml` à la racine de ce dépôt : sans `CURRENT_UID` (que `make` fournit), il s'arrête au lieu de construire en root.
 
 [%auto-animate]
 == Autre étude de cas 📚🔍
