@@ -1014,7 +1014,10 @@ curl --noproxy '*' http://localhost:8000
 
 [source,bash]
 ----
-wget https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp07/-/raw/master/sample.war
+wget -O sample.war https://github.com/gounthar/tp07-sample/releases/download/v2026.09.07-083440/sample-2026.09.07-083440.war
+# wget sort en 0 même s'il a reçu une page HTML : vérifier que c'est bien une archive
+file sample.war
+sample.war: Zip archive data, made by v2.0 UNIX, ...
 ----
 
 [%step]
