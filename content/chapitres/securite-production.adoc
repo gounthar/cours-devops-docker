@@ -408,7 +408,7 @@ Erreur N°1 des débutants Docker : tout tourne en root par défaut.
 Analogie : c'est comme lancer toutes vos apps Windows en "Administrateur" en permanence.
 Si un attaquant exploite une faille dans votre app Python, il a root sur le conteneur.
 Avec root, il peut : installer des outils, scanner le réseau, pivoter vers d'autres conteneurs.
-Montrer docker container exec <container> whoami → retourne "root" = MAUVAIS !
+Montrer docker container exec <container> id → retourne "uid=0(root)" = MAUVAIS !
 --
 
 == Solution : Utilisateur dédié
@@ -432,7 +432,16 @@ CMD ["python", "/app/app.py"]
 * Toujours créer un utilisateur dédié
 * UID > 1000 (éviter conflits système)
 * Ne jamais revenir à root après USER
-* Vérifier : `docker container exec <container> whoami`
+* Vérifier : `docker container exec <container> id`
+
+[.notes]
+--
+Pourquoi `id` et pas `whoami` ? `whoami` traduit l'UID en nom via `/etc/passwd`.
+Avec `docker container run --user 1001:1001`, l'UID 1001 n'existe pas dans l'image :
+`whoami: cannot find name for user ID 1001` (image Debian comme python:3.11-slim).
+`id` affiche l'UID dans tous les cas : `uid=1001 gid=1001 groups=1001`.
+Point à faire passer : le noyau ne connaît que des numéros, le nom n'est qu'une étiquette dans `/etc/passwd`.
+--
 
 == Comprendre les UID Linux
 
@@ -477,7 +486,7 @@ RUN useradd appuser
 ----
 
 [%step]
-Vérifier : `docker container exec <container> id appuser`
+Vérifier : `docker container exec <container> id`
 
 [.notes]
 --
