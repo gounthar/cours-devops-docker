@@ -34,7 +34,9 @@ targets:
     scmid: default
     spec:
       file: "content/chapitres/fichiers-nommage-inspect.adoc"
-      matchpattern: 'https://github\.com/gounthar/tp07-sample/releases/download/v[^/]+/sample-[^)]+\.war'
+      # Classes fermées, sans saut de ligne possible : `[^)]+` s'arrêtait au
+      # dernier `.war` avant une parenthèse et avalait tout le bloc du TP7 (#599).
+      matchpattern: 'https://github\.com/gounthar/tp07-sample/releases/download/v[\d.-]+/sample-[\d.-]+\.war'
       replacepattern: 'https://github.com/gounthar/tp07-sample/releases/download/v{{ source "tp07-sample" }}/sample-{{ source "tp07-sample" }}.war'
 
 actions:
