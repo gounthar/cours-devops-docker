@@ -2791,7 +2791,10 @@ Accept-Ranges: bytes</code></pre></div></div>
 &lt;li&gt;&lt;a href="http://home.web.cern.ch/topics/birth-web"&gt;Learn about the birth of the web&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://home.web.cern.ch/about"&gt;Learn about CERN, the physics laboratory where the web was born&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/body&gt;&lt;/html&gt;</code></pre></div></div></div></section><section id="solution_travaux_pratiques_7_2" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">wget https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp07/-/raw/master/sample.war</code></pre></div></div>
+&lt;/body&gt;&lt;/html&gt;</code></pre></div></div></div></section><section id="solution_travaux_pratiques_7_2" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">wget -O sample.war https://github.com/gounthar/tp07-sample/releases/download/v2026.09.07-083440/sample-2026.09.07-083440.war
+# wget sort en 0 même s'il a reçu une page HTML : vérifier que c'est bien une archive
+file sample.war
+sample.war: Zip archive data, made by v2.0 UNIX, ...</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Used to run a Docker container with the name "tomcat-container" using the "tomcat:11.0.26-jdk25-temurin-noble" image. The container is
 # configured to expose port 8080 on the host machine, which will be mapped to the corresponding port inside
 # the container. Additionally, a volume is mounted to the container, linking the
