@@ -399,13 +399,18 @@ docker compose up backend
 
 ```yaml
 backend:
+  labels:
+    service: "backend"
+    env: "production"
   logging:
     driver: "json-file"
     options:
       max-size: "10m"      # Max 10 Mo par fichier
       max-file: "3"        # Garder 3 fichiers
-      labels: "service=backend,env=production"
+      labels: "service,env" # Clés des labels du service à recopier dans chaque ligne de log
 ```
+
+L'option `labels` du pilote de logs attend des **clés** de labels, pas des paires `clé=valeur` : les valeurs viennent des `labels:` du service. Une valeur comme `"service=backend,env=production"` est acceptée sans erreur, mais n'ajoute rien aux logs.
 
 ### Tester la rotation
 

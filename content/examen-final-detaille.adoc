@@ -763,18 +763,26 @@ Les logs doivent être au format JSON quand c'est possible.
 services:
   app-server:
     # ...
+    labels:
+      service: "app"
+      env: "production"
     logging:
       driver: json-file
       options:
         max-size: "10m"
         max-file: "3"
-        labels: "service=app,env=production"
+        labels: "service,env"
 ----
 
 **Rotation des logs :**
 
 * `max-size` : Taille maximale d'un fichier de log (ex: 10m = 10 mégaoctets)
 * `max-file` : Nombre de fichiers conservés (ex: 3 = logs des 3 dernières rotations)
+
+**Labels dans les logs :**
+
+* Les labels se définissent au niveau du service (`labels:`).
+* L'option `labels` du pilote de logs liste les **clés** à recopier dans chaque ligne de log (champ `attrs`), pas des paires `clé=valeur`.
 
 ==== Intégration Logstash
 
