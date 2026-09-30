@@ -1814,17 +1814,17 @@ représentant une application auto-suffisante.</p><div class="ulist"><ul><li><p>
 / $</code></pre></div></div>
 <div class="ulist"><ul><li><p>On lance un container à partir de l&#8217;image "alpine"</p></li><li><p>On lance un <code>sh</code>  dans ce container</p></li><li><p>On redirige l&#8217;entrée standard avec -i</p></li></ul></div></div></section><section id="lancer_un_container_interactif_6" data-auto-animate><h2>🏓 Lancer un container interactif</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">docker container run  --interactive --tty alpine
 / $</code></pre></div></div>
-<div class="ulist"><ul><li><p>On lance un container à partir de l&#8217;image "alpine"</p></li><li><p>On lance un <code>sh</code>  dans ce container</p></li><li><p>On redirige l&#8217;entrée standard avec -i</p></li><li><p>On déclare un pseudo-terminal avec -t</p></li></ul></div></div></section><section id="exercice_conteneur_interactif"><h2>🎓 Exercice : conteneur interactif</h2><div class="slide-content"><div class="ulist"><ul><li><p>Quelle distribution Linux est utilisée dans le terminal Codespaces ?</p><div class="ulist"><ul><li><p>💡 Regardez le fichier <code>/etc/os-release</code></p></li></ul></div></li><li><p>Exécutez un conteneur interactif basé sur <code>alpine:3.18.3</code> (une distribution Linux ultra-légère) et regardez le contenu du fichier au même emplacement</p><div class="ulist"><ul><li><p>💡 <code>docker container run --help</code></p></li><li><p>💡 Demandez un <a href="https://en.wikipedia.org/wiki/TTY"><code>tty</code></a> à Docker</p></li><li><p>💡 Activez le mode interactif</p></li></ul></div></li><li><p>Exécutez la même commande dans un conteneur basé sur la même image mais en <strong>NON</strong> interactif</p><div class="ulist"><ul><li><p>💡 Comment surcharger la commande par défaut ?</p></li></ul></div></li></ul></div></div></section><section id="solution_conteneur_interactif"><h2>✅ Solution : conteneur interactif</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ cat /etc/os-release
+<div class="ulist"><ul><li><p>On lance un container à partir de l&#8217;image "alpine"</p></li><li><p>On lance un <code>sh</code>  dans ce container</p></li><li><p>On redirige l&#8217;entrée standard avec -i</p></li><li><p>On déclare un pseudo-terminal avec -t</p></li></ul></div></div></section><section id="exercice_conteneur_interactif"><h2>🎓 Exercice : conteneur interactif</h2><div class="slide-content"><div class="ulist"><ul><li><p>Quelle distribution Linux est utilisée dans le terminal Codespaces ?</p><div class="ulist"><ul><li><p>💡 Regardez le fichier <code>/etc/os-release</code></p></li></ul></div></li><li><p>Exécutez un conteneur interactif basé sur <code>alpine:3.24.2</code> (une distribution Linux ultra-légère) et regardez le contenu du fichier au même emplacement</p><div class="ulist"><ul><li><p>💡 <code>docker container run --help</code></p></li><li><p>💡 Demandez un <a href="https://en.wikipedia.org/wiki/TTY"><code>tty</code></a> à Docker</p></li><li><p>💡 Activez le mode interactif</p></li></ul></div></li><li><p>Exécutez la même commande dans un conteneur basé sur la même image mais en <strong>NON</strong> interactif</p><div class="ulist"><ul><li><p>💡 Comment surcharger la commande par défaut ?</p></li></ul></div></li></ul></div></div></section><section id="solution_conteneur_interactif"><h2>✅ Solution : conteneur interactif</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ cat /etc/os-release
 # ... Ubuntu ....
 
-$ docker container run --tty --interactive alpine:3.18.3
+$ docker container run --tty --interactive alpine:3.24.2
 / $ cat /etc/os-release
 # ... Alpine ...
 # Notez que le "prompt" du terminal est différent DANS le conteneur
 / $ exit
 $ docker container ls --all
 
-$ docker container run alpine:3.18.3 cat /etc/os-release
+$ docker container run alpine:3.24.2 cat /etc/os-release
 # ... Alpine ...</code></pre></div></div></div></section><section id="utiliser_un_container_interactif" data-auto-animate><h2>🏓 Utiliser un container interactif</h2><div class="slide-content"><div class="paragraph"><p>Revenons dans notre container interactif de tout à l&#8217;heure&#8230;&#8203;</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">/ $ curl google.fr</code></pre></div></div></div></section><section id="utiliser_un_container_interactif_2" data-auto-animate><h2>🏓 Utiliser un container interactif</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">/ $ curl google.fr
 /bin/sh: curl: not found</code></pre></div></div></div></section><section id="utiliser_un_container_interactif_3" data-auto-animate><h2>🏓 Utiliser un container interactif</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">/ $ curl google.fr
@@ -1836,21 +1836,20 @@ $ docker container run alpine:3.18.3 cat /etc/os-release
 /bin/sh: curl: not found</code></pre></div></div>
 <div class="paragraph"><p><code>cURL</code> n&#8217;est pas disponible par défaut sur Alpine. Il faut l&#8217;installer au préalable</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">/ $ apk update &amp;&amp; apk add curl
-fetch https://dl-cdn.alpinelinux.org/alpine/v3.18/main/x86_64/APKINDEX.tar.gz
-fetch https://dl-cdn.alpinelinux.org/alpine/v3.18/community/x86_64/APKINDEX.tar.gz
-v3.18.3-169-gd5adf7d7d28 [https://dl-cdn.alpinelinux.org/alpine/v3.18/main]
-v3.18.3-171-g503977088b4 [https://dl-cdn.alpinelinux.org/alpine/v3.18/community]
-OK: 20063 distinct packages available
-(1/7) Installing ca-certificates (20230506-r0)
-(2/7) Installing brotli-libs (1.0.9-r14)
-(3/7) Installing libunistring (1.1-r1)
-(4/7) Installing libidn2 (2.3.4-r1)
-(5/7) Installing nghttp2-libs (1.55.1-r0)
-(6/7) Installing libcurl (8.2.1-r0)
-(7/7) Installing curl (8.2.1-r0)
-Executing busybox-1.36.1-r2.trigger
-Executing ca-certificates-20230506-r0.trigger
-OK: 12 MiB in 22 packages</code></pre></div></div></div></section><section id="utiliser_un_container_interactif_6" data-auto-animate><h2>🏓 Utiliser un container interactif</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">/ $ curl google.fr
+v3.24.2-58-g29b9ec24b1b [https://dl-cdn.alpinelinux.org/alpine/v3.24/main]
+v3.24.2-61-g887b5770c3e [https://dl-cdn.alpinelinux.org/alpine/v3.24/community]
+OK: 28651 distinct packages available
+(1/9) Installing brotli-libs (1.2.0-r1)
+(2/9) Installing c-ares (1.34.8-r0)
+(3/9) Installing libunistring (1.4.2-r0)
+(4/9) Installing libidn2 (2.3.8-r0)
+(5/9) Installing nghttp2-libs (1.69.0-r0)
+(6/9) Installing libpsl (0.21.5-r3)
+(7/9) Installing zstd-libs (1.5.7-r2)
+(8/9) Installing libcurl (8.22.0-r0)
+(9/9) Installing curl (8.22.0-r0)
+Executing busybox-1.37.0-r31.trigger
+OK: 13.1 MiB in 25 packages</code></pre></div></div></div></section><section id="utiliser_un_container_interactif_6" data-auto-animate><h2>🏓 Utiliser un container interactif</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-shell hljs" data-noescape="true" data-lang="shell">/ $ curl google.fr
 &lt;HTML&gt;&lt;HEAD&gt;&lt;meta http-equiv="content-type" content="text/html;charset=utf-8"&gt;
 &lt;TITLE&gt;301 Moved&lt;/TITLE&gt;&lt;/HEAD&gt;&lt;BODY&gt;
 &lt;H1&gt;301 Moved&lt;/H1&gt;
@@ -2085,26 +2084,32 @@ ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months
 
 # Supprimer l'image (tip : `docker image rm`)
 docker image rm jpetazzo/clock
-Error response from daemon: conflict: unable to remove repository reference "jpetazzo/clock" (must force) - container edea0c46c6d8 is using its referenced image 7a8965d6553e
+Error response from daemon: conflict: unable to delete jpetazzo/clock:latest (must be forced) - container edea0c46c6d8 is using its referenced image dc06bbc3744f
 
-# Supprimer les containers
-docker container stop second-clock
+# Supprimer les containers (first-clock utilise aussi l'image)
+docker container stop first-clock second-clock
+first-clock
 second-clock
 
-docker container rm second-clockl
+docker container rm first-clock second-clock
+first-clock
 second-clock
 # Supprimer l'image (pour de vrai cette fois)
 docker image rm jpetazzo/clock
 
 Untagged: jpetazzo/clock:latest
-Untagged: jpetazzo/clock@sha256:dc06bbc3744f7200404bff0bbb2516925e7adea115e07de9da8b36bf15fe3dd3
-Deleted: sha256:7a8965d6553ea2289485744ef20521e0dd0d12ab51773f271882913b79813750
-Deleted: sha256:67f770da229bf16d0c280f232629b0c1f1243a884df09f6b940a1c7288535a6d</code></pre></div></div>
+Deleted: sha256:dc06bbc3744f7200404bff0bbb2516925e7adea115e07de9da8b36bf15fe3dd3</code></pre></div></div>
 <aside class="notes"><div class="paragraph"><p>Dans Docker, le PID (Process ID) principal est toujours 1, car c&#8217;est une convention spécifique à Docker.
 Cette convention facilite la gestion des processus dans les conteneurs en isolant chaque processus du conteneur du système hôte.
 En assignant toujours le PID 1 au processus principal du conteneur, Docker peut surveiller ce processus pour s&#8217;assurer qu&#8217;il est en cours d&#8217;exécution.
 Cela permet également d&#8217;éviter des conflits potentiels avec les processus du système hôte, car les PID sont spécifiques à chaque espace de conteneur.
-En résumé, cette convention est une pratique standard qui contribue à l&#8217;isolation et à la gestion efficace des processus dans les conteneurs Docker.</p></div></aside></div></section><section id="exercice_conteneur_en_tâche_de_fond_3"><h2>🎓 Exercice : conteneur en tâche de fond</h2><div class="slide-content"><div class="ulist"><ul><li><p>Exécutez un conteneur, basé sur l&#8217;image <code>nginx</code> en tâche de fond ("Background"), nommé <code>webserver-1</code></p><div class="ulist"><ul><li><p>💡 On parle de processus "détaché" (ou bien "démonisé") 👹</p></li><li><p>⚠️ Pensez bien à <code>docker container ls</code></p></li></ul></div></li><li><p>Regardez le contenu du fichier <code>/etc/os-release</code> dans ce conteneur</p><div class="ulist"><ul><li><p>💡 <code>docker container exec</code></p></li></ul></div></li><li><p>Essayez d&#8217;arrêter, démarrer puis redémarrer le conteneur</p><div class="ulist"><ul><li><p>⚠️ Pensez bien à <code>docker container ls</code> à chaque fois</p></li><li><p>💡 <code>stop</code>, <code>start</code>, <code>restart</code></p></li></ul></div></li></ul></div></div></section><section id="solution_conteneur_en_tâche_de_fond_3"><h2>✅ Solution : conteneur en tâche de fond</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach --name=webserver-1 nginx
+En résumé, cette convention est une pratique standard qui contribue à l&#8217;isolation et à la gestion efficace des processus dans les conteneurs Docker.</p></div></aside></div></section><section id="et_docker_image_rm_f"><h2>💡 Et <code>docker image rm -f</code> ?</h2><div class="slide-content"><div class="paragraph"><p>Le message d&#8217;erreur suggère de forcer. Voici ce que fait vraiment <code>-f</code> quand un conteneur utilise encore l&#8217;image :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image rm -f jpetazzo/clock
+Untagged: jpetazzo/clock:latest</code></pre></div></div>
+<div class="ulist"><ul><li><p>Seule l'<strong>étiquette</strong> est retirée, que le conteneur soit arrêté ou en cours d&#8217;exécution (il continue de tourner).</p></li><li><p><code>docker container ls --all</code> affiche ensuite l&#8217;ID de l&#8217;image à la place de son nom.</p></li><li><p>Les couches restent sur le disque : l&#8217;espace n&#8217;est libéré qu&#8217;après suppression des conteneurs qui les utilisent.</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>Mesuré sous Docker 29.8.0 avec une image à étiquette unique.
+Piège si vous refaites l&#8217;essai : une image qui porte une seconde étiquette se « supprime » sans <code>-f</code> et sans conflit,
+car <code>docker image rm</code> retire alors seulement l&#8217;étiquette visée.</p></div></aside></div></section><section id="exercice_conteneur_en_tâche_de_fond_3"><h2>🎓 Exercice : conteneur en tâche de fond</h2><div class="slide-content"><div class="ulist"><ul><li><p>Exécutez un conteneur, basé sur l&#8217;image <code>nginx</code> en tâche de fond ("Background"), nommé <code>webserver-1</code></p><div class="ulist"><ul><li><p>💡 On parle de processus "détaché" (ou bien "démonisé") 👹</p></li><li><p>⚠️ Pensez bien à <code>docker container ls</code></p></li></ul></div></li><li><p>Regardez le contenu du fichier <code>/etc/os-release</code> dans ce conteneur</p><div class="ulist"><ul><li><p>💡 <code>docker container exec</code></p></li></ul></div></li><li><p>Essayez d&#8217;arrêter, démarrer puis redémarrer le conteneur</p><div class="ulist"><ul><li><p>⚠️ Pensez bien à <code>docker container ls</code> à chaque fois</p></li><li><p>💡 <code>stop</code>, <code>start</code>, <code>restart</code></p></li></ul></div></li></ul></div></div></section><section id="solution_conteneur_en_tâche_de_fond_3"><h2>✅ Solution : conteneur en tâche de fond</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach --name=webserver-1 nginx
 # &lt;ID du conteneur&gt;
 
 docker container ls
