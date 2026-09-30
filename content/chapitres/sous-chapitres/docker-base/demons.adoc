@@ -608,21 +608,21 @@ ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months
 
 # Supprimer l'image (tip : `docker image rm`)
 docker image rm jpetazzo/clock
-Error response from daemon: conflict: unable to delete jpetazzo/clock:latest (must be forced) - container edea0c46c6d8 is using its referenced image 7a8965d6553e
+Error response from daemon: conflict: unable to delete jpetazzo/clock:latest (must be forced) - container edea0c46c6d8 is using its referenced image dc06bbc3744f
 
-# Supprimer les containers
-docker container stop second-clock
+# Supprimer les containers (first-clock utilise aussi l'image)
+docker container stop first-clock second-clock
+first-clock
 second-clock
 
-docker container rm second-clock
+docker container rm first-clock second-clock
+first-clock
 second-clock
 # Supprimer l'image (pour de vrai cette fois)
 docker image rm jpetazzo/clock
 
 Untagged: jpetazzo/clock:latest
-Untagged: jpetazzo/clock@sha256:dc06bbc3744f7200404bff0bbb2516925e7adea115e07de9da8b36bf15fe3dd3
-Deleted: sha256:7a8965d6553ea2289485744ef20521e0dd0d12ab51773f271882913b79813750
-Deleted: sha256:67f770da229bf16d0c280f232629b0c1f1243a884df09f6b940a1c7288535a6d
+Deleted: sha256:dc06bbc3744f7200404bff0bbb2516925e7adea115e07de9da8b36bf15fe3dd3
 ----
 
 [.notes]
