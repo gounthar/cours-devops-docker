@@ -582,7 +582,7 @@ docker container ls --filter "status=exited"
 * Supprimer les containers
 * Supprimer l'image (pour de vrai cette fois)
 
-== ✅ Solution : conteneur en tâche de fond
+== ✅ Solution : conteneur en tâche de fond (1/2)
 
 [source,bash]
 ----
@@ -601,28 +601,9 @@ PID   USER     TIME  COMMAND
 
 # Vérifier que le container "tourne" toujours
 docker container ls
-CONTAINER ID   IMAGE                           COMMAND                  CREATED         STATUS              PORTS                    NAMES
-7d7085809ad2   cours-devops-docker-serve       "/sbin/tini -g gulp …"   6 minutes ago   Up 5 minutes        0.0.0.0:8000->8000/tcp   cours-devops-docker-serve-1
-edea0c46c6d8   jpetazzo/clock                  "/bin/sh -c 'while d…"   9 minutes ago   Up About a minute                            second-clock
-ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago    Up 11 hours                                  buildx_buildkit_exciting_williams0
-
-# Supprimer l'image (tip : `docker image rm`)
-docker image rm jpetazzo/clock
-Error response from daemon: conflict: unable to delete jpetazzo/clock:latest (must be forced) - container edea0c46c6d8 is using its referenced image dc06bbc3744f
-
-# Supprimer les containers (first-clock utilise aussi l'image)
-docker container stop first-clock second-clock
-first-clock
-second-clock
-
-docker container rm first-clock second-clock
-first-clock
-second-clock
-# Supprimer l'image (pour de vrai cette fois)
-docker image rm jpetazzo/clock
-
-Untagged: jpetazzo/clock:latest
-Deleted: sha256:dc06bbc3744f7200404bff0bbb2516925e7adea115e07de9da8b36bf15fe3dd3
+# (sortie abrégée : autres conteneurs et colonnes CREATED, PORTS retirés)
+CONTAINER ID   IMAGE            COMMAND                  STATUS              NAMES
+edea0c46c6d8   jpetazzo/clock   "/bin/sh -c 'while d…"   Up About a minute   second-clock
 ----
 
 [.notes]
@@ -633,6 +614,30 @@ En assignant toujours le PID 1 au processus principal du conteneur, Docker peut 
 Cela permet également d'éviter des conflits potentiels avec les processus du système hôte, car les PID sont spécifiques à chaque espace de conteneur.
 En résumé, cette convention est une pratique standard qui contribue à l'isolation et à la gestion efficace des processus dans les conteneurs Docker.
 --
+
+== ✅ Solution : conteneur en tâche de fond (2/2)
+
+[source,bash]
+----
+# Supprimer l'image (tip : `docker image rm`)
+docker image rm jpetazzo/clock
+Error response from daemon: conflict: unable to delete jpetazzo/clock:latest (must be forced)
+ - container edea0c46c6d8 is using its referenced image dc06bbc3744f
+
+# Supprimer les containers (first-clock utilise aussi l'image)
+docker container stop first-clock second-clock
+first-clock
+second-clock
+
+docker container rm first-clock second-clock
+first-clock
+second-clock
+
+# Supprimer l'image (pour de vrai cette fois)
+docker image rm jpetazzo/clock
+Untagged: jpetazzo/clock:latest
+Deleted: sha256:dc06bbc3744f7200404bff0bbb2516925e7adea115e07de9da8b36bf15fe3dd3
+----
 
 == 💡 Et `docker image rm -f` ?
 
