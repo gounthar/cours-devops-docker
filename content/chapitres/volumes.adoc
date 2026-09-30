@@ -206,7 +206,7 @@ docker container run -v my-data:/data busybox ls /data
 ----
 
 [%step]
-CAUTION: *my_data* n'est plus un chemin absolu, mais juste le nom du volume
+CAUTION: *my-data* n'est plus un chemin absolu, mais juste le nom du volume
 
 == 📦📁 Les volumes
 
@@ -318,8 +318,6 @@ Lancer un container `nginx` et lui faire distribuer une page web externe au cont
 image::1763880002-image10.png[]
 
 [%auto-animate]
-
-[%auto-animate]
 == ✅ Solution travaux pratiques #8
 
 [.title]
@@ -362,11 +360,8 @@ Copiez vos fichiers de la page web dans ce volume :
 [%step]
 [source,bash]
 ----
-# Montez le volume nommé "mon-nginx-html" sous "/cible" dans le conteneur.
-# Montez le répertoire hôte où se trouve le fichier html sous "/html".
-# Définissez "/cible" comme répertoire de travail.
-# Copiez récursivement le *contenu* de "/html" dans le répertoire de travail
-# ("/html/." et non "/html", sinon les fichiers atterrissent dans un sous-répertoire).
+# Copie le *contenu* du dossier hôte (monté sur /html) dans le volume (monté sur /cible).
+# "/html/." et non "/html", sinon les fichiers atterrissent dans un sous-répertoire.
 docker container run --rm \
   --volume mon-nginx-html:/cible \
   --volume /chemin/vers/la/page/web/sur/lhote:/html \
@@ -406,7 +401,7 @@ Démarrer un premier conteneur attaché à ce volume :
 [%step]
 [source,bash]
 ----
-docker container run -it --name premier-container -v data:/donnees busybox
+docker container run -it --rm --name premier-container -v data:/donnees busybox
 ----
 [%step]
 Dans le premier conteneur, lancez un processus qui écrit un fichier dans le volume (par exemple, un fichier texte) :
@@ -422,17 +417,12 @@ Démarrer un second conteneur attaché au même volume :
 [%step]
 [source,bash]
 ----
-docker container run -it --name second-container -v data:/donnees busybox
+docker container run -it --rm --name second-container -v data:/donnees busybox
 ----
 
 == ✅ Solution travaux pratiques #9
 
-Démarrer un second conteneur attaché au même volume :
-[source,bash]
-----
-docker container run -it --name second-container -v data:/donnees busybox
-----
-Dans le second conteneur, lisez les données du volume (le fichier texte) :
+Dans le second conteneur (démarré à l'étape précédente), lisez les données du volume (le fichier texte) :
 [%step]
 [source,bash]
 ----
@@ -458,7 +448,7 @@ docker volume rm data
 * Ajoute d'autres fichiers dans ce dossier
 
 [%step]
-**Que verra-ton dans ce dossier au sein de nos containers ?**
+**Que verra-t-on dans ce dossier au sein de nos containers ?**
 
 [%auto-animate]
 == ✅ Solution travaux pratiques #10

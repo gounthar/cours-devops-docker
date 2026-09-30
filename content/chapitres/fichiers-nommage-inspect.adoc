@@ -8,7 +8,8 @@ image::fichiers.png[background, size=cover, position=left]
 [%step]
 [source,bash]
 ----
-docker container run --interactive --tty httpd pwd /usr/local/apache2
+docker container run --interactive --tty httpd pwd
+/usr/local/apache2
 ----
 
 [%step]
@@ -133,6 +134,7 @@ docker image build --tag mon-node .
 [source,bash]
 ----
 $ docker container run --workdir /app --entrypoint ls mon-node
+Dockerfile
 app.js
 ----
 
@@ -172,7 +174,7 @@ On le retrouve dans d'anciens Dockerfile mais il tend à disparaître.
 Le mot clé `ADD`
 
 [.small]
-source : https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy
+source : https://docs.docker.com/build/building/best-practices/#add-or-copy
 
 image::1108215415-image2.png[]
 
@@ -182,7 +184,7 @@ image::1108215415-image2.png[]
 Le mot clé `ADD`.
 
 [.small]
-source : https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy
+source : https://docs.docker.com/build/building/best-practices/#add-or-copy
 
 image::add-stabylo.png[]
 
@@ -649,7 +651,7 @@ docker container inspect --format '{{json .Created }}' my-web
 
 Étapes:
 [%step]
-* Lancer un container HTTPd
+* Lancer un container `nginx`
 [%step]
 * Trouver la syntaxe permettant d'extraire le "CMD" qui a été passé au démarrage du container
 [%step]
@@ -831,18 +833,18 @@ image::1233103020-image17.jpeg[]
 [source,bash]
 ----
 docker container run --detach nginx
-bd12c4d7110d17ce80...`
+bd12c4d7110d17ce80...
 ----
 
 [source,bash]
 ----
 docker container ls
-CONTAINERID     IMAGE   COMMAND      CREATED    STATUS    PORTS
-bd12c4d71       nginx   "nginx …"    35 s. ago  Up 33 s.  80/tcp, 443/tcp
+CONTAINER ID    IMAGE   COMMAND                  CREATED    STATUS    PORTS
+bd12c4d71       nginx   "/docker-entrypoint.…"   35 s. ago  Up 33 s.  80/tcp
 ----
 
 [%step]
-Ok, mon container expose un service sur les ports `TCP 80` et `443` mais j'appelle comment mon Nginx ?
+Ok, mon container expose un service sur le port `TCP 80`, mais j'appelle comment mon Nginx ?
 
 [%auto-animate]
 == 🔍 Que nous dit docker container inspect ?
@@ -881,7 +883,8 @@ image::fichiers-output67_with_transparency.png[height=500]
 [%step]
 [source,bash]
 ----
-docker container inspect --format "{{.NetworkSettings.IPAddress}}" <ContainerID>
+docker container inspect \
+  --format '{{range .NetworkSettings.Networks}}{{println .IPAddress}}{{end}}' <ContainerID>
 ----
 
 [.notes]
@@ -892,6 +895,19 @@ for i in {66..67}; do convert Diapositive${i}.PNG -crop 9519x5022+1833+1472 -tra
 ----
 --
 
+[%auto-animate]
+== 🔍 Que nous dit docker container inspect ?
+
+L'ancienne forme, encore dans beaucoup de tutoriels, échoue avec Docker 29 :
+
+[source,bash]
+----
+docker container inspect --format "{{.NetworkSettings.IPAddress}}" <ContainerID>
+template parsing error: [...] map has no entry for key "IPAddress"
+----
+
+L'adresse n'est plus que sous `.NetworkSettings.Networks.<réseau>`, d'où le `range`.
+
 == Et voilà !
 
 [source,bash]
@@ -899,8 +915,7 @@ for i in {66..67}; do convert Diapositive${i}.PNG -crop 9519x5022+1833+1472 -tra
 curl -I --noproxy '*' http://172.17.0.2:80
 HTTP/1.1 200 OK
 ....
-`Server: nginx/1.25 ...
-`
+Server: nginx/1.25 ...
 ----
 
 Il est maintenant facile d'interagir avec notre serveur web !
@@ -946,7 +961,7 @@ Accept-Ranges: bytes
 [%step]
 [source,bash]
 ----
-$ curl -I --noproxy '*' http://localhost:8000`
+$ curl -I --noproxy '*' http://localhost:8000
 HTTP/1.1 200 OK
 Server: nginx/1.25.2
 Date: Wed, 18 Oct 2023 11:57:25 GMT
