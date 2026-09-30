@@ -246,120 +246,16 @@ docker image pull cache-ili.univ-artois.fr:80/proxy_cache/library/hello-world
 ----
 
 [%auto-animate]
-== 5. Configurations avancées pour les proxys (au-delà du cache)
+== 5. Proxy HTTP pour les conteneurs et les builds
 
-Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d'images.
+Le cache de registre ne concerne que les *images* (`docker image pull`, `FROM`).
 
-[%auto-animate]
-== 5. Configurations avancées pour les proxys (au-delà du cache)
-
-Parfois, vous devrez configurer un proxy HTTP/HTTPS pour que Docker télécharge les dépendances lors de la construction d'images.
-
-=== Option 1 – Utiliser ENV dans le Dockerfile (Recommandé)
-
-[source,dockerfile]
-----
-FROM alpine:latest
-
-# IMPORTANT: ENV doit être APRÈS FROM et AVANT RUN
-ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
-ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
-ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
-ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
-
-# Votre gestionnaire de paquets utilisera désormais le proxy
-RUN apk add --no-cache your-package
-----
-
-⚠️ **Ordre crucial:** `FROM` → `ENV` → `RUN` (réseau)
+Ce qui se passe *dans* un conteneur ou dans un `RUN` (`apk add`, `pip install`, `curl`) sort sur le réseau et doit passer par le proxy HTTP de l'université : `cache-etu.univ-artois.fr:3128`.
 
 [%auto-animate]
-== 5. Configurations avancées pour les proxys (au-delà du cache)
+== 5. Proxy HTTP pour les conteneurs et les builds
 
-=== Option 2 – Build multi-étapes (proxy uniquement quand nécessaire)
-
-[source,dockerfile]
-----
-# Étape de build avec proxy
-FROM alpine:latest as builder
-ENV https_proxy=http://cache-etu.univ-artois.fr:3128/
-ENV http_proxy=http://cache-etu.univ-artois.fr:3128/
-ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128/
-ENV HTTP_PROXY=http://cache-etu.univ-artois.fr:3128/
-RUN apk add --no-cache build-dependencies
-
-# Étape finale sans proxy
-FROM alpine:latest
-COPY --from=builder /built-artifacts /app
-----
-
-[%auto-animate]
-== 5. Configurations avancées pour les proxys (au-delà du cache)
-
-=== Option 3 – Variables d'environnement passées au build
-
-[source,bash]
-----
-docker image build --build-arg https_proxy=http://cache-etu.univ-artois.fr:3128/ .
-----
-
-Dockerfile correspondant :
-
-[source,dockerfile]
-----
-ARG https_proxy
-ARG http_proxy
-
-RUN apk add --no-cache your-package
-----
-
-[%auto-animate]
-== 5. Configurations avancées pour les proxys (au-delà du cache)
-
-=== Option 4 – Configuration du démon Docker (système entier)
-
-Ajouter dans `/etc/docker/daemon.json` :
-
-[source,json]
-----
-{
-  "proxies": {
-    "http-proxy": "http://cache-etu.univ-artois.fr:3128",
-    "https-proxy": "http://cache-etu.univ-artois.fr:3128",
-    "no-proxy": "localhost,127.0.0.1"
-  }
-}
-----
-
-[%auto-animate]
-== 5. Configurations avancées pour les proxys (au-delà du cache)
-
-=== Option 4 – Configuration du démon Docker (système entier)
-
-Ajouter dans `/etc/docker/daemon.json` :
-
-[source,json]
-----
-{
-  "proxies": {
-    "http-proxy": "http://cache-etu.univ-artois.fr:3128",
-    "https-proxy": "http://cache-etu.univ-artois.fr:3128",
-    "no-proxy": "localhost,127.0.0.1"
-  }
-}
-----
-
-Puis redémarrer Docker :
-
-[source,bash]
-----
-sudo systemctl restart docker
-----
-
-[%auto-animate]
-== 5. Configurations avancées pour les proxys (au-delà du cache) (suite)
-
-=== Option 5 – Configuration spécifique à l'utilisateur
+=== Option 1 – `~/.docker/config.json` (Recommandé)
 
 Créer ou modifier `~/.docker/config.json` :
 
@@ -377,32 +273,147 @@ Créer ou modifier `~/.docker/config.json` :
 ----
 
 [%auto-animate]
-== 6. Pourquoi ENV est préférable à RUN export
+== 5. Proxy HTTP pour les conteneurs et les builds
 
-* *Persistance* : `ENV` définit la variable pour toutes les commandes `RUN` suivantes.
-* *Clarté* : la dépendance au proxy est explicitement indiquée dans le Dockerfile.
-* *Arguments de build* : permettent de surcharger la configuration au moment du build.
+=== Option 1 – `~/.docker/config.json` (Recommandé)
+
+Le client Docker ajoute alors les variables de proxy :
+
+* à chaque *nouveau* conteneur (`docker container run`) ;
+* à chaque `docker image build`, comme arguments de build.
+
+[source,bash]
+----
+docker container run --rm alpine:3.24.2 env | grep -i proxy
+# HTTP_PROXY=http://cache-etu.univ-artois.fr:3128
+# HTTPS_PROXY=... NO_PROXY=... et les formes en minuscules
+----
+
+L'image construite, elle, ne garde rien : `docker image inspect` ne montre que `PATH` dans `Config.Env`.
+Aucun redémarrage n'est nécessaire, et le `Dockerfile` reste le même partout.
 
 [%auto-animate]
-== 6. Pourquoi ENV est préférable à RUN export
+== 5. Proxy HTTP pour les conteneurs et les builds
 
-* *Persistance* : `ENV` définit la variable pour toutes les commandes `RUN` suivantes.
-* *Clarté* : la dépendance au proxy est explicitement indiquée dans le Dockerfile.
-* *Arguments de build* : permettent de surcharger la configuration au moment du build.
+=== Option 2 – Arguments de build, pour un build ponctuel
 
-=== En résumé
-- Utilisez l'option *#1 (ENV dans Dockerfile)* si le proxy est toujours nécessaire.
-- Utilisez l'option *#3 (build args)* si vous souhaitez plus de flexibilité.
+[source,bash]
+----
+docker image build \
+  --build-arg HTTP_PROXY=http://cache-etu.univ-artois.fr:3128 \
+  --build-arg HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128 .
+----
+
+Dockerfile correspondant, *sans* ligne `ARG` :
+
+[source,dockerfile]
+----
+FROM alpine:3.24.2
+RUN apk add --no-cache curl
+----
+
+`HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY` (et leurs minuscules) sont des arguments prédéfinis : les `RUN` les voient sans déclaration.
 
 [%auto-animate]
-== 6. Pourquoi ENV est préférable à RUN export
+== 5. Proxy HTTP pour les conteneurs et les builds
 
-* *Persistance* : `ENV` définit la variable pour toutes les commandes `RUN` suivantes.
-* *Clarté* : la dépendance au proxy est explicitement indiquée dans le Dockerfile.
-* *Arguments de build* : permettent de surcharger la configuration au moment du build.
+=== Option 2 – Arguments de build : le piège de `ARG`
 
-=== En résumé
-- Utilisez l'option *#1 (ENV dans Dockerfile)* si le proxy est toujours nécessaire.
-- Utilisez l'option *#3 (build args)* si vous souhaitez plus de flexibilité.
+Si le Dockerfile déclare `ARG HTTPS_PROXY`, la valeur apparaît dans l'historique de l'image :
 
-L'approche `RUN export` ne fonctionne que pour une seule commande : c'est pourquoi `ENV` est plus fiable et conforme à l'esprit Docker.
+[source,bash]
+----
+docker image history --no-trunc --format '{{.CreatedBy}}' mon-image | grep -i proxy
+# RUN |1 HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128 /bin/sh -c apk add --no-cache curl # buildkit
+# ARG HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128
+----
+
+Sans la ligne `ARG`, les arguments prédéfinis sont exclus de `docker image history`.
+Ne déclarez donc *pas* les variables de proxy dans le Dockerfile.
+
+[%auto-animate]
+== 5. Proxy HTTP pour les conteneurs et les builds
+
+=== Option 3 – Proxy avec identifiants : secret de build
+
+Un proxy qui demande un login contient le mot de passe dans son URL.
+Pour le passer à *un seul* `RUN` sans qu'il reste nulle part, BuildKit propose les secrets de build :
+
+[source,dockerfile]
+----
+FROM alpine:3.24.2
+RUN --mount=type=secret,id=proxy,env=HTTPS_PROXY \
+    apk add --no-cache curl
+----
+
+[source,bash]
+----
+read -rsp 'URL du proxy : ' PROXY_URL; echo   # saisie masquée
+PROXY_URL="$PROXY_URL" docker image build --secret id=proxy,env=PROXY_URL .
+unset PROXY_URL
+----
+
+Le mot de passe ne passe ni par l'historique du shell, ni par un `export` : seul ce `docker image build` le reçoit.
+
+Le secret n'existe que pendant ce `RUN` : ni `docker image history`, ni `Config.Env` ne le contiennent.
+
+[%auto-animate]
+== 5. Proxy HTTP pour les conteneurs et les builds
+
+=== Option 4 – `ENV` dans le Dockerfile : à éviter
+
+[source,dockerfile]
+----
+FROM alpine:3.24.2
+ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128
+RUN apk add --no-cache curl
+----
+
+Ça fonctionne (`ENV` après `FROM` et avant le `RUN`), mais la valeur est *gravée dans l'image* :
+
+* elle apparaît dans `docker image history` et dans `Config.Env` ;
+* chaque conteneur lancé depuis cette image, partout, essaiera de passer par le proxy de l'université ;
+* si l'URL contient un mot de passe, il est livré avec l'image.
+
+À réserver au dépannage, sur une image que vous ne partagez pas.
+
+[%auto-animate]
+== 5. Proxy HTTP pour les conteneurs et les builds
+
+=== Option 5 – `daemon.json` : le proxy du démon seulement
+
+[source,json]
+----
+{
+  "proxies": {
+    "http-proxy": "http://cache-etu.univ-artois.fr:3128",
+    "https-proxy": "http://cache-etu.univ-artois.fr:3128",
+    "no-proxy": "localhost,127.0.0.1"
+  }
+}
+----
+
+Ce bloc de `/etc/docker/daemon.json` sert au *démon* : `pull` et `push` vers les registres, communication entre nœuds d'un swarm.
+Il ne s'applique *ni* aux processus des conteneurs, *ni* aux `RUN` d'un build : `apk add` échoue toujours.
+Docker Desktop l'ignore (le proxy se règle dans ses paramètres).
+
+[%auto-animate]
+== 6. En résumé
+
+[cols="3,2,2,2",options="header"]
+|===
+| Méthode | Conteneurs | `RUN` d'un build | Dans l'image
+| `~/.docker/config.json` | oui | oui | non
+| `--build-arg`, sans `ARG` | non | oui | non
+| `--build-arg` + `ARG` | non | oui | historique
+| secret de build | non | un `RUN` | non
+| `ENV` | oui | oui | oui
+| `daemon.json` | non | non | non
+|===
+
+[%auto-animate]
+== 6. En résumé (suite)
+
+* Pour la salle de TP : `~/.docker/config.json`.
+* Pour un proxy avec mot de passe : un secret de build.
+* Le cache de registre (`registry-mirrors`) reste utile, mais pour les images seulement.
