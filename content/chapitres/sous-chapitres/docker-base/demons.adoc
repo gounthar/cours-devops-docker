@@ -608,21 +608,21 @@ ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months
 
 # Supprimer l'image (tip : `docker image rm`)
 docker image rm jpetazzo/clock
-Error response from daemon: conflict: unable to remove repository reference "jpetazzo/clock" (must force) - container edea0c46c6d8 is using its referenced image 7a8965d6553e
+Error response from daemon: conflict: unable to delete jpetazzo/clock:latest (must be forced) - container edea0c46c6d8 is using its referenced image dc06bbc3744f
 
-# Supprimer les containers
-docker container stop second-clock
+# Supprimer les containers (first-clock utilise aussi l'image)
+docker container stop first-clock second-clock
+first-clock
 second-clock
 
-docker container rm second-clockl
+docker container rm first-clock second-clock
+first-clock
 second-clock
 # Supprimer l'image (pour de vrai cette fois)
 docker image rm jpetazzo/clock
 
 Untagged: jpetazzo/clock:latest
-Untagged: jpetazzo/clock@sha256:dc06bbc3744f7200404bff0bbb2516925e7adea115e07de9da8b36bf15fe3dd3
-Deleted: sha256:7a8965d6553ea2289485744ef20521e0dd0d12ab51773f271882913b79813750
-Deleted: sha256:67f770da229bf16d0c280f232629b0c1f1243a884df09f6b940a1c7288535a6d
+Deleted: sha256:dc06bbc3744f7200404bff0bbb2516925e7adea115e07de9da8b36bf15fe3dd3
 ----
 
 [.notes]
@@ -632,6 +632,27 @@ Cette convention facilite la gestion des processus dans les conteneurs en isolan
 En assignant toujours le PID 1 au processus principal du conteneur, Docker peut surveiller ce processus pour s'assurer qu'il est en cours d'exécution.
 Cela permet également d'éviter des conflits potentiels avec les processus du système hôte, car les PID sont spécifiques à chaque espace de conteneur.
 En résumé, cette convention est une pratique standard qui contribue à l'isolation et à la gestion efficace des processus dans les conteneurs Docker.
+--
+
+== 💡 Et `docker image rm -f` ?
+
+Le message d'erreur suggère de forcer. Voici ce que fait vraiment `-f` quand un conteneur utilise encore l'image :
+
+[source,bash]
+----
+docker image rm -f jpetazzo/clock
+Untagged: jpetazzo/clock:latest
+----
+
+* Seule l'*étiquette* est retirée, que le conteneur soit arrêté ou en cours d'exécution (il continue de tourner).
+* `docker container ls --all` affiche ensuite l'ID de l'image à la place de son nom.
+* Les couches restent sur le disque : l'espace n'est libéré qu'après suppression des conteneurs qui les utilisent.
+
+[.notes]
+--
+Mesuré sous Docker 29.8.0 avec une image à étiquette unique.
+Piège si vous refaites l'essai : une image qui porte une seconde étiquette se « supprime » sans `-f` et sans conflit,
+car `docker image rm` retire alors seulement l'étiquette visée.
 --
 
 == 🎓 Exercice : conteneur en tâche de fond
