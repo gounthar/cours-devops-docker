@@ -608,11 +608,11 @@ edea0c46c6d8   jpetazzo/clock   "/bin/sh -c 'while d…"   Up About a minute   s
 
 [.notes]
 --
-Dans Docker, le PID (Process ID) principal est toujours 1, car c'est une convention spécifique à Docker.
-Cette convention facilite la gestion des processus dans les conteneurs en isolant chaque processus du conteneur du système hôte.
-En assignant toujours le PID 1 au processus principal du conteneur, Docker peut surveiller ce processus pour s'assurer qu'il est en cours d'exécution.
-Cela permet également d'éviter des conflits potentiels avec les processus du système hôte, car les PID sont spécifiques à chaque espace de conteneur.
-En résumé, cette convention est une pratique standard qui contribue à l'isolation et à la gestion efficace des processus dans les conteneurs Docker.
+Par défaut, chaque conteneur a son propre espace de noms PID (_PID namespace_, un mécanisme du noyau Linux, pas une convention Docker).
+Le premier processus lancé dans cet espace, ici la commande de l'image, y porte le PID 1.
+Vu depuis l'hôte, le même processus a un autre PID.
+Ce n'est pas universel : avec `--pid=host`, le conteneur partage l'espace PID de l'hôte et son processus principal n'a plus le PID 1.
+Mesuré sous Docker 29.8.0 : `echo $$` affiche 1 par défaut, 2249 avec `--pid=host`.
 --
 
 == ✅ Solution : conteneur en tâche de fond (2/2)
