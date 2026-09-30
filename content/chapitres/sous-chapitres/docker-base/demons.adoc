@@ -608,7 +608,7 @@ ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months
 
 # Supprimer l'image (tip : `docker image rm`)
 docker image rm jpetazzo/clock
-Error response from daemon: conflict: unable to remove repository reference "jpetazzo/clock" (must force) - container edea0c46c6d8 is using its referenced image 7a8965d6553e
+Error response from daemon: conflict: unable to delete jpetazzo/clock:latest (must be forced) - container edea0c46c6d8 is using its referenced image 7a8965d6553e
 
 # Supprimer les containers
 docker container stop second-clock
