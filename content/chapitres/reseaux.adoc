@@ -498,7 +498,7 @@ resolver 127.0.0.11 valid=30s ipv6=off;
 
 Créez un projet avec :
 
-1. **NGINX** (proxy) utilisant upstream vers `webapp`
+1. **NGINX** (proxy) vers `webapp`
 2. **webapp** (serveur web simple, port 80 dans le conteneur, 8080 sur l'hôte)
 
 [source,yaml]
@@ -517,9 +517,9 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
 ----
 
-**Test 1** : Sans `resolver`, démarrer le proxy seul (`docker compose up proxy`) → Observer l'échec NGINX
+**Test 1** : bloc `upstream` vers `webapp:80`, sans `resolver`. Démarrer le proxy seul (`docker compose up proxy`) → Observer l'échec NGINX
 
-**Test 2** : Avec `resolver 127.0.0.11` → Succès !
+**Test 2** : `resolver 127.0.0.11` et `proxy_pass` par variable (voir plus haut). Le proxy démarre seul, puis répond dès que `webapp` tourne → Succès !
 
 === 📊 En Résumé
 

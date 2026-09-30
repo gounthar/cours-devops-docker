@@ -884,7 +884,7 @@ image::fichiers-output67_with_transparency.png[height=500]
 [source,bash]
 ----
 docker container inspect \
-  --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <ContainerID>
+  --format '{{range .NetworkSettings.Networks}}{{println .IPAddress}}{{end}}' <ContainerID>
 ----
 
 [.notes]
