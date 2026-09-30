@@ -367,11 +367,11 @@ Impact: Common exam failure (+1.20 points average)
 
 === Le Problème
 
-NGINX, contrairement à d'autres outils (curl, wget, applications), **résout les noms DNS au démarrage uniquement**.
+NGINX, contrairement à d'autres outils (curl, wget, applications), résout les noms écrits en dur (bloc `upstream`, `proxy_pass http://nom:port`) **une seule fois, au chargement de la configuration**.
 
 [%step]
-* Si un service Docker n'est pas encore démarré → NGINX **échoue au démarrage**
-* Si un conteneur redémarre et change d'IP → NGINX continue d'utiliser l'**ancienne IP**
+* Si le service amont n'est pas encore démarré → NGINX **échoue au démarrage** : c'est un problème d'**ordre de démarrage**
+* Si un conteneur redémarre et change d'IP → NGINX continue d'envoyer vers l'**ancienne IP**, même si un autre conteneur l'a récupérée
 * Erreur typique : `host not found in upstream "nom-service:port"`
 
 === Exemple de Configuration Défaillante
@@ -398,7 +398,9 @@ http {
 }
 ----
 
-**Résultat** : `nginx: [emerg] host not found in upstream "app-server"`
+**Résultat** : `nginx: [emerg] host not found in upstream "app-server:8080"`
+
+Ajouter `resolver 127.0.0.11;` à cette configuration ne change **rien** : même message, même arrêt.
 
 === La Solution : Directive `resolver` + Variables
 
@@ -425,23 +427,39 @@ http {
 
 [IMPORTANT]
 ====
-La directive `resolver` **seule ne suffit pas** avec les blocs `upstream` et noms fixes !
+`resolver` n'est lu que par la résolution **à l'exécution**. Un nom écrit en dur est résolu au chargement, sans lui.
 
-**Deux approches fonctionnelles** :
+**Deux façons de passer à la résolution à l'exécution** :
 
-1. **Approche variable (recommandée pour Docker)** :
-   - Pas de bloc `upstream`
-   - Utiliser `set $var "nom-service:port"`
-   - Puis `proxy_pass http://$var`
-   - ✅ Force la résolution DNS à chaque requête
-
-2. **Approche upstream** :
-   - Garder le bloc `upstream` pour load balancing
-   - Nécessite configurations avancées (variables + health checks)
-   - Plus complexe à maintenir
-
-Pour la plupart des cas Docker simples → **Approche variable**
+1. **Variable** (ci-dessus) : `set $var "nom-service:port"` puis `proxy_pass http://$var`
+2. **`upstream` avec `resolve`** (NGINX 1.27.3 et plus) : garde le bloc `upstream`, utile pour répartir la charge
 ====
+
+=== L'approche `upstream` avec `resolve`
+
+[source,nginx]
+----
+http {
+    resolver 127.0.0.11 valid=30s ipv6=off;
+
+    upstream backend {
+        zone backend 64k;               # obligatoire avec resolve
+        server app-server:8080 resolve;
+    }
+    # server { ... proxy_pass http://backend; ... }
+}
+----
+
+[%step]
+* NGINX démarre même si `app-server` n'existe pas encore (502 en attendant)
+* Le nom est ré-interrogé à l'échéance de `valid` : jusqu'à 30 s de 502 après l'arrivée du service
+* L'approche variable, elle, répond dès la requête suivante
+
+[.notes]
+--
+Mesuré avec nginx 1.31.6, Docker 29.8.0 : proxy démarré seul, puis webapp. Variable : 200 une seconde après. upstream + resolve : 502 puis 200 à +32 s avec valid=30s.
+Autre remède à l'ordre de démarrage seul : depends_on dans Compose (mesuré : upstream statique, 200). Mais depends_on ne règle pas le changement d'IP : après redémarrage de webapp sur une autre IP, nginx a envoyé 3 requêtes sur 3 au conteneur qui avait récupéré l'ancienne adresse.
+--
 
 [TIP]
 ====
@@ -459,25 +477,21 @@ Le réseau `bridge` par défaut n'a pas de serveur DNS - utilisez `docker networ
 | Directive `resolver` nécessaire ?
 | Raison
 
-| upstream block avec noms Docker (statique)
-| ⚠️ INSUFFISANT
-| Nécessite AUSSI variables + proxy_pass
+| `upstream` ou `proxy_pass` avec nom écrit en dur
+| ❌ SANS EFFET
+| Résolu au chargement, `resolver` ignoré
 
-| proxy_pass avec variable (`$backend_host`)
-| ✅ OUI + obligatoire
-| Force résolution dynamique à chaque requête
+| `proxy_pass` avec variable (`$backend_host`)
+| ✅ OBLIGATOIRE
+| Résolution à l'exécution
 
-| upstream avec IP fixe
+| `upstream` avec `server ... resolve`
+| ✅ OBLIGATOIRE
+| Résolution à l'exécution (+ `zone`)
+
+| `upstream` avec IP fixe
 | ❌ NON
 | Pas de résolution DNS
-
-| proxy_pass avec nom fixe (sans upstream)
-| ⚠️ RECOMMANDÉ
-| Évite erreurs au redémarrage
-
-| proxy_pass avec variable
-| ✅ OUI
-| Résolution dynamique obligatoire
 |===
 
 === Paramètres de la Directive `resolver`
@@ -519,29 +533,23 @@ services:
 
 **Test 1** : bloc `upstream` vers `webapp:80`, sans `resolver`. Démarrer le proxy seul (`docker compose up proxy`) → Observer l'échec NGINX
 
+**Test 1 bis** : ajouter `resolver 127.0.0.11;` au test 1 → Même échec, même message
+
 **Test 2** : `resolver 127.0.0.11` et `proxy_pass` par variable (voir plus haut). Le proxy démarre seul, puis répond dès que `webapp` tourne → Succès !
 
 === 📊 En Résumé
 
 [TIP]
 ====
-**Règle d'or** : upstream block avec noms Docker → **DOIT avoir resolver**
-
-[source,nginx]
-----
-http {
-    resolver 127.0.0.11 valid=30s ipv6=off;
-    # ...
-}
-----
+**Règle d'or** : un nom écrit en dur est résolu **au chargement**. Pour résoudre à l'exécution : **variable** ou **`resolve`**, et alors **`resolver 127.0.0.11`** obligatoire.
 ====
 
 [WARNING]
 ====
-Sans cette directive, vous aurez :
+Avec un nom écrit en dur, `resolver` ou pas :
 
-* ❌ Échecs au démarrage si services pas encore prêts
-* ❌ IPs obsolètes après redémarrage de conteneurs
+* ❌ Échec au démarrage si le service amont n'est pas encore lancé
+* ❌ IP obsolète après redémarrage du conteneur amont
 * ❌ Erreur : `host not found in upstream`
 ====
 
