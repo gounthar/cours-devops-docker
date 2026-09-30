@@ -614,7 +614,7 @@ Error response from daemon: conflict: unable to remove repository reference "jpe
 docker container stop second-clock
 second-clock
 
-docker container rm second-clockl
+docker container rm second-clock
 second-clock
 # Supprimer l'image (pour de vrai cette fois)
 docker image rm jpetazzo/clock
@@ -632,6 +632,27 @@ Cette convention facilite la gestion des processus dans les conteneurs en isolan
 En assignant toujours le PID 1 au processus principal du conteneur, Docker peut surveiller ce processus pour s'assurer qu'il est en cours d'exécution.
 Cela permet également d'éviter des conflits potentiels avec les processus du système hôte, car les PID sont spécifiques à chaque espace de conteneur.
 En résumé, cette convention est une pratique standard qui contribue à l'isolation et à la gestion efficace des processus dans les conteneurs Docker.
+--
+
+== 💡 Et `docker image rm -f` ?
+
+Le message d'erreur suggère de forcer. Voici ce que fait vraiment `-f` quand un conteneur utilise encore l'image :
+
+[source,bash]
+----
+docker image rm -f jpetazzo/clock
+Untagged: jpetazzo/clock:latest
+----
+
+* Seule l'*étiquette* est retirée, que le conteneur soit arrêté ou en cours d'exécution (il continue de tourner).
+* `docker container ls --all` affiche ensuite l'ID de l'image à la place de son nom.
+* Les couches restent sur le disque : l'espace n'est libéré qu'après suppression des conteneurs qui les utilisent.
+
+[.notes]
+--
+Mesuré sous Docker 29.8.0 avec une image à étiquette unique.
+Piège si vous refaites l'essai : une image qui porte une seconde étiquette se « supprime » sans `-f` et sans conflit,
+car `docker image rm` retire alors seulement l'étiquette visée.
 --
 
 == 🎓 Exercice : conteneur en tâche de fond
