@@ -635,18 +635,20 @@ docker image pull cache-ili.univ-artois.fr:80/proxy_cache/library/hello-world</c
 # HTTP_PROXY=http://cache-etu.univ-artois.fr:3128
 # HTTPS_PROXY=... NO_PROXY=... et les formes en minuscules</code></pre></div></div>
 <div class="paragraph"><p>L&#8217;image construite, elle, ne garde rien : <code>docker image inspect</code> ne montre que <code>PATH</code> dans <code>Config.Env</code>.
-Aucun redémarrage n&#8217;est nécessaire, et le <code>Dockerfile</code> reste le même partout.</p></div></div></section><section id="5_proxy_http_pour_les_conteneurs_et_les_builds_4" data-auto-animate><h2>5. Proxy HTTP pour les conteneurs et les builds</h2><div class="slide-content"><h3>Option 2 – Arguments de build, pour un build ponctuel</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build \
+Aucun redémarrage n&#8217;est nécessaire, et le <code>Dockerfile</code> reste le même partout.</p></div></div></section><section id="5_proxy_http_pour_les_conteneurs_et_les_builds_4" data-auto-animate><h2>5. Proxy HTTP pour les conteneurs et les builds</h2><div class="slide-content"><h3>Option 1 – Deux limites</h3><div class="ulist"><ul><li><p><strong>Les noms de conteneurs</strong> : <code>noProxy</code> ne les couvre pas. Un <code>curl web2</code> entre deux conteneurs part vers le proxy.
+Utilisez <code>curl --noproxy '*' web2</code>.</p></li><li><p><strong>Maven</strong> ignore <code>HTTP_PROXY</code> et <code>HTTPS_PROXY</code>. Il lui faut un <code>settings.xml</code> (voir les travaux pratiques #7).
+<code>apk</code>, <code>wget</code>, <code>curl</code> et <code>git</code>, eux, suivent les variables.</p></li></ul></div></div></section><section id="5_proxy_http_pour_les_conteneurs_et_les_builds_5" data-auto-animate><h2>5. Proxy HTTP pour les conteneurs et les builds</h2><div class="slide-content"><h3>Option 2 – Arguments de build, pour un build ponctuel</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build \
   --build-arg HTTP_PROXY=http://cache-etu.univ-artois.fr:3128 \
   --build-arg HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128 .</code></pre></div></div>
 <div class="paragraph"><p>Dockerfile correspondant, <strong>sans</strong> ligne <code>ARG</code> :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.24.2
 RUN apk add --no-cache curl</code></pre></div></div>
-<div class="paragraph"><p><code>HTTP_PROXY</code>, <code>HTTPS_PROXY</code>, <code>NO_PROXY</code> (et leurs minuscules) sont des arguments prédéfinis : les <code>RUN</code> les voient sans déclaration.</p></div></div></section><section id="5_proxy_http_pour_les_conteneurs_et_les_builds_5" data-auto-animate><h2>5. Proxy HTTP pour les conteneurs et les builds</h2><div class="slide-content"><h3>Option 2 – Arguments de build : le piège de <code>ARG</code></h3><div class="paragraph"><p>Si le Dockerfile déclare <code>ARG HTTPS_PROXY</code>, la valeur apparaît dans l&#8217;historique de l&#8217;image :</p></div>
+<div class="paragraph"><p><code>HTTP_PROXY</code>, <code>HTTPS_PROXY</code>, <code>NO_PROXY</code> (et leurs minuscules) sont des arguments prédéfinis : les <code>RUN</code> les voient sans déclaration.</p></div></div></section><section id="5_proxy_http_pour_les_conteneurs_et_les_builds_6" data-auto-animate><h2>5. Proxy HTTP pour les conteneurs et les builds</h2><div class="slide-content"><h3>Option 2 – Arguments de build : le piège de <code>ARG</code></h3><div class="paragraph"><p>Si le Dockerfile déclare <code>ARG HTTPS_PROXY</code>, la valeur apparaît dans l&#8217;historique de l&#8217;image :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image history --no-trunc --format '{{.CreatedBy}}' mon-image | grep -i proxy
 # RUN |1 HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128 /bin/sh -c apk add --no-cache curl # buildkit
 # ARG HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128</code></pre></div></div>
 <div class="paragraph"><p>Sans la ligne <code>ARG</code>, les arguments prédéfinis sont exclus de <code>docker image history</code>.
-Ne déclarez donc <strong>pas</strong> les variables de proxy dans le Dockerfile.</p></div></div></section><section id="5_proxy_http_pour_les_conteneurs_et_les_builds_6" data-auto-animate><h2>5. Proxy HTTP pour les conteneurs et les builds</h2><div class="slide-content"><h3>Option 3 – Proxy avec identifiants : secret de build</h3><div class="paragraph"><p>Un proxy qui demande un login contient le mot de passe dans son URL.
+Ne déclarez donc <strong>pas</strong> les variables de proxy dans le Dockerfile.</p></div></div></section><section id="5_proxy_http_pour_les_conteneurs_et_les_builds_7" data-auto-animate><h2>5. Proxy HTTP pour les conteneurs et les builds</h2><div class="slide-content"><h3>Option 3 – Proxy avec identifiants : secret de build</h3><div class="paragraph"><p>Un proxy qui demande un login contient le mot de passe dans son URL.
 Pour le passer à <strong>un seul</strong> <code>RUN</code> sans qu&#8217;il reste nulle part, BuildKit propose les secrets de build :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.24.2
 RUN --mount=type=secret,id=proxy,env=HTTPS_PROXY \
@@ -655,12 +657,12 @@ RUN --mount=type=secret,id=proxy,env=HTTPS_PROXY \
 PROXY_URL="$PROXY_URL" docker image build --secret id=proxy,env=PROXY_URL .
 unset PROXY_URL</code></pre></div></div>
 <div class="paragraph"><p>Le mot de passe ne passe ni par l&#8217;historique du shell, ni par un <code>export</code> : seul ce <code>docker image build</code> le reçoit.</p></div>
-<div class="paragraph"><p>Le secret n&#8217;existe que pendant ce <code>RUN</code> : ni <code>docker image history</code>, ni <code>Config.Env</code> ne le contiennent.</p></div></div></section><section id="5_proxy_http_pour_les_conteneurs_et_les_builds_7" data-auto-animate><h2>5. Proxy HTTP pour les conteneurs et les builds</h2><div class="slide-content"><h3>Option 4 – <code>ENV</code> dans le Dockerfile : à éviter</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.24.2
+<div class="paragraph"><p>Le secret n&#8217;existe que pendant ce <code>RUN</code> : ni <code>docker image history</code>, ni <code>Config.Env</code> ne le contiennent.</p></div></div></section><section id="5_proxy_http_pour_les_conteneurs_et_les_builds_8" data-auto-animate><h2>5. Proxy HTTP pour les conteneurs et les builds</h2><div class="slide-content"><h3>Option 4 – <code>ENV</code> dans le Dockerfile : à éviter</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.24.2
 ENV HTTPS_PROXY=http://cache-etu.univ-artois.fr:3128
 RUN apk add --no-cache curl</code></pre></div></div>
 <div class="paragraph"><p>Ça fonctionne (<code>ENV</code> après <code>FROM</code> et avant le <code>RUN</code>), mais la valeur est <strong>gravée dans l&#8217;image</strong> :</p></div>
 <div class="ulist"><ul><li><p>elle apparaît dans <code>docker image history</code> et dans <code>Config.Env</code> ;</p></li><li><p>chaque conteneur lancé depuis cette image, partout, essaiera de passer par le proxy de l&#8217;université ;</p></li><li><p>si l&#8217;URL contient un mot de passe, il est livré avec l&#8217;image.</p></li></ul></div>
-<div class="paragraph"><p>À réserver au dépannage, sur une image que vous ne partagez pas.</p></div></div></section><section id="5_proxy_http_pour_les_conteneurs_et_les_builds_8" data-auto-animate><h2>5. Proxy HTTP pour les conteneurs et les builds</h2><div class="slide-content"><h3>Option 5 – <code>daemon.json</code> : le proxy du démon seulement</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">{
+<div class="paragraph"><p>À réserver au dépannage, sur une image que vous ne partagez pas.</p></div></div></section><section id="5_proxy_http_pour_les_conteneurs_et_les_builds_9" data-auto-animate><h2>5. Proxy HTTP pour les conteneurs et les builds</h2><div class="slide-content"><h3>Option 5 – <code>daemon.json</code> : le proxy du démon seulement</h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">{
   "proxies": {
     "http-proxy": "http://cache-etu.univ-artois.fr:3128",
     "https-proxy": "http://cache-etu.univ-artois.fr:3128",
@@ -2335,7 +2337,7 @@ docker container run --rm docker-git:1.2.0 make --version</code></pre></div></di
 <div class="paragraph fragment"><p>Laquelle choisir ???</p></div></div></section><section id="cmd_vs_entrypoint" data-auto-animate><h2>CMD vs ENTRYPOINT</h2><div class="slide-content"><div class="paragraph"><p>Cas d&#8217;usage : énoncé du besoin.</p></div>
 <div class="paragraph fragment"><p>Besoin : je veux utiliser <code>cURL</code> mais il n&#8217;est pas présent sur la machine hôte.</p></div>
 <div class="paragraph fragment"><p><strong>Facile !</strong></p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm curlimages/curl curl -x http://prx:3128 -L --connect-timeout 60  "http://google.com"</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm curlimages/curl curl -x http://cache-etu.univ-artois.fr:3128 -L --connect-timeout 60  "http://google.com"</code></pre></div></div>
 <div class="imageblock fragment"><img src="media/1956754704-image11.jpeg" alt="1956754704 image11"></div>
 <aside class="notes"><div class="paragraph"><p>Pour ceux qui n&#8217;auraient pas de proxy parce que vous n&#8217;utilisez pas le réseau de la fac&#8230;&#8203; On peut en lancer un avec Docker.
 Tout d&#8217;abord, créer un fichier <code>squid.conf</code> avec comme contenu:</p></div>
@@ -2351,9 +2353,13 @@ On va s&#8217;outiller!</p></div></div></div>
 LABEL maintainer="John Doe"
 RUN apk add --no-cache curl
 # Si vous utilisez le proxy de l'Université
-CMD ["curl","-x", "http://prx:3128", "-L", "--connect-timeout", "60", "http://google.com"]
+CMD ["curl", "-L", "--connect-timeout", "60", \
+  "-x", "http://cache-etu.univ-artois.fr:3128", \
+  "http://google.com"]
 # Si vous utilisez votre propre proxy docker
-# CMD ["curl","-x", "http://host.docker.internal:3128", "-L", "--connect-timeout", "60", "http://google.com"]</code></pre></div></div></div></div>
+# CMD ["curl", "-L", "--connect-timeout", "60", \
+#   "-x", "http://host.docker.internal:3128", \
+#   "http://google.com"]</code></pre></div></div></div></div>
 <div class="openblock column fragment"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t my-curl:1.0 .</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm my-curl:1.0
 &lt;!doctype html&gt;&lt;html [...]
@@ -2374,9 +2380,11 @@ docker container run --rm my-curl:2.0 http://twitter.com</code></pre></div></div
 LABEL maintainer="John Doe"
 RUN apk add --no-cache curl
 # Si vous utilisez le proxy de l'Université
-ENTRYPOINT ["curl","-x", "http://prx:3128", "-L", "--connect-timeout", "60"]
+ENTRYPOINT ["curl", "-L", "--connect-timeout", "60", \
+  "-x", "http://cache-etu.univ-artois.fr:3128"]
 # Si vous utilisez votre propre proxy docker
-# CMD ["curl","-x", "http://host.docker.internal:3128", "-L", "--connect-timeout", "60"]</code></pre></div></div></div></div>
+# ENTRYPOINT ["curl", "-L", "--connect-timeout", "60", \
+#   "-x", "http://host.docker.internal:3128"]</code></pre></div></div></div></div>
 <div class="openblock column fragment"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t my-curl:2.0 .</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm my-curl:2.0 http://google.com
 &lt;!doctype html&gt;&lt;html [...]
@@ -2387,9 +2395,11 @@ google blahblahblah [...]
 LABEL maintainer="John Doe"
 RUN apk add --no-cache curl
 # Si vous utilisez le proxy de l'Université
-ENTRYPOINT ["curl","-x", "http://prx:3128", "-L", "--connect-timeout", "60"]
+ENTRYPOINT ["curl", "-L", "--connect-timeout", "60", \
+  "-x", "http://cache-etu.univ-artois.fr:3128"]
 # Si vous utilisez votre propre proxy docker
-# CMD ["curl","-x", "http://host.docker.internal:3128", "-L", "--connect-timeout", "60"]</code></pre></div></div>
+# ENTRYPOINT ["curl", "-L", "--connect-timeout", "60", \
+#   "-x", "http://host.docker.internal:3128"]</code></pre></div></div>
 <div class="imageblock"><img src="media/override.png" alt="override"></div></div></div>
 <div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t my-curl:2.0 .</code></pre></div></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm my-curl:2.0 http://google.com
@@ -2397,7 +2407,8 @@ ENTRYPOINT ["curl","-x", "http://prx:3128", "-L", "--connect-timeout", "60"]
 google blahblahblah [...]
 &lt;/html&gt;</code></pre></div></div></div></div></div></section><section id="checkpoint_5"><h2>Checkpoint 🎯</h2><div class="slide-content"><div class="ulist"><ul><li><p>Une image Docker fournit un environnement de système de fichier auto-suffisant (application, dépendances, binaries, etc.) comme modèle de base d&#8217;un conteneur</p></li><li><p>Les images Docker ont une convention de nommage permettant d&#8217;identifier les images très précisément</p></li><li><p>On peut spécifier une recette de fabrication d&#8217;image à l&#8217;aide d&#8217;un <code>Dockerfile</code> et de la commande <code>docker image build</code></p></li></ul></div>
 <div class="paragraph"><p>&#8658; 🤔 et si on utilisait Docker pour nous aider dans l&#8217;intégration continue ?</p></div></div></section></section>
-<section><section id="nos_fichiers_dans_les_images" data-background-image="media/fichiers.png" data-background-size="cover" data-background-position="left" data-background-opacity="0.1"><h2>📁 Nos fichiers dans les images</h2><div class="slide-content"></div></section><section id="le_répertoire_de_travail"><h2>📂 Le répertoire de travail</h2><div class="slide-content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --interactive --tty httpd pwd /usr/local/apache2</code></pre></div></div>
+<section><section id="nos_fichiers_dans_les_images" data-background-image="media/fichiers.png" data-background-size="cover" data-background-position="left" data-background-opacity="0.1"><h2>📁 Nos fichiers dans les images</h2><div class="slide-content"></div></section><section id="le_répertoire_de_travail"><h2>📂 Le répertoire de travail</h2><div class="slide-content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --interactive --tty httpd pwd
+/usr/local/apache2</code></pre></div></div>
 <div class="paragraph fragment"><p>Comment paramétrer le répertoire de travail de tous nos containers ?</p></div></div></section><section id="workdir" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.24
 WORKDIR /repertoire/travail
 RUN echo hello &gt; ./world.txt</code></pre></div></div></div></section><section id="workdir_2" data-auto-animate><h2>📂 WORKDIR</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.24
@@ -2431,6 +2442,7 @@ COPY ./* /app</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag mon-node .
 ...</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run --workdir /app --entrypoint ls mon-node
+Dockerfile
 app.js</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ docker container run mon-node app.js
 Hello Mad Javascript World!</code></pre></div></div></div></section><section id="embarquer_des_fichiers_3" data-auto-animate><h2>📁 Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Le mot clé <code>ADD</code>.</p></div>
@@ -2440,9 +2452,9 @@ ADD https://mon-nexus/foo/bar/1.0/package.tar /uncompressed/</code></pre></div><
 <div class="paragraph fragment"><p>Il est capable de télécharger directement d&#8217;une URL</p></div>
 <div class="paragraph fragment"><p>Il est capable de "untar" automatiquement.</p></div>
 <div class="paragraph fragment"><p>On le retrouve dans d&#8217;anciens Dockerfile mais il tend à disparaître.</p></div></div></section><section id="embarquer_des_fichiers_4" data-auto-animate><h2>📁 Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Le mot clé <code>ADD</code></p></div>
-<div class="paragraph small"><small>source : <a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy" class="bare">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy</a></small></div>
+<div class="paragraph small"><small>source : <a href="https://docs.docker.com/build/building/best-practices/#add-or-copy" class="bare">https://docs.docker.com/build/building/best-practices/#add-or-copy</a></small></div>
 <div class="imageblock"><img src="media/1108215415-image2.png" alt="1108215415 image2"></div></div></section><section id="embarquer_des_fichiers_5" data-auto-animate><h2>📁 Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Le mot clé <code>ADD</code>.</p></div>
-<div class="paragraph small"><small>source : <a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy" class="bare">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy</a></small></div>
+<div class="paragraph small"><small>source : <a href="https://docs.docker.com/build/building/best-practices/#add-or-copy" class="bare">https://docs.docker.com/build/building/best-practices/#add-or-copy</a></small></div>
 <div class="imageblock"><img src="media/add-stabylo.png" alt="add stabylo"></div></div></section><section id="embarquer_des_fichiers_6" data-auto-animate><h2>📁 Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Oui, mais pas la terre entière !</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --tag myjava:1.42 ./
 Sending build context to Docker daemon  172.8MB</code></pre></div></div></div></section><section id="embarquer_des_fichiers_7" data-auto-animate><h2>📁 Embarquer des fichiers</h2><div class="slide-content"><div class="paragraph"><p>Oui, mais pas la terre entière !</p></div>
@@ -2624,7 +2636,7 @@ un conteneur <code>centos</code> (#550). Pour les régénérer à la main :</p><
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect my-web | jq .</code></pre></div></div>
 <div class="paragraph fragment"><p>Les <a href="https://pkg.go.dev/text/template">templates de GO</a> peuvent être utilisés directement</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect --format '{{json .Created }}' my-web</code></pre></div></div></div></section><section id="travaux_pratiques_6"><h2>🎓 Travaux pratiques #6</h2><div class="slide-content"><div class="paragraph"><p>Étapes:</p></div>
-<div class="ulist"><ul><li class="fragment"><p>Lancer un container HTTPd</p></li><li class="fragment"><p>Trouver la syntaxe permettant d&#8217;extraire le "CMD" qui a été passé au démarrage du container</p></li><li class="fragment"><p>Trouver une seconde méthode pour faire la même chose</p></li></ul></div>
+<div class="ulist"><ul><li class="fragment"><p>Lancer un container <code>nginx</code></p></li><li class="fragment"><p>Trouver la syntaxe permettant d&#8217;extraire le "CMD" qui a été passé au démarrage du container</p></li><li class="fragment"><p>Trouver une seconde méthode pour faire la même chose</p></li></ul></div>
 <aside class="notes"><div class="paragraph"><p>On démarre un container nginx avec la commande</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Here we're using the 'docker container run' command to start a new Docker container.
 # The '--detach' option tells Docker to run the container in the background and print the container ID.
@@ -2711,11 +2723,11 @@ Lorsque vous utilisez docker container inspect ou docker container ls pour exami
 Les options et les arguments passés en ligne de commande lors du lancement du conteneur remplacent la commande CMD.
 Vous pouvez également ajouter des arguments supplémentaires à la commande CMD en utilisant docker container run.</p></li></ol></div>
 <div class="paragraph"><p>En résumé, ENTRYPOINT est généralement utilisé pour spécifier la commande principale de l&#8217;application dans le conteneur, et les arguments fournis lors du lancement du conteneur sont traités comme des arguments pour cette commande. En revanche, CMD est utilisé pour spécifier une commande par défaut qui peut être écrasée en passant d&#8217;autres commandes lors du lancement du conteneur. L&#8217;utilisation de l&#8217;un ou de l&#8217;autre dépend des besoins spécifiques de votre application et de la manière dont vous souhaitez gérer la personnalisation des commandes dans vos conteneurs.</p></div></aside></div></section><section id="trouver_son_container_en_réseau"><h2>🌐 Trouver son container en réseau</h2><div class="slide-content"><div class="imageblock"><img src="media/1233103020-image17.jpeg" alt="1233103020 image17"></div></div></section><section id="le_container_en_réseau"><h2>🌐 Le Container en réseau</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach nginx
-bd12c4d7110d17ce80...`</code></pre></div></div>
+bd12c4d7110d17ce80...</code></pre></div></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls
-CONTAINERID     IMAGE   COMMAND      CREATED    STATUS    PORTS
-bd12c4d71       nginx   "nginx …"    35 s. ago  Up 33 s.  80/tcp, 443/tcp</code></pre></div></div>
-<div class="paragraph fragment"><p>Ok, mon container expose un service sur les ports <code>TCP 80</code> et <code>443</code> mais j&#8217;appelle comment mon Nginx ?</p></div></div></section><section id="que_nous_dit_docker_container_inspect" data-auto-animate><h2>🔍 Que nous dit docker container inspect ?</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">"Networks": {
+CONTAINER ID    IMAGE   COMMAND                  CREATED    STATUS    PORTS
+bd12c4d71       nginx   "/docker-entrypoint.…"   35 s. ago  Up 33 s.  80/tcp</code></pre></div></div>
+<div class="paragraph fragment"><p>Ok, mon container expose un service sur le port <code>TCP 80</code>, mais j&#8217;appelle comment mon Nginx ?</p></div></div></section><section id="que_nous_dit_docker_container_inspect" data-auto-animate><h2>🔍 Que nous dit docker container inspect ?</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">"Networks": {
                 "bridge": {
                     "IPAMConfig": null,
                     "Links": null,
@@ -2732,12 +2744,15 @@ bd12c4d71       nginx   "nginx …"    35 s. ago  Up 33 s.  80/tcp, 443/tcp</cod
                     "DriverOpts": null
                 }
             }</code></pre></div></div></div></section><section id="que_nous_dit_docker_container_inspect_2" data-auto-animate><h2>🔍 Que nous dit docker container inspect ?</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output66_with_transparency.png" alt="fichiers output66 with transparency" height="500"></div></div></section><section id="que_nous_dit_docker_container_inspect_3" data-auto-animate><h2>🔍 Que nous dit docker container inspect ?</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output67_with_transparency.png" alt="fichiers output67 with transparency" height="500"></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect --format "{{.NetworkSettings.IPAddress}}" &lt;ContainerID&gt;</code></pre></div></div>
-<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {66..67}; do convert Diapositive${i}.PNG -crop 9519x5022+1833+1472 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="et_voilà"><h2>Et voilà !</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">curl -I --noproxy '*' http://172.17.0.2:80
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect \
+  --format '{{range .NetworkSettings.Networks}}{{println .IPAddress}}{{end}}' &lt;ContainerID&gt;</code></pre></div></div>
+<aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {66..67}; do convert Diapositive${i}.PNG -crop 9519x5022+1833+1472 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="que_nous_dit_docker_container_inspect_4" data-auto-animate><h2>🔍 Que nous dit docker container inspect ?</h2><div class="slide-content"><div class="paragraph"><p>L&#8217;ancienne forme, encore dans beaucoup de tutoriels, échoue avec Docker 29 :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect --format "{{.NetworkSettings.IPAddress}}" &lt;ContainerID&gt;
+template parsing error: [...] map has no entry for key "IPAddress"</code></pre></div></div>
+<div class="paragraph"><p>L&#8217;adresse n&#8217;est plus que sous <code>.NetworkSettings.Networks.&lt;réseau&gt;</code>, d&#8217;où le <code>range</code>.</p></div></div></section><section id="et_voilà"><h2>Et voilà !</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">curl -I --noproxy '*' http://172.17.0.2:80
 HTTP/1.1 200 OK
 ....
-`Server: nginx/1.25 ...
-`</code></pre></div></div>
+Server: nginx/1.25 ...</code></pre></div></div>
 <div class="paragraph"><p>Il est maintenant facile d&#8217;interagir avec notre serveur web !</p></div></div></section><section id="mapping_de_port" data-auto-animate><h2>🗺️ Mapping de Port</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output71_with_transparency.png" alt="fichiers output71 with transparency"></div></div></section><section id="mapping_de_port_2" data-auto-animate><h2>🗺️ Mapping de Port</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output72_with_transparency.png" alt="fichiers output72 with transparency"></div></div></section><section id="mapping_de_port_3" data-auto-animate><h2>🗺️ Mapping de Port</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output73_with_transparency.png" alt="fichiers output73 with transparency"></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">curl -I --noproxy '*' http://172.17.0.2:80</code></pre></div></div></div></section><section id="mapping_de_port_4" data-auto-animate><h2>🗺️ Mapping de Port</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">curl -I --noproxy '*' http://172.17.0.2:80
 HTTP/1.1 200 OK
@@ -2749,7 +2764,7 @@ Last-Modified: Tue, 10 Oct 2023 12:12:13 GMT
 Connection: keep-alive
 ETag: "65253f9d-4564d"
 Accept-Ranges: bytes</code></pre></div></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ curl -I --noproxy '*' http://localhost:8000`
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">$ curl -I --noproxy '*' http://localhost:8000
 HTTP/1.1 200 OK
 Server: nginx/1.25.2
 Date: Wed, 18 Oct 2023 11:57:25 GMT
@@ -2804,7 +2819,23 @@ docker container run -d -p 8080:8080 --name tomcat-container -v /fully/qualified
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cd gs-spring-boot/complete</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">mvn package</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">java -jar target/spring-boot-complete-0.0.1-SNAPSHOT.jar</code></pre></div></div>
-<div class="paragraph fragment"><p>Ok, il y a de l&#8217;idée&#8230;&#8203;</p></div></div></section><section id="solution_travaux_pratiques_7_4" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="paragraph"><p>Assemblons tout ça dans un <code>Dockerfile</code>.</p></div>
+<div class="paragraph fragment"><p>Ok, il y a de l&#8217;idée&#8230;&#8203;</p></div></div></section><section id="solution_travaux_pratiques_7_4" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="paragraph"><p>Derrière le proxy de l&#8217;université, <code>mvn package</code> échoue : Maven ignore <code>HTTP_PROXY</code> et <code>HTTPS_PROXY</code>.
+Il lit son proxy dans <code>~/.m2/settings.xml</code>.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-xml hljs" data-noescape="true" data-lang="xml">&lt;!-- Proxy de l'université pour Maven, qui ignore HTTP_PROXY et HTTPS_PROXY --&gt;
+&lt;settings&gt;
+  &lt;proxies&gt;
+    &lt;proxy&gt;
+      &lt;id&gt;univ&lt;/id&gt;
+      &lt;active&gt;true&lt;/active&gt;
+      &lt;protocol&gt;http&lt;/protocol&gt;
+      &lt;host&gt;cache-etu.univ-artois.fr&lt;/host&gt;
+      &lt;port&gt;3128&lt;/port&gt;
+    &lt;/proxy&gt;
+  &lt;/proxies&gt;
+&lt;/settings&gt;</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">mkdir -p ~/.m2 &amp;&amp; cp settings.xml ~/.m2/settings.xml</code></pre></div></div>
+<div class="paragraph"><p>Dans un <code>Dockerfile</code>, on le monte comme secret de build, le temps du seul <code>RUN mvn package</code> : il ne reste pas dans l&#8217;image.
+Sans <code>--secret</code> (hors de l&#8217;université), le montage est simplement absent.</p></div></div></section><section id="solution_travaux_pratiques_7_5" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="paragraph"><p>Assemblons tout ça dans un <code>Dockerfile</code>.</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Use a Maven image for building the application
 FROM maven:3.9.15-eclipse-temurin-26-alpine
 WORKDIR /app
@@ -2815,18 +2846,18 @@ RUN apk add git &amp;&amp; git clone https://github.com/spring-guides/gs-spring-
 # Change directory to the application's complete directory
 WORKDIR /app/gs-spring-boot/complete
 
-# Build the application using Maven
-RUN mvn package
+# Build the application using Maven; settings.xml (proxy) is mounted as a build secret, if provided
+RUN --mount=type=secret,id=maven-settings,target=/root/.m2/settings.xml mvn package
 
 WORKDIR /app/gs-spring-boot/complete/target
 
 # Command to run the Spring Boot application
 CMD ["java", "-jar", "spring-boot-complete-0.0.1-SNAPSHOT.jar"]</code></pre></div></div>
 <div class="paragraph fragment"><p>Spoiler alert: le nom de fichier donne une indication&#8230;&#8203;</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t spring-boot-app --file Dockerfile.ugly .</code></pre></div></div>
-<div class="paragraph fragment"><p>Et logiquement&#8230;&#8203;</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build --secret id=maven-settings,src=settings.xml \
+  -t spring-boot-app --file Dockerfile.ugly .</code></pre></div></div></div></section><section id="solution_travaux_pratiques_7_6" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="paragraph"><p>Et logiquement&#8230;&#8203;</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 8080:8080 --name spring-boot-container spring-boot-app</code></pre></div></div></div></section><section id="attends_un_peu"><h2>⏳ Attends un peu…</h2><div class="slide-content"><div class="imageblock"><img src="media/1779074283-image19.gif" alt="1779074283 image19"></div>
-<div class="paragraph"><p><em>Ça fonctionne, mais c&#8217;est comme si  je laissais la grue dans la chambre une fois que j&#8217;avais fini de construire ma maison !</em></p></div></div></section><section id="solution_travaux_pratiques_7_5" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="paragraph"><p>On essaye un <code>Dockerfile</code> moins BTP?</p></div>
+<div class="paragraph"><p><em>Ça fonctionne, mais c&#8217;est comme si  je laissais la grue dans la chambre une fois que j&#8217;avais fini de construire ma maison !</em></p></div></div></section><section id="solution_travaux_pratiques_7_7" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="paragraph"><p>On essaye un <code>Dockerfile</code> moins BTP?</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Use a Maven image for building the application
 FROM maven:3.9.15-eclipse-temurin-26-alpine AS build
 WORKDIR /app
@@ -2837,8 +2868,8 @@ RUN apk add git &amp;&amp; git clone https://github.com/spring-guides/gs-spring-
 # Change directory to the application's complete directory
 WORKDIR /app/gs-spring-boot/complete
 
-# Build the application using Maven
-RUN mvn package
+# Build the application using Maven; settings.xml (proxy) is mounted as a build secret, if provided
+RUN --mount=type=secret,id=maven-settings,target=/root/.m2/settings.xml mvn package
 
 # Use a lightweight Java image for running the application
 FROM eclipse-temurin:24.0.2_12-jre-alpine
@@ -2992,7 +3023,7 @@ Les données n&#8217;existent que tant que le conteneur est en cours d&#8217;ex�
 <div class="admonitionblock warning fragment"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">L&#8217;exemple ci-dessus ne peut donc pas fonctionner</td></tr></table></div></div></section><section id="les_volumes_2"><h2>📦📁 Les volumes</h2><div class="slide-content"><div class="imageblock"><img src="media/726805516-image8.png" alt="726805516 image8" height="600"></div></div></section><section id="les_volumes_3"><h2>📦📁 Les volumes</h2><div class="slide-content"><div class="paragraph"><p>Il est possible de créer des "espaces mémoire" que l&#8217;on peut mettre à disposition des containers.</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume create --name my-data</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -v my-data:/data busybox ls /data</code></pre></div></div>
-<div class="admonitionblock caution fragment"><table><tr><td class="icon"><i class="fa fa-fire" title="Caution"></i></td><td class="content"><strong>my_data</strong> n&#8217;est plus un chemin absolu, mais juste le nom du volume</td></tr></table></div></div></section><section id="les_volumes_4"><h2>📦📁 Les volumes</h2><div class="slide-content"><div class="paragraph"><p>Lister tous les volumes</p></div>
+<div class="admonitionblock caution fragment"><table><tr><td class="icon"><i class="fa fa-fire" title="Caution"></i></td><td class="content"><strong>my-data</strong> n&#8217;est plus un chemin absolu, mais juste le nom du volume</td></tr></table></div></div></section><section id="les_volumes_4"><h2>📦📁 Les volumes</h2><div class="slide-content"><div class="paragraph"><p>Lister tous les volumes</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume ls</code></pre></div></div>
 <div class="paragraph fragment"><p>Supprimer un volume</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume rm my-data</code></pre></div></div>
@@ -3022,11 +3053,8 @@ RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="paragraph fragment"><p>Tout d&#8217;abord, créez un volume nommé :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume create mon-nginx-html</code></pre></div></div>
 <div class="paragraph fragment"><p>Copiez vos fichiers de la page web dans ce volume :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Montez le volume nommé "mon-nginx-html" sous "/cible" dans le conteneur.
-# Montez le répertoire hôte où se trouve le fichier html sous "/html".
-# Définissez "/cible" comme répertoire de travail.
-# Copiez récursivement le *contenu* de "/html" dans le répertoire de travail
-# ("/html/." et non "/html", sinon les fichiers atterrissent dans un sous-répertoire).
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Copie le *contenu* du dossier hôte (monté sur /html) dans le volume (monté sur /cible).
+# "/html/." et non "/html", sinon les fichiers atterrissent dans un sous-répertoire.
 docker container run --rm \
   --volume mon-nginx-html:/cible \
   --volume /chemin/vers/la/page/web/sur/lhote:/html \
@@ -3037,21 +3065,19 @@ docker container run --rm \
 <div class="ulist"><ul><li class="fragment"><p>Créer un volume nommé "data"</p></li><li class="fragment"><p>Démarrer un container attaché à ce volume</p></li><li class="fragment"><p>Lancer un processus qui écrit un fichier dans le volume</p></li><li class="fragment"><p>Démarrer un second container attaché à ce volume</p></li><li class="fragment"><p>Lire les données du volume depuis le second container</p></li><li class="fragment"><p>Supprimer le volume</p></li></ul></div></div></section><section id="solution_travaux_pratiques_9"><h2>✅ Solution travaux pratiques #9</h2><div class="slide-content"><div class="paragraph"><p>Créer un volume nommé "data" :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume create data</code></pre></div></div>
 <div class="paragraph fragment"><p>Démarrer un premier conteneur attaché à ce volume :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --name premier-container -v data:/donnees busybox</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --rm --name premier-container -v data:/donnees busybox</code></pre></div></div>
 <div class="paragraph fragment"><p>Dans le premier conteneur, lancez un processus qui écrit un fichier dans le volume (par exemple, un fichier texte) :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">echo "Données du premier conteneur" &gt; /donnees/mon-fichier.txt</code></pre></div></div>
 <div class="paragraph fragment"><p>Quittez le premier conteneur.</p></div>
 <div class="paragraph fragment"><p>Démarrer un second conteneur attaché au même volume :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --name second-container -v data:/donnees busybox</code></pre></div></div></div></section><section id="solution_travaux_pratiques_9_2"><h2>✅ Solution travaux pratiques #9</h2><div class="slide-content"><div class="paragraph"><p>Démarrer un second conteneur attaché au même volume :</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --name second-container -v data:/donnees busybox</code></pre></div></div>
-<div class="paragraph"><p>Dans le second conteneur, lisez les données du volume (le fichier texte) :</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --rm --name second-container -v data:/donnees busybox</code></pre></div></div></div></section><section id="solution_travaux_pratiques_9_2"><h2>✅ Solution travaux pratiques #9</h2><div class="slide-content"><div class="paragraph"><p>Dans le second conteneur (démarré à l&#8217;étape précédente), lisez les données du volume (le fichier texte) :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cat /donnees/mon-fichier.txt</code></pre></div></div>
 <div class="paragraph fragment"><p>Vous devriez voir le contenu du fichier affiché à l&#8217;écran.</p></div>
 <div class="paragraph fragment"><p>Quittez le second conteneur.</p></div>
 <div class="paragraph fragment"><p>Vous pouvez maintenant supprimer le volume "data" car vous n&#8217;en avez plus besoin :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume rm data</code></pre></div></div></div></section><section id="travaux_pratiques_10"><h2>🎓  Travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Écrire un Dockerfile qui:</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Ajoute des fichiers dans un dossier</p></li><li class="fragment"><p>Déclare ce dossier comme volume anonyme</p></li><li class="fragment"><p>Ajoute d&#8217;autres fichiers dans ce dossier</p></li></ul></div>
-<div class="paragraph fragment"><p><strong>Que verra-ton dans ce dossier au sein de nos containers ?</strong></p></div></div></section><section id="solution_travaux_pratiques_10" data-auto-animate><h2>✅ Solution travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Tout d&#8217;abord, créez un répertoire pour votre projet et placez-vous dedans.</p></div>
+<div class="paragraph fragment"><p><strong>Que verra-t-on dans ce dossier au sein de nos containers ?</strong></p></div></div></section><section id="solution_travaux_pratiques_10" data-auto-animate><h2>✅ Solution travaux pratiques #10</h2><div class="slide-content"><div class="paragraph"><p>Tout d&#8217;abord, créez un répertoire pour votre projet et placez-vous dedans.</p></div>
 <div class="paragraph fragment"><p>Créez un Dockerfile avec le contenu suivant :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.24
 
@@ -3100,9 +3126,11 @@ Nouveau contenu du fichier 3</code></pre></div></div>
 <div class="imageblock"><img src="media/reseaux-docker-desktop-2375-configuration.png" alt="reseaux docker desktop 2375 configuration" width="600"></div>
 <aside class="notes"><div class="paragraph"><p>Par défaut, les installations de Docker n&#8217;ouvrent plus le port 2375 comme c&#8217;était le cas avant. C&#8217;est toutefois changeable dans le Docker Desktop.</p></div></aside></div></section><section id="les_réseaux_de_containers"><h2>Les réseaux de containers</h2><div class="slide-content"><div class="imageblock"><img src="media/1435904594-image8.png" alt="1435904594 image8"></div></div></section><section id="mapping_de_port_rappel" data-auto-animate><h2>🗺️🔀 Mapping de Port : Rappel</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 8000:80 nginx</code></pre></div></div></div></section><section id="mapping_de_port_rappel_2" data-auto-animate><h2>🗺️🔀 Mapping de Port : Rappel</h2><div class="slide-content"><div class="imageblock"><img src="media/reseaux-output11_with_transparency.png" alt="reseaux output11 with transparency"></div></div></section><section id="mapping_de_port_rappel_3" data-auto-animate><h2>🗺️🔀 Mapping de Port : Rappel</h2><div class="slide-content"><div class="imageblock"><img src="media/reseaux-output12_with_transparency.png" alt="reseaux output12 with transparency"></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">curl -I --noproxy '*' http://172.17.0.2:80
-It works!</code></pre></div></div>
+HTTP/1.1 200 OK
+...</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">curl -I --noproxy '*' http://localhost:8000
-It works too!</code></pre></div></div>
+HTTP/1.1 200 OK
+...</code></pre></div></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {11..12}; do convert Diapositive${i}.PNG -crop 8833x2599+2250+1833 -transparent white -resize x1080 reseaux-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="les_réseaux" data-auto-animate><h2>🌐 Les réseaux</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker network ls</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">NETWORK ID     NAME                                                             DRIVER    SCOPE
 11b7af7b16e4   bridge                                                           bridge    local
@@ -3243,23 +3271,23 @@ http {
 <h3>Paramètres de la Directive <code>resolver</code></h3><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-nginx hljs" data-noescape="true" data-lang="nginx">resolver 127.0.0.11 valid=30s ipv6=off;
 #        ^^^^^^^^^^^ ^^^^^^^^^ ^^^^^^^^
 #        Adresse DNS  Cache TTL Désactiver IPv6</code></pre></div></div>
-<div class="ulist"><ul><li class="fragment"><p><strong>127.0.0.11</strong> : DNS interne Docker (toujours cette adresse dans Docker)</p></li><li class="fragment"><p><strong>valid=30s</strong> : Durée de cache des résolutions (30 secondes par défaut)</p></li><li class="fragment"><p><strong>ipv6=off</strong> : Désactive IPv6 (optionnel, évite warnings)</p></li></ul></div>
+<div class="ulist"><ul><li class="fragment"><p><strong>127.0.0.11</strong> : DNS interne Docker (sur les réseaux définis par l&#8217;utilisateur, dont ceux de Compose)</p></li><li class="fragment"><p><strong>valid=30s</strong> : Durée de cache imposée (sans <code>valid</code>, NGINX suit le TTL de la réponse DNS)</p></li><li class="fragment"><p><strong>ipv6=off</strong> : Désactive IPv6 (optionnel, évite warnings)</p></li></ul></div>
 <h3>🎓 Exercice Pratique</h3><div class="paragraph"><p>Créez un projet avec :</p></div>
-<div class="olist arabic"><ol class="arabic"><li><p><strong>NGINX</strong> (proxy) utilisant upstream vers <code>webapp</code></p></li><li><p><strong>webapp</strong> (serveur web simple sur port 8080)</p></li></ol></div>
+<div class="olist arabic"><ol class="arabic"><li><p><strong>NGINX</strong> (proxy) vers <code>webapp</code></p></li><li><p><strong>webapp</strong> (serveur web simple, port 80 dans le conteneur, 8080 sur l&#8217;hôte)</p></li></ol></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   webapp:
-    image: nginx:alpine
+    image: nginx:1.31.6-alpine3.24
     ports:
       - "8080:80"
 
   proxy:
-    image: nginx:latest
+    image: nginx:1.31.6-alpine3.24
     ports:
       - "8000:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro</code></pre></div></div>
-<div class="paragraph"><p><strong>Test 1</strong> : Sans <code>resolver</code> → Observer l&#8217;échec NGINX</p></div>
-<div class="paragraph"><p><strong>Test 2</strong> : Avec <code>resolver 127.0.0.11</code> → Succès !</p></div>
+<div class="paragraph"><p><strong>Test 1</strong> : bloc <code>upstream</code> vers <code>webapp:80</code>, sans <code>resolver</code>. Démarrer le proxy seul (<code>docker compose up proxy</code>) → Observer l&#8217;échec NGINX</p></div>
+<div class="paragraph"><p><strong>Test 2</strong> : <code>resolver 127.0.0.11</code> et <code>proxy_pass</code> par variable (voir plus haut). Le proxy démarre seul, puis répond dès que <code>webapp</code> tourne → Succès !</p></div>
 <h3>📊 En Résumé</h3><div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content"><div class="paragraph"><p><strong>Règle d&#8217;or</strong> : upstream block avec noms Docker → <strong>DOIT avoir resolver</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-nginx hljs" data-noescape="true" data-lang="nginx">http {
     resolver 127.0.0.11 valid=30s ipv6=off;
@@ -3285,7 +3313,8 @@ network_id=$(docker container inspect -f '{{.NetworkSettings.Networks.bridge.Net
 shortened_network_id=$(echo $network_id | cut -c 1-12)
 
 # Liste tous les réseaux docker, en filtrant par l'identifiant du réseau
-docker network ls --format "table {{.ID}}\t{{.Name}}" | awk -v network_id="$shortened_network_id" '$1 == network_id {print $2}'</code></pre></div></div></div></section><section id="solution_travaux_pratiques_11_2" data-auto-animate><h2>✅ Solution travaux pratiques #11</h2><div class="slide-content"><div class="paragraph"><p>Étape 3 : Vérifier le réseau auquel "web1" est attaché</p></div>
+docker network ls --format "table {{.ID}}\t{{.Name}}" \
+  | awk -v network_id="$shortened_network_id" '$1 == network_id {print $2}'</code></pre></div></div></div></section><section id="solution_travaux_pratiques_11_2" data-auto-animate><h2>✅ Solution travaux pratiques #11</h2><div class="slide-content"><div class="paragraph"><p>Étape 3 : Vérifier le réseau auquel "web1" est attaché</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Récupère l'identifiant de réseau complet pour le container "web1"
 network_id=$(docker container inspect -f '{{.NetworkSettings.Networks.bridge.NetworkID}}' web1)
 
@@ -3293,7 +3322,8 @@ network_id=$(docker container inspect -f '{{.NetworkSettings.Networks.bridge.Net
 shortened_network_id=$(echo $network_id | cut -c 1-12)
 
 # Liste tous les réseaux docker, en filtrant par l'identifiant du réseau
-docker network ls --format "table {{.ID}}\t{{.Name}}" | awk -v network_id="$shortened_network_id" '$1 == network_id {print $2}'</code></pre></div></div>
+docker network ls --format "table {{.ID}}\t{{.Name}}" \
+  | awk -v network_id="$shortened_network_id" '$1 == network_id {print $2}'</code></pre></div></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">bridge</code></pre></div></div>
 <div class="paragraph fragment"><p>Étape 4 : Créer un réseau de type bridge et l&#8217;inspecter</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Crée un réseau Docker de type bridge nommé "mon-reseau"
@@ -3314,7 +3344,8 @@ docker container inspect web2 | grep NetworkMode</code></pre></div></div>
 docker container exec -it web1 bash</code></pre></div></div>
 <div class="paragraph fragment"><p>Étape 8 : Vérifier si "web1" peut voir "web2"</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># À l'intérieur du conteneur "web1," essayez de faire une requête HTTP vers "web2"
-curl web2</code></pre></div></div>
+# --noproxy : web2 est un nom interne, la requête ne doit pas partir vers le proxy
+curl --noproxy '*' web2</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">curl: (6) Could not resolve host: web2</code></pre></div></div></div></section><section id="solution_travaux_pratiques_11_4" data-auto-animate><h2>✅ Solution travaux pratiques #11</h2><div class="slide-content"><div class="paragraph"><p>Étape 9 : Corriger pour permettre la communication entre "web1" et "web2"</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Sortez du shell du conteneur "web1" en tapant "exit"
 
@@ -3324,7 +3355,7 @@ docker network connect mon-reseau web1</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Lance un shell interactif dans le conteneur "web1"
 docker container exec -it web1 bash</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># À l'intérieur du conteneur "web1," essayez de faire une requête HTTP vers "web2"
-curl web2</code></pre></div></div>
+curl --noproxy '*' web2</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-html hljs" data-noescape="true" data-lang="html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
@@ -3349,7 +3380,7 @@ Impact: Common exam failure (+1.30 points average)</p></div></aside>
         tag: "backend"
 
   logstash:
-    image: logstash:latest
+    image: logstash:9.5.3
     ports:
       - "12201:12201/udp"</code></pre></div></div>
 <div class="paragraph"><p><strong>Problème</strong> : le pilote <code>gelf</code> ne s&#8217;exécute <strong>pas dans le conteneur</strong>. Il s&#8217;exécute dans le <strong>démon Docker de l&#8217;hôte</strong>, qui n&#8217;est pas sur le réseau Compose et ne connaît donc pas le nom <code>logstash</code>.</p></div>
@@ -3366,7 +3397,7 @@ logstash:12201 dial udp: lookup logstash on ...: no such host</code></pre></div>
         gelf-address: "udp://localhost:12201"  # ✅ Adresse vue depuis l'hôte
 
   logstash:
-    image: logstash:latest
+    image: logstash:9.5.3
     ports:
       - "12201:12201/udp"                      # ✅ le port publié rend logstash joignable depuis l'hôte</code></pre></div></div>
 <div class="admonitionblock important"><table><tr><td class="icon"><i class="fa fa-exclamation-circle" title="Important"></i></td><td class="content"><div class="paragraph"><p><strong>L&#8217;adresse d&#8217;un pilote de log se lit depuis l&#8217;hôte, pas depuis le conteneur.</strong></p></div>
@@ -3438,7 +3469,7 @@ const API_URL = "http://localhost:5000/api";  // ❌ FAUX !</code></pre></div></
     image: redis:7
 
   logstash:
-    image: logstash:latest
+    image: logstash:9.5.3
     ports:
       - "12201:12201/udp"</code></pre></div></div>
 <div class="paragraph"><p><strong>Solution</strong> : remplacer les <code>localhost</code> des <strong>variables d&#8217;environnement</strong> par les noms de services, et <strong>laisser l&#8217;adresse GELF telle quelle</strong> — le pilote de log est interprété par le démon de l&#8217;hôte (voir Erreur #1).</p></div>
