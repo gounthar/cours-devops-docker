@@ -8,8 +8,8 @@ RUN apk add git && git clone https://github.com/spring-guides/gs-spring-boot.git
 # Change directory to the application's complete directory
 WORKDIR /app/gs-spring-boot/complete
 
-# Build the application using Maven
-RUN mvn package
+# Build the application using Maven; settings.xml (proxy) is mounted as a build secret, if provided
+RUN --mount=type=secret,id=maven-settings,target=/root/.m2/settings.xml mvn package
 
 # Use a lightweight Java image for running the application
 FROM eclipse-temurin:24.0.2_12-jre-alpine
