@@ -356,16 +356,14 @@ round-trip min/avg/max = 0.097/0.141/0.442 ms
 
 image::appeler_son_voisin.png[height=600]
 
-== 🚨 Piège NGINX : Résolution DNS dans upstream blocks
+== 🚨 Piège NGINX : le problème
 
 [.notes]
 --
 Section duration: 7 minutes
-Problem: NGINX resolves DNS at startup only, not dynamically like other tools
+Problem: NGINX resolves hard-coded names once, when the configuration loads
 Impact: Common exam failure (+1.20 points average)
 --
-
-=== Le Problème
 
 NGINX, contrairement à d'autres outils (curl, wget, applications), résout les noms écrits en dur (bloc `upstream`, `proxy_pass http://nom:port`) **une seule fois, au chargement de la configuration**.
 
@@ -374,7 +372,7 @@ NGINX, contrairement à d'autres outils (curl, wget, applications), résout les 
 * Si un conteneur redémarre et change d'IP → NGINX continue d'envoyer vers l'**ancienne IP**, même si un autre conteneur l'a récupérée
 * Erreur typique : `host not found in upstream "nom-service:port"`
 
-=== Exemple de Configuration Défaillante
+== 🚨 Piège NGINX : configuration défaillante
 
 [source,nginx]
 ----
@@ -402,7 +400,7 @@ http {
 
 Ajouter `resolver 127.0.0.11;` à cette configuration ne change **rien** : même message, même arrêt.
 
-=== La Solution : Directive `resolver` + Variables
+== 🚨 Piège NGINX : `resolver` + variable
 
 [source,nginx]
 ----
@@ -425,17 +423,19 @@ http {
 }
 ----
 
+== 🚨 Piège NGINX : résolution à l'exécution
+
 [IMPORTANT]
 ====
 `resolver` n'est lu que par la résolution **à l'exécution**. Un nom écrit en dur est résolu au chargement, sans lui.
 
 **Deux façons de passer à la résolution à l'exécution** :
 
-1. **Variable** (ci-dessus) : `set $var "nom-service:port"` puis `proxy_pass http://$var`
+1. **Variable** (diapositive précédente) : `set $var "nom-service:port"` puis `proxy_pass http://$var`
 2. **`upstream` avec `resolve`** (NGINX 1.27.3 et plus) : garde le bloc `upstream`, utile pour répartir la charge
 ====
 
-=== L'approche `upstream` avec `resolve`
+== 🚨 Piège NGINX : `resolve`
 
 [source,nginx]
 ----
@@ -461,20 +461,13 @@ Mesuré avec nginx 1.31.6, Docker 29.8.0 : proxy démarré seul, puis webapp. Va
 Autre remède à l'ordre de démarrage seul : depends_on dans Compose (mesuré : upstream statique, 200). Mais depends_on ne règle pas le changement d'IP : après redémarrage de webapp sur une autre IP, nginx a envoyé 3 requêtes sur 3 au conteneur qui avait récupéré l'ancienne adresse.
 --
 
-[TIP]
-====
-**127.0.0.11** est l'adresse du **DNS interne Docker** dans les **réseaux définis par l'utilisateur** (user-defined networks).
 
-[NOTE]
-Le réseau `bridge` par défaut n'a pas de serveur DNS - utilisez `docker network create` pour créer un réseau personnalisé.
-====
+== 🚨 Piège NGINX : quand faut-il `resolver` ?
 
-=== Quand est-ce nécessaire ?
-
-[cols="2,3,1", options="header"]
+[cols="4,2,3", options="header"]
 |===
 | Situation
-| Directive `resolver` nécessaire ?
+| `resolver` ?
 | Raison
 
 | `upstream` ou `proxy_pass` avec nom écrit en dur
@@ -494,7 +487,7 @@ Le réseau `bridge` par défaut n'a pas de serveur DNS - utilisez `docker networ
 | Pas de résolution DNS
 |===
 
-=== Paramètres de la Directive `resolver`
+== 🚨 Piège NGINX : paramètres de `resolver`
 
 [source,nginx]
 ----
@@ -508,7 +501,10 @@ resolver 127.0.0.11 valid=30s ipv6=off;
 * **valid=30s** : Durée de cache imposée (sans `valid`, NGINX suit le TTL de la réponse DNS)
 * **ipv6=off** : Désactive IPv6 (optionnel, évite warnings)
 
-=== 🎓 Exercice Pratique
+[NOTE]
+Le réseau `bridge` par défaut n'a pas ce DNS : créer un réseau avec `docker network create`, ou laisser Compose le faire.
+
+== 🚨 Piège NGINX : exercice (1/2)
 
 Créez un projet avec :
 
@@ -531,13 +527,15 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
 ----
 
+== 🚨 Piège NGINX : exercice (2/2)
+
 **Test 1** : bloc `upstream` vers `webapp:80`, sans `resolver`. Démarrer le proxy seul (`docker compose up proxy`) → Observer l'échec NGINX
 
 **Test 1 bis** : ajouter `resolver 127.0.0.11;` au test 1 → Même échec, même message
 
-**Test 2** : `resolver 127.0.0.11` et `proxy_pass` par variable (voir plus haut). Le proxy démarre seul, puis répond dès que `webapp` tourne → Succès !
+**Test 2** : `resolver 127.0.0.11` et `proxy_pass` par variable (diapositive « `resolver` + variable »). Le proxy démarre seul, puis répond dès que `webapp` tourne → Succès !
 
-=== 📊 En Résumé
+== 🚨 Piège NGINX : en résumé
 
 [TIP]
 ====
