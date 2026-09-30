@@ -348,9 +348,12 @@ RUN --mount=type=secret,id=proxy,env=HTTPS_PROXY \
 
 [source,bash]
 ----
-export PROXY_URL=http://login:motdepasse@proxy.exemple:3128
-docker image build --secret id=proxy,env=PROXY_URL .
+read -rsp 'URL du proxy : ' PROXY_URL; echo   # saisie masquée
+PROXY_URL="$PROXY_URL" docker image build --secret id=proxy,env=PROXY_URL .
+unset PROXY_URL
 ----
+
+Le mot de passe ne passe ni par l'historique du shell, ni par un `export` : seul ce `docker image build` le reçoit.
 
 Le secret n'existe que pendant ce `RUN` : ni `docker image history`, ni `Config.Env` ne le contiennent.
 
@@ -399,7 +402,7 @@ Docker Desktop l'ignore (le proxy se règle dans ses paramètres).
 
 [cols="3,2,2,2",options="header"]
 |===
-| Méthode | Conteneurs | Builds | Dans l'image
+| Méthode | Conteneurs | `RUN` d'un build | Dans l'image
 | `~/.docker/config.json` | oui | oui | non
 | `--build-arg`, sans `ARG` | non | oui | non
 | `--build-arg` + `ARG` | non | oui | historique
