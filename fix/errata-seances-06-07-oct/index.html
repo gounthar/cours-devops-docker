@@ -2735,7 +2735,7 @@ bd12c4d71       nginx   "/docker-entrypoint.…"   35 s. ago  Up 33 s.  80/tcp</
                 }
             }</code></pre></div></div></div></section><section id="que_nous_dit_docker_container_inspect_2" data-auto-animate><h2>🔍 Que nous dit docker container inspect ?</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output66_with_transparency.png" alt="fichiers output66 with transparency" height="500"></div></div></section><section id="que_nous_dit_docker_container_inspect_3" data-auto-animate><h2>🔍 Que nous dit docker container inspect ?</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output67_with_transparency.png" alt="fichiers output67 with transparency" height="500"></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect \
-  --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' &lt;ContainerID&gt;</code></pre></div></div>
+  --format '{{range .NetworkSettings.Networks}}{{println .IPAddress}}{{end}}' &lt;ContainerID&gt;</code></pre></div></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {66..67}; do convert Diapositive${i}.PNG -crop 9519x5022+1833+1472 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="que_nous_dit_docker_container_inspect_4" data-auto-animate><h2>🔍 Que nous dit docker container inspect ?</h2><div class="slide-content"><div class="paragraph"><p>L&#8217;ancienne forme, encore dans beaucoup de tutoriels, échoue avec Docker 29 :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect --format "{{.NetworkSettings.IPAddress}}" &lt;ContainerID&gt;
 template parsing error: [...] map has no entry for key "IPAddress"</code></pre></div></div>
@@ -3247,7 +3247,7 @@ http {
 #        Adresse DNS  Cache TTL Désactiver IPv6</code></pre></div></div>
 <div class="ulist"><ul><li class="fragment"><p><strong>127.0.0.11</strong> : DNS interne Docker (sur les réseaux définis par l&#8217;utilisateur, dont ceux de Compose)</p></li><li class="fragment"><p><strong>valid=30s</strong> : Durée de cache imposée (sans <code>valid</code>, NGINX suit le TTL de la réponse DNS)</p></li><li class="fragment"><p><strong>ipv6=off</strong> : Désactive IPv6 (optionnel, évite warnings)</p></li></ul></div>
 <h3>🎓 Exercice Pratique</h3><div class="paragraph"><p>Créez un projet avec :</p></div>
-<div class="olist arabic"><ol class="arabic"><li><p><strong>NGINX</strong> (proxy) utilisant upstream vers <code>webapp</code></p></li><li><p><strong>webapp</strong> (serveur web simple, port 80 dans le conteneur, 8080 sur l&#8217;hôte)</p></li></ol></div>
+<div class="olist arabic"><ol class="arabic"><li><p><strong>NGINX</strong> (proxy) vers <code>webapp</code></p></li><li><p><strong>webapp</strong> (serveur web simple, port 80 dans le conteneur, 8080 sur l&#8217;hôte)</p></li></ol></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   webapp:
     image: nginx:1.31.6-alpine3.24
@@ -3260,8 +3260,8 @@ http {
       - "8000:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro</code></pre></div></div>
-<div class="paragraph"><p><strong>Test 1</strong> : Sans <code>resolver</code>, démarrer le proxy seul (<code>docker compose up proxy</code>) → Observer l&#8217;échec NGINX</p></div>
-<div class="paragraph"><p><strong>Test 2</strong> : Avec <code>resolver 127.0.0.11</code> → Succès !</p></div>
+<div class="paragraph"><p><strong>Test 1</strong> : bloc <code>upstream</code> vers <code>webapp:80</code>, sans <code>resolver</code>. Démarrer le proxy seul (<code>docker compose up proxy</code>) → Observer l&#8217;échec NGINX</p></div>
+<div class="paragraph"><p><strong>Test 2</strong> : <code>resolver 127.0.0.11</code> et <code>proxy_pass</code> par variable (voir plus haut). Le proxy démarre seul, puis répond dès que <code>webapp</code> tourne → Succès !</p></div>
 <h3>📊 En Résumé</h3><div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content"><div class="paragraph"><p><strong>Règle d&#8217;or</strong> : upstream block avec noms Docker → <strong>DOIT avoir resolver</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-nginx hljs" data-noescape="true" data-lang="nginx">http {
     resolver 127.0.0.11 valid=30s ipv6=off;
