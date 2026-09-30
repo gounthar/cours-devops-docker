@@ -2062,7 +2062,7 @@ docker container stop "$container_id"
 docker container ls
 
 # Afficher les containers arrêtés 🛑📦
-docker container ls --filter "status=exited"</code></pre></div></div></div></section><section id="exercice_conteneur_en_tâche_de_fond_2"><h2>🎓 Exercice : conteneur en tâche de fond</h2><div class="slide-content"><div class="ulist"><ul><li><p>Relancer un des containers arrêtés.</p></li><li><p>Exécuter un <code>ps -ef</code> dans ce container</p></li><li><p>Quel est le PID du process principal ?</p></li><li><p>Vérifier que le container "tourne" toujours</p></li><li><p>Supprimer l&#8217;image (tip : <code>docker image rm</code>)</p></li><li><p>Supprimer les containers</p></li><li><p>Supprimer l&#8217;image (pour de vrai cette fois)</p></li></ul></div></div></section><section id="solution_conteneur_en_tâche_de_fond_2"><h2>✅ Solution : conteneur en tâche de fond</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Relancer un des containers arrêtés.
+docker container ls --filter "status=exited"</code></pre></div></div></div></section><section id="exercice_conteneur_en_tâche_de_fond_2"><h2>🎓 Exercice : conteneur en tâche de fond</h2><div class="slide-content"><div class="ulist"><ul><li><p>Relancer un des containers arrêtés.</p></li><li><p>Exécuter un <code>ps -ef</code> dans ce container</p></li><li><p>Quel est le PID du process principal ?</p></li><li><p>Vérifier que le container "tourne" toujours</p></li><li><p>Supprimer l&#8217;image (tip : <code>docker image rm</code>)</p></li><li><p>Supprimer les containers</p></li><li><p>Supprimer l&#8217;image (pour de vrai cette fois)</p></li></ul></div></div></section><section id="solution_conteneur_en_tâche_de_fond_12"><h2>✅ Solution : conteneur en tâche de fond (1/2)</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Relancer un des containers arrêtés.
 docker container start second-clock
 
 # Exécuter un `ps -ef` dans ce container
@@ -2077,14 +2077,17 @@ PID   USER     TIME  COMMAND
 
 # Vérifier que le container "tourne" toujours
 docker container ls
-CONTAINER ID   IMAGE                           COMMAND                  CREATED         STATUS              PORTS                    NAMES
-7d7085809ad2   cours-devops-docker-serve       "/sbin/tini -g gulp …"   6 minutes ago   Up 5 minutes        0.0.0.0:8000-&gt;8000/tcp   cours-devops-docker-serve-1
-edea0c46c6d8   jpetazzo/clock                  "/bin/sh -c 'while d…"   9 minutes ago   Up About a minute                            second-clock
-ebfbe695b2ec   moby/buildkit:buildx-stable-1   "buildkitd"              2 months ago    Up 11 hours                                  buildx_buildkit_exciting_williams0
-
-# Supprimer l'image (tip : `docker image rm`)
+# (sortie abrégée : autres conteneurs et colonnes CREATED, PORTS retirés)
+CONTAINER ID   IMAGE            COMMAND                  STATUS              NAMES
+edea0c46c6d8   jpetazzo/clock   "/bin/sh -c 'while d…"   Up About a minute   second-clock</code></pre></div></div>
+<aside class="notes"><div class="paragraph"><p>Par défaut, chaque conteneur a son propre espace de noms PID (<em>PID namespace</em>, un mécanisme du noyau Linux, pas une convention Docker).
+Le premier processus lancé dans cet espace, ici la commande de l&#8217;image, y porte le PID 1.
+Vu depuis l&#8217;hôte, le même processus a un autre PID.
+Ce n&#8217;est pas universel : avec <code>--pid=host</code>, le conteneur partage l&#8217;espace PID de l&#8217;hôte et son processus principal n&#8217;a plus le PID 1.
+Mesuré sous Docker 29.8.0 : <code>echo $$</code> affiche 1 par défaut, 2249 avec <code>--pid=host</code>.</p></div></aside></div></section><section id="solution_conteneur_en_tâche_de_fond_22"><h2>✅ Solution : conteneur en tâche de fond (2/2)</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Supprimer l'image (tip : `docker image rm`)
 docker image rm jpetazzo/clock
-Error response from daemon: conflict: unable to delete jpetazzo/clock:latest (must be forced) - container edea0c46c6d8 is using its referenced image dc06bbc3744f
+Error response from daemon: conflict: unable to delete jpetazzo/clock:latest (must be forced)
+ - container edea0c46c6d8 is using its referenced image dc06bbc3744f
 
 # Supprimer les containers (first-clock utilise aussi l'image)
 docker container stop first-clock second-clock
@@ -2094,22 +2097,17 @@ second-clock
 docker container rm first-clock second-clock
 first-clock
 second-clock
+
 # Supprimer l'image (pour de vrai cette fois)
 docker image rm jpetazzo/clock
-
 Untagged: jpetazzo/clock:latest
-Deleted: sha256:dc06bbc3744f7200404bff0bbb2516925e7adea115e07de9da8b36bf15fe3dd3</code></pre></div></div>
-<aside class="notes"><div class="paragraph"><p>Dans Docker, le PID (Process ID) principal est toujours 1, car c&#8217;est une convention spécifique à Docker.
-Cette convention facilite la gestion des processus dans les conteneurs en isolant chaque processus du conteneur du système hôte.
-En assignant toujours le PID 1 au processus principal du conteneur, Docker peut surveiller ce processus pour s&#8217;assurer qu&#8217;il est en cours d&#8217;exécution.
-Cela permet également d&#8217;éviter des conflits potentiels avec les processus du système hôte, car les PID sont spécifiques à chaque espace de conteneur.
-En résumé, cette convention est une pratique standard qui contribue à l&#8217;isolation et à la gestion efficace des processus dans les conteneurs Docker.</p></div></aside></div></section><section id="et_docker_image_rm_f"><h2>💡 Et <code>docker image rm -f</code> ?</h2><div class="slide-content"><div class="paragraph"><p>Le message d&#8217;erreur suggère de forcer. Voici ce que fait vraiment <code>-f</code> quand un conteneur utilise encore l&#8217;image :</p></div>
+Deleted: sha256:dc06bbc3744f7200404bff0bbb2516925e7adea115e07de9da8b36bf15fe3dd3</code></pre></div></div></div></section><section id="et_docker_image_rm_f"><h2>💡 Et <code>docker image rm -f</code> ?</h2><div class="slide-content"><div class="paragraph"><p>Le message d&#8217;erreur suggère de forcer. Voici ce que fait vraiment <code>-f</code> quand un conteneur utilise encore l&#8217;image :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image rm -f jpetazzo/clock
 Untagged: jpetazzo/clock:latest</code></pre></div></div>
 <div class="ulist"><ul><li><p>Seule l'<strong>étiquette</strong> est retirée, que le conteneur soit arrêté ou en cours d&#8217;exécution (il continue de tourner).</p></li><li><p><code>docker container ls --all</code> affiche ensuite l&#8217;ID de l&#8217;image à la place de son nom.</p></li><li><p>Les couches restent sur le disque : l&#8217;espace n&#8217;est libéré qu&#8217;après suppression des conteneurs qui les utilisent.</p></li></ul></div>
 <aside class="notes"><div class="paragraph"><p>Mesuré sous Docker 29.8.0 avec une image à étiquette unique.
 Piège si vous refaites l&#8217;essai : une image qui porte une seconde étiquette se « supprime » sans <code>-f</code> et sans conflit,
-car <code>docker image rm</code> retire alors seulement l&#8217;étiquette visée.</p></div></aside></div></section><section id="exercice_conteneur_en_tâche_de_fond_3"><h2>🎓 Exercice : conteneur en tâche de fond</h2><div class="slide-content"><div class="ulist"><ul><li><p>Exécutez un conteneur, basé sur l&#8217;image <code>nginx</code> en tâche de fond ("Background"), nommé <code>webserver-1</code></p><div class="ulist"><ul><li><p>💡 On parle de processus "détaché" (ou bien "démonisé") 👹</p></li><li><p>⚠️ Pensez bien à <code>docker container ls</code></p></li></ul></div></li><li><p>Regardez le contenu du fichier <code>/etc/os-release</code> dans ce conteneur</p><div class="ulist"><ul><li><p>💡 <code>docker container exec</code></p></li></ul></div></li><li><p>Essayez d&#8217;arrêter, démarrer puis redémarrer le conteneur</p><div class="ulist"><ul><li><p>⚠️ Pensez bien à <code>docker container ls</code> à chaque fois</p></li><li><p>💡 <code>stop</code>, <code>start</code>, <code>restart</code></p></li></ul></div></li></ul></div></div></section><section id="solution_conteneur_en_tâche_de_fond_3"><h2>✅ Solution : conteneur en tâche de fond</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach --name=webserver-1 nginx
+car <code>docker image rm</code> retire alors seulement l&#8217;étiquette visée.</p></div></aside></div></section><section id="exercice_conteneur_en_tâche_de_fond_3"><h2>🎓 Exercice : conteneur en tâche de fond</h2><div class="slide-content"><div class="ulist"><ul><li><p>Exécutez un conteneur, basé sur l&#8217;image <code>nginx</code> en tâche de fond ("Background"), nommé <code>webserver-1</code></p><div class="ulist"><ul><li><p>💡 On parle de processus "détaché" (ou bien "démonisé") 👹</p></li><li><p>⚠️ Pensez bien à <code>docker container ls</code></p></li></ul></div></li><li><p>Regardez le contenu du fichier <code>/etc/os-release</code> dans ce conteneur</p><div class="ulist"><ul><li><p>💡 <code>docker container exec</code></p></li></ul></div></li><li><p>Essayez d&#8217;arrêter, démarrer puis redémarrer le conteneur</p><div class="ulist"><ul><li><p>⚠️ Pensez bien à <code>docker container ls</code> à chaque fois</p></li><li><p>💡 <code>stop</code>, <code>start</code>, <code>restart</code></p></li></ul></div></li></ul></div></div></section><section id="solution_conteneur_en_tâche_de_fond_2"><h2>✅ Solution : conteneur en tâche de fond</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --detach --name=webserver-1 nginx
 # &lt;ID du conteneur&gt;
 
 docker container ls
