@@ -681,7 +681,8 @@ docker container exec -it web1 bash
 [source,bash]
 ----
 # À l'intérieur du conteneur "web1," essayez de faire une requête HTTP vers "web2"
-curl web2
+# --noproxy : web2 est un nom interne, la requête ne doit pas partir vers le proxy
+curl --noproxy '*' web2
 ----
 [%step]
 [source,bash]
@@ -715,7 +716,7 @@ docker container exec -it web1 bash
 [source,bash]
 ----
 # À l'intérieur du conteneur "web1," essayez de faire une requête HTTP vers "web2"
-curl web2
+curl --noproxy '*' web2
 ----
 
 [%step]
