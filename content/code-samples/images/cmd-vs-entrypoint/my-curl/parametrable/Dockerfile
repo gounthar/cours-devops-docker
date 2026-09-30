@@ -2,6 +2,8 @@ FROM alpine:3.24
 LABEL maintainer="John Doe"
 RUN apk add --no-cache curl
 # Si vous utilisez le proxy de l'Université
-ENTRYPOINT ["curl","-x", "http://prx:3128", "-L", "--connect-timeout", "60"]
+ENTRYPOINT ["curl", "-L", "--connect-timeout", "60", \
+  "-x", "http://cache-etu.univ-artois.fr:3128"]
 # Si vous utilisez votre propre proxy docker
-# CMD ["curl","-x", "http://host.docker.internal:3128", "-L", "--connect-timeout", "60"]
+# ENTRYPOINT ["curl", "-L", "--connect-timeout", "60", \
+#   "-x", "http://host.docker.internal:3128"]

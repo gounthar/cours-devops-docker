@@ -30,7 +30,7 @@ Besoin : je veux utiliser `cURL` mais il n'est pas présent sur la machine hôte
 [%step]
 [source,bash]
 ----
-docker container run --rm curlimages/curl curl -x http://prx:3128 -L --connect-timeout 60  "http://google.com"
+docker container run --rm curlimages/curl curl -x http://cache-etu.univ-artois.fr:3128 -L --connect-timeout 60  "http://google.com"
 ----
 
 [%step]
