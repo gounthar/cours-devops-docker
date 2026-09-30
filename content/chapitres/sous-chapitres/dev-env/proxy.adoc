@@ -295,6 +295,16 @@ Aucun redémarrage n'est nécessaire, et le `Dockerfile` reste le même partout.
 [%auto-animate]
 == 5. Proxy HTTP pour les conteneurs et les builds
 
+=== Option 1 – Deux limites
+
+* *Les noms de conteneurs* : `noProxy` ne les couvre pas. Un `curl web2` entre deux conteneurs part vers le proxy.
+Utilisez `curl --noproxy '*' web2`.
+* *Maven* ignore `HTTP_PROXY` et `HTTPS_PROXY`. Il lui faut un `settings.xml` (voir les travaux pratiques #7).
+`apk`, `wget`, `curl` et `git`, eux, suivent les variables.
+
+[%auto-animate]
+== 5. Proxy HTTP pour les conteneurs et les builds
+
 === Option 2 – Arguments de build, pour un build ponctuel
 
 [source,bash]

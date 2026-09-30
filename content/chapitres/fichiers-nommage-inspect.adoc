@@ -1068,6 +1068,25 @@ Ok, il y a de l'idée...
 [%auto-animate]
 == ✅ Solution travaux pratiques #7
 
+Derrière le proxy de l'université, `mvn package` échoue : Maven ignore `HTTP_PROXY` et `HTTPS_PROXY`.
+Il lit son proxy dans `~/.m2/settings.xml`.
+
+[source,xml]
+----
+include::../code-samples/fichiers/reseau/settings.xml[]
+----
+
+[source,bash]
+----
+mkdir -p ~/.m2 && cp settings.xml ~/.m2/settings.xml
+----
+
+Dans un `Dockerfile`, on le monte comme secret de build, le temps du seul `RUN mvn package` : il ne reste pas dans l'image.
+Sans `--secret` (hors de l'université), le montage est simplement absent.
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #7
+
 Assemblons tout ça dans un `Dockerfile`.
 
 [source,dockerfile]
@@ -1081,10 +1100,13 @@ Spoiler alert: le nom de fichier donne une indication...
 [%step]
 [source,bash]
 ----
-docker image build -t spring-boot-app --file Dockerfile.ugly .
+docker image build --secret id=maven-settings,src=settings.xml \
+  -t spring-boot-app --file Dockerfile.ugly .
 ----
 
-[%step]
+[%auto-animate]
+== ✅ Solution travaux pratiques #7
+
 Et logiquement...
 
 [%step]

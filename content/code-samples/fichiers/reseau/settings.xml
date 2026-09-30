@@ -1,0 +1,12 @@
+<!-- Proxy de l'université pour Maven, qui ignore HTTP_PROXY et HTTPS_PROXY -->
+<settings>
+  <proxies>
+    <proxy>
+      <id>univ</id>
+      <active>true</active>
+      <protocol>http</protocol>
+      <host>cache-etu.univ-artois.fr</host>
+      <port>3128</port>
+    </proxy>
+  </proxies>
+</settings>
