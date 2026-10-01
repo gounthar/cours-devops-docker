@@ -1,5 +1,5 @@
 # Use a Maven image for building the application
-FROM maven:3.9.15-eclipse-temurin-26-alpine AS build
+FROM maven:3.9-eclipse-temurin-25-alpine AS build
 WORKDIR /app
 
 # Clone the Spring Boot application repository
@@ -12,7 +12,7 @@ WORKDIR /app/gs-spring-boot/complete
 RUN --mount=type=secret,id=maven-settings,target=/root/.m2/settings.xml mvn package
 
 # Use a lightweight Java image for running the application
-FROM eclipse-temurin:24.0.2_12-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
 
 # Copy the built JAR file from the previous build stage
