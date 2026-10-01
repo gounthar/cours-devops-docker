@@ -21,6 +21,11 @@ updates:
       interval: weekly
     open-pull-requests-limit: 10
   - package-ecosystem: docker
+    directory: "./content/code-samples/fichiers/multistage"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
     directory: "./content/code-samples/fichiers/workdir"
     schedule:
       interval: weekly
@@ -80,7 +85,7 @@ updates:
       interval: weekly
     open-pull-requests-limit: 10
   - package-ecosystem: docker
-    directory: "./content/code-samples/compose/GSoC/python/Dockerfile"
+    directory: "./content/code-samples/compose/GSoC/python"
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
