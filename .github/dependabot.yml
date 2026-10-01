@@ -10,6 +10,12 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
+    ignore:
+      # The Java major is moved by updatecli/updatecli.d/java.yaml, LTS only
+      # (#618). Dependabot reads the Maven version, not the Temurin suffix,
+      # and walked this tag through temurin 24, 11, 25 and 26.
+      - dependency-name: "maven"
+      - dependency-name: "eclipse-temurin"
   - package-ecosystem: docker
     directory: "./content/code-samples/fichiers/reseau/tp7"
     schedule:
