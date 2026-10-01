@@ -539,7 +539,42 @@ Nouveau contenu du fichier 3
 Vous devriez voir la liste des fichiers et leurs contenus.
 
 [%step]
-Cela montre que les fichiers que vous avez ajoutés dans le dossier, même après avoir déclaré ce dossier comme un volume anonyme, restent accessibles dans le conteneur.
+`fichier3.txt` est là : avec BuildKit, le constructeur par défaut, un `RUN` écrit dans le dossier même après `VOLUME`.
 
 [%step]
-C'est ainsi que vous pouvez ajouter des fichiers dans un dossier, le déclarer comme un volume anonyme, puis ajouter d'autres fichiers dans ce dossier tout en y ayant accès à l'intérieur du conteneur.
+Ce n'est pas vrai de tous les constructeurs : voir la diapositive suivante.
+
+== ✅ Solution TP #10 : selon le constructeur
+
+Le même Dockerfile, construit avec l'ancien constructeur (déprécié) :
+
+[source,bash]
+----
+DOCKER_BUILDKIT=0 docker image build -t mon-image-legacy .
+docker container run --rm mon-image-legacy ls /mon-dossier
+----
+
+[source,bash]
+----
+fichier1.txt
+fichier2.txt
+----
+
+[%step]
+Le `RUN` qui suit `VOLUME` a été exécuté, mais ses modifications du dossier ont été jetées.
+
+[%step]
+La documentation le dit : modifications écartées avec l'ancien constructeur, conservées avec BuildKit.
+
+[%step]
+TIP: Pour ne pas dépendre du constructeur, placez `VOLUME` après les instructions qui remplissent le dossier.
+
+[.notes]
+--
+Mesuré le 2026-10-01, Docker 29.8.0, `alpine:3.24` : BuildKit donne `fichier1.txt fichier2.txt fichier3.txt`, `DOCKER_BUILDKIT=0` donne `fichier1.txt fichier2.txt`.
+L'ancien constructeur affiche `DEPRECATED: The legacy builder is deprecated and will be removed in a future release.`
+
+Source : référence Dockerfile, section VOLUME, « Changing the volume from within the Dockerfile » : https://docs.docker.com/reference/dockerfile/#notes-about-specifying-volumes
+
+Sans `-v`, chaque conteneur reçoit un volume anonyme initialisé avec le contenu du dossier dans l'image ; un volume nommé neuf aussi (mesuré : 3 fichiers). Un bind mount d'un dossier vide, lui, masque tout (mesuré : `ls` vide).
+--
