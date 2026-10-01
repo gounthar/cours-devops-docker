@@ -1,0 +1,94 @@
+---
+name: Bumps the Java docker images to the latest LTS major
+
+# Dependabot ignores maven and eclipse-temurin in fichiers/reseau
+# (.github/dependabot.yml): it reads the Maven version in
+# maven:3.9.x-eclipse-temurin-NN-alpine, not the Java one, and took the
+# course through temurin 24, 11, 25 and 26, non-LTS releases included (#618).
+# This manifest moves the Temurin major instead, and only to an LTS.
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  javaLatestLTSMajor:
+    name: Get the major of the latest Temurin LTS release
+    kind: json
+    spec:
+      file: https://api.adoptium.net/v3/info/available_releases
+      key: most_recent_lts
+
+conditions:
+  # Forward only: never open a downgrade, whatever the API answers.
+  testLTSNotOlderThanPins:
+    name: "Test that the LTS major is not older than any pinned major"
+    kind: shell
+    disablesourceinput: true
+    scmid: default
+    spec:
+      command: >-
+        sh -c 'for f in content/code-samples/fichiers/reseau/Dockerfile
+        content/code-samples/fichiers/reseau/Dockerfile.ugly;
+        do for v in $(sed -n "s/^FROM .*temurin[-:]\([0-9]*\)-.*/\1/p" "$f");
+        do test {{ source "javaLatestLTSMajor" }} -ge "$v" || exit 1; done; done'
+  testMavenAlpineImagePublished:
+    name: "Test that the maven:3.9-eclipse-temurin-<lts_major>-alpine image tag exists"
+    kind: dockerimage
+    disablesourceinput: true
+    spec:
+      image: "maven"
+      tag: '3.9-eclipse-temurin-{{ source "javaLatestLTSMajor" }}-alpine'
+  testTemurinJREAlpineImagePublished:
+    name: "Test that the eclipse-temurin:<lts_major>-jre-alpine image tag exists"
+    kind: dockerimage
+    disablesourceinput: true
+    spec:
+      image: "eclipse-temurin"
+      tag: '{{ source "javaLatestLTSMajor" }}-jre-alpine'
+
+targets:
+  updateReseauDockerfileMaven:
+    name: "Update the maven image of the multistage network sample"
+    kind: file
+    sourceid: javaLatestLTSMajor
+    scmid: default
+    spec:
+      file: content/code-samples/fichiers/reseau/Dockerfile
+      matchpattern: 'FROM maven:3\.9-eclipse-temurin-\d+-alpine'
+      replacepattern: 'FROM maven:3.9-eclipse-temurin-{{ source "javaLatestLTSMajor" }}-alpine'
+  updateReseauDockerfileJRE:
+    name: "Update the JRE image of the multistage network sample"
+    kind: file
+    sourceid: javaLatestLTSMajor
+    scmid: default
+    spec:
+      file: content/code-samples/fichiers/reseau/Dockerfile
+      matchpattern: 'FROM eclipse-temurin:\d+-jre-alpine'
+      replacepattern: 'FROM eclipse-temurin:{{ source "javaLatestLTSMajor" }}-jre-alpine'
+  updateReseauDockerfileUglyMaven:
+    name: "Update the maven image of the single-stage network sample"
+    kind: file
+    sourceid: javaLatestLTSMajor
+    scmid: default
+    spec:
+      file: content/code-samples/fichiers/reseau/Dockerfile.ugly
+      matchpattern: 'FROM maven:3\.9-eclipse-temurin-\d+-alpine'
+      replacepattern: 'FROM maven:3.9-eclipse-temurin-{{ source "javaLatestLTSMajor" }}-alpine'
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    title: 'Bump Java docker images to the {{ source "javaLatestLTSMajor" }} LTS'
+    spec:
+      labels:
+        - dependencies
