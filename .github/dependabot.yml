@@ -70,6 +70,10 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
+    ignore:
+      # Majors are moved by updatecli/updatecli.d/node.yaml, LTS only (#483)
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: docker
     directory: "./content/code-samples/compose/GSoC/maven"
     schedule:
@@ -90,6 +94,10 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
+    ignore:
+      # Majors are moved by updatecli/updatecli.d/node.yaml, LTS only (#483)
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: docker
     directory: "./dockerfiles/pdf/"
     schedule:
