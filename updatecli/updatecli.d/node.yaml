@@ -41,7 +41,8 @@ conditions:
     scmid: default
     spec:
       command: >-
-        sh -c 'for f in Dockerfile content/code-samples/compose/cours/Dockerfile;
+        sh -c 'for f in Dockerfile content/code-samples/compose/cours/Dockerfile
+        content/code-samples/fichiers/copie-fichiers/Dockerfile;
         do test {{ source "nodeLatestLTSMajor" }} -ge
         "$(sed -n "s/^FROM node:\([0-9]*\)-alpine.*/\1/p" "$f")" || exit 1; done'
   testNodeAlpineImagePublished:
@@ -69,6 +70,15 @@ targets:
     scmid: default
     spec:
       file: content/code-samples/compose/cours/Dockerfile
+      matchpattern: 'FROM node:\d+-alpine'
+      replacepattern: 'FROM node:{{ source "nodeLatestLTSMajor" }}-alpine'
+  updateCopieFichiersDockerfile:
+    name: "Update the node image of the file copy sample"
+    kind: file
+    sourceid: nodeLatestLTSMajor
+    scmid: default
+    spec:
+      file: content/code-samples/fichiers/copie-fichiers/Dockerfile
       matchpattern: 'FROM node:\d+-alpine'
       replacepattern: 'FROM node:{{ source "nodeLatestLTSMajor" }}-alpine'
 
