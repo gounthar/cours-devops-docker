@@ -56,6 +56,16 @@ updates:
       interval: weekly
     open-pull-requests-limit: 10
   - package-ecosystem: docker
+    directory: "./content/code-samples/images/cmd-vs-entrypoint/my-curl/defaut"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
+    directory: "./content/code-samples/images/cmd-vs-entrypoint/my-curl/shell"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: docker
     directory: "./content/code-samples/images/cmd-vs-entrypoint/my-curl"
     schedule:
       interval: weekly
