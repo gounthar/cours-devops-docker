@@ -155,7 +155,7 @@ Et si on la rendait paramétrable ?
 ----
 docker container run --rm my-curl:2.0 http://google.com
 docker container run --rm my-curl:2.0 http://facebook.com
-docker container run --rm my-curl:2.0 http://twitter.com
+docker container run --rm my-curl:2.0 http://example.com
 ----
 
 [%auto-animate]
