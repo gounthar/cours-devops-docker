@@ -2343,14 +2343,21 @@ docker container run --rm docker-git:1.2.0 make --version</code></pre></div></di
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm curlimages/curl curl -x http://cache-etu.univ-artois.fr:3128 -L --connect-timeout 60  "http://google.com"</code></pre></div></div>
 <div class="imageblock fragment"><img src="media/1956754704-image11.jpeg" alt="1956754704 image11"></div>
 <aside class="notes"><div class="paragraph"><p>Pour ceux qui n&#8217;auraient pas de proxy parce que vous n&#8217;utilisez pas le réseau de la fac&#8230;&#8203; On peut en lancer un avec Docker.
-Tout d&#8217;abord, créer un fichier <code>squid.conf</code> avec comme contenu:</p></div>
+Tout d&#8217;abord, créer un fichier <code>squid.conf</code> avec comme contenu :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-apache hljs" data-noescape="true" data-lang="apache">http_port 3128
-acl all src all
-http_access allow all</code></pre></div></div>
-<div class="paragraph"><p>On peut ensuite lancer le proxy:</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --name squid -d --restart=always --publish 3128:3128 -v $(pwd)/squid.conf:/etc/squid/squid.conf sameersbn/squid:3.5.27-2</code></pre></div></div>
-<div class="paragraph"><p>Puis changer la commande en:</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm curlimages/curl curl -x http://host.docker.internal:3128 -L --connect-timeout 60  "http://google.com"</code></pre></div></div></aside></div></section><section id="cmd_vs_entrypoint_2" class="columns" data-auto-animate><h2>CMD vs ENTRYPOINT</h2><div class="slide-content"><div class="openblock column is-one-fifth"><div class="content"><div class="paragraph"><p>Cas d&#8217;usage.
+# N'accepte que les adresses des réseaux Docker par défaut (172.16.0.0/12)
+acl conteneurs src 172.16.0.0/12
+http_access allow conteneurs
+http_access deny all</code></pre></div></div>
+<div class="paragraph"><p>On peut ensuite lancer le proxy :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --name squid -d --restart=always --publish 3128:3128 \
+  -v $(pwd)/squid.conf:/etc/squid/squid.conf ubuntu/squid:6.6-24.04_beta</code></pre></div></div>
+<div class="paragraph"><p>Puis changer la commande en :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm --add-host=host.docker.internal:host-gateway \
+  curlimages/curl curl -x http://host.docker.internal:3128 -L --connect-timeout 60 "http://google.com"</code></pre></div></div>
+<div class="paragraph"><p><code>host.docker.internal</code> n&#8217;existe d&#8217;office que sous Docker Desktop.
+Sous Linux (Codespaces compris), <code>--add-host=host.docker.internal:host-gateway</code> crée ce nom et le fait pointer vers l&#8217;hôte ; sous Docker Desktop, l&#8217;option ne gêne pas.
+Même option pour lancer <code>my-curl</code> avec le <code>CMD</code> ou l'`ENTRYPOINT` « votre propre proxy docker ».</p></div></aside></div></section><section id="cmd_vs_entrypoint_2" class="columns" data-auto-animate><h2>CMD vs ENTRYPOINT</h2><div class="slide-content"><div class="openblock column is-one-fifth"><div class="content"><div class="paragraph"><p>Cas d&#8217;usage.
 On va s&#8217;outiller!</p></div></div></div>
 <div class="openblock column is-half"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.24
 LABEL maintainer="John Doe"
@@ -2360,6 +2367,7 @@ CMD ["curl", "-L", "--connect-timeout", "60", \
   "-x", "http://cache-etu.univ-artois.fr:3128", \
   "http://google.com"]
 # Si vous utilisez votre propre proxy docker
+# (sous Linux, lancer avec --add-host=host.docker.internal:host-gateway)
 # CMD ["curl", "-L", "--connect-timeout", "60", \
 #   "-x", "http://host.docker.internal:3128", \
 #   "http://google.com"]</code></pre></div></div></div></div>
@@ -2393,6 +2401,7 @@ RUN apk add --no-cache curl
 ENTRYPOINT ["curl", "-L", "--connect-timeout", "60", \
   "-x", "http://cache-etu.univ-artois.fr:3128"]
 # Si vous utilisez votre propre proxy docker
+# (sous Linux, lancer avec --add-host=host.docker.internal:host-gateway)
 # ENTRYPOINT ["curl", "-L", "--connect-timeout", "60", \
 #   "-x", "http://host.docker.internal:3128"]</code></pre></div></div></div></div>
 <div class="openblock column fragment"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t my-curl:2.0 .</code></pre></div></div>
@@ -2411,6 +2420,7 @@ RUN apk add --no-cache curl
 ENTRYPOINT ["curl", "-L", "--connect-timeout", "60", \
   "-x", "http://cache-etu.univ-artois.fr:3128"]
 # Si vous utilisez votre propre proxy docker
+# (sous Linux, lancer avec --add-host=host.docker.internal:host-gateway)
 # ENTRYPOINT ["curl", "-L", "--connect-timeout", "60", \
 #   "-x", "http://host.docker.internal:3128"]</code></pre></div></div>
 <div class="imageblock"><img src="media/override.png" alt="override"></div></div></div>
