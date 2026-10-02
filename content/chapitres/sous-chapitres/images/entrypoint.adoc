@@ -39,26 +39,30 @@ image::1956754704-image11.jpeg[]
 [.notes]
 --
 Pour ceux qui n'auraient pas de proxy parce que vous n'utilisez pas le réseau de la fac... On peut en lancer un avec Docker.
-Tout d'abord, créer un fichier `squid.conf` avec comme contenu:
+Tout d'abord, créer un fichier `squid.conf` avec comme contenu :
 
 [source,apache]
 ----
-http_port 3128
-acl all src all
-http_access allow all
+include::../../../code-samples/images/cmd-vs-entrypoint/squid.conf[]
 ----
 
-On peut ensuite lancer le proxy:
+On peut ensuite lancer le proxy :
 [source,bash]
 ----
-docker container run --name squid -d --restart=always --publish 3128:3128 -v $(pwd)/squid.conf:/etc/squid/squid.conf sameersbn/squid:3.5.27-2
+docker container run --name squid -d --restart=always --publish 3128:3128 \
+  -v $(pwd)/squid.conf:/etc/squid/squid.conf ubuntu/squid:6.6-24.04_beta
 ----
 
-Puis changer la commande en:
+Puis changer la commande en :
 [source,bash]
 ----
-docker container run --rm curlimages/curl curl -x http://host.docker.internal:3128 -L --connect-timeout 60  "http://google.com"
+docker container run --rm --add-host=host.docker.internal:host-gateway \
+  curlimages/curl curl -x http://host.docker.internal:3128 -L --connect-timeout 60 "http://google.com"
 ----
+
+`host.docker.internal` n'existe d'office que sous Docker Desktop.
+Sous Linux (Codespaces compris), `--add-host=host.docker.internal:host-gateway` crée ce nom et le fait pointer vers l'hôte ; sous Docker Desktop, l'option ne gêne pas.
+Même option pour lancer `my-curl` avec le `CMD` ou l'`ENTRYPOINT` « votre propre proxy docker ».
 --
 
 [%auto-animate]
