@@ -109,7 +109,8 @@ image::my-girl.gif[]
 --
 Sortie rejouée le 2026-10-02 (Docker 29.8.0, curl 8.22.0 d'alpine:3.24), raccourcie : la page fait 157 lignes et 84 Ko, et le tableau de progression a 6 colonnes de plus.
 Le tableau de progression part sur la sortie d'erreur : curl l'affiche parce que sa sortie standard n'est pas un terminal (pas de `-t`).
-`-s` le fait taire.
+`--no-progress-meter` le fait taire ; `-s` aussi, mais il masque en plus les messages d'erreur de curl.
+La taille de la page varie selon le jour et le lieu.
 --
 
 [%auto-animate]
