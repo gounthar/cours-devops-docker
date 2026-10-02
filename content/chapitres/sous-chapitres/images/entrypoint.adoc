@@ -239,3 +239,123 @@ docker container run --rm \
 [...]</script></body></html>
 ----
 --
+[%auto-animate]
+[.columns]
+== ENTRYPOINT + CMD
+
+[.column.is-one-fifth]
+--
+Une URL par défaut, toujours remplaçable.
+
+[%step]
+`ENTRYPOINT` : la commande.
+
+[%step]
+`CMD` : ses arguments par défaut.
+--
+
+[.column.is-half]
+--
+[source,dockerfile]
+----
+include::../../../code-samples/images/cmd-vs-entrypoint/my-curl/defaut/Dockerfile[]
+----
+--
+
+[.column]
+--
+[%step]
+[source,bash]
+----
+docker image build -t my-curl:3.0 .
+----
+
+[%step]
+[source,bash]
+----
+docker container run --rm \
+  my-curl:3.0
+  % Total    % Received [...]
+100    713   0    713   [...]
+<!doctype html><html [...]
+[...]<title>Example Domain</title>
+----
+
+[%step]
+[source,bash]
+----
+docker container run --rm \
+  my-curl:3.0 http://neverssl.com
+  % Total    % Received [...]
+100   3961 100   3961   [...]
+<html>
+  <head>
+    <title>NeverSSL [...]
+----
+--
+
+[.notes]
+--
+Seule différence avec `my-curl:2.0` : la dernière ligne, `CMD ["http://example.com"]`.
+Commande lancée = `ENTRYPOINT` suivi de `CMD`. Un argument passé à `docker container run` remplace tout le `CMD`, jamais l'`ENTRYPOINT` (pour celui-là, il faut `--entrypoint`).
+Sorties rejouées le 2026-10-02 (Docker 29.8.0, alpine:3.24), raccourcies ; les tailles de page varient.
+--
+
+[.columns]
+== Forme exec ou forme shell ?
+
+[.column.is-half]
+--
+[source,dockerfile]
+----
+# Forme exec (JSON)
+ENTRYPOINT ["curl", "-L", ...]
+
+# Forme shell
+ENTRYPOINT curl -L ...
+----
+
+[%step]
+La forme shell passe par `/bin/sh -c`.
+
+[%step]
+**`CMD` et les arguments de `run` sont ignorés.**
+--
+
+[.column]
+--
+[%step]
+[source,bash]
+----
+docker container run --rm \
+  my-curl:shell http://neverssl.com
+curl: (2) no URL specified
+----
+
+[%step]
+[source,bash]
+----
+docker image inspect my-curl:shell \
+  --format '{{json .Config.Entrypoint}}'
+["/bin/sh","-c","curl -L [...]"]
+----
+
+[%step]
+Règle : forme exec pour `ENTRYPOINT` et `CMD`.
+--
+
+[.notes]
+--
+Dockerfile complet de `my-curl:shell` :
+
+[source,dockerfile]
+----
+include::../../../code-samples/images/cmd-vs-entrypoint/my-curl/shell/Dockerfile[]
+----
+
+Sorties rejouées le 2026-10-02 (Docker 29.8.0, alpine:3.24). Sans argument, même message : le `CMD` n'est pas transmis non plus.
+
+On lit souvent qu'en forme shell, `sh` devient le PID 1 et ne relaie pas les signaux (`docker stop` lent).
+Mesuré sur alpine:3.24, ce n'est pas le cas : le `sh` de BusyBox remplace son processus par la commande (PID 1 = `ping localhost`, même avec `echo start; ping localhost`).
+`docker stop` a pris le même temps (3,4 s, code 137) en forme exec et en forme shell. Avec d'autres shells ou d'autres images : non mesuré.
+--
