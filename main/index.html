@@ -2431,7 +2431,63 @@ ENTRYPOINT ["curl", "-L", "--connect-timeout", "60", \
 100  84301   0  84301   [...]
 &lt;!doctype html&gt;&lt;html [...]
 [...]
-[...]&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre></div></div></div></div></div></section><section id="checkpoint_5"><h2>Checkpoint 🎯</h2><div class="slide-content"><div class="ulist"><ul><li><p>Une image Docker fournit un environnement de système de fichier auto-suffisant (application, dépendances, binaries, etc.) comme modèle de base d&#8217;un conteneur</p></li><li><p>Les images Docker ont une convention de nommage permettant d&#8217;identifier les images très précisément</p></li><li><p>On peut spécifier une recette de fabrication d&#8217;image à l&#8217;aide d&#8217;un <code>Dockerfile</code> et de la commande <code>docker image build</code></p></li></ul></div>
+[...]&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre></div></div></div></div></div></section><section id="entrypoint_cmd" class="columns" data-auto-animate><h2>ENTRYPOINT + CMD</h2><div class="slide-content"><div class="openblock column is-one-fifth"><div class="content"><div class="paragraph"><p>Une URL par défaut, toujours remplaçable.</p></div>
+<div class="paragraph fragment"><p><code>ENTRYPOINT</code> : la commande.</p></div>
+<div class="paragraph fragment"><p><code>CMD</code> : ses arguments par défaut.</p></div></div></div>
+<div class="openblock column is-half"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.24
+LABEL maintainer="John Doe"
+RUN apk add --no-cache curl
+# Si vous utilisez le proxy de l'Université
+ENTRYPOINT ["curl", "-L", "--connect-timeout", "60", \
+  "-x", "http://cache-etu.univ-artois.fr:3128"]
+# Si vous utilisez votre propre proxy docker
+# (sous Linux, lancer avec
+#  --add-host=host.docker.internal:host-gateway)
+# ENTRYPOINT ["curl", "-L", "--connect-timeout", "60", \
+#   "-x", "http://host.docker.internal:3128"]
+CMD ["http://example.com"]</code></pre></div></div></div></div>
+<div class="openblock column"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t my-curl:3.0 .</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm \
+  my-curl:3.0
+  % Total    % Received [...]
+100    713   0    713   [...]
+&lt;!doctype html&gt;&lt;html [...]
+[...]&lt;title&gt;Example Domain&lt;/title&gt;</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm \
+  my-curl:3.0 http://neverssl.com
+  % Total    % Received [...]
+100   3961 100   3961   [...]
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;NeverSSL [...]</code></pre></div></div></div></div>
+<aside class="notes"><div class="paragraph"><p>Seule différence avec <code>my-curl:2.0</code> : la dernière ligne, <code>CMD ["http://example.com"]</code>.
+Commande lancée = <code>ENTRYPOINT</code> suivi de <code>CMD</code>. Un argument passé à <code>docker container run</code> remplace tout le <code>CMD</code>, jamais l'`ENTRYPOINT` (pour celui-là, il faut <code>--entrypoint</code>).
+Sorties rejouées le 2026-10-02 (Docker 29.8.0, alpine:3.24), raccourcies ; les tailles de page varient.</p></div></aside></div></section><section id="forme_exec_ou_forme_shell" class="columns"><h2>Forme exec ou forme shell ?</h2><div class="slide-content"><div class="openblock column is-half"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Forme exec (JSON)
+ENTRYPOINT ["curl", "-L", ...]
+
+# Forme shell
+ENTRYPOINT curl -L ...</code></pre></div></div>
+<div class="paragraph fragment"><p>La forme shell passe par <code>/bin/sh -c</code>.</p></div>
+<div class="paragraph fragment"><p><strong><code>CMD</code> et les arguments de <code>run</code> sont ignorés.</strong></p></div></div></div>
+<div class="openblock column"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm \
+  my-curl:shell http://neverssl.com
+curl: (2) no URL specified</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image inspect my-curl:shell \
+  --format '{{json .Config.Entrypoint}}'
+["/bin/sh","-c","curl -L [...]"]</code></pre></div></div>
+<div class="paragraph fragment"><p>Règle : forme exec pour <code>ENTRYPOINT</code> et <code>CMD</code>.</p></div></div></div>
+<aside class="notes"><div class="paragraph"><p>Dockerfile complet de <code>my-curl:shell</code> :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.24
+LABEL maintainer="John Doe"
+RUN apk add --no-cache curl
+# Forme shell : Docker lance /bin/sh -c "curl ..."
+ENTRYPOINT curl -L --connect-timeout 60 \
+  -x http://cache-etu.univ-artois.fr:3128
+CMD ["http://example.com"]</code></pre></div></div>
+<div class="paragraph"><p>Sorties rejouées le 2026-10-02 (Docker 29.8.0, alpine:3.24). Sans argument, même message : le <code>CMD</code> n&#8217;est pas transmis non plus.</p></div>
+<div class="paragraph"><p>On lit souvent qu&#8217;en forme shell, <code>sh</code> devient le PID 1 et ne relaie pas les signaux (<code>docker stop</code> lent).
+Mesuré sur alpine:3.24, ce n&#8217;est pas le cas : le <code>sh</code> de BusyBox remplace son processus par la commande (PID 1 = <code>ping localhost</code>, même avec <code>echo start; ping localhost</code>).
+<code>docker stop</code> a pris le même temps (3,4 s, code 137) en forme exec et en forme shell. Avec d&#8217;autres shells ou d&#8217;autres images : non mesuré.</p></div></aside></div></section><section id="checkpoint_5"><h2>Checkpoint 🎯</h2><div class="slide-content"><div class="ulist"><ul><li><p>Une image Docker fournit un environnement de système de fichier auto-suffisant (application, dépendances, binaries, etc.) comme modèle de base d&#8217;un conteneur</p></li><li><p>Les images Docker ont une convention de nommage permettant d&#8217;identifier les images très précisément</p></li><li><p>On peut spécifier une recette de fabrication d&#8217;image à l&#8217;aide d&#8217;un <code>Dockerfile</code> et de la commande <code>docker image build</code></p></li></ul></div>
 <div class="paragraph"><p>&#8658; 🤔 et si on utilisait Docker pour nous aider dans l&#8217;intégration continue ?</p></div></div></section></section>
 <section><section id="nos_fichiers_dans_les_images" data-background-image="media/fichiers.png" data-background-size="cover" data-background-position="left" data-background-opacity="0.1"><h2>📁 Nos fichiers dans les images</h2><div class="slide-content"></div></section><section id="le_répertoire_de_travail"><h2>📂 Le répertoire de travail</h2><div class="slide-content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --interactive --tty httpd pwd
 /usr/local/apache2</code></pre></div></div>
