@@ -91,15 +91,25 @@ docker image build -t my-curl:1.0 .
 [%step]
 [source,bash]
 ----
-docker container run --rm my-curl:1.0
+docker container run --rm \
+  my-curl:1.0
+  % Total    % Received [...]
+100  84301   0  84301   [...]
 <!doctype html><html [...]
-google blahblahblah [...]
-</html>
+[...]
+[...]</script></body></html>
 ----
 
 [%step]
 image::my-girl.gif[]
 
+--
+
+[.notes]
+--
+Sortie rejouée le 2026-10-02 (Docker 29.8.0, curl 8.22.0 d'alpine:3.24), raccourcie : la page fait 157 lignes et 84 Ko, et le tableau de progression a 6 colonnes de plus.
+Le tableau de progression part sur la sortie d'erreur : curl l'affiche parce que sa sortie standard n'est pas un terminal (pas de `-t`).
+`-s` le fait taire.
 --
 
 [%auto-animate]
@@ -174,10 +184,13 @@ docker image build -t my-curl:2.0 .
 [%step]
 [source,bash]
 ----
-docker container run --rm my-curl:2.0 http://google.com
+docker container run --rm \
+  my-curl:2.0 http://google.com
+  % Total    % Received [...]
+100  84301   0  84301   [...]
 <!doctype html><html [...]
-google blahblahblah [...]
-</html>
+[...]
+[...]</script></body></html>
 ----
 --
 
@@ -212,9 +225,12 @@ docker image build -t my-curl:2.0 .
 
 [source,bash]
 ----
-docker container run --rm my-curl:2.0 http://google.com
+docker container run --rm \
+  my-curl:2.0 http://google.com
+  % Total    % Received [...]
+100  84301   0  84301   [...]
 <!doctype html><html [...]
-google blahblahblah [...]
-</html>
+[...]
+[...]</script></body></html>
 ----
 --
