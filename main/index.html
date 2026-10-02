@@ -2392,7 +2392,7 @@ La taille de la page varie selon le jour et le lieu.</p></div></aside></div></se
 <div class="paragraph fragment"><p>Et si on la rendait paramétrable ?</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm my-curl:2.0 http://google.com
 docker container run --rm my-curl:2.0 http://facebook.com
-docker container run --rm my-curl:2.0 http://twitter.com</code></pre></div></div></div></section><section id="cmd_vs_entrypoint_6" class="columns" data-auto-animate><h2>CMD vs ENTRYPOINT</h2><div class="slide-content"><div class="openblock column is-one-fifth"><div class="content"><div class="paragraph"><p>Cas d&#8217;usage, un cran plus loin</p></div>
+docker container run --rm my-curl:2.0 http://example.com</code></pre></div></div></div></section><section id="cmd_vs_entrypoint_6" class="columns" data-auto-animate><h2>CMD vs ENTRYPOINT</h2><div class="slide-content"><div class="openblock column is-one-fifth"><div class="content"><div class="paragraph"><p>Cas d&#8217;usage, un cran plus loin</p></div>
 <div class="paragraph"><p>Paramétrable, et hop!</p></div></div></div>
 <div class="openblock column is-half"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM alpine:3.24
 LABEL maintainer="John Doe"
