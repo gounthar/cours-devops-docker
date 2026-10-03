@@ -31,8 +31,10 @@ targets:
     scmid: default
     spec:
       file: "content/chapitres/fichiers-nommage-inspect.adoc"
-      matchpattern: 'docker container run --name my-nginx -v /fully/qualified/path/on/my/computer/:/usr/share/nginx/html:ro -d -p 8000:80 nginx(?::\d+\.\d+\.\d+-alpine\d*\.\d*)?'
-      replacepattern: 'docker container run --name my-nginx -v /fully/qualified/path/on/my/computer/:/usr/share/nginx/html:ro -d -p 8000:80 nginx:{{ source "nginx-alpine" }}'
+      # Last line of the wrapped TP07 command. Not the bare tag: the TP06
+      # note records the tag the outputs were replayed with.
+      matchpattern: '(?m)^  nginx:\d+\.\d+\.\d+-alpine\d+\.\d+$'
+      replacepattern: '  nginx:{{ source "nginx-alpine" }}'
 
   nginx-image-reseaux:
     name: "Update nginx Docker image in the networking chapter compose examples"

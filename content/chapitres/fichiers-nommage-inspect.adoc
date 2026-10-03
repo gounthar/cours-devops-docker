@@ -974,7 +974,10 @@ include::../code-samples/fichiers/reseau/index.html[]
 [%step]
 [source,bash]
 ----
-docker container run --name my-nginx -v /fully/qualified/path/on/my/computer/:/usr/share/nginx/html:ro -d -p 8000:80 nginx:1.31.6-alpine3.24
+# depuis le répertoire qui contient index.html
+docker container run --name my-nginx -d -p 8000:80 \
+  -v $(pwd):/usr/share/nginx/html:ro \
+  nginx:1.31.6-alpine3.24
 ----
 
 [%step]
@@ -1001,8 +1004,9 @@ curl --noproxy '*' http://localhost:8000
 
 [source,bash]
 ----
-wget -O sample.war https://github.com/gounthar/tp07-sample/releases/download/v2026.09.07-083440/sample-2026.09.07-083440.war
-# wget sort en 0 même s'il a reçu une page HTML : vérifier que c'est bien une archive
+wget -O sample.war \
+  https://github.com/gounthar/tp07-sample/releases/download/v2026.09.07-083440/sample-2026.09.07-083440.war
+# wget sort en 0 même sur une page HTML : vérifier l'archive
 file sample.war
 sample.war: Zip archive data, made by v2.0 UNIX, ...
 ----
