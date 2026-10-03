@@ -662,11 +662,6 @@ docker container inspect --format '{{json .Created }}' my-web
 On démarre un container nginx avec la commande
 [source,bash]
 ----
-# Here we're using the 'docker container run' command to start a new Docker container.
-# The '--detach' option tells Docker to run the container in the background and print the container ID.
-# The '--name' option allows us to give our container a custom name, in this case 'my-web'.
-# Finally, 'nginx' is the name of the Docker image we want to use to create the container.
-# So, to sum up, this command will start a new Docker container in the background, using the 'nginx' image, and name it 'my-web'.
 docker container run --detach --name my-web nginx
 ----
 
@@ -674,11 +669,6 @@ Une solution facile est de faire:
 
 [source,bash]
 ----
-# In this command, we're using 'docker container inspect' to get detailed information about our 'my-web' container.
-# The '--format' option allows us to specify the output format. Here, we're using the Go template '{{json .Config.Cmd }}' to get the command used to start the container in JSON format.
-# We then pipe this JSON output to 'jq', a powerful command-line JSON processor.
-# The '.' in 'jq .' tells 'jq' to take the input JSON and output it as is, effectively pretty-printing it.
-# So, to sum up, this command will give us the command used to start the 'my-web' container, in a pretty-printed JSON format.
 docker container inspect --format '{{json .Config.Cmd }}' my-web | jq .
 ----
 
@@ -695,23 +685,20 @@ docker container inspect --format '{{json .Config.Cmd }}' my-web | jq .
 Qu'on pourrait nettoyer pour avoir `nginx -g daemon off;` avec:
 [source,bash]
 ----
-# This command is a symphony in three parts. First, we're using 'docker container inspect' to get detailed information about our 'my-web' container.
-# The '--format' option allows us to specify the output format. Here, we're using the Go template '{{json .Config.Cmd }}' to get the command used to start the container in JSON format.
-# We then pipe this JSON output to 'jq', a powerful command-line JSON processor. The '-r' option tells 'jq' to output raw strings instead of JSON-encoded strings, and '.[]' tells 'jq' to output the elements of the array.
-# But we're not done yet. We then pipe this output to 'tr', which replaces the newlines with spaces, giving us a neat, single-line command.
-# So, to sum up, this command will give us the command used to start the 'my-web' container, as a single line of text.
-docker container inspect --format '{{json .Config.Cmd }}' my-web | jq -r '.[]' | tr '\n' ' '
+# jq -r : une ligne par élément ; tr : tout sur une ligne
+docker container inspect --format '{{json .Config.Cmd }}' my-web \
+  | jq -r '.[]' | tr '\n' ' '
 ----
 qui donne `nginx -g daemon off;`.
 
 Une autre solution serait:
 [source,bash]
 ----
-# This command is using 'docker container ls' to list our Docker containers. The '--filter' option allows us to only show containers with the name 'my-web', and '--no-trunc' prevents Docker from truncating the output.
-# We then pipe this output to 'awk', a powerful text processing tool. 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")}' tells 'awk' to find the positions of the 'COMMAND' and 'CREATED' headers in the first line of the output.
-# 'NR>1 {print substr($0, cmd, created-cmd)}' then tells 'awk' to print the substring from the start of the 'COMMAND' field to the start of the 'CREATED' field for the rest of the lines.
-# So, to sum up, this command will give us the command used to start the 'my-web' container, extracted from the output of 'docker container ls'.
-docker container ls --filter "name=my-web" --no-trunc | awk 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")} NR>1 {print substr($0, cmd, created-cmd)}'
+# awk : découpe la colonne COMMAND, entre les en-têtes
+# COMMAND et CREATED
+docker container ls --filter "name=my-web" --no-trunc \
+  | awk 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")}
+         NR>1  {print substr($0, cmd, created-cmd)}'
 ----
 
 qui donnerait `"/docker-entrypoint.sh nginx -g 'daemon off;'"`.
@@ -723,11 +710,6 @@ qui donnerait `"/docker-entrypoint.sh nginx -g 'daemon off;'"`.
 On démarre un container nginx avec la commande
 [source,bash]
 ----
-# Here we're using the 'docker container run' command to start a new Docker container.
-# The '--detach' option tells Docker to run the container in the background and print the container ID.
-# The '--name' option allows us to give our container a custom name, in this case 'my-web'.
-# Finally, 'nginx' is the name of the Docker image we want to use to create the container.
-# So, to sum up, this command will start a new Docker container in the background, using the 'nginx' image, and name it 'my-web'.
 docker container run --detach --name my-web nginx
 ----
 
@@ -737,11 +719,6 @@ Une solution facile est de faire:
 [%step]
 [source,bash]
 ----
-# In this command, we're using 'docker container inspect' to get detailed information about our 'my-web' container.
-# The '--format' option allows us to specify the output format. Here, we're using the Go template '{{json .Config.Cmd }}' to get the command used to start the container in JSON format.
-# We then pipe this JSON output to 'jq', a powerful command-line JSON processor.
-# The '.' in 'jq .' tells 'jq' to take the input JSON and output it as is, effectively pretty-printing it.
-# So, to sum up, this command will give us the command used to start the 'my-web' container, in a pretty-printed JSON format.
 docker container inspect --format '{{json .Config.Cmd }}' my-web | jq .
 ----
 
@@ -772,12 +749,9 @@ Qu'on pourrait nettoyer pour avoir `nginx -g daemon off;` avec:
 [%step]
 [source,bash]
 ----
-# This command is a symphony in three parts. First, we're using 'docker container inspect' to get detailed information about our 'my-web' container.
-# The '--format' option allows us to specify the output format. Here, we're using the Go template '{{json .Config.Cmd }}' to get the command used to start the container in JSON format.
-# We then pipe this JSON output to 'jq', a powerful command-line JSON processor. The '-r' option tells 'jq' to output raw strings instead of JSON-encoded strings, and '.[]' tells 'jq' to output the elements of the array.
-# But we're not done yet. We then pipe this output to 'tr', which replaces the newlines with spaces, giving us a neat, single-line command.
-# So, to sum up, this command will give us the command used to start the 'my-web' container, as a single line of text.
-docker container inspect --format '{{json .Config.Cmd }}' my-web | jq -r '.[]' | tr '\n' ' '
+# jq -r : une ligne par élément ; tr : tout sur une ligne
+docker container inspect --format '{{json .Config.Cmd }}' my-web \
+  | jq -r '.[]' | tr '\n' ' '
 ----
 [%step]
 qui donne `nginx -g daemon off;`.
@@ -787,41 +761,39 @@ Une autre solution serait:
 [%step]
 [source,bash]
 ----
-# This command is using 'docker container ls' to list our Docker containers. The '--filter' option allows us to only show containers with the name 'my-web', and '--no-trunc' prevents Docker from truncating the output.
-# We then pipe this output to 'awk', a powerful text processing tool. 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")}' tells 'awk' to find the positions of the 'COMMAND' and 'CREATED' headers in the first line of the output.
-# 'NR>1 {print substr($0, cmd, created-cmd)}' then tells 'awk' to print the substring from the start of the 'COMMAND' field to the start of the 'CREATED' field for the rest of the lines.
-# So, to sum up, this command will give us the command used to start the 'my-web' container, extracted from the output of 'docker container ls'.
-docker container ls --filter "name=my-web" --no-trunc | awk 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")} NR>1 {print substr($0, cmd, created-cmd)}'
+# awk : découpe la colonne COMMAND, entre les en-têtes
+# COMMAND et CREATED
+docker container ls --filter "name=my-web" --no-trunc \
+  | awk 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")}
+         NR>1  {print substr($0, cmd, created-cmd)}'
 ----
 
 [%auto-animate]
 ==  ✅ Solution Travaux Pratiques #6
 [source,bash]
 ----
-# This command is using 'docker container ls' to list our Docker containers. The '--filter' option allows us to only show containers with the name 'my-web', and '--no-trunc' prevents Docker from truncating the output.
-# We then pipe this output to 'awk', a powerful text processing tool. 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")}' tells 'awk' to find the positions of the 'COMMAND' and 'CREATED' headers in the first line of the output.
-# 'NR>1 {print substr($0, cmd, created-cmd)}' then tells 'awk' to print the substring from the start of the 'COMMAND' field to the start of the 'CREATED' field for the rest of the lines.
-# So, to sum up, this command will give us the command used to start the 'my-web' container, extracted from the output of 'docker container ls'.
-docker container ls --filter "name=my-web" --no-trunc | awk 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")} NR>1 {print substr($0, cmd, created-cmd)}'
+# awk : découpe la colonne COMMAND, entre les en-têtes
+# COMMAND et CREATED
+docker container ls --filter "name=my-web" --no-trunc \
+  | awk 'NR==1 {cmd=index($0, "COMMAND"); created=index($0, "CREATED")}
+         NR>1  {print substr($0, cmd, created-cmd)}'
 ----
 
 [%step]
 qui donnerait `"/docker-entrypoint.sh nginx -g 'daemon off;'"`.
 
+[%step]
+Pourquoi deux réponses ? `docker container ls` affiche `ENTRYPOINT` + `CMD`, `.Config.Cmd` le seul `CMD`.
+
 [.notes]
 --
-Dans le contexte de l'utilisation de la commande docker container inspect ou docker container ls, l'une des principales différences entre ENTRYPOINT et CMD réside dans leur rôle et leur impact sur la visibilité des informations.
+Sorties rejouées le 2026-10-03 avec `nginx:1.31.6-alpine3.24` (Docker 29.8.0).
+L'image nginx déclare `ENTRYPOINT ["/docker-entrypoint.sh"]` et `CMD ["nginx", "-g", "daemon off;"]` :
+`docker container inspect --format '{{json .Config.Entrypoint}}' my-web` donne `["/docker-entrypoint.sh"]`.
 
-1. **ENTRYPOINT** :
-Lorsque vous utilisez docker container inspect ou docker container ls pour examiner un conteneur qui utilise ENTRYPOINT, vous verrez que ENTRYPOINT apparaît en tant que commande principale du conteneur. Cela signifie que l'entrée principale de l'application, généralement un exécutable ou un script, est affichée.
-Les options et les arguments passés en ligne de commande lors du lancement du conteneur sont ajoutés après l'entrée principale, comme des arguments à cette commande.
-Si un ENTRYPOINT est défini, la commande spécifiée en utilisant docker container run est ignorée.
-2. **CMD** :
-Lorsque vous utilisez docker container inspect ou docker container ls pour examiner un conteneur qui utilise CMD, vous verrez que la commande CMD est répertoriée sous forme d'argument pour /bin/sh -c, ce qui signifie qu'elle est exécutée par le shell par défaut du conteneur.
-Les options et les arguments passés en ligne de commande lors du lancement du conteneur remplacent la commande CMD.
-Vous pouvez également ajouter des arguments supplémentaires à la commande CMD en utilisant docker container run.
-
-En résumé, ENTRYPOINT est généralement utilisé pour spécifier la commande principale de l'application dans le conteneur, et les arguments fournis lors du lancement du conteneur sont traités comme des arguments pour cette commande. En revanche, CMD est utilisé pour spécifier une commande par défaut qui peut être écrasée en passant d'autres commandes lors du lancement du conteneur. L'utilisation de l'un ou de l'autre dépend des besoins spécifiques de votre application et de la manière dont vous souhaitez gérer la personnalisation des commandes dans vos conteneurs.
+La colonne `COMMAND` de `docker container ls` met les deux bout à bout ; `.Config.Cmd` ne contient que le `CMD`.
+Un argument passé à `docker container run` remplace le `CMD` et s'ajoute à l'`ENTRYPOINT` (diapositives « ENTRYPOINT + CMD » du chapitre images).
+La forme shell ajoute d'office `/bin/sh -c` ; en forme exec, il n'y a un shell que si on l'écrit soi-même (`["sh", "-c", "..."]`).
 --
 
 == 🌐 Trouver son container en réseau
@@ -1002,7 +974,10 @@ include::../code-samples/fichiers/reseau/index.html[]
 [%step]
 [source,bash]
 ----
-docker container run --name my-nginx -v /fully/qualified/path/on/my/computer/:/usr/share/nginx/html:ro -d -p 8000:80 nginx:1.31.6-alpine3.24
+# depuis le répertoire qui contient index.html
+docker container run --name my-nginx -d -p 8000:80 \
+  -v "$(pwd):/usr/share/nginx/html:ro" \
+  nginx:1.31.6-alpine3.24
 ----
 
 [%step]
@@ -1029,8 +1004,9 @@ curl --noproxy '*' http://localhost:8000
 
 [source,bash]
 ----
-wget -O sample.war https://github.com/gounthar/tp07-sample/releases/download/v2026.09.07-083440/sample-2026.09.07-083440.war
-# wget sort en 0 même s'il a reçu une page HTML : vérifier que c'est bien une archive
+wget -O sample.war \
+  https://github.com/gounthar/tp07-sample/releases/download/v2026.09.07-083440/sample-2026.09.07-083440.war
+# wget sort en 0 même sur une page HTML : vérifier l'archive
 file sample.war
 sample.war: Zip archive data, made by v2.0 UNIX, ...
 ----
@@ -1038,14 +1014,10 @@ sample.war: Zip archive data, made by v2.0 UNIX, ...
 [%step]
 [source,bash]
 ----
-# Used to run a Docker container with the name "tomcat-container" using the "tomcat:11.0.26-jdk25-temurin-noble" image. The container is
-# configured to expose port 8080 on the host machine, which will be mapped to the corresponding port inside
-# the container. Additionally, a volume is mounted to the container, linking the
-# "/fully/qualified/path/on/my/computer/sample.war" file to "/usr/local/tomcat/webapps/sample.war"
-# path within the container. This allows the Tomcat server running inside the container to access and deploy the
-# "sample.war" file. The "-d" flag is used to run the container in detached mode, meaning it will run in the
-# background.
-docker container run -d -p 8080:8080 --name tomcat-container -v /fully/qualified/path/on/my/computer/sample.war:/usr/local/tomcat/webapps/sample.war tomcat:11.0.26-jdk25-temurin-noble
+# -v : le .war téléchargé, monté dans webapps/ ; Tomcat le déploie
+docker container run -d -p 8080:8080 --name tomcat-container \
+  -v "$(pwd)/sample.war:/usr/local/tomcat/webapps/sample.war" \
+  tomcat:11.0.26-jdk25-temurin-noble
 ----
 
 [%step]
