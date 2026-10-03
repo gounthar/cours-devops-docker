@@ -3100,22 +3100,26 @@ RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="imageblock"><img src="media/1763880002-image10.png" alt="1763880002 image10"></div></div></section><section id="solution_travaux_pratiques_8" data-auto-animate><h2>✅ Solution travaux pratiques #8</h2><div class="slide-content"><div class="paragraph title"><p>En utilisant un montage de répertoire (Bind Mount) :</p></div>
 <div class="paragraph fragment"><p>Utilisez un montage de répertoire pour mapper un répertoire de l&#8217;hôte vers le conteneur Nginx.</p></div>
 <div class="paragraph fragment"><p>Placez vos fichiers HTML dans un répertoire sur votre machine hôte, puis mappez ce répertoire vers le conteneur Nginx.</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 80:80 --name mon-nginx -v /chemin/vers/la/page/web/sur/lhote:/usr/share/nginx/html nginx</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 80:80 --name mon-nginx \
+  -v /chemin/vers/la/page/web/sur/lhote:/usr/share/nginx/html \
+  nginx</code></pre></div></div>
 <div class="paragraph fragment"><p>Remplacez <code>/chemin/vers/la/page/web/sur/lhote</code> par le chemin réel vers le répertoire contenant vos fichiers de la page web sur l&#8217;hôte.</p></div></div></section><section id="solution_travaux_pratiques_8_2" data-auto-animate><h2>✅ Solution travaux pratiques #8</h2><div class="slide-content"><div class="paragraph title"><p>En utilisant un volume nommé (Named Volume) :</p></div>
 <div class="paragraph fragment"><p>Créez un volume nommé et copiez vos fichiers de la page web dedans.</p></div>
 <div class="paragraph fragment"><p>Montez ce volume nommé dans le conteneur Nginx.</p></div>
 <div class="paragraph fragment"><p>Tout d&#8217;abord, créez un volume nommé :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume create mon-nginx-html</code></pre></div></div>
 <div class="paragraph fragment"><p>Copiez vos fichiers de la page web dans ce volume :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Copie le *contenu* du dossier hôte (monté sur /html) dans le volume (monté sur /cible).
-# "/html/." et non "/html", sinon les fichiers atterrissent dans un sous-répertoire.
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># copie le *contenu* de /html (hôte) dans /cible (volume) ;
+# "/html/." et non "/html", sinon un sous-répertoire html/
 docker container run --rm \
   --volume mon-nginx-html:/cible \
   --volume /chemin/vers/la/page/web/sur/lhote:/html \
   --workdir /cible \
-  busybox cp -r /html/. .</code></pre></div></div>
-<div class="paragraph fragment"><p>Maintenant, lancez le conteneur Nginx et montez le volume nommé :</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 80:80 --name mon-nginx -v mon-nginx-html:/usr/share/nginx/html nginx</code></pre></div></div></div></section><section id="travaux_pratiques_9"><h2>🎓 Travaux pratiques #9</h2><div class="slide-content"><div class="paragraph title"><p>Étapes:</p></div>
+  busybox cp -r /html/. .</code></pre></div></div></div></section><section id="solution_travaux_pratiques_8_3" data-auto-animate><h2>✅ Solution travaux pratiques #8</h2><div class="slide-content"><div class="paragraph title"><p>En utilisant un volume nommé (Named Volume) :</p></div>
+<div class="paragraph"><p>Maintenant, lancez le conteneur Nginx et montez le volume nommé :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 80:80 --name mon-nginx \
+  -v mon-nginx-html:/usr/share/nginx/html \
+  nginx</code></pre></div></div></div></section><section id="travaux_pratiques_9"><h2>🎓 Travaux pratiques #9</h2><div class="slide-content"><div class="paragraph title"><p>Étapes:</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Créer un volume nommé "data"</p></li><li class="fragment"><p>Démarrer un container attaché à ce volume</p></li><li class="fragment"><p>Lancer un processus qui écrit un fichier dans le volume</p></li><li class="fragment"><p>Démarrer un second container attaché à ce volume</p></li><li class="fragment"><p>Lire les données du volume depuis le second container</p></li><li class="fragment"><p>Supprimer le volume</p></li></ul></div></div></section><section id="solution_travaux_pratiques_9"><h2>✅ Solution travaux pratiques #9</h2><div class="slide-content"><div class="paragraph"><p>Créer un volume nommé "data" :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume create data</code></pre></div></div>
 <div class="paragraph fragment"><p>Démarrer un premier conteneur attaché à ce volume :</p></div>
@@ -3361,64 +3365,43 @@ Autre remède à l&#8217;ordre de démarrage seul : depends_on dans Compose (mes
 <div class="ulist"><ul><li><p>❌ Échec au démarrage si le service amont n&#8217;est pas encore lancé</p></li><li><p>❌ IP obsolète après redémarrage du conteneur amont</p></li><li><p>❌ Erreur : <code>host not found in upstream</code></p></li></ul></div></td></tr></table></div></div></section><section id="se_connecter_à_un_réseau"><h2>📶🔌 Se connecter à un réseau</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker network connect mynet myapp</code></pre></div></div>
 <div class="paragraph fragment"><p>Cette commande permet d&#8217;attacher un container à un réseau après sa création.</p></div></div></section><section id="travaux_pratiques_11"><h2>🎓 Travaux pratiques #11</h2><div class="slide-content"><div class="paragraph"><p>Étapes:</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Lister et inspecter les réseaux existants</p></li><li class="fragment"><p>Lancer un container <code>nginx</code> nommé "web1"</p></li><li class="fragment"><p>A quel réseau est-il attaché ?</p></li><li class="fragment"><p>Créer un réseau de type bridge et l&#8217;inspecter</p></li><li class="fragment"><p>Lancer un container <code>nginx</code> nommé "web2" et l&#8217;attacher au réseau créé</p></li><li class="fragment"><p>L&#8217;inspection confirme-t-elle l&#8217;attachement ?</p></li><li class="fragment"><p>Lancer un bash dans le container "web1"</p></li><li class="fragment"><p>Est-ce que "web1" peut voir "web2" ?</p></li><li class="fragment"><p>Corriger pour que ce soit le cas</p></li></ul></div></div></section><section id="solution_travaux_pratiques_11" data-auto-animate><h2>✅ Solution travaux pratiques #11</h2><div class="slide-content"><div class="paragraph"><p>Étape 1 : Lister et inspecter les réseaux existants</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Liste tous les réseaux Docker existants
-docker network ls
-
-# Inspecte un réseau spécifique (par exemple, le réseau bridge, d'autres réseaux peuvent être inspectés)
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker network ls
 docker network inspect bridge</code></pre></div></div>
 <div class="paragraph fragment"><p>Étape 2 : Lancer un container "nginx" nommé "web1"</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Lance un conteneur "nginx" nommé "web1"
-docker container run --name web1 -d nginx</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --name web1 -d nginx</code></pre></div></div>
 <div class="paragraph fragment"><p>Étape 3 : Vérifier le réseau auquel "web1" est attaché</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Récupère l'identifiant de réseau complet pour le container "web1"
-network_id=$(docker container inspect -f '{{.NetworkSettings.Networks.bridge.NetworkID}}' web1)
-
-# Raccourcit l'identifiant du réseau aux premiers 12 caractères
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">network_id=$(docker container inspect \
+  -f '{{.NetworkSettings.Networks.bridge.NetworkID}}' web1)
+# docker network ls n'affiche que 12 caractères de l'identifiant
 shortened_network_id=$(echo $network_id | cut -c 1-12)
-
-# Liste tous les réseaux docker, en filtrant par l'identifiant du réseau
 docker network ls --format "table {{.ID}}\t{{.Name}}" \
   | awk -v network_id="$shortened_network_id" '$1 == network_id {print $2}'</code></pre></div></div></div></section><section id="solution_travaux_pratiques_11_2" data-auto-animate><h2>✅ Solution travaux pratiques #11</h2><div class="slide-content"><div class="paragraph"><p>Étape 3 : Vérifier le réseau auquel "web1" est attaché</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Récupère l'identifiant de réseau complet pour le container "web1"
-network_id=$(docker container inspect -f '{{.NetworkSettings.Networks.bridge.NetworkID}}' web1)
-
-# Raccourcit l'identifiant du réseau aux premiers 12 caractères
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">network_id=$(docker container inspect \
+  -f '{{.NetworkSettings.Networks.bridge.NetworkID}}' web1)
+# docker network ls n'affiche que 12 caractères de l'identifiant
 shortened_network_id=$(echo $network_id | cut -c 1-12)
-
-# Liste tous les réseaux docker, en filtrant par l'identifiant du réseau
 docker network ls --format "table {{.ID}}\t{{.Name}}" \
   | awk -v network_id="$shortened_network_id" '$1 == network_id {print $2}'</code></pre></div></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">bridge</code></pre></div></div>
 <div class="paragraph fragment"><p>Étape 4 : Créer un réseau de type bridge et l&#8217;inspecter</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Crée un réseau Docker de type bridge nommé "mon-reseau"
-docker network create mon-reseau
-
-# Inspecte le réseau "mon-reseau"
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker network create mon-reseau
 docker network inspect mon-reseau</code></pre></div></div>
 <div class="paragraph fragment"><p>Étape 5 : Lancer un container "nginx" nommé "web2" et l&#8217;attacher au réseau créé</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Lance un conteneur "nginx" nommé "web2" et l'attache au réseau "mon-reseau"
-docker container run --name web2 -d --network mon-reseau nginx</code></pre></div></div></div></section><section id="solution_travaux_pratiques_11_3" data-auto-animate><h2>✅ Solution travaux pratiques #11</h2><div class="slide-content"><div class="paragraph"><p>Étape 5 : Lancer un container "nginx" nommé "web2" et l&#8217;attacher au réseau créé</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Lance un conteneur "nginx" nommé "web2" et l'attache au réseau "mon-reseau"
-docker container run --name web2 -d --network mon-reseau nginx</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --name web2 -d --network mon-reseau nginx</code></pre></div></div></div></section><section id="solution_travaux_pratiques_11_3" data-auto-animate><h2>✅ Solution travaux pratiques #11</h2><div class="slide-content"><div class="paragraph"><p>Étape 5 : Lancer un container "nginx" nommé "web2" et l&#8217;attacher au réseau créé</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --name web2 -d --network mon-reseau nginx</code></pre></div></div>
 <div class="paragraph"><p>Étape 6 : Vérifier l&#8217;attachement du container "web2" au réseau</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Inspecte le conteneur "web2" pour vérifier le réseau auquel il est attaché
-docker container inspect web2 | grep NetworkMode</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container inspect web2 | grep NetworkMode</code></pre></div></div>
 <div class="paragraph fragment"><p>Étape 7 : Lancer un bash dans le container "web1"</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Lance un shell interactif dans le conteneur "web1"
-docker container exec -it web1 bash</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container exec -it web1 bash</code></pre></div></div>
 <div class="paragraph fragment"><p>Étape 8 : Vérifier si "web1" peut voir "web2"</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># À l'intérieur du conteneur "web1," essayez de faire une requête HTTP vers "web2"
-# --noproxy : web2 est un nom interne, la requête ne doit pas partir vers le proxy
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># dans web1 ; --noproxy : web2 est un nom interne
 curl --noproxy '*' web2</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">curl: (6) Could not resolve host: web2</code></pre></div></div></div></section><section id="solution_travaux_pratiques_11_4" data-auto-animate><h2>✅ Solution travaux pratiques #11</h2><div class="slide-content"><div class="paragraph"><p>Étape 9 : Corriger pour permettre la communication entre "web1" et "web2"</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Sortez du shell du conteneur "web1" en tapant "exit"
-
-# Attachez "web1" au même réseau "mon-reseau"
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># après exit, depuis l'hôte
 docker network connect mon-reseau web1</code></pre></div></div>
 <div class="paragraph fragment"><p>Après avoir suivi ces étapes, les conteneurs "web1" et "web2" devraient être attachés au même réseau "mon-reseau" et être capables de communiquer entre eux.</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Lance un shell interactif dans le conteneur "web1"
-docker container exec -it web1 bash</code></pre></div></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># À l'intérieur du conteneur "web1," essayez de faire une requête HTTP vers "web2"
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container exec -it web1 bash</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># dans web1
 curl --noproxy '*' web2</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-html hljs" data-noescape="true" data-lang="html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
