@@ -331,7 +331,9 @@ Placez vos fichiers HTML dans un répertoire sur votre machine hôte, puis mappe
 [%step]
 [source,bash]
 ----
-docker container run -d -p 80:80 --name mon-nginx -v /chemin/vers/la/page/web/sur/lhote:/usr/share/nginx/html nginx
+docker container run -d -p 80:80 --name mon-nginx \
+  -v /chemin/vers/la/page/web/sur/lhote:/usr/share/nginx/html \
+  nginx
 ----
 [%step]
 Remplacez `/chemin/vers/la/page/web/sur/lhote` par le chemin réel vers le répertoire contenant vos fichiers de la page web sur l'hôte.
@@ -360,21 +362,26 @@ Copiez vos fichiers de la page web dans ce volume :
 [%step]
 [source,bash]
 ----
-# Copie le *contenu* du dossier hôte (monté sur /html) dans le volume (monté sur /cible).
-# "/html/." et non "/html", sinon les fichiers atterrissent dans un sous-répertoire.
+# copie le *contenu* de /html (hôte) dans /cible (volume) ;
+# "/html/." et non "/html", sinon un sous-répertoire html/
 docker container run --rm \
   --volume mon-nginx-html:/cible \
   --volume /chemin/vers/la/page/web/sur/lhote:/html \
   --workdir /cible \
   busybox cp -r /html/. .
 ----
-[%step]
+[%auto-animate]
+== ✅ Solution travaux pratiques #8
+[.title]
+En utilisant un volume nommé (Named Volume) :
+
 Maintenant, lancez le conteneur Nginx et montez le volume nommé :
 
-[%step]
 [source,bash]
 ----
-docker container run -d -p 80:80 --name mon-nginx -v mon-nginx-html:/usr/share/nginx/html nginx
+docker container run -d -p 80:80 --name mon-nginx \
+  -v mon-nginx-html:/usr/share/nginx/html \
+  nginx
 ----
 
 == 🎓 Travaux pratiques #9
