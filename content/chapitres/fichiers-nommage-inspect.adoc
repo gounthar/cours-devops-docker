@@ -793,7 +793,7 @@ L'image nginx déclare `ENTRYPOINT ["/docker-entrypoint.sh"]` et `CMD ["nginx", 
 
 La colonne `COMMAND` de `docker container ls` met les deux bout à bout ; `.Config.Cmd` ne contient que le `CMD`.
 Un argument passé à `docker container run` remplace le `CMD` et s'ajoute à l'`ENTRYPOINT` (diapositives « ENTRYPOINT + CMD » du chapitre images).
-`/bin/sh -c` n'apparaît que pour une instruction écrite en forme shell.
+La forme shell ajoute d'office `/bin/sh -c` ; en forme exec, il n'y a un shell que si on l'écrit soi-même (`["sh", "-c", "..."]`).
 --
 
 == 🌐 Trouver son container en réseau
@@ -976,7 +976,7 @@ include::../code-samples/fichiers/reseau/index.html[]
 ----
 # depuis le répertoire qui contient index.html
 docker container run --name my-nginx -d -p 8000:80 \
-  -v $(pwd):/usr/share/nginx/html:ro \
+  -v "$(pwd):/usr/share/nginx/html:ro" \
   nginx:1.31.6-alpine3.24
 ----
 
@@ -1016,7 +1016,7 @@ sample.war: Zip archive data, made by v2.0 UNIX, ...
 ----
 # -v : le .war téléchargé, monté dans webapps/ ; Tomcat le déploie
 docker container run -d -p 8080:8080 --name tomcat-container \
-  -v $(pwd)/sample.war:/usr/local/tomcat/webapps/sample.war \
+  -v "$(pwd)/sample.war:/usr/local/tomcat/webapps/sample.war" \
   tomcat:11.0.26-jdk25-temurin-noble
 ----
 
