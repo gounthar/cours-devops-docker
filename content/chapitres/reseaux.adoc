@@ -584,51 +584,38 @@ Cette commande permet d'attacher un container à un réseau après sa création.
 
 [source,bash]
 ----
-# Liste tous les réseaux Docker existants
 docker network ls
-
-# Inspecte un réseau spécifique (par exemple, le réseau bridge, d'autres réseaux peuvent être inspectés)
 docker network inspect bridge
 ----
-
 [%step]
 Étape 2 : Lancer un container "nginx" nommé "web1"
 [%step]
 [source,bash]
 ----
-# Lance un conteneur "nginx" nommé "web1"
 docker container run --name web1 -d nginx
 ----
-
 [%step]
 Étape 3 : Vérifier le réseau auquel "web1" est attaché
 [%step]
 [source,bash]
 ----
-# Récupère l'identifiant de réseau complet pour le container "web1"
-network_id=$(docker container inspect -f '{{.NetworkSettings.Networks.bridge.NetworkID}}' web1)
-
-# Raccourcit l'identifiant du réseau aux premiers 12 caractères
+network_id=$(docker container inspect \
+  -f '{{.NetworkSettings.Networks.bridge.NetworkID}}' web1)
+# docker network ls n'affiche que 12 caractères de l'identifiant
 shortened_network_id=$(echo $network_id | cut -c 1-12)
-
-# Liste tous les réseaux docker, en filtrant par l'identifiant du réseau
 docker network ls --format "table {{.ID}}\t{{.Name}}" \
   | awk -v network_id="$shortened_network_id" '$1 == network_id {print $2}'
 ----
-
 [%auto-animate]
 == ✅ Solution travaux pratiques #11
 
 Étape 3 : Vérifier le réseau auquel "web1" est attaché
 [source,bash]
 ----
-# Récupère l'identifiant de réseau complet pour le container "web1"
-network_id=$(docker container inspect -f '{{.NetworkSettings.Networks.bridge.NetworkID}}' web1)
-
-# Raccourcit l'identifiant du réseau aux premiers 12 caractères
+network_id=$(docker container inspect \
+  -f '{{.NetworkSettings.Networks.bridge.NetworkID}}' web1)
+# docker network ls n'affiche que 12 caractères de l'identifiant
 shortened_network_id=$(echo $network_id | cut -c 1-12)
-
-# Liste tous les réseaux docker, en filtrant par l'identifiant du réseau
 docker network ls --format "table {{.ID}}\t{{.Name}}" \
   | awk -v network_id="$shortened_network_id" '$1 == network_id {print $2}'
 ----
@@ -636,62 +623,48 @@ docker network ls --format "table {{.ID}}\t{{.Name}}" \
 ----
 bridge
 ----
-
 [%step]
 Étape 4 : Créer un réseau de type bridge et l'inspecter
 [%step]
 [source,bash]
 ----
-# Crée un réseau Docker de type bridge nommé "mon-reseau"
 docker network create mon-reseau
-
-# Inspecte le réseau "mon-reseau"
 docker network inspect mon-reseau
 ----
-
 [%step]
 Étape 5 : Lancer un container "nginx" nommé "web2" et l'attacher au réseau créé
 [%step]
 [source,bash]
 ----
-# Lance un conteneur "nginx" nommé "web2" et l'attache au réseau "mon-reseau"
 docker container run --name web2 -d --network mon-reseau nginx
 ----
-
 [%auto-animate]
 == ✅ Solution travaux pratiques #11
 
 Étape 5 : Lancer un container "nginx" nommé "web2" et l'attacher au réseau créé
 [source,bash]
 ----
-# Lance un conteneur "nginx" nommé "web2" et l'attache au réseau "mon-reseau"
 docker container run --name web2 -d --network mon-reseau nginx
 ----
-
 Étape 6 : Vérifier l'attachement du container "web2" au réseau
 [%step]
 [source,bash]
 ----
-# Inspecte le conteneur "web2" pour vérifier le réseau auquel il est attaché
 docker container inspect web2 | grep NetworkMode
 ----
-
 [%step]
 Étape 7 : Lancer un bash dans le container "web1"
 [%step]
 [source,bash]
 ----
-# Lance un shell interactif dans le conteneur "web1"
 docker container exec -it web1 bash
 ----
-
 [%step]
 Étape 8 : Vérifier si "web1" peut voir "web2"
 [%step]
 [source,bash]
 ----
-# À l'intérieur du conteneur "web1," essayez de faire une requête HTTP vers "web2"
-# --noproxy : web2 est un nom interne, la requête ne doit pas partir vers le proxy
+# dans web1 ; --noproxy : web2 est un nom interne
 curl --noproxy '*' web2
 ----
 [%step]
@@ -699,7 +672,6 @@ curl --noproxy '*' web2
 ----
 curl: (6) Could not resolve host: web2
 ----
-
 [%auto-animate]
 == ✅ Solution travaux pratiques #11
 
@@ -707,9 +679,7 @@ curl: (6) Could not resolve host: web2
 [%step]
 [source,bash]
 ----
-# Sortez du shell du conteneur "web1" en tapant "exit"
-
-# Attachez "web1" au même réseau "mon-reseau"
+# après exit, depuis l'hôte
 docker network connect mon-reseau web1
 ----
 [%step]
@@ -718,17 +688,14 @@ Après avoir suivi ces étapes, les conteneurs "web1" et "web2" devraient être 
 [%step]
 [source,bash]
 ----
-# Lance un shell interactif dans le conteneur "web1"
 docker container exec -it web1 bash
 ----
-
 [%step]
 [source,bash]
 ----
-# À l'intérieur du conteneur "web1," essayez de faire une requête HTTP vers "web2"
+# dans web1
 curl --noproxy '*' web2
 ----
-
 [%step]
 [source,html]
 ----
@@ -739,7 +706,6 @@ curl --noproxy '*' web2
 <style>
 [...]
 ----
-
 == 🚨 Piège : localhost vs nom de service dans Docker
 
 [.notes]
