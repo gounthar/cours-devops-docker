@@ -20,8 +20,9 @@ sources:
     spec:
       image: "httpd"
       versionfilter:
-        kind: "regex"
-        pattern: "^\\d+\\.\\d+\\.\\d+-trixie$"
+        kind: "regex/semver"
+        regex: "^(\\d+\\.\\d+\\.\\d+)-trixie$"
+        pattern: "*"
 
 targets:
   httpd-image-compose-script:
