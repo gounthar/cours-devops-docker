@@ -163,7 +163,16 @@ image::1105931517-image5.png[]
 
 == 🗺️📂 Mapping de FileSystem
 
-image::1771886276-image6.png[width=1000]
+Héberger du contenu statique, d'après la page de l'image :
+
+[source,bash]
+----
+docker container run --name some-nginx \
+  -v /some/content:/usr/share/nginx/html:ro \
+  -d \
+  nginx:1.31.6-alpine3.24
+----
+
 [.small]
 Source : https://hub.docker.com/_/nginx
 [%step]
