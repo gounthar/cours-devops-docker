@@ -1,0 +1,46 @@
+---
+name: "Update httpd trixie Docker image to latest version"
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  httpd-trixie:
+    name: "Get latest httpd trixie Docker image tag"
+    kind: "dockerimage"
+    spec:
+      image: "httpd"
+      versionfilter:
+        kind: "regex"
+        pattern: "^\\d+\\.\\d+\\.\\d+-trixie$"
+
+targets:
+  httpd-image-compose-script:
+    name: "Update httpd Docker image in the compose intro script"
+    kind: "file"
+    sourceid: "httpd-trixie"
+    scmid: default
+    spec:
+      files:
+        - "content/code-samples/compose/script.sh"
+        - "content/code-samples/compose/start-compose.sh"
+      matchpattern: 'httpd:\d+\.\d+\.\d+-trixie'
+      replacepattern: 'httpd:{{ source "httpd-trixie" }}'
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    title: 'Update httpd trixie Docker image to {{ source "httpd-trixie" }}'
+    spec:
+      labels:
+        - dependencies
