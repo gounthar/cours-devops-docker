@@ -1175,11 +1175,13 @@ Pas assez détaillé? 😨
 [%step]
 Enfin, définissez les volumes pour votre application en ajoutant `volumes:` sur une nouvelle ligne à la fin de votre fichier, puis
 [%step]
-** `- gitlab_config:`,
-** `- gitlab_logs:`,
-** `- gitlab_data:`,
-** `- gitlab-runner-1-config:`
-** et `- gitlab-runner-2-config:` sur les lignes suivantes.
+** `gitlab_config:`,
+** `gitlab_logs:`,
+** `gitlab_data:`,
+** `gitlab-runner-1-config:`
+** et `gitlab-runner-2-config:` sur les lignes suivantes, indentés et *sans tiret*.
+[%step]
+Ce `volumes:` de premier niveau est un dictionnaire, pas une liste : avec des tirets, `docker compose config` répond `volumes must be a mapping`.
 
 == ✅ Solution Travaux pratiques #12-BIS 🔨🔥
 
