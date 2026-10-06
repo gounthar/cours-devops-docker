@@ -46,6 +46,17 @@ targets:
       matchpattern: 'image: nginx:\d+\.\d+\.\d+-alpine\d+\.\d+'
       replacepattern: 'image: nginx:{{ source "nginx-alpine" }}'
 
+  nginx-image-volumes:
+    name: "Update nginx Docker image in the TP08 solution commands"
+    kind: "file"
+    sourceid: "nginx-alpine"
+    scmid: default
+    spec:
+      file: "content/chapitres/volumes.adoc"
+      # Last line of each wrapped `docker container run` command.
+      matchpattern: '(?m)^  nginx:\d+\.\d+\.\d+-alpine\d+\.\d+$'
+      replacepattern: '  nginx:{{ source "nginx-alpine" }}'
+
 actions:
   default:
     kind: github/pullrequest
