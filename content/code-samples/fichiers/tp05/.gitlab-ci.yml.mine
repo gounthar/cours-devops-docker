@@ -5,14 +5,7 @@ stages:
 run_script:
   stage: run_script
   script:
-    - chmod +x validator.sh src/start.sh && ./validator.sh # Makes the scripts executable and runs validator.sh
-    - |
-        if [ $? -eq 0 ]; then
-          echo "Script exited successfully."
-        else
-          echo "Script exited with an error."
-          exit 1  # Mark the job as a failure
-        fi
+    - chmod +x validator.sh src/start.sh && ./validator.sh
 
 docker_scan:
   stage: docker_scan
