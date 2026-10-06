@@ -1147,25 +1147,8 @@ include::../code-samples/fichiers/reseau/tp7/Dockerfile[]
 
 [.notes]
 --
-
-De base, j'avais plutôt
-
-[%step]
-[source,dockerfile]
-----
-include::https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile.build[]
-----
-
-[%step]
-Une image pour faire tourner l'appli
-
-[%step]
-[source,dockerfile]
-----
-include::https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile[]
-----
-
-À bosser pour pouvoir rester à jour
+Adapté de https://github.com/alexellis/href-counter : les Dockerfiles amont sont restés en `golang:1.19` et `alpine:3.17.1`.
+Les copies de `reseau/tp7/` sont épinglées et suivies par Dependabot.
 --
 
 [%auto-animate]
@@ -1245,13 +1228,7 @@ include::../code-samples/fichiers/multistage/Dockerfile.multi[]
 
 [.notes]
 --
-
-J'aurais préféré:
-[source,dockerfile]
-----
-include::https://raw.githubusercontent.com/alexellis/href-counter/master/Dockerfile.multi[]
-----
-
+Même origine (alexellis/href-counter, amont resté en `golang:1.19` et `alpine:3.17.1`) ; la copie de `multistage/` est suivie par Dependabot.
 --
 
 [%auto-animate]
