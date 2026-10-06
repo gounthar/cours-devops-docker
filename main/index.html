@@ -3511,8 +3511,8 @@ const API_URL = "http://localhost:5000/api";  // ❌ FAUX !</code></pre></div></
 <div class="paragraph"><p>Comment automatiser ces déploiements ?</p></div></div></section><section id="on_pourrait_tout_scripter"><h2>📜💻 On pourrait tout scripter…</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">#!/bin/sh
 docker network create my-net
 docker container run -d --net=my-net -p 3306:3306 mysql
-docker container run -d --net=my-net -v /docs:/docs --name col1 httpd:2.4.58-bookworm
-docker container run -d --net=my-net -v /docs:/docs --name col2 httpd:2.4.58-bookworm</code></pre></div></div></div></section><section id="tout_scripter"><h2>📜💻 Tout scripter</h2><div class="slide-content"><div class="imageblock"><img src="media/351794078-image3.gif" alt="351794078 image3"></div>
+docker container run -d --net=my-net -v /docs:/docs --name col1 httpd:2.4.69-trixie
+docker container run -d --net=my-net -v /docs:/docs --name col2 httpd:2.4.69-trixie</code></pre></div></div></div></section><section id="tout_scripter"><h2>📜💻 Tout scripter</h2><div class="slide-content"><div class="imageblock"><img src="media/351794078-image3.gif" alt="351794078 image3"></div>
 <div class="ulist"><ul><li class="fragment"><p>Et tout lancer indépendamment ?</p></li><li class="fragment"><p>Et tout monitorer un par un ?</p></li><li class="fragment"><p>Peut mieux faire, non ?</p></li></ul></div></div></section><section id="docker_compose_yml"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:</code></pre></div></div></div></section><section id="docker_compose_yml_2"><h2>🐋🐙 docker compose.yml</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   apache:
 
