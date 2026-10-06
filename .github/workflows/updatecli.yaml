@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Install Updatecli in the runner
-        uses: updatecli/updatecli-action@v3.8.0
+        uses: updatecli/updatecli-action@v3.9.0
 
       # Le SCM github clone la branche des valeurs (main par défaut) : sans
       # surcharge, le diff d'une PR vérifierait le texte de main (#588).
