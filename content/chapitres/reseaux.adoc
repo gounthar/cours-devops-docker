@@ -458,8 +458,25 @@ http {
 **Deux façons de passer à la résolution à l'exécution** :
 
 1. **Variable** (diapositive précédente) : `set $var "nom-service:port"` puis `proxy_pass http://$var`
-2. **`upstream` avec `resolve`** (NGINX 1.27.3 et plus) : garde le bloc `upstream`, utile pour répartir la charge
+2. **`upstream` avec `resolve`** (NGINX 1.27.3 et plus) : garde le bloc `upstream` et ses options (plusieurs serveurs, poids, secours, connexions persistantes)
 ====
+
+[.notes]
+--
+Avec la variable, `proxy_pass` vise directement un nom : il n'y a plus de bloc `upstream`. C'est suffisant pour un seul service.
+
+Le bloc `upstream`, lui, sert à décrire un groupe de serveurs, avec des options qui n'existent que là :
+
+* plusieurs serveurs différents dans le même groupe ;
+* `weight=` pour en charger un plus qu'un autre ;
+* `backup` pour un serveur de secours, `max_fails=` et `fail_timeout=` pour écarter un serveur qui ne répond plus ;
+* `least_conn`, `hash`, `ip_hash` pour choisir l'algorithme de répartition ;
+* `keepalive` pour réutiliser les connexions vers le service.
+
+Sans `resolve`, tout cela impose un nom résolu au chargement, donc le piège de l'ordre de démarrage. Le paramètre `resolve` sur la ligne `server` permet de garder le bloc et de résoudre le nom à l'exécution. Il existait depuis longtemps dans la version commerciale NGINX Plus ; il est dans la version libre depuis 1.27.3. Il exige un `resolver` et une directive `zone` : la liste d'adresses est mise à jour en mémoire partagée, pour que tous les processus workers voient la même.
+
+Ce que `resolve` n'apporte pas : la répartition entre les répliques d'un même service. Un nom qui résout en plusieurs adresses est réparti en tourniquet dans les deux cas. Mesuré avec nginx 1.31.6 et `traefik/whoami` en 3 répliques, 30 requêtes : variable 11/8/11, `upstream` + `resolve` 10/10/10.
+--
 
 == 🚨 Piège NGINX : `resolve`
 
