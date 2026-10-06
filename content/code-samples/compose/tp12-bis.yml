@@ -15,11 +15,13 @@ services:
       GITLAB_OMNIBUS_CONFIG: |
         # The external URL for the GitLab server
         external_url 'http://localhost'
+        # SSH is published on host port 2222 (see ports below)
+        gitlab_rails['gitlab_shell_ssh_port'] = 2222
     # The ports to expose from the GitLab server
     ports:
       - '80:80'   # HTTP
       - '443:443' # HTTPS
-      - '22:22'   # SSH
+      - '2222:22' # SSH (host port 22 is often taken by the host's own sshd)
     # The volumes to mount for the GitLab server
     volumes:
       - 'gitlab_config:/etc/gitlab'       # Configuration files

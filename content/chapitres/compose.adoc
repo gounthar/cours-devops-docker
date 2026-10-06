@@ -1096,13 +1096,15 @@ https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git
 [%step]
 😏 Non, et bien c'est parti quand même.
 [%step]
+⚠️ GitLab est gourmand : mesuré à 6,7 Gio de mémoire juste après le démarrage, et environ 6 minutes et demie avant d'être `healthy`. Vérifiez la mémoire de votre machine (`free -h`) avant de lancer.
+[%step]
 * Créez un nouveau fichier appelé `docker-compose.yml`.
 * Dans ce fichier, définissez trois services : `gitlab`, `gitlab-runner-1` et `gitlab-runner-2`.
 * Pour le service `gitlab`:
 ** utilisez l'image `gitlab/gitlab-ce:latest` (préfixée par le cache spécifique ILI)
 ** redémarrez toujours le conteneur s'il s'arrête,
 ** définissez le nom d'hôte sur `localhost`,
-** définissez l'URL externe sur `http://localhost` et exposez les ports `80`, `443` et `22`.
+** définissez l'URL externe sur `http://localhost` et exposez les ports `80`, `443` et `22` (ce dernier sur le port `2222` de l'hôte).
 
 [%auto-animate]
 == 🎓 Travaux pratiques #12-BIS
@@ -1141,9 +1143,10 @@ Pas assez détaillé? 😨
 ** Continuez à ajouter des détails pour le service gitlab, comme `restart: always` pour toujours redémarrer le conteneur s'il s'arrête, et `hostname: 'localhost'` pour définir le nom d'hôte du serveur GitLab.
 [%step]
 * Définissez l'URL externe de votre serveur GitLab en ajoutant `environment:` et `GITLAB_OMNIBUS_CONFIG: |` sur de nouvelles lignes,
-* puis `external_url 'http://localhost'` sur la ligne suivante.
+* puis `external_url 'http://localhost'` et `gitlab_rails['gitlab_shell_ssh_port'] = 2222` sur les lignes suivantes.
 * Exposez les ports nécessaires en ajoutant `ports:` sur une nouvelle ligne,
-* puis `- '80:80'`, `- '443:443'` et `- '22:22'` sur les lignes suivantes.
+* puis `- '80:80'`, `- '443:443'` et `- '2222:22'` sur les lignes suivantes.
+* Pourquoi `2222` ? Le port `22` de l'hôte est souvent déjà pris par son propre serveur SSH, et Docker refuse alors de démarrer le conteneur (`address already in use`).
 
 
 [%auto-animate]
