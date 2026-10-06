@@ -356,6 +356,23 @@ docker container run --rm \
   --workdir /cible \
   busybox cp -r /html/. .
 ----
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #8
+[.title]
+En utilisant un volume nommé (Named Volume) :
+
+Sans montage de l'hôte : `docker container cp` copie vers un container, même jamais démarré.
+
+[source,bash]
+----
+docker container create --name copie \
+  -v mon-nginx-html:/cible busybox
+# "/." : le contenu du répertoire, comme pour cp
+docker container cp /chemin/vers/la/page/web/sur/lhote/. copie:/cible
+docker container rm copie
+----
+
 [%auto-animate]
 == ✅ Solution travaux pratiques #8
 [.title]
