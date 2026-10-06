@@ -961,16 +961,21 @@ for i in {71..73}; do convert Diapositive${i}.PNG -crop 10146x4801+2250+1833 -tr
 
 [source,html]
 ----
-include::../code-samples/fichiers/reseau/index.html[]
+include::../code-samples/fichiers/reseau/nginx/index.html[]
+----
+
+[%step]
+[source,dockerfile]
+----
+include::../code-samples/fichiers/reseau/nginx/Dockerfile[]
 ----
 
 [%step]
 [source,bash]
 ----
-# depuis le répertoire qui contient index.html
-docker container run --name my-nginx -d -p 8000:80 \
-  -v "$(pwd):/usr/share/nginx/html:ro" \
-  nginx:1.31.6-alpine3.24
+# depuis le répertoire qui contient index.html et le Dockerfile
+docker image build -t my-nginx .
+docker container run --name my-nginx -d -p 8000:80 my-nginx
 ----
 
 [%step]
