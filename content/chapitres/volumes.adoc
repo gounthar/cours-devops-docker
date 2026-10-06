@@ -171,20 +171,24 @@ image::383920810-image7.png[]
 
 == 🗺️📂 Mapping de FileSystem
 
-Partage de dossier
-[%step]
-image::partage_dossier.png[]
+[source,bash]
+----
+-v /some/content:/usr/share/nginx/html:ro   # un dossier
+-v ~/.bash_history:/.bash_history           # un fichier
+----
 
 [%step]
-Partage de fichier
-[%step]
-image::partage_fichier.png[]
+[cols="1,2,2,1", options="header"]
+|===
+| Partage | Chemin machine hôte | Chemin container | Lecture seule
+| dossier | `/some/content` | `/usr/share/nginx/html` | oui
+| fichier | `~/.bash_history` | `/.bash_history` | non
+|===
 
-
 [%step]
-CAUTION: Le chemin dans la machine hôte doit être un chemin absolu !
+CAUTION: Côté hôte, seuls `/…` et `./…` sont lus comme des chemins : `content` tout court crée un volume nommé, sans erreur.
 [%step]
-WARNING: L'exemple ci-dessus ne peut donc pas fonctionner
+WARNING: `~` marche parce que le shell le remplace avant Docker ; entre guillemets, Docker le refuse.
 
 == 📦📁 Les volumes
 
