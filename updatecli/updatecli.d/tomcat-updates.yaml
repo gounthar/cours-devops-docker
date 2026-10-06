@@ -26,15 +26,14 @@ sources:
 
 targets:
   tomcat-docker-command:
-    name: "Update Tomcat Docker image in the TP07 docker container run command"
+    name: "Update Tomcat Docker image in the TP07 solution Dockerfile"
     kind: "file"
     sourceid: "tomcat-temurin"
     scmid: default
     spec:
-      file: "content/chapitres/fichiers-nommage-inspect.adoc"
-      # The command is wrapped over several lines: match the image tag alone.
-      matchpattern: 'tomcat:\d+\.\d+\.\d+-jdk\d+-temurin-noble'
-      replacepattern: 'tomcat:{{ source "tomcat-temurin" }}'
+      file: "content/code-samples/fichiers/reseau/tomcat/Dockerfile"
+      matchpattern: 'FROM tomcat:\d+\.\d+\.\d+-jdk\d+-temurin-noble'
+      replacepattern: 'FROM tomcat:{{ source "tomcat-temurin" }}'
 
 actions:
   default:
