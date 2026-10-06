@@ -1,0 +1,45 @@
+---
+name: "Update httpd alpine Docker image to latest version"
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  httpd-alpine:
+    name: "Get latest httpd alpine Docker image tag"
+    kind: "dockerimage"
+    spec:
+      image: "httpd"
+      versionfilter:
+        kind: "regex"
+        pattern: "^\\d+\\.\\d+\\.\\d+-alpine\\d+\\.\\d+$"
+
+targets:
+  httpd-image-volumes:
+    name: "Update httpd Docker image in the tmpfs example"
+    kind: "file"
+    sourceid: "httpd-alpine"
+    scmid: default
+    spec:
+      file: "content/chapitres/volumes.adoc"
+      # Last line of the wrapped `docker container run` command.
+      matchpattern: '(?m)^  httpd:\d+\.\d+\.\d+-alpine\d+\.\d+$'
+      replacepattern: '  httpd:{{ source "httpd-alpine" }}'
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    title: 'Update httpd alpine Docker image to {{ source "httpd-alpine" }}'
+    spec:
+      labels:
+        - dependencies
