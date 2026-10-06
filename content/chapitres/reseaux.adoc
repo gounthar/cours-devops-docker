@@ -27,29 +27,25 @@ image::reseaux-output5_with_transparency.png[height=600]
 
 [.notes]
 --
-La communication d'un navigateur avec le moteur Docker sur le port 2375 peut se faire via l'API Docker exposée sur ce port. Voici comment cela fonctionne :
+Le client `docker` ne fait rien lui-même : il envoie des requêtes HTTP à l'API REST du moteur. Ces schémas montrent cette API exposée sur le port TCP 2375, c'est-à-dire en HTTP, sans chiffrement ni authentification.
 
-Exposer l'API Docker sur le port 2375 : Tout d'abord, pour permettre la communication du navigateur avec le moteur Docker, vous devez vous assurer que l'API Docker est exposée sur le port 2375. Vous pouvez spécifier cela lors de la configuration du moteur Docker. Par exemple, en utilisant l'option -H :
+Historiquement, on l'ouvrait ainsi :
 
 [source,bash]
 ----
 dockerd -H tcp://0.0.0.0:2375
 ----
-Cela signifie que le moteur Docker écoutera les requêtes sur le port 2375.
 
-Utilisation de l'API Docker : Une fois que l'API Docker est exposée, vous pouvez effectuer des opérations Docker en utilisant des requêtes HTTP. Le navigateur peut envoyer des requêtes HTTP directement à l'adresse IP du serveur Docker et au port 2375.
-
-Par exemple, pour lister les conteneurs en cours d'exécution, vous pouvez utiliser une requête HTTP GET :
+N'importe quel client qui atteint ce port pilote alors le moteur, donc obtient l'équivalent d'un accès root sur la machine :
 
 [source,http]
 ----
 GET http://adresse_ip_du_serveur_docker:2375/containers/json
 ----
-Le serveur Docker répondra avec les détails des conteneurs en cours d'exécution au format JSON.
 
-Sécurité : Il est important de noter que l'exposition de l'API Docker sur un port non sécurisé peut présenter des risques de sécurité, car n'importe qui avec accès au port 2375 peut potentiellement contrôler le moteur Docker. Pour des raisons de sécurité, il est recommandé de limiter l'accès à l'API Docker en utilisant des mécanismes d'authentification, d'autorisation et de chiffrement.
+C'est déprécié depuis Docker Engine 26.0. Mesuré sur Docker Engine 29.8.2 (image `docker:29-dind`, octobre 2026) : le moteur démarre encore, mais affiche une série d'avertissements, ralentit volontairement son démarrage, et annonce qu'une version future refusera de démarrer. Avec `--tls=false` explicite, il démarre et répond sur 2375.
 
-Outils tiers : En pratique, les navigateurs ne sont pas souvent utilisés pour interagir directement avec l'API Docker. Au lieu de cela, des outils tiers, des bibliothèques ou des clients Docker sont souvent utilisés pour simplifier les opérations Docker et fournir une couche de sécurité supplémentaire.
+La même API reste disponible sans ouvrir de port, voir la diapositive « Aujourd'hui ».
 --
 
 [%auto-animate]
@@ -80,7 +76,37 @@ image::reseaux-docker-desktop-2375-configuration.png[width=600]
 
 [.notes]
 --
-Par défaut, les installations de Docker n'ouvrent plus le port 2375 comme c'était le cas avant. C'est toutefois changeable dans le Docker Desktop.
+Par défaut, Docker n'ouvre plus le port 2375. Docker Desktop propose encore la case « Expose daemon on tcp://localhost:2375 without TLS » : elle n'écoute que sur localhost, seule adresse que Docker exempte de TLS. Elle reste dangereuse, car un script exécuté dans un navigateur peut atteindre localhost. À ne cocher que pour un outil qui ne sait pas parler au socket.
+--
+
+[%auto-animate]
+== 🤝 Interagir avec le Docker Engine
+
+Aujourd'hui :
+
+[%step]
+* En local : le socket Unix, sans port réseau
++
+[source,bash]
+----
+curl --unix-socket /var/run/docker.sock http://localhost/containers/json
+----
+* À distance : SSH, via un contexte
++
+[source,bash]
+----
+docker context create distant --docker host=ssh://etudiant@serveur
+docker --context distant container ls
+----
+* À distance sans SSH : TCP avec TLS mutuel, sur le port 2376
+
+[.notes]
+--
+Le socket `/var/run/docker.sock` est ce qu'utilisent le client `docker`, IntelliJ ou Testcontainers par défaut. C'est la même API REST que sur 2375 : la requête `curl` ci-dessus renvoie le même JSON que l'exemple HTTP précédent. Monter ce socket dans un conteneur donne à ce conteneur le contrôle du moteur, donc il mérite la même prudence que le port 2375.
+
+Le contexte SSH ne demande rien côté serveur, hormis un accès SSH et un utilisateur autorisé à utiliser Docker. Le port 2376 avec TLS demande de générer une autorité, un certificat serveur et un certificat client : https://docs.docker.com/engine/security/protect-access/
+
+Docker recommande lui-même ces deux solutions dans sa note de dépréciation : https://docs.docker.com/engine/deprecated/#unauthenticated-tcp-connections
 --
 
 == Les réseaux de containers
