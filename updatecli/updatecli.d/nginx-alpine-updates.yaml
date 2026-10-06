@@ -30,11 +30,11 @@ targets:
     sourceid: "nginx-alpine"
     scmid: default
     spec:
-      file: "content/chapitres/fichiers-nommage-inspect.adoc"
-      # Last line of the wrapped TP07 command. Not the bare tag: the TP06
-      # note records the tag the outputs were replayed with.
-      matchpattern: '(?m)^  nginx:\d+\.\d+\.\d+-alpine\d+\.\d+$'
-      replacepattern: '  nginx:{{ source "nginx-alpine" }}'
+      file: "content/code-samples/fichiers/reseau/nginx/Dockerfile"
+      # TP07 solution Dockerfile. The TP06 note in the chapter records the tag
+      # its outputs were replayed with, and is not a target.
+      matchpattern: '(?m)^FROM nginx:\d+\.\d+\.\d+-alpine\d+\.\d+$'
+      replacepattern: 'FROM nginx:{{ source "nginx-alpine" }}'
 
   nginx-image-reseaux:
     name: "Update nginx Docker image in the networking chapter compose examples"
