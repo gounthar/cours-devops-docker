@@ -415,7 +415,7 @@ ul.byline li + li {
 }
 </style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/v4-shims.min.css"><link rel="stylesheet" href="./styles/build.css"></head><body><div class="reveal"><div class="slides"><section class="title" data-state="title"><h1>🇫🇷 Devops </h1><h2>Docker</h2><div class="preamble"><div class="paragraph title"><p>2026/2027</p></div>
 <div class="imageblock"><img src="media/qrcode.png" alt="QRCode to this presentation" height="150"></div>
-<div class="ulist small"><ul><li><p>Présentation disponible à l’adresse: <a href="https://gounthar.github.io/cours-devops-docker/main">https://gounthar.github.io/cours-devops-docker/main</a></p></li><li><p>Version PDF de la présentation : <a href="slides.pdf" target="_blank"><span class="icon"><i class="fa fa-file-pdf"></i></span> Cliquez ici</a></p></li><li><p>Contenu sous licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">Creative Commons Attribution 4.0 International License</a></p></li><li><p>Code source de la présentation: <a href="https://github.com/gounthar/cours-devops-docker" target="_blank"><span class="icon"><i class="fab fa-github"></i></span> https://github.com/gounthar/cours-devops-docker</a></p></li><li><p>Mis à jour le&#160;: 3 octobre 2026</p></li></ul></div></div></section>
+<div class="ulist small"><ul><li><p>Présentation disponible à l’adresse: <a href="https://gounthar.github.io/cours-devops-docker/main">https://gounthar.github.io/cours-devops-docker/main</a></p></li><li><p>Version PDF de la présentation : <a href="slides.pdf" target="_blank"><span class="icon"><i class="fa fa-file-pdf"></i></span> Cliquez ici</a></p></li><li><p>Contenu sous licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">Creative Commons Attribution 4.0 International License</a></p></li><li><p>Code source de la présentation: <a href="https://github.com/gounthar/cours-devops-docker" target="_blank"><span class="icon"><i class="fab fa-github"></i></span> https://github.com/gounthar/cours-devops-docker</a></p></li><li><p>Mis à jour le&#160;: 6 octobre 2026</p></li></ul></div></div></section>
 <section id="comment_utiliser_cette_présentation" class="dark background columns" data-background-color="MediumBlue" data-background-image="media/logo-t-shirt-transparent-1080.png" data-background-size="contain" data-background-position="left" data-background-opacity="0.1"><h2>Comment utiliser cette présentation ?</h2><div class="slide-content"><div class="openblock column"><div class="content"></div></div>
 <div class="openblock column"><div class="content"><div class="ulist"><ul><li><p>Pour naviguer, utilisez les flèches en bas à droite (ou celles de votre clavier)</p><div class="ulist"><ul><li><p>Gauche/Droite: changer de chapitre</p></li><li><p>Haut/Bas: naviguer dans un chapitre</p></li></ul></div></li><li><p>Pour avoir une vue globale : utiliser la touche "o" (pour "<strong>Overview</strong>")</p></li></ul></div></div></div></div></section>
 <section><section id="bonjour" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Bonjour !</h2><div class="slide-content"><div class="imageblock"><img src="media/bitmoji-hello.png" alt="bitmoji hello" width="200"></div><div class="imageblock"><img src="media/hello-from-docker.svg" alt="hello from docker"></div><div class="paragraph small"><small>La suite: vers le bas ⬇️</small></div></div></section><section data-background-color="rgb(248, 228, 130)" data-background-image="media/docker_love.png" data-background-size="contain" data-background-position="center" data-state="invert"><div class="slide-content">
@@ -2571,61 +2571,35 @@ README-secret.md</code></pre></div></div></div></section><section data-backgroun
 RSSI : définition. Le responsable de la sécurité des systèmes d&#8217;information (ou RSSI pour Responsable de la Sécurité des Systèmes d&#8217;Information) définit et développe la politique de sécurité de l&#8217;information de son entreprise.</p></div></aside></div></section><section id="exemple_de_mise_en_place" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output35_with_transparency.png" alt="fichiers output35 with transparency"></div></div></section><section id="exemple_de_mise_en_place_2" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output36_with_transparency.png" alt="fichiers output36 with transparency"></div></div></section><section id="exemple_de_mise_en_place_3" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output37_with_transparency.png" alt="fichiers output37 with transparency"></div></div></section><section id="exemple_de_mise_en_place_4" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output38_with_transparency.png" alt="fichiers output38 with transparency"></div></div></section><section id="exemple_de_mise_en_place_5" data-auto-animate><h2>Exemple de mise en place</h2><div class="slide-content"><div class="imageblock"><img src="media/fichiers-output39_with_transparency.png" alt="fichiers output39 with transparency"></div>
 <aside class="notes"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">for i in {35..39}; do convert Diapositive${i}.PNG -crop 8803x3982+2273+2769 -transparent white -resize x1080 fichiers-output${i}_with_transparency.png; done</code></pre></div></div></aside></div></section><section id="exemple_continuous_build"><h2>➡️ Exemple : continuous build</h2><div class="slide-content"><div class="imageblock"><img src="media/107490784-image13.png" alt="107490784 image13"></div></div></section><section id="travaux_pratiques_5"><h2>🎓 Travaux pratiques #5</h2><div class="slide-content"><div class="paragraph"><p><a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp05</a></p></div>
 <div class="imageblock"><img src="media/636764807-image14.png" alt="636764807 image14"></div>
-<aside class="notes"><div class="paragraph"><p>Solution là: <a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp-05-solution" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp-05-solution</a></p></div></aside></div></section><section id="solution_travaux_pratiques_5" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-diff hljs" data-noescape="true" data-lang="diff">diff --git a/src/Dockerfile b/src/Dockerfile
-index c92c67cd48121705628f67a2af14b2a65e54cdfd..77919a581fffde7c57f43c8b7cbee2a8d84b628b 100644
+<aside class="notes"><div class="paragraph"><p>Solution là: <a href="https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp-05-solution" class="bare">https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp-05-solution</a></p></div>
+<div class="paragraph"><p><code>validator.sh</code> a été corrigé le 2026-10-06 (MR !43) : à cause de <code>--rm</code>, il refusait une solution correcte 7 fois sur 8 (<code>conflict: unable to delete</code>) et pouvait en accepter une fausse.
+Un fork plus ancien garde l&#8217;ancien script, il faut le mettre à jour.</p></div></aside></div></section><section id="solution_travaux_pratiques_5" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-diff hljs" data-noescape="true" data-lang="diff">diff --git a/src/Dockerfile b/src/Dockerfile
+index c92c67c..77919a5 100644
 --- a/src/Dockerfile
 +++ b/src/Dockerfile
-@@ -9,6 +9,10 @@ COPY start.sh /bin/start.sh
- EXPOSE 4321
- # This line opens port 4321 on the container. It's like installing a door in your house.
-
+@@ -11,2 +11,6 @@ EXPOSE 4321
+ 
 +RUN adduser --disabled-password --gecos "" --home /home/www www
 +USER www
 +WORKDIR /home/www
 +
- ENTRYPOINT ["/bin/start.sh"]
- # This line sets the command that will be run when the container starts. It's like setting the alarm clock in your house.</code></pre></div></div>
-<aside class="notes"><div class="paragraph"><p>L&#8217;option <code>--gecos</code> dans la commande adduser est utilisée pour définir le champ GECOS (General Electric Comprehensive Operating System) de l&#8217;entrée de l&#8217;utilisateur dans le fichier <code>/etc/passwd</code>.
-Le champ GECOS contient traditionnellement des informations supplémentaires sur l&#8217;utilisateur, telles que le nom complet de l&#8217;utilisateur, l&#8217;emplacement du bureau et le numéro de téléphone, bien que cela ne soit souvent pas utilisé dans les systèmes modernes.</p></div>
-<div class="paragraph"><p>Dans les Dockerfiles et les configurations système, il est courant de définir le champ GECOS sur une chaîne vide ou une valeur de substitution comme "" pour indiquer que les informations ne sont pas nécessaires.
-L&#8217;option --gecos "" définit effectivement le champ GECOS comme une chaîne vide, ce qui signifie qu&#8217;aucune information supplémentaire sur l&#8217;utilisateur n&#8217;est fournie.</p></div>
-<div class="paragraph"><p>Pour les conteneurs Docker et les utilisateurs système créés à des fins spécifiques (comme l&#8217;exécution de services ou d&#8217;applications dans des conteneurs), il n&#8217;est souvent pas nécessaire de remplir le champ GECOS avec des informations détaillées, et l&#8217;utilisation de --gecos "" est une pratique courante pour maintenir une base d&#8217;utilisateurs propre et minimale dans le conteneur ou le système.
-Cela contribue à maintenir une base d&#8217;utilisateurs propre et minimale dans le conteneur ou le système.</p></div>
-<div class="paragraph"><p>L&#8217;utilisation de l&#8217;UID (User ID) 1001 pour un utilisateur créé dans un conteneur Docker est une pratique courante, mais elle n&#8217;est pas nécessairement fixe.
-Cela dépend des besoins spécifiques de votre application et de la manière dont vous gérez les utilisateurs dans vos conteneurs. Voici quelques raisons courantes d&#8217;utiliser l&#8217;UID 1001 :</p></div>
-<div class="paragraph"><p>Éviter les conflits : L&#8217;UID 1001 est souvent choisi pour éviter les conflits avec les utilisateurs système existants.
-Dans de nombreuses distributions Linux, les utilisateurs système ont des UIDs inférieurs à 1000.
-En utilisant l&#8217;UID 1001, vous minimisez le risque de conflits avec ces utilisateurs.</p></div>
-<div class="paragraph"><p>Sécurité : Dans un environnement de conteneur, il est courant de limiter les privilèges des utilisateurs.
-En utilisant un UID non réservé, vous réduisez le risque que l&#8217;utilisateur puisse accéder à des ressources système critiques.</p></div>
-<div class="paragraph"><p>Personnalisation : Vous pouvez choisir un UID personnalisé en fonction de vos besoins.
-Dans certains cas, l&#8217;UID 1001 est simplement choisi par convention. Si vous avez des exigences spécifiques en matière de numéros d&#8217;UID, vous pouvez les personnaliser en conséquence.</p></div>
-<div class="paragraph"><p>Isolation : En attribuant des UIDs spécifiques aux utilisateurs de vos conteneurs, vous pouvez mieux isoler ces utilisateurs des autres utilisateurs système ou des autres conteneurs.</p></div>
-<div class="paragraph"><p>Il est important de noter que le choix de l&#8217;UID dépend de la manière dont vous configurez vos conteneurs et de vos exigences en matière de sécurité et d&#8217;isolation.
-L&#8217;UID 1001 est courant, mais il n&#8217;est pas la seule option, et vous pouvez choisir un UID qui convient le mieux à votre cas d&#8217;utilisation particulier.</p></div></aside></div></section><section id="solution_travaux_pratiques_5_2" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-diff hljs" data-noescape="true" data-lang="diff">diff --git a/src/start.sh b/src/start.sh
-index 44006d6cd8414706a5fcf564dbfd1e9c38d4bc0b..a6ed60fdf88759d4962685e7ceb6cdbc21867448 100755
+ ENTRYPOINT ["/bin/start.sh"]</code></pre></div></div>
+<aside class="notes"><div class="paragraph"><p><code>adduser</code> vient ici de BusyBox 1.37 : l&#8217;image de base <code>donch/net-tools</code> est construite sur Alpine.
+<code>--disabled-password</code> (<code>-D</code>) crée le compte sans mot de passe, et <code>--gecos ""</code> laisse vide le champ commentaire de <code>/etc/passwd</code> (nom complet, bureau, téléphone).</p></div>
+<div class="paragraph"><p>Aucun UID n&#8217;est imposé, et <code>adduser</code> a donné ici <code>uid=1000(www)</code>.
+Si un UID précis compte, par exemple pour les droits sur un volume, il faut le fixer : <code>adduser -D -u 1001 www</code>.</p></div>
+<div class="paragraph"><p>Le nom <code>www</code> vient de l&#8217;indice laissé dans <code>start.sh</code>.
+Une fois <code>start.sh</code> corrigé pour écrire dans <code>/tmp</code>, n&#8217;importe quel utilisateur non root convient.</p></div>
+<div class="paragraph"><p>Vérifié le 2026-10-06, Docker 29.8.1 : cette solution passe le <code>validator.sh</code> corrigé trois fois sur trois.</p></div></aside></div></section><section id="solution_travaux_pratiques_5_2" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-diff hljs" data-noescape="true" data-lang="diff">diff --git a/src/start.sh b/src/start.sh
+index 44006d6..a6ed60f 100755
 --- a/src/start.sh
 +++ b/src/start.sh
-@@ -4,7 +4,7 @@
- set -eux
- # These are shell options. 'e' exits on error, 'u' treats unset variables as an error, and 'x' prints each command to the terminal. It's like the script's personal assistant, making sure everything runs smoothly.
-
+@@ -7 +7 @@ set -eux
 -touch /home/www/started.time
 +touch /tmp/started.time
- # This creates a file named 'started.time' in the '/home/www' directory. It's like the script's way of marking its territory.
-
- if [ $? -ne 0 ]; then
-@@ -12,7 +12,7 @@ if [ $? -ne 0 ]; then
- fi
- # This checks the exit status of the last command. If it's not zero, which means there was an error, it exits the script. It's like the script's way of saying, "If I can't do it right, I won't do it at all."
-
+@@ -15 +15 @@ fi
 -date &gt; /home/www/started.time
-+date &gt; /tmp/started.time
- # This writes the current date and time to the 'started.time' file. It's like the script's way of keeping a diary.
-
- exec "$@"</code></pre></div></div></div></section><section id="solution_travaux_pratiques_5_3" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">stages:
-  - "validator.sh"
-  - "docker scout"
++date &gt; /tmp/started.time</code></pre></div></div></div></section><section id="solution_travaux_pratiques_5_3" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">stages: ["validator.sh", "docker scout"]
 
 variables:
   PROXY: "http://cache-etu.univ-artois.fr:3128"
@@ -2642,10 +2616,8 @@ validator-job:
     - errors=$(./validator.sh)
     - echo "$errors"
     - exit $([ -z "$errors" ] &amp;&amp; echo 0 || echo 1)
-  tags:
-    - docker2
+  tags: [docker2]
 
-# No login needed, using docker desktop with wsl
 scout-job:
   stage: "docker scout"
   script:
@@ -2653,22 +2625,16 @@ scout-job:
     - docker build . -t "$IMAGE"
     - docker scout cves --format only-packages --only-vuln-packages "$IMAGE"
     - docker rmi "$IMAGE"
-  tags:
-    - myshell</code></pre></div></div></div></section><section id="solution_travaux_pratiques_5_4" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">stages:
+  tags: [myshell]</code></pre></div></div>
+<aside class="notes"><div class="paragraph"><p>Cette pipeline passe par le proxy de la fac et le runner <code>docker2</code> pour le job du validateur.
+Le job <code>scout-job</code> tourne sur un runner shell (<code>myshell</code>). Son commentaire d&#8217;origine disait qu&#8217;avec Docker Desktop sous WSL, aucun <code>docker login</code> n&#8217;était nécessaire.</p></div></aside></div></section><section id="solution_travaux_pratiques_5_4" data-auto-animate><h2>✅ Solution Travaux pratiques #5</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">stages:
   - run_script
   - docker_scan
 
 run_script:
   stage: run_script
   script:
-    - chmod +x validator.sh src/start.sh &amp;&amp; ./validator.sh # Makes the scripts executable and runs validator.sh
-    - |
-        if [ $? -eq 0 ]; then
-          echo "Script exited successfully."
-        else
-          echo "Script exited with an error."
-          exit 1  # Mark the job as a failure
-        fi
+    - chmod +x validator.sh src/start.sh &amp;&amp; ./validator.sh
 
 docker_scan:
   stage: docker_scan
