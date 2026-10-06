@@ -2808,10 +2808,13 @@ Accept-Ranges: bytes</code></pre></div></div>
 &lt;li&gt;&lt;a href="http://home.web.cern.ch/about"&gt;Learn about CERN, the physics laboratory where the web was born&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</code></pre></div></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># depuis le répertoire qui contient index.html
-docker container run --name my-nginx -d -p 8000:80 \
-  -v "$(pwd):/usr/share/nginx/html:ro" \
-  nginx:1.31.6-alpine3.24</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM nginx:1.31.6-alpine3.24
+
+# La page servie par défaut par nginx
+COPY index.html /usr/share/nginx/html/index.html</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># depuis le répertoire qui contient index.html et le Dockerfile
+docker image build -t my-nginx .
+docker container run --name my-nginx -d -p 8000:80 my-nginx</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">curl --noproxy '*' http://localhost:8000
 &lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;header&gt;
 &lt;title&gt;http://info.cern.ch&lt;/title&gt;
@@ -2830,10 +2833,12 @@ docker container run --name my-nginx -d -p 8000:80 \
 # wget sort en 0 même sur une page HTML : vérifier l'archive
 file sample.war
 sample.war: Zip archive data, made by v2.0 UNIX, ...</code></pre></div></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># -v : le .war téléchargé, monté dans webapps/ ; Tomcat le déploie
-docker container run -d -p 8080:8080 --name tomcat-container \
-  -v "$(pwd)/sample.war:/usr/local/tomcat/webapps/sample.war" \
-  tomcat:11.0.26-jdk25-temurin-noble</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM tomcat:11.0.26-jdk25-temurin-noble
+
+# Tomcat déploie au démarrage tout .war présent dans webapps/
+COPY sample.war /usr/local/tomcat/webapps/sample.war</code></pre></div></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image build -t my-tomcat .
+docker container run -d -p 8080:8080 --name tomcat-container my-tomcat</code></pre></div></div>
 <div class="paragraph fragment"><p>Visitez avec votre navigateur <code><a href="http://localhost:8080/sample/" class="bare">http://localhost:8080/sample/</a></code>.</p></div></div></section><section id="solution_travaux_pratiques_7_3" data-auto-animate><h2>✅ Solution travaux pratiques #7</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">git clone https://github.com/spring-guides/gs-spring-boot.git</code></pre></div></div>
 <div class="paragraph"><p>C&#8217;est un début&#8230;&#8203;</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">cd gs-spring-boot/complete</code></pre></div></div>
