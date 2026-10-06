@@ -416,6 +416,9 @@ image::636764807-image14.png[]
 [.notes]
 --
 Solution là: https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp-05-solution
+
+`validator.sh` a été corrigé le 2026-10-06 (MR !43) : à cause de `--rm`, il refusait une solution correcte 7 fois sur 8 (`conflict: unable to delete`) et pouvait en accepter une fausse.
+Un fork plus ancien garde l'ancien script, il faut le mettre à jour.
 --
 
 [%auto-animate]
@@ -428,32 +431,16 @@ include::../code-samples/fichiers/tp05/Dockerfile.diff[]
 
 [.notes]
 --
-L'option `--gecos` dans la commande adduser est utilisée pour définir le champ GECOS (General Electric Comprehensive Operating System) de l'entrée de l'utilisateur dans le fichier `/etc/passwd`.
-Le champ GECOS contient traditionnellement des informations supplémentaires sur l'utilisateur, telles que le nom complet de l'utilisateur, l'emplacement du bureau et le numéro de téléphone, bien que cela ne soit souvent pas utilisé dans les systèmes modernes.
+`adduser` vient ici de BusyBox 1.37 : l'image de base `donch/net-tools` est construite sur Alpine.
+`--disabled-password` (`-D`) crée le compte sans mot de passe, et `--gecos ""` laisse vide le champ commentaire de `/etc/passwd` (nom complet, bureau, téléphone).
 
-Dans les Dockerfiles et les configurations système, il est courant de définir le champ GECOS sur une chaîne vide ou une valeur de substitution comme "" pour indiquer que les informations ne sont pas nécessaires.
-L'option --gecos "" définit effectivement le champ GECOS comme une chaîne vide, ce qui signifie qu'aucune information supplémentaire sur l'utilisateur n'est fournie.
+Aucun UID n'est imposé, et `adduser` a donné ici `uid=1000(www)`.
+Si un UID précis compte, par exemple pour les droits sur un volume, il faut le fixer : `adduser -D -u 1001 www`.
 
-Pour les conteneurs Docker et les utilisateurs système créés à des fins spécifiques (comme l'exécution de services ou d'applications dans des conteneurs), il n'est souvent pas nécessaire de remplir le champ GECOS avec des informations détaillées, et l'utilisation de --gecos "" est une pratique courante pour maintenir une base d'utilisateurs propre et minimale dans le conteneur ou le système.
-Cela contribue à maintenir une base d'utilisateurs propre et minimale dans le conteneur ou le système.
+Le nom `www` vient de l'indice laissé dans `start.sh`.
+Une fois `start.sh` corrigé pour écrire dans `/tmp`, n'importe quel utilisateur non root convient.
 
-L'utilisation de l'UID (User ID) 1001 pour un utilisateur créé dans un conteneur Docker est une pratique courante, mais elle n'est pas nécessairement fixe.
-Cela dépend des besoins spécifiques de votre application et de la manière dont vous gérez les utilisateurs dans vos conteneurs. Voici quelques raisons courantes d'utiliser l'UID 1001 :
-
-Éviter les conflits : L'UID 1001 est souvent choisi pour éviter les conflits avec les utilisateurs système existants.
-Dans de nombreuses distributions Linux, les utilisateurs système ont des UIDs inférieurs à 1000.
-En utilisant l'UID 1001, vous minimisez le risque de conflits avec ces utilisateurs.
-
-Sécurité : Dans un environnement de conteneur, il est courant de limiter les privilèges des utilisateurs.
-En utilisant un UID non réservé, vous réduisez le risque que l'utilisateur puisse accéder à des ressources système critiques.
-
-Personnalisation : Vous pouvez choisir un UID personnalisé en fonction de vos besoins.
-Dans certains cas, l'UID 1001 est simplement choisi par convention. Si vous avez des exigences spécifiques en matière de numéros d'UID, vous pouvez les personnaliser en conséquence.
-
-Isolation : En attribuant des UIDs spécifiques aux utilisateurs de vos conteneurs, vous pouvez mieux isoler ces utilisateurs des autres utilisateurs système ou des autres conteneurs.
-
-Il est important de noter que le choix de l'UID dépend de la manière dont vous configurez vos conteneurs et de vos exigences en matière de sécurité et d'isolation.
-L'UID 1001 est courant, mais il n'est pas la seule option, et vous pouvez choisir un UID qui convient le mieux à votre cas d'utilisation particulier.
+Vérifié le 2026-10-06, Docker 29.8.1 : cette solution passe le `validator.sh` corrigé trois fois sur trois.
 --
 
 [%auto-animate]
@@ -469,8 +456,14 @@ include::../code-samples/fichiers/tp05/start.sh.diff[]
 
 [source,yaml]
 ----
-include::../code-samples/fichiers/tp05/.gitlab-ci.yml.diff[]
+include::../code-samples/fichiers/tp05/.gitlab-ci.yml.proxy[]
 ----
+
+[.notes]
+--
+Cette pipeline passe par le proxy de la fac et le runner `docker2` pour le job du validateur.
+Le job `scout-job` tourne sur un runner shell (`myshell`). Son commentaire d'origine disait qu'avec Docker Desktop sous WSL, aucun `docker login` n'était nécessaire.
+--
 
 [%auto-animate]
 == ✅ Solution Travaux pratiques #5
