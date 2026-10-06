@@ -242,7 +242,6 @@ include::../code-samples/volumes/anonymes/Dockerfile[]
 [%step]
 Création d'un volume anonyme mappé sur le répertoire /data des containers basés sur cette image
 
-[%auto-animate]
 == 💾🧠 FileSystem en RAM
 
 [source,bash]
@@ -252,41 +251,15 @@ docker container run \
   --read-only \
   --tmpfs /usr/local/apache2/logs \
   --tmpfs /tmp \
-  httpd
+  httpd:2.4.69-alpine3.24
 ----
 
 [%step]
+* `--read-only` : le container ne peut pas écrire sur son système de fichiers
+* `--tmpfs` : sauf dans ces deux répertoires, montés en RAM ; httpd écrit son fichier PID dans `logs/`
+
+[%step]
 CAUTION: Les données sont perdues à l'arrêt du container.
-
-[%auto-animate]
-== 💾🧠 FileSystem en RAM
-
-image::volumes-output21_with_transparency.png[]
-
-CAUTION: Les données sont perdues à l'arrêt du container.
-
-[.notes]
---
-[source,bash]
-----
-for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -transparent white -resize x1080 volumes-output${i}_with_transparency.png; done
-----
---
-
-[%auto-animate]
-== 💾🧠 FileSystem en RAM
-
-image::volumes-output22_with_transparency.png[]
-
-CAUTION: Les données sont perdues à l'arrêt du container.
-
-[.notes]
---
-[source,bash]
-----
-for i in {21..22}; do convert Diapositive${i}.PNG -crop 9342x3359+2250+1652 -transparent white -resize x1080 volumes-output${i}_with_transparency.png; done
-----
---
 
 [%auto-animate]
 == 📊📝 Bilan de compétences
@@ -331,9 +304,9 @@ Placez vos fichiers HTML dans un répertoire sur votre machine hôte, puis mappe
 [%step]
 [source,bash]
 ----
-docker container run -d -p 80:80 --name mon-nginx \
+docker container run -d -p 8000:80 --name mon-nginx \
   -v /chemin/vers/la/page/web/sur/lhote:/usr/share/nginx/html \
-  nginx
+  nginx:1.31.6-alpine3.24
 ----
 [%step]
 Remplacez `/chemin/vers/la/page/web/sur/lhote` par le chemin réel vers le répertoire contenant vos fichiers de la page web sur l'hôte.
@@ -379,9 +352,9 @@ Maintenant, lancez le conteneur Nginx et montez le volume nommé :
 
 [source,bash]
 ----
-docker container run -d -p 80:80 --name mon-nginx \
+docker container run -d -p 8000:80 --name mon-nginx \
   -v mon-nginx-html:/usr/share/nginx/html \
-  nginx
+  nginx:1.31.6-alpine3.24
 ----
 
 == 🎓 Travaux pratiques #9
