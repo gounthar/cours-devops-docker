@@ -1010,12 +1010,16 @@ sample.war: Zip archive data, made by v2.0 UNIX, ...
 ----
 
 [%step]
+[source,dockerfile]
+----
+include::../code-samples/fichiers/reseau/tomcat/Dockerfile[]
+----
+
+[%step]
 [source,bash]
 ----
-# -v : le .war téléchargé, monté dans webapps/ ; Tomcat le déploie
-docker container run -d -p 8080:8080 --name tomcat-container \
-  -v "$(pwd)/sample.war:/usr/local/tomcat/webapps/sample.war" \
-  tomcat:11.0.26-jdk25-temurin-noble
+docker image build -t my-tomcat .
+docker container run -d -p 8080:8080 --name tomcat-container my-tomcat
 ----
 
 [%step]
