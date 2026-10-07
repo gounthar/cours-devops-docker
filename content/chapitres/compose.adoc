@@ -1093,9 +1093,73 @@ Deux approches différentes et complémentaires :
 
 == 🎓 Travaux pratiques #12
 
-image::497269344-image5.png[]
+image:497269344-image5.png[width=60] https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git
 
-https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git
+Un `httpd` en reverse-proxy devant une application Java dans Tomcat.
+Écrivez un `docker-compose.yml` qui :
+[%step]
+* construit l'image du proxy à partir du dossier `proxy` et publie son port 80 ;
+* déploie `dockertraining.war` dans un Tomcat basé sur `tomcat:11.0.26-jdk25-temurin` ;
+* indique au proxy où trouver Tomcat, avec la variable d'environnement `backend_destination` ;
+* ne démarre le proxy qu'une fois l'application **répondante**, pas seulement le conteneur lancé.
+
+[.notes]
+--
+Solution là: https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12-solution
+
+Le dernier point met en pratique les diapos « Ordre de démarrage & healthcheck » plus haut, et le piège des outils manquants dans les images de base : l'image officielle de Tomcat 11 n'a ni `curl` ni `wget`.
+--
+
+[%auto-animate]
+== 🎓 Travaux pratiques #12
+
+Quelques indices :
+[%step]
+* `/usr/local/tomcat/webapps/` est le dossier de déploiement de Tomcat.
+* Dans le réseau créé par Compose, un service est joignable par son nom : `\http://<service>:8080/`.
+* Un `healthcheck` qui interroge l'application a besoin d'un client HTTP : construisez votre propre image Tomcat avec `curl`.
+* `curl -f` : sans cette option, une 404 (WAR pas encore déployé) compte comme un succès.
+* `depends_on` avec la condition `service_healthy`.
+* Pour reconstruire à coup sûr : `docker compose up --build -d --force-recreate`
+
+[%auto-animate]
+== ✅ Solution Travaux pratiques #12
+
+[source,yaml]
+----
+include::../code-samples/compose/tp12/docker-compose.yml[]
+----
+
+[.notes]
+--
+Les noms des services sont libres, à condition que `backend_destination` reprenne celui de Tomcat.
+L'ordre d'écriture des services dans le fichier n'a aucun effet : c'est `depends_on` qui fixe l'ordre de démarrage.
+
+Le WAR est monté en lecture seule plutôt que copié dans l'image : une copie avec `COPY` dans le Dockerfile Tomcat est aussi correcte.
+--
+
+[%auto-animate]
+== ✅ Solution Travaux pratiques #12
+
+[source,dockerfile]
+----
+include::../code-samples/compose/tp12/tomcat/Dockerfile[]
+----
+
+[%step]
+[source,bash]
+----
+docker compose up --build -d --force-recreate
+docker compose ps --format '{{.Service}} {{.Status}}'
+curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/
+----
+
+[.notes]
+--
+Mesuré le 2026-10-07, Docker 29.8.1 : avec le `healthcheck` et `service_healthy`, Compose attend que Tomcat soit `healthy` (environ 6 secondes) avant de lancer le proxy, et le premier appel répond 200.
+Sans la condition, le proxy démarre tout de suite et répond 503 pendant environ 2 secondes, le temps que Tomcat déploie le WAR, puis 200.
+La page servie est « Infinite Mario ».
+--
 
 [%auto-animate]
 == 🎓 Travaux pratiques #12-BIS 🔨🔥

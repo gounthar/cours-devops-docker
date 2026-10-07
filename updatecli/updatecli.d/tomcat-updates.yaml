@@ -38,11 +38,31 @@ targets:
       matchpattern: 'FROM tomcat:\d+\.\d+\.\d+-jdk25-temurin'
       replacepattern: 'FROM tomcat:{{ source "tomcat-temurin" }}'
 
+  tomcat-tp12-solution:
+    name: "Update Tomcat Docker image in the TP12 solution Dockerfile"
+    kind: "file"
+    sourceid: "tomcat-temurin"
+    scmid: default
+    spec:
+      file: "content/code-samples/compose/tp12/tomcat/Dockerfile"
+      matchpattern: 'FROM tomcat:\d+\.\d+\.\d+-jdk25-temurin'
+      replacepattern: 'FROM tomcat:{{ source "tomcat-temurin" }}'
+
+  tomcat-tp12-statement:
+    name: "Update Tomcat Docker image in the TP12 statement slide"
+    kind: "file"
+    sourceid: "tomcat-temurin"
+    scmid: default
+    spec:
+      file: "content/chapitres/compose.adoc"
+      matchpattern: 'tomcat:\d+\.\d+\.\d+-jdk25-temurin'
+      replacepattern: 'tomcat:{{ source "tomcat-temurin" }}'
+
 actions:
   default:
     kind: github/pullrequest
     scmid: default
-    title: '[TP07] Update Tomcat Docker image to {{ source "tomcat-temurin" }}'
+    title: '[TP07/TP12] Update Tomcat Docker image to {{ source "tomcat-temurin" }}'
     spec:
       labels:
         - dependencies

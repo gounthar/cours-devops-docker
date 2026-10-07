@@ -1,0 +1,22 @@
+services:
+  proxy:
+    build: ./proxy
+    ports:
+      - "8080:80"
+    environment:
+      backend_destination: "http://tomcat:8080/dockertraining/"
+    depends_on:
+      tomcat:
+        # Wait until the application answers, not only until the container has started
+        condition: service_healthy
+  tomcat:
+    build: ./tomcat
+    volumes:
+      - ./app/dockertraining.war:/usr/local/tomcat/webapps/dockertraining.war:ro
+    healthcheck:
+      # -f: fail on an HTTP error, so a 404 before the WAR is deployed counts as "not ready"
+      test: ["CMD", "curl", "-fs", "-o", "/dev/null", "http://localhost:8080/dockertraining/"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 5s
