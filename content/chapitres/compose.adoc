@@ -1104,12 +1104,12 @@ https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git
 [%step]
 😏 Non, et bien c'est parti quand même.
 [%step]
-⚠️ GitLab est gourmand : mesuré à 6,7 Gio de mémoire juste après le démarrage, et environ 6 minutes et demie avant d'être `healthy`. Vérifiez la mémoire de votre machine (`free -h`) avant de lancer.
+⚠️ GitLab est gourmand : mesuré à 5,6 Gio de mémoire, et environ 5 minutes avant que la page de connexion réponde. Le statut `healthy` arrive bien avant : il ne veut pas dire que GitLab est prêt. Vérifiez la mémoire de votre machine (`free -h`) avant de lancer.
 [%step]
 * Créez un nouveau fichier appelé `docker-compose.yml`.
 * Dans ce fichier, définissez trois services : `gitlab`, `gitlab-runner-1` et `gitlab-runner-2`.
 * Pour le service `gitlab`:
-** utilisez l'image `gitlab/gitlab-ce:latest` (préfixée par le cache spécifique ILI)
+** utilisez l'image `gitlab/gitlab-ce:19.4.1-ce.0` (préfixée par le cache spécifique ILI)
 ** redémarrez toujours le conteneur s'il s'arrête,
 ** définissez le nom d'hôte sur `localhost`,
 ** définissez l'URL externe sur `http://localhost` et exposez les ports `80`, `443` et `22` (ce dernier sur le port `2222` de l'hôte).
@@ -1119,7 +1119,7 @@ https://gitlab.univ-artois.fr/bruno.verachten/devops-docker-tp12.git
 [%step]
 * Pour les services gitlab-runner-1 et gitlab-runner-2:
 [%step]
-** utilisez l'image `gitlab/gitlab-runner:latest` (préfixée par le cache spécifique ILI),
+** utilisez l'image `gitlab/gitlab-runner:alpine-v19.4.1` (préfixée par le cache spécifique ILI),
 ** redémarrez toujours le conteneur s'il s'arrête,
 ** dépendez du service gitlab et montez le socket Docker et le fichier de configuration de GitLab Runner.
 [%step]
@@ -1141,13 +1141,13 @@ Pas assez détaillé? 😨
 * Commencez à définir votre premier service en tapant `gitlab:` sur une nouvelle ligne. Ce sera le service pour votre serveur GitLab.
 * Sous `gitlab:`, ajoutez les détails de votre service.
 [%step]
-** Par exemple, `image: 'gitlab/gitlab-ce:latest'` pour spécifier l'image Docker à utiliser pour ce service.
+** Par exemple, `image: 'gitlab/gitlab-ce:19.4.1-ce.0'` pour spécifier l'image Docker à utiliser pour ce service.
 
 [%auto-animate]
 == 🎓 Travaux pratiques #12-BIS 🔨🔥
 
 * Sous `gitlab:`, ajoutez les détails de votre service.
-** Par exemple, `image: 'gitlab/gitlab-ce:latest'` pour spécifier l'image Docker à utiliser pour ce service.
+** Par exemple, `image: 'gitlab/gitlab-ce:19.4.1-ce.0'` pour spécifier l'image Docker à utiliser pour ce service.
 ** Continuez à ajouter des détails pour le service gitlab, comme `restart: always` pour toujours redémarrer le conteneur s'il s'arrête, et `hostname: 'localhost'` pour définir le nom d'hôte du serveur GitLab.
 [%step]
 * Définissez l'URL externe de votre serveur GitLab en ajoutant `environment:` et `GITLAB_OMNIBUS_CONFIG: |` sur de nouvelles lignes,
