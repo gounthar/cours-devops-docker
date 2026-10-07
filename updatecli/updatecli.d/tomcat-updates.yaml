@@ -19,10 +19,10 @@ sources:
     kind: "dockerimage"
     spec:
       image: "tomcat"
-      tagfilter: '^1\d+\.\d+\.\d+-jdk(2[5-9]|[3-9]\d+)-temurin-noble$'
+      tagfilter: '^1\d+\.\d+\.\d+-jdk(2[5-9]|[3-9]\d+)-temurin$'
       versionfilter:
         kind: "regex"
-        pattern: '^\d+\.\d+\.\d+-jdk(2[5-9]|[3-9]\d+)-temurin-noble$'
+        pattern: '^\d+\.\d+\.\d+-jdk(2[5-9]|[3-9]\d+)-temurin$'
 
 targets:
   tomcat-docker-command:
@@ -32,7 +32,7 @@ targets:
     scmid: default
     spec:
       file: "content/code-samples/fichiers/reseau/tomcat/Dockerfile"
-      matchpattern: 'FROM tomcat:\d+\.\d+\.\d+-jdk\d+-temurin-noble'
+      matchpattern: 'FROM tomcat:\d+\.\d+\.\d+-jdk\d+-temurin'
       replacepattern: 'FROM tomcat:{{ source "tomcat-temurin" }}'
 
 actions:
