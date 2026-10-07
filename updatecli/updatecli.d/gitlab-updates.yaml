@@ -1,0 +1,83 @@
+---
+name: "Update the GitLab and GitLab Runner images of TP12-BIS"
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+# #456: keep the TP pinned, and refresh it through a reviewed pull request.
+# On 2026-10-07 both images were at 19.4.1; each follows its own tags.
+sources:
+  gitlab-ce:
+    name: "Latest gitlab-ce release"
+    kind: dockerimage
+    spec:
+      image: gitlab/gitlab-ce
+      versionfilter:
+        kind: regex/semver
+        regex: '^(\d+\.\d+\.\d+)-ce\.0$'
+        pattern: "*"
+  gitlab-runner:
+    name: "Latest gitlab-runner release on Alpine"
+    kind: dockerimage
+    spec:
+      image: gitlab/gitlab-runner
+      versionfilter:
+        kind: regex/semver
+        regex: '^alpine-v(\d+\.\d+\.\d+)$'
+        pattern: "*"
+
+targets:
+  gitlab-ce-solution:
+    name: "gitlab-ce image in the TP12-BIS solution"
+    kind: file
+    sourceid: gitlab-ce
+    scmid: default
+    spec:
+      file: "content/code-samples/compose/tp12-bis.yml"
+      matchpattern: 'gitlab/gitlab-ce:\d+\.\d+\.\d+-ce\.0'
+      replacepattern: 'gitlab/gitlab-ce:{{ source "gitlab-ce" }}'
+  gitlab-ce-slides:
+    name: "gitlab-ce image in the TP12-BIS slides"
+    kind: file
+    sourceid: gitlab-ce
+    scmid: default
+    spec:
+      file: "content/chapitres/compose.adoc"
+      matchpattern: 'gitlab/gitlab-ce:\d+\.\d+\.\d+-ce\.0'
+      replacepattern: 'gitlab/gitlab-ce:{{ source "gitlab-ce" }}'
+  gitlab-runner-solution:
+    name: "gitlab-runner image in the TP12-BIS solution"
+    kind: file
+    sourceid: gitlab-runner
+    scmid: default
+    spec:
+      file: "content/code-samples/compose/tp12-bis.yml"
+      matchpattern: 'gitlab/gitlab-runner:alpine-v\d+\.\d+\.\d+'
+      replacepattern: 'gitlab/gitlab-runner:{{ source "gitlab-runner" }}'
+  gitlab-runner-slides:
+    name: "gitlab-runner image in the TP12-BIS slides"
+    kind: file
+    sourceid: gitlab-runner
+    scmid: default
+    spec:
+      file: "content/chapitres/compose.adoc"
+      matchpattern: 'gitlab/gitlab-runner:alpine-v\d+\.\d+\.\d+'
+      replacepattern: 'gitlab/gitlab-runner:{{ source "gitlab-runner" }}'
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    title: '[TP12-BIS] Update GitLab to {{ source "gitlab-ce" }}'
+    spec:
+      labels:
+        - dependencies
