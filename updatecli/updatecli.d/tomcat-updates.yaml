@@ -15,14 +15,17 @@ scms:
 
 sources:
   tomcat-temurin:
-    name: "Get latest Tomcat JDK Temurin Docker image tag"
+    name: "Get latest Tomcat 11 on JDK 25 Temurin image tag"
     kind: "dockerimage"
     spec:
       image: "tomcat"
-      tagfilter: '^1\d+\.\d+\.\d+-jdk(2[5-9]|[3-9]\d+)-temurin$'
+      # Tomcat 11 on JDK 25 (LTS), like TP12: a new major of either is a
+      # teaching decision, not an automatic update. regex/semver sorts the
+      # versions; plain regex keeps the registry's order.
       versionfilter:
-        kind: "regex"
-        pattern: '^\d+\.\d+\.\d+-jdk(2[5-9]|[3-9]\d+)-temurin$'
+        kind: "regex/semver"
+        regex: '^(\d+\.\d+\.\d+)-jdk25-temurin$'
+        pattern: "~11"
 
 targets:
   tomcat-docker-command:
@@ -32,7 +35,7 @@ targets:
     scmid: default
     spec:
       file: "content/code-samples/fichiers/reseau/tomcat/Dockerfile"
-      matchpattern: 'FROM tomcat:\d+\.\d+\.\d+-jdk\d+-temurin'
+      matchpattern: 'FROM tomcat:\d+\.\d+\.\d+-jdk25-temurin'
       replacepattern: 'FROM tomcat:{{ source "tomcat-temurin" }}'
 
 actions:
