@@ -262,9 +262,17 @@ Par exemple, une application web peut avoir besoin qu'une base de données soit 
 [.title]
 Comment Docker Compose gère-t-il l'ordre de démarrage ?
 [%step]
-Par défaut, Docker Compose démarre les services dans l'ordre dans lequel ils sont définis dans le fichier Docker Compose.
+Sans dépendance déclarée entre eux, Docker Compose démarre les services *en parallèle* : l'ordre dans lequel ils sont écrits dans le fichier ne compte pas.
 [%step]
-Cependant, cela ne garantit pas que les services dépendants seront prêts à être utilisés lorsque les services qui en dépendent seront lancés.
+Cinq services écrits `zulu`, `alpha`, `mike`, `bravo`, `yankee`, cinq `docker compose up` : quatre ordres de démarrage différents, et un seul identique au fichier.
+
+[.notes]
+--
+Mesuré avec Docker Compose 5.5.1 en comparant le `StartedAt` de chaque conteneur.
+L'ordre ne suit le fichier que par hasard.
+Ce qui impose une séquence : `depends_on`, et trois dépendances implicites, `links`, `volumes_from` et `network_mode: "service:..."`.
+Mesuré aussi : avec chacune des trois, le service dont on dépend démarre en premier 5 fois sur 5, même écrit en second.
+--
 
 [%auto-animate]
 == 🏁🔢 Ordre de démarrage
@@ -404,7 +412,7 @@ Par exemple, vous pouvez vous assurer qu'un service de base de données est prê
 == 🏁🔢 Ordre de démarrage 📊📝 Pour résumer
 
 L'ordre de démarrage fait référence à la séquence dans laquelle les services définis dans un fichier Docker Compose sont lancés.
-Par défaut, Docker Compose démarre les services dans l'ordre dans lequel ils sont définis dans le fichier Docker Compose.
+Sans dépendance déclarée (`depends_on`, mais aussi `links`, `volumes_from` ou `network_mode: "service:..."`), les services démarrent en parallèle, dans un ordre qui change d'un lancement à l'autre.
 
 [%step]
 Docker Compose offre deux directives pour gérer les dépendances entre services : `depends_on` et `healthcheck`.
