@@ -43,11 +43,11 @@ Rappeler qu'un Codespace supprimé emporte la clé privée avec lui. Ce n'est pa
 
 === Étape 2 : créer sa VM dans Xen Orchestra 🖱️
 
-. Bouton **New**, puis **VM**
-. Template : **Debian 13** (le seul que votre resource set propose)
+. Bouton **New VM**
+. Votre **resource set**, puis le template **Debian 13** (les seuls proposés)
 . Nom : `tp-vm-<votre-login>`
 . Ressources : restez dans vos quotas
-. Dans la partie **cloud-init**, collez votre clé publique
+. Partie cloud-init : cochez **SSH key**, collez votre clé publique
 . **Create**
 
 [.small]
@@ -57,14 +57,16 @@ Bouton **Create** grisé ? Vous demandez plus que ce qui reste dans votre quota.
 --
 Source, consultée le 2026-10-09 : documentation Xen Orchestra, docs/users-and-access/users.md, section « Self-service portal » (commit db8fe8d) : « As soon as a user is granted a resource set, it displays a new button in their main view: "new". » et « If the "Create" button is disabled, it means the user requested more resources than available. »
 
-Le libellé exact du champ cloud-init et sa place dans le formulaire dépendent de la version de XO déployée sur le lab : capture d'écran à faire sur le lab avant la séance et à insérer ici.
+Mesuré sur le lab le 2026-10-09, avec un compte non administrateur auquel seul un resource set est attribué : la page d'accueil affiche « There are no VMs! » et un bouton **New VM**. Le formulaire ne propose que le resource set et le template qu'il contient. La partie cloud-init offre trois choix : **No config drive**, **SSH key** et **Custom config** (un modèle `#cloud-config` à éditer). **SSH key** suffit : pas de YAML à écrire. VM créée dans le quota (2 vCPU, 2 Gio, disque de 20 Gio), connexion SSH `debian` avec la clé collée vérifiée.
+
+Le libellé dépend de la version de XO : celui-ci a été lu sur l'interface XO 5 de l'instance de test. Capture d'écran du formulaire à insérer ici.
 --
 
 === Étape 3 : premier contact, par la console 👀
 
 * Ouvrez votre VM dans Xen Orchestra, onglet **Console**
 * Vous voyez le démarrage, puis une invite de connexion
-* Dans l'onglet **Général**, l'**adresse IP** de la VM apparaît
+* Une fois la VM **Running**, l'onglet **General** affiche son **adresse IP**
 
 [.small]
 Pas d'IP affichée ? C'est l'agent invité qui la remonte : attendez la fin du démarrage, puis prévenez l'enseignant.
@@ -73,7 +75,9 @@ Pas d'IP affichée ? C'est l'agent invité qui la remonte : attendez la fin du d
 --
 Pas d'IP affichée après deux minutes : soit la VM n'a pas eu de bail DHCP, soit l'agent invité manque dans le template. Les deux cas sont à corriger côté lab, pas par l'étudiant.
 
-Mesuré sur le lab le 2026-10-09 : avec l'image Debian 13 genericcloud telle quelle, XO ne voit aucune adresse (`addresses` vide, `managementAgentDetected: false`), alors que les pilotes PV sont détectés. L'IP a dû être retrouvée par la table ARP du dom0. Le template du lab doit donc embarquer l'agent invité, sans quoi cette étape échoue pour toute la classe. Le disque de l'image fait 3 Go et Docker installé en occupe déjà la moitié : agrandir le disque dans le template (cloud-init étend normalement la partition au démarrage, non vérifié sur le lab).
+Mesuré sur le lab le 2026-10-09 : avec l'image Debian 13 genericcloud telle quelle, XO ne voit aucune adresse (`addresses` vide, `managementAgentDetected: false`), alors que les pilotes PV sont détectés. L'IP a dû être retrouvée par la table ARP du dom0. Le template du lab doit donc embarquer l'agent invité, sans quoi cette étape échoue pour toute la classe. Le disque de l'image fait 3 Go et Docker installé en occupe déjà la moitié : agrandir le disque dans le template.
+
+Corrigé dans le template de test (v2) : agent `xe-guest-utilities` 7.30.0-18 issu de l'ISO guest-tools du dom0, disque de 20 Gio (cloud-init a bien étendu la partition au premier démarrage). XO affiche l'IP environ 18 s après le démarrage, avec « Management agent 7.30.0-18 detected ». Piège observé : tant que la VM est encore arrêtée, XO peut afficher l'IP de la machine qui a servi à construire le template. D'où la consigne d'attendre l'état Running.
 
 La console sert à voir que la VM vit. On n'y tape pas le TP : copier-coller peu fiable, clavier à l'avenant.
 
@@ -217,7 +221,11 @@ Pourquoi pas `xo-cli` : la même documentation dit « xo-cli is mainly a debug a
 
 Mesuré sur le lab le 2026-10-09 (XCP-ng 8.3, XO REST API 0.40.2, image Debian 13 genericcloud), avec un jeton administrateur : la liste renvoie un tableau d'objets `name_label`, `power_state` et `href`. Sans `?sync=true`, l'action snapshot répond tout de suite par un `taskId` ; avec, elle attend et renvoie l'`id` du snapshot, plus parlant pour les étudiants.
 
-Toujours à vérifier sur le lab : qu'un utilisateur self-service voit bien ses VM par l'API REST avec son propre jeton, et que la création de jeton est accessible depuis son compte.
+Mesuré sur le lab le 2026-10-09 avec un compte non administrateur : le resource set suffit pour l'interface web, **pas pour l'API REST**. Avec le seul resource set, le jeton de l'étudiant obtient une liste vide (HTTP 200, `[]`) et un 403 « not enough privileges » sur le snapshot de sa propre VM. L'API REST applique son propre contrôle d'accès (RBAC, rôles et privilèges, documentation XO docs/users-and-access/rbac.md). Sur XOA, il faut le pack Essential+ ou au-dessus ; une installation depuis les sources n'a pas cette restriction.
+
+À préparer pour chaque étudiant, en plus du resource set : un rôle avec les privilèges `vm` `read`, `start`, `snapshot` et `revert-snapshot`, chacun avec le sélecteur `resourceSet:<id-du-resource-set>`, attaché à son compte. Avec ce rôle, son jeton liste sa VM et elle seule, fait un snapshot (201) et un revert (204), et reçoit un 403 sur la VM d'un autre. Un sélecteur commun à toute la classe ne marche pas : chacun verrait les VM des autres.
+
+Le jeton : un administrateur ne peut pas en créer pour un étudiant (« you can only create token for yourself »). L'étudiant le crée donc lui-même, par sa page utilisateur dans l'interface web : c'est la méthode à donner en séance. Par l'API, la route documentée `POST /rest/v0/users/me/authentication_tokens` redirige (307) vers `/users/<son-id>/authentication_tokens`, qui répond 201 quand l'étudiant est déjà authentifié par un jeton. La route `POST /rest/v0/users/authentication_tokens`, avec identifiant et mot de passe, a répondu 403 ; la route documentée n'a pas été retestée avec identifiant et mot de passe.
 
 La phrase sur Terraform, Packer et Jenkins s'appuie sur la documentation XO (pages des fournisseurs Terraform, Packer et Pulumi dans docs/automation) ; pour Jenkins, c'est le plugin Vates prévu dans le cours suivant.
 --
