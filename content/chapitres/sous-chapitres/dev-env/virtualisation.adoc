@@ -96,7 +96,7 @@ L'exemple `POPF` vient du même article (catégorie des instructions qui modifie
 
 [.notes]
 --
-Source pour Xen, consultée le 2026-10-09 (OpenAlex) : P. Barham, B. Dragovic, K. Fraser et al., « Xen and the art of virtualization », SOSP 2003. DOI 10.1145/945445.945462. C'est l'article qu'Olivier Lambert a cité au séminaire UGA du 2026-10-08 comme un classique.
+Source pour Xen, consultée le 2026-10-09 (OpenAlex) : P. Barham, B. Dragovic, K. Fraser et al., « Xen and the art of virtualization », SOSP 2003. DOI 10.1145/945445.945462.
 
 Ordre chronologique à donner à l'oral : traduction binaire chez VMware à la fin des années 1990, Xen en 2003, VT-x et AMD-V au milieu des années 2000. Ces deux dates-là sont de mémoire, non vérifiées sur une source primaire pour ce cours : d'où leur absence à l'écran.
 
@@ -321,7 +321,7 @@ Le message : l'interface web n'invente rien, elle lit et écrit la même base qu
 --
 Source, consultée le 2026-10-09 : documentation Xen Orchestra, docs/users-and-access/users.md, section « Self-service portal » (commit db8fe8d) : « The self-service feature allows users to create new VMs », quotas « max vCPUs, max RAM, max disk usage », et « Everything is inside a "sandbox" (the resource set) you defined earlier! ».
 
-Florian Duchemin (IUT de Valence) décrit ce montage pour ses étudiants dans « Enseigner avec Xcp-ng : décollage » (LinkedIn, 2026-10-03).
+D'autres enseignants utilisent déjà ce montage avec leurs étudiants.
 --
 
 === Avant la prochaine séance ✅
