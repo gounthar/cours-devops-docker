@@ -1,0 +1,342 @@
+=== La virtualisation, depuis le début 🖥️
+
+**Objectif des deux séances :** faire tourner Docker dans **votre** machine virtuelle, sur un hyperviseur XCP-ng
+
+* Séance 1 : comprendre ce qu'est une VM, et ce qui la rend possible
+* Séance 2 : créer la vôtre, y entrer en SSH, y installer Docker
+
+[.small]
+Les types d'hyperviseur et « VM et conteneur ne s'opposent pas » ont été vus dans l'introduction : on part de là.
+
+[.notes]
+--
+Renvoi explicite vers `intro.adoc` (slides « Comment ça marche ? » sur les types 1 et 2, « Un type 1 que vous pouvez installer », « VM et conteneur ne s'opposent pas »). Ne pas les rejouer : ce chapitre descend d'un étage.
+
+⚖️ Rappeler la transparence déjà affichée dans l'introduction : l'enseignant travaille chez Vates, éditeur de XCP-ng et Xen Orchestra.
+
+Le fil rouge des deux séances : à la fin, l'étudiant sait dire à quel étage tourne chaque chose (matériel, hyperviseur, VM, Docker, conteneur) et l'a construit lui-même.
+--
+
+=== Pourquoi virtualiser ? 🤔
+
+[%step]
+* Un serveur physique dédié à une seule application est **sous-utilisé** la plupart du temps
+* Plusieurs systèmes sur une même machine : **consolidation**
+* Chacun croit être seul : **isolation** (une panne, une faille, un `rm -rf` restent chez lui)
+* Un système devient un **fichier** : on le copie, on le sauvegarde, on le déplace
+
+[.notes]
+--
+Le dernier point est celui qui servira en séance 2 : snapshot, revert, migration. Une VM est un ensemble de fichiers et de métadonnées, le matériel n'est plus qu'un hôte interchangeable.
+
+Pas de chiffre de taux d'utilisation à l'oral : les valeurs qui circulent (« 10 à 15 % ») viennent de documents commerciaux, sans étude primaire retrouvée.
+--
+
+=== Une vieille idée 🦕
+
+[%step]
+* Années 1960-70 : IBM CP-40, CP-67, puis **VM/370** : chaque utilisateur d'un mainframe a « sa » machine
+* 1974 : **Popek et Goldberg** posent la règle : une architecture est virtualisable si toute instruction **sensible** est aussi **privilégiée**
+* Autrement dit : tout ce qui touche à l'état de la machine doit **déclencher un piège** (_trap_) quand l'invité l'exécute, pour que l'hyperviseur reprenne la main
+
+[.notes]
+--
+Source, consultée le 2026-10-09 (OpenAlex) : G. J. Popek et R. P. Goldberg, « Formal requirements for virtualizable third generation architectures », Communications of the ACM, 1974. DOI 10.1145/361011.361073.
+
+Le modèle à retenir s'appelle _trap-and-emulate_ : l'invité tourne en mode non privilégié, chaque instruction sensible provoque une exception, l'hyperviseur l'émule puis rend la main.
+
+Les noms CP-40, CP-67 et VM/370 et leurs dates sont donnés de mémoire, non vérifiés sur une source primaire pour ce cours : rester sur « années 1960-70 » à l'oral.
+--
+
+[.columns]
+=== Le x86 ne respectait pas la règle 🚫
+
+[.column]
+--
+....
+anneau 3   applications
+anneau 2   (inutilisé)
+anneau 1   (inutilisé)
+anneau 0   noyau de l'OS
+....
+--
+
+[.column]
+--
+* L'OS invité veut l'anneau 0, mais l'hyperviseur l'occupe déjà
+* **17 instructions** du Pentium sont sensibles sans être privilégiées : elles s'exécutent sans piège et **mentent** à l'invité
+* Exemple : `POPF` ignore en silence le changement du drapeau d'interruption hors de l'anneau 0
+--
+
+[.notes]
+--
+Source, consultée le 2026-10-09 : J. S. Robin et C. E. Irvine, « Analysis of the Intel Pentium's Ability to Support a Secure Virtual Machine Monitor », 9th USENIX Security Symposium, 2000 : « seventeen instructions did not meet virtualization requirements because they were sensitive and unprivileged ». https://www.usenix.org/legacy/events/sec2000/full_papers/robin/robin_html/index.html
+
+L'exemple `POPF` vient du même article (catégorie des instructions qui modifient des registres sensibles). Le point pédagogique : une instruction qui ne piège pas ne prévient pas l'hyperviseur, donc l'invité a une vision fausse de la machine.
+--
+
+=== Trois façons de contourner le problème 🛠️
+
+[cols="2,3,1",options="header"]
+|===
+| Approche | Principe | Prix
+
+| **Traduction binaire** (VMware)
+| Réécrire à la volée le code noyau de l'invité
+| Complexité
+
+| **Paravirtualisation** (Xen, 2003)
+| Modifier l'OS invité : il appelle l'hyperviseur (_hypercall_)
+| Un noyau adapté
+
+| **Assistance matérielle** (VT-x, AMD-V)
+| Un mode « invité » dans le processeur, qui piège ce qu'il faut
+| Presque rien
+|===
+
+[.notes]
+--
+Source pour Xen, consultée le 2026-10-09 (OpenAlex) : P. Barham, B. Dragovic, K. Fraser et al., « Xen and the art of virtualization », SOSP 2003. DOI 10.1145/945445.945462. C'est l'article qu'Olivier Lambert a cité au séminaire UGA du 2026-10-08 comme un classique.
+
+Ordre chronologique à donner à l'oral : traduction binaire chez VMware à la fin des années 1990, Xen en 2003, VT-x et AMD-V au milieu des années 2000. Ces deux dates-là sont de mémoire, non vérifiées sur une source primaire pour ce cours : d'où leur absence à l'écran.
+
+Message à faire passer : Xen est né à l'époque où le x86 n'était pas virtualisable proprement. La paravirtualisation était une solution d'ingénierie, pas un choix esthétique.
+--
+
+=== Et la mémoire ? 🧠
+
+[%step]
+* L'invité croit gérer de la mémoire **physique** ; elle est en fait elle-même virtuelle
+* Deux traductions d'adresse empilées : celle de l'invité, puis celle de l'hyperviseur
+* Avant : l'hyperviseur maintient des **tables d'ombre** (_shadow page tables_), coûteuses
+* Aujourd'hui : le processeur fait les deux traductions (**EPT** chez Intel, **NPT** chez AMD)
+
+[.notes]
+--
+Ne pas entrer dans le détail des tables de pages à quatre niveaux : l'idée à retenir est « deux traductions, et le matériel sait maintenant les enchaîner ».
+
+Une slide de plus possible si le public est à l'aise : l'IOMMU (VT-d, AMD-Vi), qui fait la même chose pour les accès DMA des périphériques et permet de donner une carte PCI entière à une VM (_passthrough_). Hors programme du TP.
+--
+
+[.columns]
+=== Xen, l'architecture 🏗️
+
+[.column]
+--
+....
+┌───────────┬───────────┬───────────┐
+│   dom0    │  domU 1   │  domU 2   │
+│ (contrôle,│  votre VM │  une autre│
+│  pilotes) │           │    VM     │
+├───────────┴───────────┴───────────┤
+│     hyperviseur Xen (type 1)      │
+├───────────────────────────────────┤
+│             matériel              │
+└───────────────────────────────────┘
+....
+--
+
+[.column]
+--
+* L'hyperviseur Xen est **petit** : CPU, mémoire, interruptions
+* Le **dom0** est une VM privilégiée : il porte les pilotes matériels et l'outillage
+* Les **domU** sont les VM « normales », dont la vôtre
+--
+
+[.notes]
+--
+Point qui surprend : dans Xen, même le système qui administre la machine est une VM. Les pilotes réseau et disque réels vivent dans le dom0, pas dans l'hyperviseur.
+
+Source XCP-ng 8.3, consultée le 2026-10-09 : https://docs.xcp-ng.org/releases/release-8-3/ indique « Xen version: 4.17.5 + patches » et un dom0 en « 4.19 + patches + additional drivers ». Ne pas citer les numéros à l'oral, ils bougent.
+--
+
+=== PV, HVM, PVH : les modes d'une VM Xen 🔀
+
+[%step]
+* **PV** : l'invité paravirtualisé de 2003. **Supprimé** dans XCP-ng 8.3
+* **HVM** : l'invité ne sait rien, le processeur (VT-x / AMD-V) fait le travail ; c'est le mode de vos VM
+* **Pilotes PV** dans un invité HVM : disque et réseau parlent quand même directement à Xen, pour la performance
+* **PVH** : le meilleur des deux, sans émulation de carte mère ; existe dans Xen, à mentionner seulement
+
+[.notes]
+--
+Source, consultée le 2026-10-09 : https://docs.xcp-ng.org/releases/release-8-3/ : « The old PV (paravirtualized) virtualization mode is now completely removed », « Official support for PV guests stopped with the release of XCP-ng 8.1 », « In XCP-ng 8.3, they won't run at all ».
+
+PVH : la page de version 8.3 ne le mentionne pas. Ne rien affirmer sur son support dans XCP-ng 8.3 ; le citer comme un mode de Xen, non vérifié côté XCP-ng.
+
+Les pilotes PV sont déjà dans le noyau Linux : la doc XCP-ng dit « Xen guest drivers have been built-in in the Linux kernel for many years » (https://docs.xcp-ng.org/vms/, consultée le 2026-10-09).
+--
+
+=== L'agent invité 🕵️
+
+* Un petit service **dans** la VM, qui renseigne l'hôte : OS, mémoire, **adresses IP**
+* Sans lui, Xen Orchestra ne sait pas quelle IP a obtenue votre VM
+* Sous Linux : `xe-guest-utilities` (service `xe-linux-distribution`), ou son successeur en Rust, `xen-guest-agent`
+
+[.notes]
+--
+Sources, consultées le 2026-10-09 :
+- https://docs.xcp-ng.org/vms/ : « The management agent brings more manageability of the VM from XCP-ng, and guest metrics reporting to the host », service « usually named xe-linux-distribution ».
+- https://github.com/xcp-ng/xen-guest-agent (README) : « The xen-guest-agent repository will be the new upstream for the Xen agent running in Linux/BSDs (POSIX) VMs », fonctions actuelles « Network metrics (vif ID, MAC, v4/v6 address), OS reporting, Memory metrics ».
+
+Aucun des deux n'est empaqueté dans Debian (sources.debian.org, interrogé le 2026-10-09) : l'agent doit donc être dans le template du TP. C'est une dépendance côté lab, pas une étape étudiante.
+--
+
+=== Un pool, XAPI et Xen Orchestra 🧭
+
+....
+ navigateur        terminal         script
+ (XO web)          (xo-cli)         (API REST, curl)
+     └────────────────┼────────────────┘
+                 xo-server
+                      │  XAPI
+         ┌────────────┴────────────┐
+   hôte maître du pool ── autres hôtes du pool
+....
+
+* Plusieurs hôtes XCP-ng forment un **pool**, piloté par son **maître**
+* **XAPI** est l'outillage natif ; `xe` est sa ligne de commande sur le dom0
+* **Xen Orchestra** parle XAPI, et expose une interface web, `xo-cli` et une **API REST**
+
+[.notes]
+--
+Source, consultée le 2026-10-09 : documentation Xen Orchestra, page « architecture » (dépôt vatesfr/xen-orchestra, docs/getting-started/architecture.md, commit db8fe8d du 2026-09-10) : « XO is totally agent-less: nothing to install on your hosts. xo-server speaks XAPI, the native toolstack of XCP-ng, directly over the network. »
+
+Même page : « xo-cli is mainly a debug and power-user tool: there is no absolute guarantee on its stability. Prefer the REST API for automation. » C'est pour ça que le TP utilise l'API REST avec curl.
+--
+
+=== Ce qu'on donne à une VM : CPU et mémoire ⚙️
+
+[%step]
+* **vCPU** : des processeurs virtuels, ordonnancés par Xen sur les cœurs réels
+* On peut en donner plus qu'il n'y a de cœurs : ça tient tant qu'ils ne travaillent pas tous en même temps
+* **Mémoire** : réservée à la VM, et le dom0 garde la sienne
+* Quand vous dépassez votre quota, la création est simplement refusée
+
+[.notes]
+--
+Ne pas promettre de chiffres de surallocation : ça dépend entièrement de la charge.
+
+La dernière ligne prépare la séance 2 : dans Xen Orchestra, le bouton « Create » est désactivé si la demande dépasse ce qui reste du quota (doc XO « Self-service portal » : « If the "Create" button is disabled, it means the user requested more resources than available. »).
+--
+
+=== Ce qu'on donne à une VM : disque 💾
+
+....
+ SR  (Storage Repository)   le stockage : disque local, NFS, iSCSI...
+  └── VDI (Virtual Disk Image)   un disque virtuel, un fichier ou un volume
+        └── VBD (Virtual Block Device)   le branchement du VDI dans la VM
+....
+
+* Votre VM voit `/dev/xvda`, sans savoir où il est vraiment
+* SR **local** : rapide, mais la VM est liée à cet hôte
+* SR **partagé** : la VM peut changer d'hôte sans s'arrêter
+
+[.notes]
+--
+Le trio SR / VDI / VBD revient dans toute la documentation XCP-ng et dans `xe` : le donner une fois proprement évite des confusions en séance 2.
+
+Le lien avec Docker : un VBD est à une VM ce qu'un montage de volume est à un conteneur. Le stockage existe indépendamment, on le branche.
+
+`/dev/xvda` est le nom habituel d'un disque Xen sous Linux ; à vérifier sur la VM du lab avant la séance (selon le mode, le disque peut apparaître autrement).
+--
+
+=== Ce qu'on donne à une VM : réseau 🌐
+
+....
+ VM ── VIF (carte réseau virtuelle)
+         └── réseau XCP-ng (un bridge sur l'hôte, éventuellement un VLAN)
+               └── PIF (carte réseau physique de l'hôte)
+....
+
+* Chaque VM a une ou plusieurs **VIF**
+* Les VIF branchées sur le même réseau se voient, comme sur un switch
+* Le **VLAN** sépare des réseaux sur le même câble : un réseau par étudiant, par exemple
+
+[.notes]
+--
+Faire le parallèle avec le chapitre réseau Docker à venir : un bridge Docker est la même idée, un étage plus haut.
+
+Le « réseau par étudiant » est une des configurations décrites au séminaire UGA du 2026-10-08 (Florian Duchemin, IUT de Valence). Ne le présenter que comme un exemple.
+--
+
+=== Templates et cloud-init 📦
+
+* Un **template** est une VM modèle, jamais démarrée, qu'on clone
+* **cloud-init** configure la VM **au premier démarrage** : nom, utilisateur, **clés SSH**, taille du disque
+* Résultat : une VM prête en une minute, sans passer par un installateur
+
+[.notes]
+--
+Source, consultée le 2026-10-09 : documentation Xen Orchestra, docs/manage-your-infrastructure/vm-templates.md (commit db8fe8d) : « on a "Cloud-init-ready" VM template, you can pass a lot of data at first boot, such as: Set the host name, Add SSH keys, Automatically grow the file system, Create users ».
+
+cloud-init est dans Debian 13 (paquet `cloud-init` 25.1.4-1+deb13u1 dans trixie, sources.debian.org interrogé le 2026-10-09).
+
+Parallèle Docker : un template est à une VM ce qu'une image est à un conteneur. Le parallèle a ses limites (pas de couches), le dire.
+--
+
+=== Le cycle de vie d'une VM 🔄
+
+[%step]
+* Créer, démarrer, arrêter (proprement ou de force), supprimer
+* **Snapshot** : une photo de la VM à un instant, et **revert** pour y revenir
+* **Migration à chaud** : la VM change d'hôte sans s'arrêter (stockage partagé)
+* **Sauvegarde** : une copie **ailleurs**
+
+[.notes]
+--
+Rappeler la nuance déjà faite dans l'introduction : un snapshot reste sur le même stockage que la VM. Ce n'est pas une sauvegarde.
+
+La migration à chaud est montrée en démo enseignant si le lab a deux hôtes et un SR partagé ; sinon, en parler seulement.
+--
+
+=== Démo : sous le capot, `xe` 🔧
+
+[source,bash]
+----
+# Sur le dom0 d'un hôte XCP-ng (démo enseignant uniquement)
+xe vm-list power-state=running params=name-label,uuid
+xe vm-param-list uuid=<UUID>
+xe vbd-list vm-uuid=<UUID> params=device,vdi-uuid
+----
+
+* Ce que Xen Orchestra affiche vient d'ici : XAPI
+* Vous n'aurez pas accès au dom0 : sur un pool partagé, c'est la clé de toutes les VM
+
+[.notes]
+--
+Commandes à rejouer sur le lab avant la séance, sortie réelle à capturer : elles ne sont pas encore vérifiées pour ce cours. La troisième montre le trio de la slide disque : on passe de la VM à ses VBD, et chaque VBD pointe vers un VDI.
+
+Le message : l'interface web n'invente rien, elle lit et écrit la même base que `xe`.
+--
+
+=== Déléguer : le self-service 🎟️
+
+* L'administrateur crée un **resource set** : des templates, un stockage, un réseau, et des **quotas** (vCPU, mémoire, disque)
+* Il le confie à un utilisateur ou à un groupe
+* L'utilisateur crée **ses** VM, dans ce bac à sable, et pas ailleurs
+* C'est exactement ce que vous aurez en séance 2
+
+[.notes]
+--
+Source, consultée le 2026-10-09 : documentation Xen Orchestra, docs/users-and-access/users.md, section « Self-service portal » (commit db8fe8d) : « The self-service feature allows users to create new VMs », quotas « max vCPUs, max RAM, max disk usage », et « Everything is inside a "sandbox" (the resource set) you defined earlier! ».
+
+Florian Duchemin (IUT de Valence) décrit ce montage pour ses étudiants dans « Enseigner avec Xcp-ng : décollage » (LinkedIn, 2026-10-03). Le citer à l'écran seulement avec son accord.
+--
+
+=== Avant la prochaine séance ✅
+
+. Connectez-vous à Xen Orchestra avec le compte fourni
+. Repérez votre **resource set** : template, stockage, réseau
+. Notez vos **quotas**
+. Ne créez pas encore de VM
+
+[.small]
+Prochaine séance : votre VM, SSH depuis le Codespace, puis Docker.
+
+[.notes]
+--
+L'adresse de Xen Orchestra et les comptes sont communiqués en séance, jamais dans les slides publiques.
+
+Si un étudiant ne voit pas de bouton « New » dans XO, son compte n'a pas de resource set : c'est à corriger avant la séance 2, pas pendant.
+--

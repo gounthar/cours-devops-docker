@@ -14,6 +14,15 @@ include::./sous-chapitres/dev-env/github-codespaces.adoc[leveloffset=0]
 
 include::./sous-chapitres/dev-env/installation-locale.adoc[leveloffset=0]
 
+// Virtualisation : une VM à vous sur XCP-ng
+== 🖥️ Une VM à vous sur XCP-ng
+
+include::./sous-chapitres/dev-env/virtualisation.adoc[leveloffset=0]
+
+== 🎓 Docker dans votre VM XCP-ng
+
+include::./sous-chapitres/dev-env/xcp-ng-vm.adoc[leveloffset=0]
+
 // Intégration continue : la même image, exécutée par une machine
 == 🤖 Et quand une machine s'en charge : GitHub Actions
 

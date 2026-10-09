@@ -476,7 +476,7 @@ Source, consultée le 2026-09-10 : https://docs.xen-orchestra.com/ — « the co
 --
 * Depuis le premier TP, vos conteneurs tournent **déjà** dans une machine virtuelle{nbsp}: GitHub héberge chaque Codespace sur une VM
 * La question n'est donc jamais «{nbsp}VM ou conteneur{nbsp}?{nbsp}», mais «{nbsp}qu'est-ce que je mets à quel étage{nbsp}?{nbsp}»
-* Dans les TP, on ne travaillera qu'à l'étage du haut
+* Dans les TP Docker, on travaille à l'étage du haut{nbsp}; en préparant votre environnement, vous construirez aussi l'étage VM, sur XCP-ng
 --
 
 [.notes]

@@ -1,0 +1,242 @@
+=== 🎓 Travaux pratiques VM : Docker dans ma VM
+
+....
+ Codespace ──SSH──▶ votre VM Debian 13 ──▶ Docker ──▶ vos conteneurs
+                         │
+                   hyperviseur XCP-ng (lab distant)
+....
+
+Objectif : une VM à vous, créée par vous, dans laquelle `docker run` fonctionne.
+
+[%step]
+* Une clé SSH générée dans le Codespace
+* Une VM créée dans Xen Orchestra, dans votre resource set
+* Docker installé depuis le dépôt officiel
+* Un snapshot, une bêtise, un retour en arrière
+
+[.notes]
+--
+Pourquoi passer par le Codespace : il sort sur Internet par le réseau de GitHub, pas par le proxy de l'université. Le SSH vers le lab fonctionne donc de la même façon à la fac et à la maison.
+
+Ce TP n'a pas de numéro : il arrive avant les TP numérotés #1 à #14 et ne doit pas les décaler.
+
+Dépendances côté lab, à régler avant la séance (hors dépôt) : un compte XO et un resource set par étudiant, un template Debian 13 avec cloud-init et l'agent invité, l'accès SSH depuis Internet (bastion ou IP publiques, décision pas encore prise), et une sortie Internet des VM pour apt et Docker Hub.
+--
+
+=== Étape 1 : une clé SSH, dans le Codespace 🔑
+
+[source,bash]
+----
+ssh-keygen -t ed25519 -C "tp-vm" -f ~/.ssh/tp-vm
+cat ~/.ssh/tp-vm.pub
+----
+
+* Copiez la ligne affichée : c'est la **clé publique**, elle peut circuler
+* `~/.ssh/tp-vm` sans `.pub` est la clé **privée** : elle ne quitte jamais le Codespace
+
+[.notes]
+--
+Une phrase de passe est recommandée, mais pas imposée pour ce TP.
+
+Rappeler qu'un Codespace supprimé emporte la clé privée avec lui. Ce n'est pas grave : on peut en générer une autre et l'ajouter à la VM depuis la console.
+--
+
+=== Étape 2 : créer sa VM dans Xen Orchestra 🖱️
+
+. Bouton **New**, puis **VM**
+. Template : **Debian 13** (le seul que votre resource set propose)
+. Nom : `tp-vm-<votre-login>`
+. Ressources : restez dans vos quotas
+. Dans la partie **cloud-init**, collez votre clé publique
+. **Create**
+
+[.small]
+Bouton **Create** grisé ? Vous demandez plus que ce qui reste dans votre quota.
+
+[.notes]
+--
+Source, consultée le 2026-10-09 : documentation Xen Orchestra, docs/users-and-access/users.md, section « Self-service portal » (commit db8fe8d) : « As soon as a user is granted a resource set, it displays a new button in their main view: "new". » et « If the "Create" button is disabled, it means the user requested more resources than available. »
+
+Le libellé exact du champ cloud-init et sa place dans le formulaire dépendent de la version de XO déployée sur le lab : capture d'écran à faire sur le lab avant la séance et à insérer ici.
+--
+
+=== Étape 3 : premier contact, par la console 👀
+
+* Ouvrez votre VM dans Xen Orchestra, onglet **Console**
+* Vous voyez le démarrage, puis une invite de connexion
+* Dans l'onglet **Général**, l'**adresse IP** de la VM apparaît
+
+[.small]
+Pas d'IP affichée ? C'est l'agent invité qui la remonte : attendez la fin du démarrage, puis prévenez l'enseignant.
+
+[.notes]
+--
+Pas d'IP affichée après deux minutes : soit la VM n'a pas eu de bail DHCP, soit l'agent invité manque dans le template. Les deux cas sont à corriger côté lab, pas par l'étudiant.
+
+La console sert à voir que la VM vit. On n'y tape pas le TP : copier-coller peu fiable, clavier à l'avenant.
+--
+
+=== Étape 4 : entrer en SSH depuis le Codespace 🚪
+
+[source,bash]
+----
+# Depuis le terminal du Codespace
+ssh -i ~/.ssh/tp-vm debian@<IP-de-votre-VM>
+----
+
+* `debian` est l'utilisateur créé par cloud-init dans les images Debian
+* La première connexion demande de confirmer l'empreinte de la machine : `yes`
+
+[.notes]
+--
+À adapter selon la décision d'infrastructure, pas encore prise : avec un bastion, la commande devient `ssh -i ~/.ssh/tp-vm -J <utilisateur>@<bastion> debian@<IP-privée>`.
+
+L'utilisateur `debian` est celui des images cloud officielles Debian ; à confirmer sur le template du lab, qui peut en définir un autre dans sa configuration cloud-init.
+--
+
+=== Étape 5 : installer Docker 🐳
+
+Même méthode que sur votre poste (dépôt officiel), avec l'URL **Debian** :
+
+[source,bash]
+----
+sudo apt update
+sudo apt install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/debian/gpg \
+  -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+----
+
+[.small]
+Pas de proxy ici : la VM est sur le lab, pas sur le réseau de l'université.
+
+[.notes]
+--
+Source, consultée le 2026-10-09 : https://docs.docker.com/engine/install/debian/, section « Install using the apt repository ». Debian Trixie 13 y figure comme version prise en charge.
+
+Différence avec la slide de l'installation locale : là-bas, `curl` est lancé sans `sudo` pour garder le proxy de l'université. Dans la VM, il n'y a pas de proxy, donc la commande de la documentation Docker s'applique telle quelle.
+--
+
+=== Étape 5 (suite) : déclarer le dépôt et installer 📝
+
+[source,bash]
+----
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/debian
+Suites: $(. /etc/os-release && echo "$VERSION_CODENAME")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io \
+  docker-buildx-plugin docker-compose-plugin
+sudo usermod -aG docker $USER
+----
+
+Déconnectez-vous puis reconnectez-vous, pour que le groupe `docker` soit pris en compte.
+
+[.notes]
+--
+Commandes recopiées de https://docs.docker.com/engine/install/debian/ (consultée le 2026-10-09), sauf `usermod`, qui vient de la slide d'installation locale.
+
+Le TP n'a pas encore été joué de bout en bout sur le lab : à faire avant la séance, depuis un vrai Codespace.
+--
+
+=== Étape 6 : ça marche ? ✅
+
+[source,bash]
+----
+docker run --rm hello-world
+docker info --format '{{.OperatingSystem}} / {{.KernelVersion}}'
+----
+
+* Puis rejouez un TP déjà fait plus tôt, dans la VM cette fois
+
+[.small]
+Quel noyau affiche `docker info` ? Celui de la VM, pas celui de l'hôte XCP-ng.
+
+[.notes]
+--
+La question du noyau est le cœur du TP : le conteneur partage le noyau de la VM, et la VM a le sien, distinct de celui du dom0. Deux étages d'isolation, deux mécanismes.
+--
+
+=== Étape 7 : snapshot, bêtise, revert 🔁
+
+. Dans Xen Orchestra : onglet **Snapshots**, créez `docker-ok`
+. Dans la VM, faites une bêtise contrôlée :
++
+[source,bash]
+----
+sudo apt purge -y docker-ce
+----
+. Vérifiez que `docker` ne répond plus
+. Revenez au snapshot `docker-ok`, reconnectez-vous en SSH
+. `docker run --rm hello-world` refonctionne
+
+[.notes]
+--
+Le revert ramène aussi l'état de la mémoire seulement si le snapshot a été pris avec la mémoire ; sans cela, la VM redémarre depuis l'état disque. Vérifier sur le lab quel cas produit le formulaire par défaut de XO, et l'annoncer.
+
+La bêtise est volontairement réversible sans snapshot aussi : un étudiant dont le revert échoue n'est pas bloqué pour la suite.
+--
+
+=== Étape 8 : la même chose, en script 🤖
+
+Créez un **jeton** dans Xen Orchestra (vos paramètres utilisateur), puis, depuis le Codespace :
+
+[source,bash]
+----
+XO=https://<adresse-de-xo>
+TOKEN=<votre-jeton>
+curl -b authenticationToken=$TOKEN \
+  "$XO/rest/v0/vms?fields=name_label,power_state"
+curl -X POST -b authenticationToken=$TOKEN \
+  -H 'Content-Type: application/json' \
+  -d '{"name_label": "depuis-curl"}' \
+  "$XO/rest/v0/vms/<UUID>/actions/snapshot"
+----
+
+[.small]
+C'est la même API que celle qu'utilisent Terraform, Packer ou Jenkins pour piloter des VM.
+
+[.notes]
+--
+Source, consultée le 2026-10-09 : documentation Xen Orchestra, docs/automation/restapi.md (commit db8fe8d) : authentification par le cookie `authenticationToken`, et « Operations that do something (start, snapshot, migrate...) are exposed as actions: POST /rest/v0/<type>/<uuid>/actions/<action> », exemple de snapshot avec `{"name_label": ...}`.
+
+Pourquoi pas `xo-cli` : la même documentation dit « xo-cli is mainly a debug and power-user tool [...] Prefer the REST API for automation ». On peut le montrer en démo.
+
+À vérifier sur le lab : qu'un utilisateur self-service voit bien ses VM par l'API REST avec son propre jeton, et que la création de jeton est accessible depuis son compte.
+
+La phrase sur Terraform, Packer et Jenkins s'appuie sur la documentation XO (pages des fournisseurs Terraform, Packer et Pulumi dans docs/automation) ; pour Jenkins, c'est le plugin Vates prévu dans le cours suivant.
+--
+
+=== 📤 Rendu du TP
+
+Un fichier texte qui contient :
+
+. La sortie de `docker info --format '{{.OperatingSystem}} / {{.KernelVersion}}'` **dans la VM**
+. La sortie de `docker run --rm hello-world` dans la VM
+. La sortie de l'appel `curl` qui liste vos VM, avec vos snapshots visibles dans XO (capture)
+. Trois lignes : à quel étage tournent le conteneur, Docker, la VM, l'hyperviseur ?
+
+[.notes]
+--
+La dernière question reprend le schéma « VM et conteneur ne s'opposent pas » de l'introduction, cette fois avec un étage de plus que l'étudiant a construit lui-même.
+
+Avant la fin de la séance : rappeler d'arrêter la VM pour libérer les ressources du lab, sans la supprimer si elle sert aux TP suivants.
+--
+
+=== ✅ Solution : Travaux pratiques VM
+
+* Le conteneur tourne sur le **noyau de la VM** (Debian 13) : c'est ce que montre `docker info`
+* Docker est un **processus** de la VM, comme un autre
+* La VM est un **domU**, ordonnancé par l'hyperviseur Xen, à côté du dom0
+* L'hyperviseur est posé sur le **matériel** du lab, à distance
+
+[.notes]
+--
+Erreurs fréquentes attendues : confondre le noyau de la VM avec celui de l'hôte, et croire que le snapshot est une sauvegarde. Les deux points ont été traités en séance 1.
+--
