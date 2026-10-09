@@ -43,11 +43,11 @@ Rappeler qu'un Codespace supprimé emporte la clé privée avec lui. Ce n'est pa
 
 === Étape 2 : créer sa VM dans Xen Orchestra 🖱️
 
-. Bouton **New**, puis **VM**
-. Template : **Debian 13** (le seul que votre resource set propose)
+. Bouton **New VM**
+. Votre **resource set**, puis le template **Debian 13** (les seuls proposés)
 . Nom : `tp-vm-<votre-login>`
 . Ressources : restez dans vos quotas
-. Dans la partie **cloud-init**, collez votre clé publique
+. Partie cloud-init : cochez **SSH key**, collez votre clé publique
 . **Create**
 
 [.small]
@@ -57,14 +57,16 @@ Bouton **Create** grisé ? Vous demandez plus que ce qui reste dans votre quota.
 --
 Source, consultée le 2026-10-09 : documentation Xen Orchestra, docs/users-and-access/users.md, section « Self-service portal » (commit db8fe8d) : « As soon as a user is granted a resource set, it displays a new button in their main view: "new". » et « If the "Create" button is disabled, it means the user requested more resources than available. »
 
-Le libellé exact du champ cloud-init et sa place dans le formulaire dépendent de la version de XO déployée sur le lab : capture d'écran à faire sur le lab avant la séance et à insérer ici.
+Mesuré sur le lab le 2026-10-09, avec un compte non administrateur auquel seul un resource set est attribué : la page d'accueil affiche « There are no VMs! » et un bouton **New VM**. Le formulaire ne propose que le resource set et le template qu'il contient. La partie cloud-init offre trois choix : **No config drive**, **SSH key** et **Custom config** (un modèle `#cloud-config` à éditer). **SSH key** suffit : pas de YAML à écrire. VM créée dans le quota (2 vCPU, 2 Gio, disque de 20 Gio), connexion SSH `debian` avec la clé collée vérifiée.
+
+Le libellé dépend de la version de XO : celui-ci a été lu sur l'interface XO 5 de l'instance de test. Capture d'écran du formulaire à insérer ici.
 --
 
 === Étape 3 : premier contact, par la console 👀
 
 * Ouvrez votre VM dans Xen Orchestra, onglet **Console**
 * Vous voyez le démarrage, puis une invite de connexion
-* Dans l'onglet **Général**, l'**adresse IP** de la VM apparaît
+* Une fois la VM **Running**, l'onglet **General** affiche son **adresse IP**
 
 [.small]
 Pas d'IP affichée ? C'est l'agent invité qui la remonte : attendez la fin du démarrage, puis prévenez l'enseignant.
@@ -73,7 +75,9 @@ Pas d'IP affichée ? C'est l'agent invité qui la remonte : attendez la fin du d
 --
 Pas d'IP affichée après deux minutes : soit la VM n'a pas eu de bail DHCP, soit l'agent invité manque dans le template. Les deux cas sont à corriger côté lab, pas par l'étudiant.
 
-Mesuré sur le lab le 2026-10-09 : avec l'image Debian 13 genericcloud telle quelle, XO ne voit aucune adresse (`addresses` vide, `managementAgentDetected: false`), alors que les pilotes PV sont détectés. L'IP a dû être retrouvée par la table ARP du dom0. Le template du lab doit donc embarquer l'agent invité, sans quoi cette étape échoue pour toute la classe. Le disque de l'image fait 3 Go et Docker installé en occupe déjà la moitié : agrandir le disque dans le template (cloud-init étend normalement la partition au démarrage, non vérifié sur le lab).
+Mesuré sur le lab le 2026-10-09 : avec l'image Debian 13 genericcloud telle quelle, XO ne voit aucune adresse (`addresses` vide, `managementAgentDetected: false`), alors que les pilotes PV sont détectés. L'IP a dû être retrouvée par la table ARP du dom0. Le template du lab doit donc embarquer l'agent invité, sans quoi cette étape échoue pour toute la classe. Le disque de l'image fait 3 Go et Docker installé en occupe déjà la moitié : agrandir le disque dans le template.
+
+Corrigé dans le template de test (v2) : agent `xe-guest-utilities` 7.30.0-18 issu de l'ISO guest-tools du dom0, disque de 20 Gio (cloud-init a bien étendu la partition au premier démarrage). XO affiche l'IP environ 18 s après le démarrage, avec « Management agent 7.30.0-18 detected ». Piège observé : tant que la VM est encore arrêtée, XO peut afficher l'IP de la machine qui a servi à construire le template. D'où la consigne d'attendre l'état Running.
 
 La console sert à voir que la VM vit. On n'y tape pas le TP : copier-coller peu fiable, clavier à l'avenant.
 
