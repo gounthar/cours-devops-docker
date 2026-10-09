@@ -20,7 +20,7 @@ Pourquoi passer par le Codespace : il sort sur Internet par le réseau de GitHub
 
 Ce TP n'a pas de numéro : il arrive avant les TP numérotés #1 à #14 et ne doit pas les décaler.
 
-Dépendances côté lab, à régler avant la séance (hors dépôt) : un compte XO et un resource set par étudiant, un template Debian 13 avec cloud-init et l'agent invité, l'accès SSH depuis Internet (bastion ou IP publiques, décision pas encore prise), et une sortie Internet des VM pour apt et Docker Hub.
+Dépendances côté lab, à régler avant la séance (hors dépôt) : un compte XO et un resource set par étudiant, un template Debian 13 avec cloud-init et l'agent invité, l'accès SSH depuis Internet (bastion ou IP publiques, décision pas encore prise), une sortie Internet des VM pour apt et Docker Hub, et un essai de la console XO (websocket) depuis un poste de la fac, derrière le proxy.
 --
 
 === Étape 1 : une clé SSH, dans le Codespace 🔑
@@ -74,6 +74,8 @@ Pas d'IP affichée ? C'est l'agent invité qui la remonte : attendez la fin du d
 Pas d'IP affichée après deux minutes : soit la VM n'a pas eu de bail DHCP, soit l'agent invité manque dans le template. Les deux cas sont à corriger côté lab, pas par l'étudiant.
 
 La console sert à voir que la VM vit. On n'y tape pas le TP : copier-coller peu fiable, clavier à l'avenant.
+
+La console passe par une websocket, depuis le navigateur du poste de la fac et donc à travers le proxy de l'université. Que ce proxy la laisse passer n'est pas vérifié : à tester depuis une machine de la fac avant la séance. Si elle est bloquée, le TP continue quand même, puisque l'IP se lit dans l'onglet Général et que tout le reste passe par SSH depuis le Codespace.
 --
 
 === Étape 4 : entrer en SSH depuis le Codespace 🚪
