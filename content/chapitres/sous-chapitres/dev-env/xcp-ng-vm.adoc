@@ -73,6 +73,8 @@ Pas d'IP affichée ? C'est l'agent invité qui la remonte : attendez la fin du d
 --
 Pas d'IP affichée après deux minutes : soit la VM n'a pas eu de bail DHCP, soit l'agent invité manque dans le template. Les deux cas sont à corriger côté lab, pas par l'étudiant.
 
+Mesuré sur le lab le 2026-10-09 : avec l'image Debian 13 genericcloud telle quelle, XO ne voit aucune adresse (`addresses` vide, `managementAgentDetected: false`), alors que les pilotes PV sont détectés. L'IP a dû être retrouvée par la table ARP du dom0. Le template du lab doit donc embarquer l'agent invité, sans quoi cette étape échoue pour toute la classe. Le disque de l'image fait 3 Go et Docker installé en occupe déjà la moitié : agrandir le disque dans le template (cloud-init étend normalement la partition au démarrage, non vérifié sur le lab).
+
 La console sert à voir que la VM vit. On n'y tape pas le TP : copier-coller peu fiable, clavier à l'avenant.
 
 La console passe par une websocket, depuis le navigateur du poste de la fac et donc à travers le proxy de l'université. Que ce proxy la laisse passer n'est pas vérifié : à tester depuis une machine de la fac avant la séance. Si elle est bloquée, le TP continue quand même, puisque l'IP se lit dans l'onglet Général et que tout le reste passe par SSH depuis le Codespace.
@@ -93,7 +95,7 @@ ssh -i ~/.ssh/tp-vm debian@<IP-de-votre-VM>
 --
 À adapter selon la décision d'infrastructure, pas encore prise : avec un bastion, la commande devient `ssh -i ~/.ssh/tp-vm -J <utilisateur>@<bastion> debian@<IP-privée>`.
 
-L'utilisateur `debian` est celui des images cloud officielles Debian ; à confirmer sur le template du lab, qui peut en définir un autre dans sa configuration cloud-init.
+Mesuré sur le lab le 2026-10-09 (XCP-ng 8.3, XO REST API 0.40.2, image Debian 13 genericcloud) : la clé passée par cloud-init ouvre bien une session `debian`, membre du groupe `sudo`, sans mot de passe pour `sudo`.
 --
 
 === Étape 5 : installer Docker 🐳
@@ -175,12 +177,12 @@ La question du noyau est le cœur du TP : le conteneur partage le noyau de la VM
 sudo apt purge -y docker-ce
 ----
 . Vérifiez que `docker run --rm hello-world` échoue : le client est resté, le démon est parti
-. Revenez au snapshot `docker-ok`, reconnectez-vous en SSH
+. Revenez au snapshot `docker-ok` : la VM redémarre, reconnectez-vous en SSH
 . `docker run --rm hello-world` refonctionne
 
 [.notes]
 --
-Le revert ramène aussi l'état de la mémoire seulement si le snapshot a été pris avec la mémoire ; sans cela, la VM redémarre depuis l'état disque. Vérifier sur le lab quel cas produit le formulaire par défaut de XO, et l'annoncer.
+Mesuré sur le lab le 2026-10-09 (XCP-ng 8.3, XO REST API 0.40.2, image Debian 13 genericcloud) : après un snapshot sans mémoire, le revert passe la VM à l'arrêt puis XO la redémarre ; `uptime` repart de zéro et Docker refonctionne. Le revert ramène donc le disque, pas la mémoire. Même adresse IP et même clé d'hôte SSH : pas d'avertissement à la reconnexion. Avant ce revert, `apt purge docker-ce` laisse bien `/usr/bin/docker` en place et `docker run` échoue sur « Cannot connect to the Docker daemon ».
 
 La bêtise est volontairement réversible sans snapshot aussi : un étudiant dont le revert échoue n'est pas bloqué pour la suite.
 --
@@ -198,7 +200,7 @@ curl -b authenticationToken=$TOKEN \
 curl -X POST -b authenticationToken=$TOKEN \
   -H 'Content-Type: application/json' \
   -d '{"name_label": "depuis-curl"}' \
-  "$XO/rest/v0/vms/<UUID>/actions/snapshot"
+  "$XO/rest/v0/vms/<UUID>/actions/snapshot?sync=true"
 unset TOKEN
 ----
 
@@ -213,7 +215,9 @@ Source, consultée le 2026-10-09 : documentation Xen Orchestra, docs/automation/
 
 Pourquoi pas `xo-cli` : la même documentation dit « xo-cli is mainly a debug and power-user tool [...] Prefer the REST API for automation ». On peut le montrer en démo.
 
-À vérifier sur le lab : qu'un utilisateur self-service voit bien ses VM par l'API REST avec son propre jeton, et que la création de jeton est accessible depuis son compte.
+Mesuré sur le lab le 2026-10-09 (XCP-ng 8.3, XO REST API 0.40.2, image Debian 13 genericcloud), avec un jeton administrateur : la liste renvoie un tableau d'objets `name_label`, `power_state` et `href`. Sans `?sync=true`, l'action snapshot répond tout de suite par un `taskId` ; avec, elle attend et renvoie l'`id` du snapshot, plus parlant pour les étudiants.
+
+Toujours à vérifier sur le lab : qu'un utilisateur self-service voit bien ses VM par l'API REST avec son propre jeton, et que la création de jeton est accessible depuis son compte.
 
 La phrase sur Terraform, Packer et Jenkins s'appuie sur la documentation XO (pages des fournisseurs Terraform, Packer et Pulumi dans docs/automation) ; pour Jenkins, c'est le plugin Vates prévu dans le cours suivant.
 --

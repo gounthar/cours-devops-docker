@@ -238,7 +238,7 @@ Le trio SR / VDI / VBD revient dans toute la documentation XCP-ng et dans `xe` :
 
 Le lien avec Docker : un VBD est à une VM ce qu'un montage de volume est à un conteneur. Le stockage existe indépendamment, on le branche.
 
-`/dev/xvda` est le nom habituel d'un disque Xen sous Linux ; à vérifier sur la VM du lab avant la séance (selon le mode, le disque peut apparaître autrement).
+Mesuré sur le lab le 2026-10-09 (XCP-ng 8.3, XO REST API 0.40.2, image Debian 13 genericcloud) : `lsblk` dans la VM montre `xvda` (le disque système) et `xvdb` (le petit disque de 10 Mo qui porte la configuration cloud-init).
 --
 
 === Ce qu'on donne à une VM : réseau 🌐
@@ -305,7 +305,7 @@ xe vbd-list vm-uuid=<UUID> params=device,vdi-uuid
 
 [.notes]
 --
-Commandes à rejouer sur le lab avant la séance, sortie réelle à capturer : elles ne sont pas encore vérifiées pour ce cours. La troisième montre le trio de la slide disque : on passe de la VM à ses VBD, et chaque VBD pointe vers un VDI.
+Mesuré sur le lab le 2026-10-09 (XCP-ng 8.3, XO REST API 0.40.2, image Debian 13 genericcloud) : les trois commandes fonctionnent telles quelles. Point à montrer : `vm-list power-state=running` liste aussi un « Control domain on host: ... » par hôte. Le dom0 est une VM comme une autre pour XAPI. La troisième montre le trio de la slide disque : on passe de la VM à ses VBD (`xvda`, `xvdb`), et chaque VBD pointe vers un VDI.
 
 Le message : l'interface web n'invente rien, elle lit et écrit la même base que `xe`.
 --
