@@ -321,7 +321,7 @@ Le message : l'interface web n'invente rien, elle lit et écrit la même base qu
 --
 Source, consultée le 2026-10-09 : documentation Xen Orchestra, docs/users-and-access/users.md, section « Self-service portal » (commit db8fe8d) : « The self-service feature allows users to create new VMs », quotas « max vCPUs, max RAM, max disk usage », et « Everything is inside a "sandbox" (the resource set) you defined earlier! ».
 
-Florian Duchemin (IUT de Valence) décrit ce montage pour ses étudiants dans « Enseigner avec Xcp-ng : décollage » (LinkedIn, 2026-10-03). Le citer à l'écran seulement avec son accord.
+Florian Duchemin (IUT de Valence) décrit ce montage pour ses étudiants dans « Enseigner avec Xcp-ng : décollage » (LinkedIn, 2026-10-03).
 --
 
 === Avant la prochaine séance ✅
