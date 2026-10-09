@@ -225,7 +225,7 @@ Mesuré sur le lab le 2026-10-09 avec un compte non administrateur : le resource
 
 À préparer pour chaque étudiant, en plus du resource set : un rôle avec les privilèges `vm` `read`, `start`, `snapshot` et `revert-snapshot`, chacun avec le sélecteur `resourceSet:<id-du-resource-set>`, attaché à son compte. Avec ce rôle, son jeton liste sa VM et elle seule, fait un snapshot (201) et un revert (204), et reçoit un 403 sur la VM d'un autre. Un sélecteur commun à toute la classe ne marche pas : chacun verrait les VM des autres.
 
-Le jeton : un étudiant ne peut pas le créer par l'API REST (`POST /rest/v0/users/authentication_tokens` répond 403), et un administrateur ne peut pas en créer pour lui (« you can only create token for yourself »). Il passe donc par sa page utilisateur dans l'interface web.
+Le jeton : un administrateur ne peut pas en créer pour un étudiant (« you can only create token for yourself »). L'étudiant le crée donc lui-même, par sa page utilisateur dans l'interface web : c'est la méthode à donner en séance. Par l'API, la route documentée `POST /rest/v0/users/me/authentication_tokens` redirige (307) vers `/users/<son-id>/authentication_tokens`, qui répond 201 quand l'étudiant est déjà authentifié par un jeton. La route `POST /rest/v0/users/authentication_tokens`, avec identifiant et mot de passe, a répondu 403 ; la route documentée n'a pas été retestée avec identifiant et mot de passe.
 
 La phrase sur Terraform, Packer et Jenkins s'appuie sur la documentation XO (pages des fournisseurs Terraform, Packer et Pulumi dans docs/automation) ; pour Jenkins, c'est le plugin Vates prévu dans le cours suivant.
 --
