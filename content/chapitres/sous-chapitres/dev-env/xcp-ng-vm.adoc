@@ -192,13 +192,14 @@ Créez un **jeton** dans Xen Orchestra (vos paramètres utilisateur), puis, depu
 [source,bash]
 ----
 XO=https://<adresse-de-xo>
-TOKEN=<votre-jeton>
+read -rsp "Jeton XO : " TOKEN; echo
 curl -b authenticationToken=$TOKEN \
   "$XO/rest/v0/vms?fields=name_label,power_state"
 curl -X POST -b authenticationToken=$TOKEN \
   -H 'Content-Type: application/json' \
   -d '{"name_label": "depuis-curl"}' \
   "$XO/rest/v0/vms/<UUID>/actions/snapshot"
+unset TOKEN
 ----
 
 [.small]
@@ -206,6 +207,8 @@ C'est la même API que celle qu'utilisent Terraform, Packer ou Jenkins pour pilo
 
 [.notes]
 --
+Le jeton est lu avec `read -s` plutôt que tapé dans une affectation : il ne s'affiche pas et ne finit pas dans l'historique du shell. `unset` l'efface à la fin.
+
 Source, consultée le 2026-10-09 : documentation Xen Orchestra, docs/automation/restapi.md (commit db8fe8d) : authentification par le cookie `authenticationToken`, et « Operations that do something (start, snapshot, migrate...) are exposed as actions: POST /rest/v0/<type>/<uuid>/actions/<action> », exemple de snapshot avec `{"name_label": ...}`.
 
 Pourquoi pas `xo-cli` : la même documentation dit « xo-cli is mainly a debug and power-user tool [...] Prefer the REST API for automation ». On peut le montrer en démo.

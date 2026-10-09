@@ -155,7 +155,7 @@ Source XCP-ng 8.3, consultée le 2026-10-09 : https://docs.xcp-ng.org/releases/r
 [%step]
 * **PV** : l'invité paravirtualisé de 2003. **Supprimé** dans XCP-ng 8.3
 * **HVM** : l'invité ne sait rien, le processeur (VT-x / AMD-V) fait le travail ; c'est le mode de vos VM
-* **Pilotes PV** dans un invité HVM : disque et réseau parlent quand même directement à Xen, pour la performance
+* **Pilotes PV** dans un invité HVM : disque et réseau passent par un pilote « frontend » dans la VM, qui parle au « backend » du dom0, sans émulation
 * **PVH** : le meilleur des deux, sans émulation de carte mère ; existe dans Xen, à mentionner seulement
 
 [.notes]
