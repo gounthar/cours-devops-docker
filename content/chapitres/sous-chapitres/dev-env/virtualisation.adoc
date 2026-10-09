@@ -22,7 +22,7 @@ Le fil rouge des deux séances : à la fin, l'étudiant sait dire à quel étage
 [%step]
 * Un serveur physique dédié à une seule application est **sous-utilisé** la plupart du temps
 * Plusieurs systèmes sur une même machine : **consolidation**
-* Chacun croit être seul : **isolation** (une panne, une faille, un `rm -rf` restent chez lui)
+* Chacun croit être seul : **isolation** (une panne ou un `rm -rf` restent chez lui)
 * Un système devient un **fichier** : on le copie, on le sauvegarde, on le déplace
 
 [.notes]
@@ -209,7 +209,7 @@ Même page : « xo-cli is mainly a debug and power-user tool: there is no absolu
 
 [%step]
 * **vCPU** : des processeurs virtuels, ordonnancés par Xen sur les cœurs réels
-* On peut en donner plus qu'il n'y a de cœurs : ça tient tant qu'ils ne travaillent pas tous en même temps
+* On peut en donner plus qu'il n'y a de cœurs : ça tient tant que leur charge cumulée reste sous ce que l'hôte peut fournir
 * **Mémoire** : réservée à la VM, et le dom0 garde la sienne
 * Quand vous dépassez votre quota, la création est simplement refusée
 
@@ -257,7 +257,7 @@ Le lien avec Docker : un VBD est à une VM ce qu'un montage de volume est à un 
 --
 Faire le parallèle avec le chapitre réseau Docker à venir : un bridge Docker est la même idée, un étage plus haut.
 
-Le « réseau par étudiant » est une des configurations décrites au séminaire UGA du 2026-10-08 (Florian Duchemin, IUT de Valence). Ne le présenter que comme un exemple.
+Le « réseau par étudiant » est un exemple de configuration, pas la seule possible.
 --
 
 === Templates et cloud-init 📦
@@ -280,14 +280,14 @@ Parallèle Docker : un template est à une VM ce qu'une image est à un conteneu
 [%step]
 * Créer, démarrer, arrêter (proprement ou de force), supprimer
 * **Snapshot** : une photo de la VM à un instant, et **revert** pour y revenir
-* **Migration à chaud** : la VM change d'hôte sans s'arrêter (stockage partagé)
+* **Migration à chaud** : la VM change d'hôte sans s'arrêter
 * **Sauvegarde** : une copie **ailleurs**
 
 [.notes]
 --
 Rappeler la nuance déjà faite dans l'introduction : un snapshot reste sur le même stockage que la VM. Ce n'est pas une sauvegarde.
 
-La migration à chaud est montrée en démo enseignant si le lab a deux hôtes et un SR partagé ; sinon, en parler seulement.
+La migration à chaud est montrée en démo enseignant si le lab a deux hôtes et un SR partagé ; sinon, en parler seulement. Le SR partagé n'est pas la seule condition : il faut aussi des hôtes du même pool, de CPU compatibles. Sans SR partagé, les disques doivent voyager avec la VM, ce qui est plus long (non vérifié sur le lab).
 --
 
 === Démo : sous le capot, `xe` 🔧

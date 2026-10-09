@@ -174,7 +174,7 @@ La question du noyau est le cœur du TP : le conteneur partage le noyau de la VM
 ----
 sudo apt purge -y docker-ce
 ----
-. Vérifiez que `docker` ne répond plus
+. Vérifiez que `docker run --rm hello-world` échoue : le client est resté, le démon est parti
 . Revenez au snapshot `docker-ok`, reconnectez-vous en SSH
 . `docker run --rm hello-world` refonctionne
 
