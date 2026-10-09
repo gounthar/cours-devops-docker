@@ -221,7 +221,11 @@ Pourquoi pas `xo-cli` : la même documentation dit « xo-cli is mainly a debug a
 
 Mesuré sur le lab le 2026-10-09 (XCP-ng 8.3, XO REST API 0.40.2, image Debian 13 genericcloud), avec un jeton administrateur : la liste renvoie un tableau d'objets `name_label`, `power_state` et `href`. Sans `?sync=true`, l'action snapshot répond tout de suite par un `taskId` ; avec, elle attend et renvoie l'`id` du snapshot, plus parlant pour les étudiants.
 
-Toujours à vérifier sur le lab : qu'un utilisateur self-service voit bien ses VM par l'API REST avec son propre jeton, et que la création de jeton est accessible depuis son compte.
+Mesuré sur le lab le 2026-10-09 avec un compte non administrateur : le resource set suffit pour l'interface web, **pas pour l'API REST**. Avec le seul resource set, le jeton de l'étudiant obtient une liste vide (HTTP 200, `[]`) et un 403 « not enough privileges » sur le snapshot de sa propre VM. L'API REST applique son propre contrôle d'accès (RBAC, rôles et privilèges, documentation XO docs/users-and-access/rbac.md). Sur XOA, il faut le pack Essential+ ou au-dessus ; une installation depuis les sources n'a pas cette restriction.
+
+À préparer pour chaque étudiant, en plus du resource set : un rôle avec les privilèges `vm` `read`, `start`, `snapshot` et `revert-snapshot`, chacun avec le sélecteur `resourceSet:<id-du-resource-set>`, attaché à son compte. Avec ce rôle, son jeton liste sa VM et elle seule, fait un snapshot (201) et un revert (204), et reçoit un 403 sur la VM d'un autre. Un sélecteur commun à toute la classe ne marche pas : chacun verrait les VM des autres.
+
+Le jeton : un étudiant ne peut pas le créer par l'API REST (`POST /rest/v0/users/authentication_tokens` répond 403), et un administrateur ne peut pas en créer pour lui (« you can only create token for yourself »). Il passe donc par sa page utilisateur dans l'interface web.
 
 La phrase sur Terraform, Packer et Jenkins s'appuie sur la documentation XO (pages des fournisseurs Terraform, Packer et Pulumi dans docs/automation) ; pour Jenkins, c'est le plugin Vates prévu dans le cours suivant.
 --
