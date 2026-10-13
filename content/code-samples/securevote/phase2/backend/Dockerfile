@@ -6,6 +6,10 @@ RUN groupadd -r flaskuser && useradd -r -g flaskuser flaskuser
 
 WORKDIR /app
 
+# ✅ Logs Python envoyés tout de suite (sinon ils restent dans un tampon,
+# et un print fait avant le fork des workers Gunicorn sort en double)
+ENV PYTHONUNBUFFERED=1
+
 # Copier les dépendances d'abord (meilleur cache)
 COPY requirements.txt .
 
@@ -23,5 +27,5 @@ USER flaskuser
 
 EXPOSE 5000
 
-# ✅ Processus s'exécute en tant que flaskuser
-CMD ["python", "app.py"]
+# ✅ Serveur WSGI de production, en tant que flaskuser
+CMD ["gunicorn", "--config", "gunicorn.conf.py", "app:app"]
