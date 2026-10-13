@@ -23,7 +23,7 @@ Démarrer l'application SecureVote et identifier les vulnérabilités de sécuri
 >
 > Trouvez qui occupe le port (`docker ps`, ou `sudo ss -ltnp | grep -E ':(5432|6379) '` sous Linux) et arrêtez-le le temps du TP. Sinon, changez seulement le port côté hôte dans `docker-compose.yml`, par exemple `"15432:5432"` : les autres conteneurs joignent la base par son nom de service, pas par ce port.
 >
-> Ne supprimez pas ces lignes `ports:` : l'exposition de 5432 et 6379 sur l'hôte fait partie des vulnérabilités à repérer à l'étape 3.
+> Ne supprimez pas ces lignes `ports:` : exposer PostgreSQL et Redis sur l'hôte fait partie des vulnérabilités à repérer à l'étape 3, quel que soit le port choisi côté hôte (15432 après le changement ci-dessus).
 
 ## Étape 1 : Démarrage de l'application (5 min)
 
