@@ -615,7 +615,7 @@ services:
       - db_password
 secrets:
   db_password:
-    file: ./db_password.txt   # non versionné
+    file: ./secrets/db_password.txt   # secrets/ est dans .gitignore
 ----
 
 [%step]

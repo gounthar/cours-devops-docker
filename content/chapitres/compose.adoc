@@ -1637,18 +1637,18 @@ git clone https://github.com/jenkins-docs/quickstart-tutorials.git
 [%step]
 À vous de modifier les `FROM` des `dockerfiles/*/Dockerfile` qui viennent de Docker Hub, pour passer par le cache ILI (préfixe donné en séance, comme pour GitLab au TP #12-BIS).
 [%step]
-Ensuite, ne restera qu'à lancer la "forge":
-[%step]
-[source,bash]
-----
-docker compose up --build -d --force-recreate maven
-----
-[%step]
-Ou encore si vous voulez tout construire localement:
+Ensuite, construire et lancer la "forge" avec ces `Dockerfile` modifiés :
 [%step]
 [source,bash]
 ----
 docker compose -f build-docker-compose.yaml up --build -d --force-recreate maven
+----
+[%step]
+Sans rien construire, avec les images toutes faites de ghcr.io (vos `FROM` ne servent alors à rien) :
+[%step]
+[source,bash]
+----
+docker compose up -d maven
 ----
 
 [.notes]
