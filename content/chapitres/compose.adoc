@@ -1169,7 +1169,7 @@ La page servie est « Infinite Mario ».
 😏 Non, et bien c'est parti quand même.
 [%step]
 ⚠️ GitLab est gourmand : mesuré à 5,6 Gio de mémoire, et environ 5 minutes avant que la page de connexion réponde. Le statut `healthy` arrive bien avant : il ne veut pas dire que GitLab est prêt. Vérifiez la mémoire de votre machine (`free -h`) avant de lancer.
-[%step]
+[.small%step]
 * Créez un nouveau fichier appelé `docker-compose.yml`.
 * Dans ce fichier, définissez trois services : `gitlab`, `gitlab-runner-1` et `gitlab-runner-2`.
 * Pour le service `gitlab`:
@@ -1210,6 +1210,7 @@ Pas assez détaillé? 😨
 [%auto-animate]
 == 🎓 Travaux pratiques #12-BIS 🔨🔥
 
+[.small]
 * Sous `gitlab:`, ajoutez les détails de votre service.
 ** Par exemple, `image: 'gitlab/gitlab-ce:19.4.1-ce.0'` pour spécifier l'image Docker à utiliser pour ce service.
 ** Continuez à ajouter des détails pour le service gitlab, comme `restart: always` pour toujours redémarrer le conteneur s'il s'arrête, et `hostname: 'localhost'` pour définir le nom d'hôte du serveur GitLab.
@@ -1243,6 +1244,18 @@ Pas assez détaillé? 😨
 [%step]
 ** en ajoutant `- '/var/run/docker.sock:/var/run/docker.sock'`
 ** et `- 'gitlab-runner-1-config:/etc/gitlab-runner'` (ou `- 'gitlab-runner-2-config:/etc/gitlab-runner'` pour `gitlab-runner-2`) sous `volumes:`.
+[%step]
+⚠️ Ce socket donne au runner le contrôle du moteur Docker de votre machine : c'est par lui qu'il lance un conteneur par job. Sur une machine partagée, ce n'est pas un montage anodin.
+
+[.notes]
+--
+Monter `/var/run/docker.sock`, c'est la même prudence que le port 2375 vu au chapitre réseaux : qui parle au socket pilote le moteur, et peut lancer un conteneur qui monte la racine de l'hôte.
+Docker le dit lui-même : « only trusted users should be allowed to control your Docker daemon » (https://docs.docker.com/engine/security/#docker-daemon-attack-surface).
+
+Le socket ne sert qu'à l'exécuteur `docker`.
+Mesuré le 2026-10-07 avec `gitlab/gitlab-runner:alpine-v19.4.1` : l'image n'a pas de client `docker`, c'est le runner lui-même qui appelle l'API du moteur pour créer les conteneurs des jobs, à côté du sien (pas de Docker-in-Docker).
+Avec l'exécuteur `shell`, les jobs tournent dans le conteneur du runner et le socket ne sert à rien.
+--
 
 [%auto-animate]
 == 🎓 Travaux pratiques #12-BIS 🔨🔥
@@ -1285,8 +1298,8 @@ Il va falloir se logguer, lier les runners au serveur, créer un projet, etc...
 [.columns]
 == 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
 
-[.column]
-image::gitlab-login.png[height=500]
+[.column.is-one-third]
+image::gitlab-login.png[]
 
 [.column]
 --
@@ -1312,17 +1325,23 @@ Pour utiliser le runner GitLab dans GitLab, vous devez le configurer.
 [%step]
 - Pire que ça, pas un jeton, mais carrément une commande à adapter à `docker compose`.
 [%step]
-- Pour ce faire, allez à l'adresse : http://localhost/admin/runners et cliquez sur le bouton "New instance runner".
+- Sur http://localhost/admin/runners, cliquez sur "Create instance runner".
 [%step]
-- Choisissez "Linux".
-[%step]
-- "Run untagged jobs"
+- Cochez "Run untagged jobs".
 [%step]
 - Donnez une description au runner.
 [%step]
-- Cliquez sur le bouton "Create runner"
+- Cliquez sur le bouton "Create runner".
 [%step]
-- Vous avez ensuite une commande à copier et modifier pour `docker compose`.
+- Sur la page "Register runner", gardez "Linux".
+[%step]
+- Vous avez ensuite une commande à copier et modifier pour `docker compose`, avec un jeton par runner.
+
+[.notes]
+--
+Vérifié le 2026-10-07 sur GitLab 19.4.1 : le choix de la plateforme (Linux, macOS, Windows) se fait après la création du runner, sur la page "Register runner", et non plus avant.
+La vidéo qui suit montre une version plus ancienne de l'interface.
+--
 
 
 [%auto-animate]
@@ -1337,23 +1356,56 @@ https://youtu.be/S-npLuur6KM
 [%auto-animate]
 == 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
 
+GitLab propose :
+
 [source,bash]
 ----
-docker compose -f tp12-bis.yml exec gitlab-runner-1 gitlab-runner register --url http://gitlab  --token glrt-PF5rLbUKzku5g8BL2y7J
-Runtime platform                                    arch=amd64 os=linux pid=103 revision=853330f9 version=16.5.0
+gitlab-runner register --url http://localhost --token glrt-...
+----
+
+[%step]
+Dans le conteneur du runner, `localhost` désigne le runner lui-même.
+Le serveur, sur le réseau de Compose, s'appelle `gitlab`.
+
+[%auto-animate]
+== 🔨🔥 J'ai ma forge! Bon, et maintenant? 😐
+
+[source,bash]
+----
+docker compose -f tp12-bis.yml exec gitlab-runner-1 \
+  gitlab-runner register --non-interactive \
+    --url http://gitlab --clone-url http://gitlab \
+    --token glrt-... --name runner-1 \
+    --executor docker --docker-image alpine:latest \
+    --docker-network-mode <dossier>_default
+----
+
+[%step]
+[source]
+----
+Runtime platform        arch=amd64 os=linux pid=53 revision=3c39fceb version=19.4.1
 Running in system-mode.
 
-Enter the GitLab instance URL (for example, https://gitlab.com/):
-[http://gitlab]:
-Verifying runner... is valid                        runner=PF5rLbUKz
-Enter a name for the runner. This is stored only in the local config.toml file:
-[3c2ee0d97d2b]: runner 1
-Enter an executor: parallels, docker-autoscaler, docker+machine, custom, docker, docker-windows, shell, ssh, virtualbox, instance, kubernetes:
-shell
-Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
+Verifying runner... is valid       runner=bl16wVzQO runner_name=runner-1
+Runner registered successfully. Feel free to start it, [...]
 
 Configuration (with the authentication token) was saved in "/etc/gitlab-runner/config.toml"
 ----
+
+[%step]
+`<dossier>_default` : le réseau créé par Compose, nommé d'après le dossier du fichier (`docker network ls`).
+
+[.notes]
+--
+Mesuré le 2026-10-07, GitLab et GitLab Runner 19.4.1, exécuteur `docker`, un job `cat /etc/os-release` sur un projet de test :
+
+* `--url http://gitlab` seul : le runner s'enregistre, mais le job échoue au clonage, `unable to access 'http://localhost/root/demo.git/'`. GitLab donne aux jobs l'adresse tirée de `external_url`, et dans le conteneur du job `localhost` n'est pas GitLab.
+* avec `--clone-url http://gitlab` mais sans `--docker-network-mode` : `Could not resolve host: gitlab`. Les conteneurs des jobs sont créés hors du réseau de Compose.
+* avec les deux : le job clone le dépôt et réussit (`Job succeeded`).
+
+Sans `--non-interactive`, `register` demande l'URL, le nom, l'exécuteur (répondre `docker`, pas `shell`) puis l'image par défaut, mais ni l'URL de clonage ni le réseau : il faudrait les ajouter ensuite à la main dans `config.toml`.
+Le fichier écrit garde ces réglages : `clone_url` et, sous `[runners.docker]`, `network_mode`.
+--
 
 [%auto-animate]
 == !
