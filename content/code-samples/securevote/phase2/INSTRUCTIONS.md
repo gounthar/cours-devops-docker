@@ -329,6 +329,14 @@ curl http://localhost:8080/health
 # Si ça échoue, lisez l'erreur dans : docker compose logs backend
 ```
 
+`depends_on` ne fait qu'ordonner le démarrage des conteneurs : il n'attend pas que PostgreSQL accepte les connexions. Si la base met longtemps à démarrer, le backend peut épuiser ses tentatives (`on-failure:5`) et rester arrêté (`Exited`). Une fois la base prête, relancez-le :
+
+```bash
+docker compose restart backend
+```
+
+La phase 3 règle ce problème avec un healthcheck sur la base et `condition: service_healthy`.
+
 ### Validation
 
 - ✅ Fichier `.env` créé et fonctionnel
