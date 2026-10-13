@@ -322,8 +322,11 @@ cat docker-compose.yml | grep -i password
 ```bash
 docker compose logs backend | grep -E "Starting gunicorn|development server"
 # Doit afficher « Starting gunicorn », et aucune ligne « development server ».
-# Plusieurs « Starting gunicorn » : le backend a redémarré en attendant
-# que PostgreSQL soit prêt (restart: on-failure), c'est normal.
+# Plusieurs « Starting gunicorn » : le backend a redémarré (restart: on-failure).
+# Cause la plus fréquente : PostgreSQL n'était pas encore prêt.
+# Vérifiez qu'il tourne maintenant :
+curl http://localhost:8080/health
+# Si ça échoue, lisez l'erreur dans : docker compose logs backend
 ```
 
 ### Validation
