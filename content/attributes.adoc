@@ -34,3 +34,4 @@
 :invert2: state=invert,background-color="rgb(248, 228, 130)"
 :author_mail: {mail_icon} gounthar@gmail.com
 include::./dates.adoc[]
+include::./trivy.adoc[]

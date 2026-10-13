@@ -385,20 +385,22 @@ TIP: Pin la version (`:0.75.0`, jamais `latest`) et persist le cache (`-v $HOME/
 
 == Exemple de résultat Trivy
 
-[source,bash]
+[source,bash,subs="attributes+"]
 ----
-trivy image python:3.11
+trivy image {trivy-image}
 
-Total: 3277 (UNKNOWN: 83, LOW: 1360, MEDIUM: 1501, HIGH: 317, CRITICAL: 16)
+{trivy-target}
+{trivy-total-line}
 ----
 
 Colonnes : Library, Vulnerability, Severity, Status, Installed Version, Fixed Version, Title.
 
 [.notes]
 --
-Mesuré le 2026-10-13 avec Trivy 0.75.0 sur `python:3.11` (Debian 13). Le chiffre bouge chaque jour.
+Mesuré le {trivy-date} avec Trivy {trivy-version} sur `{trivy-image}` ({trivy-distro}), par le workflow trivy-sample.yml. Le chiffre bouge chaque jour : 3277 le matin du 2026-10-13, 3602 le soir.
+Ce total est celui de la cible système (paquets {trivy-distro}) ; les paquets Python de l'image ont leur propre ligne `Total:`.
 Beaucoup de lignes sont en Status `affected` sans version corrigée : `--ignore-unfixed` ne garde que ce qu'on peut corriger.
-Même image en `python:3.11-slim` : ~170.
+Même image en `{trivy-slim-image}` : {trivy-slim-total}.
 --
 
 [%step]

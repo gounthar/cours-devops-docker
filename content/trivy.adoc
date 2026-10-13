@@ -1,0 +1,11 @@
+// Généré par scripts/gen_trivy_sample.py : ne pas modifier à la main.
+// Mis à jour par le workflow trivy-sample.yml, qui ouvre une PR.
+:trivy-image: python:3.11
+:trivy-target: python:3.11 (debian 13.7)
+:trivy-distro: Debian 13.7
+:trivy-total: 3602
+:trivy-total-line: Total: 3602 (UNKNOWN: 97, LOW: 1592, MEDIUM: 1588, HIGH: 309, CRITICAL: 16)
+:trivy-slim-image: python:3.11-slim
+:trivy-slim-total: 166
+:trivy-version: 0.75.0
+:trivy-date: 2026-10-13
