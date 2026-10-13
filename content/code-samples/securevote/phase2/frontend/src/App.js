@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+// Variable lue au build (npm run build), pas au démarrage du conteneur.
+// Vide = URL relative : le proxy Nginx route /api vers le backend.
+const API_URL = process.env.REACT_APP_API_URL || '';
 
 function App() {
   const [options, setOptions] = useState([]);
