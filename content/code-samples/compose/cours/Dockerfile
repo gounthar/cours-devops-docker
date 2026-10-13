@@ -3,13 +3,13 @@
 
 FROM node:26-alpine
 
-# Installer la dernière version des dépendances requises
+# curl (transferts par URL), git, tini (un init minuscule) et unzip. Pas de commentaire après un \ : il casse la ligne.
 # hadolint ignore=DL3018
 RUN apk add --no-cache \
-  curl \ # Outil pour transférer des données avec des URLs
-  git \ # Système de contrôle de version distribué
-  tini \ # Un init minuscule mais valide pour les conteneurs
-  unzip # Outil pour décompresser les fichiers zip
+  curl \
+  git \
+  tini \
+  unzip
 
 # Installer les dépendances NPM globalement (dernières versions)
 # hadolint ignore=DL3016,DL3059
