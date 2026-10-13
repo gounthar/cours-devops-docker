@@ -115,7 +115,7 @@ Faire travailler les étudiants en binômes avec les questions :
 
 4. **Scanner les vulnérabilités** (5 min)
    ```bash
-   docker scout cves securevote-backend:latest --only-severity critical
+   docker scout cves phase2-backend --only-severity critical
    ```
    → Discussion : Combien de CVE critiques ? Pourquoi ?
 
@@ -187,7 +187,7 @@ Faire travailler les étudiants en binômes avec les questions :
 - Backend : `flaskuser`
 - Frontend : `reactuser`
 - Proxy : `nginxinc/nginx-unprivileged`
-- Vérification avec `whoami` et `ps aux`
+- Vérification avec `whoami` et `docker compose top`
 
 **Points de vigilance :**
 - Erreur courante : oublier `chown` des fichiers → permission denied
@@ -334,8 +334,8 @@ Si la session avance bien et qu'il reste du temps :
 
 2. Tagger et pousser les images
    ```bash
-   docker tag securevote-backend:latest localhost:5000/securevote-backend:1.0.0
-   docker push localhost:5000/securevote-backend:1.0.0
+   docker tag phase2-backend localhost:5050/securevote-backend:1.0.0
+   docker push localhost:5050/securevote-backend:1.0.0
    ```
 
 3. Modifier `docker-compose.yml` pour utiliser le registre local

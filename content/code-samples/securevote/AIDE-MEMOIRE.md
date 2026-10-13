@@ -51,7 +51,7 @@ docker compose exec backend env
 docker compose exec backend sh
 
 # Voir les processus
-docker compose exec backend ps aux
+docker compose top backend
 ```
 
 ---
