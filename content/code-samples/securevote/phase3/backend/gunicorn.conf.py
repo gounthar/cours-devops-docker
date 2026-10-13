@@ -4,6 +4,10 @@
 bind = "0.0.0.0:5000"
 workers = 2
 accesslog = "-"  # journal des requêtes sur la sortie standard
+# Pas de socket de contrôle (gunicornc, Gunicorn 25+) : inutile dans un
+# conteneur, et l'utilisateur système flaskuser n'a pas de répertoire
+# personnel où le créer.
+control_socket_disable = True
 
 
 def on_starting(server):

@@ -1,5 +1,5 @@
 # ✅ Image slim (beaucoup moins de vulnérabilités)
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 # ✅ Créer un utilisateur non-root
 RUN groupadd -r flaskuser && useradd -r -g flaskuser flaskuser

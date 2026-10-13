@@ -1,0 +1,131 @@
+---
+name: Bumps the python base images of the securevote backends
+
+# Each phase follows a fixed distance from the latest Python release:
+#   phase1 = latest - 4: old on purpose (students find what is wrong),
+#            but still within its five years of security support, so it
+#            moves up once a year instead of falling out of support.
+#   phase2 = latest - 1
+#   phase3 = latest
+# endoflife.date (v1 API) lists the release cycles newest first, so the distance
+# is an index into that list. The same manifest runs upstream in
+# gounthar/securevote, where Dependabot ignores python minor and major
+# bumps. This repo's dependabot.yml does not cover the securevote copy.
+# phase1 moving changes its Trivy findings: re-measure the count quoted
+# in the course slides when this pipeline bumps phase1.
+
+scms:
+  default:
+    kind: github
+    spec:
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv .github.token }}"
+      username: "{{ .github.username }}"
+      branch: "{{ .github.branch }}"
+
+sources:
+  pythonLatest:
+    name: Get the latest Python release cycle
+    kind: json
+    spec:
+      file: https://endoflife.date/api/v1/products/python
+      engine: dasel/v2
+      key: ".result.releases.[0].name"
+  pythonLatestMinus1:
+    name: Get the Python release cycle before the latest
+    kind: json
+    spec:
+      file: https://endoflife.date/api/v1/products/python
+      engine: dasel/v2
+      key: ".result.releases.[1].name"
+  pythonLatestMinus4:
+    name: Get the Python release cycle four before the latest
+    kind: json
+    spec:
+      file: https://endoflife.date/api/v1/products/python
+      engine: dasel/v2
+      key: ".result.releases.[4].name"
+
+conditions:
+  # Each target waits only for the image tag it would write, so a late
+  # python:<latest>-slim does not hold back phase1 and phase2.
+  testPythonLatestSlimPublished:
+    name: "Test that the python:<latest>-slim image tag exists"
+    kind: dockerimage
+    sourceid: pythonLatest
+    spec:
+      image: "python"
+    transformers:
+      - addsuffix: "-slim"
+  testPythonLatestMinus1SlimPublished:
+    name: "Test that the python:<latest-1>-slim image tag exists"
+    kind: dockerimage
+    sourceid: pythonLatestMinus1
+    spec:
+      image: "python"
+    transformers:
+      - addsuffix: "-slim"
+  testPythonLatestMinus4Published:
+    name: "Test that the python:<latest-4> image tag exists"
+    kind: dockerimage
+    sourceid: pythonLatestMinus4
+    spec:
+      image: "python"
+
+targets:
+  updatePhase1Backend:
+    name: "Update the python image of the phase1 backend (latest - 4)"
+    kind: dockerfile
+    sourceid: pythonLatestMinus4
+    scmid: default
+    disableconditions: true
+    dependson:
+      - "condition#testPythonLatestMinus4Published"
+    spec:
+      file: content/code-samples/securevote/phase1/backend/Dockerfile
+      instruction:
+        keyword: FROM
+        matcher: python
+  updatePhase2Backend:
+    name: "Update the python image of the phase2 backend (latest - 1)"
+    kind: dockerfile
+    sourceid: pythonLatestMinus1
+    scmid: default
+    disableconditions: true
+    dependson:
+      - "condition#testPythonLatestMinus1SlimPublished"
+    transformers:
+      - addsuffix: "-slim"
+    spec:
+      file: content/code-samples/securevote/phase2/backend/Dockerfile
+      instruction:
+        keyword: FROM
+        matcher: python
+  updatePhase3Backend:
+    name: "Update the python image of the phase3 backend (latest)"
+    kind: dockerfile
+    sourceid: pythonLatest
+    scmid: default
+    disableconditions: true
+    dependson:
+      - "condition#testPythonLatestSlimPublished"
+    transformers:
+      - addsuffix: "-slim"
+    spec:
+      file: content/code-samples/securevote/phase3/backend/Dockerfile
+      instruction:
+        keyword: FROM
+        matcher: python
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    title: 'Bump the securevote backend python images (latest {{ source "pythonLatest" }})'
+    spec:
+      labels:
+        - dependencies
+        - python
