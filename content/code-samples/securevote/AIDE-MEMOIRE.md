@@ -85,7 +85,9 @@ COPY --chown=appuser:appuser . .
 # ✅ Passer à l'utilisateur non-root
 USER appuser
 
-CMD ["python", "app.py"]
+# ✅ Serveur WSGI de production (pas le serveur de développement de Flask)
+ENV PYTHONUNBUFFERED=1
+CMD ["gunicorn", "--config", "gunicorn.conf.py", "app:app"]
 ```
 
 ### Gestion des secrets
