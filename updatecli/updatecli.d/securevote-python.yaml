@@ -7,7 +7,7 @@ name: Bumps the python base images of the securevote backends
 #            moves up once a year instead of falling out of support.
 #   phase2 = latest - 1
 #   phase3 = latest
-# endoflife.date lists the release cycles newest first, so the distance
+# endoflife.date (v1 API) lists the release cycles newest first, so the distance
 # is an index into that list. The same manifest runs upstream in
 # gounthar/securevote, where Dependabot ignores python minor and major
 # bumps. This repo's dependabot.yml does not cover the securevote copy.
@@ -31,23 +31,23 @@ sources:
     name: Get the latest Python release cycle
     kind: json
     spec:
-      file: https://endoflife.date/api/python.json
+      file: https://endoflife.date/api/v1/products/python
       engine: dasel/v2
-      key: ".[0].cycle"
+      key: ".result.releases.[0].name"
   pythonLatestMinus1:
     name: Get the Python release cycle before the latest
     kind: json
     spec:
-      file: https://endoflife.date/api/python.json
+      file: https://endoflife.date/api/v1/products/python
       engine: dasel/v2
-      key: ".[1].cycle"
+      key: ".result.releases.[1].name"
   pythonLatestMinus4:
     name: Get the Python release cycle four before the latest
     kind: json
     spec:
-      file: https://endoflife.date/api/python.json
+      file: https://endoflife.date/api/v1/products/python
       engine: dasel/v2
-      key: ".[4].cycle"
+      key: ".result.releases.[4].name"
 
 conditions:
   # Each target waits only for the image tag it would write, so a late
