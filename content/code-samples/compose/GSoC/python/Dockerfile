@@ -1,14 +1,17 @@
 # Use the base image
-FROM jenkins/ssh-agent:8.6.0-jdk17 as ssh-agent
+FROM jenkins/ssh-agent:8.6.0-jdk17 AS ssh-agent
 
 # Install necessary Dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    binutils ca-certificates curl git python3 python3-pip python3-setuptools python3-wheel python3-dev wget
+    binutils ca-certificates curl git python3 python3-pip python3-setuptools python3-venv python3-wheel python3-dev wget
 
 # Create an alias for python3 as python
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
-# Install required python packages
+# Install required python packages in a virtual environment:
+# Debian trixie refuses a system-wide pip install (PEP 668, externally-managed-environment)
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:${PATH}"
 RUN pip install docker-py feedparser nosexcover prometheus_client pycobertura pylint pytest pytest-cov requests setuptools sphinx pyinstaller
 
 # Add the Jenkins agent user to the environment

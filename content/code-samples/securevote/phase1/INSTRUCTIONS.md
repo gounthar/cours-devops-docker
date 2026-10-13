@@ -119,12 +119,12 @@ Si vous avez Docker Scout ou Trivy installé :
 
 ```bash
 # Avec Docker Scout
-docker scout cves securevote-backend:latest
-docker scout cves securevote-frontend:latest
+docker scout cves phase1-backend
+docker scout cves phase1-frontend
 
 # Ou avec Trivy
-trivy image securevote-backend:latest
-trivy image securevote-frontend:latest
+trivy image phase1-backend
+trivy image phase1-frontend
 ```
 
 Comptez le nombre de vulnérabilités HIGH et CRITICAL.

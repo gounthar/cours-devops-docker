@@ -158,7 +158,7 @@ docker compose exec proxy whoami
 # Doit afficher : nginx (UID 101, pas root)
 
 # Vérifier les processus
-docker compose exec backend ps aux
+docker compose top backend
 # Aucun processus ne doit avoir UID 0
 ```
 
@@ -416,8 +416,8 @@ docker compose exec backend ping database
 
 ```bash
 # 1. Scanner les images
-docker scout cves securevote-backend:latest --only-severity critical
-docker scout cves securevote-frontend:latest --only-severity critical
+docker scout cves phase2-backend --only-severity critical
+docker scout cves phase2-frontend --only-severity critical
 
 # 2. Vérifier les utilisateurs
 docker compose exec backend whoami  # flaskuser

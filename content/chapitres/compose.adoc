@@ -1311,6 +1311,8 @@ docker compose -f tp12-bis.yml exec -it gitlab grep 'Password:' /etc/gitlab/init
 Password: qaPxXU+RqioolV3bAljvs2VYnyYa4jO/UYcis/UXLAk=
 ----
 [%step]
+⚠️ Ce fichier disparaît au premier redémarrage du conteneur après 24 h : changez le mot de passe `root` dès la première connexion.
+[%step]
 Ensuite, il va falloir restreindre l'accès:
 [%step]
 image::sign-up-restrictions.png[]
@@ -1393,7 +1395,7 @@ Configuration (with the authentication token) was saved in "/etc/gitlab-runner/c
 ----
 
 [%step]
-`<dossier>_default` : le réseau créé par Compose, nommé d'après le dossier du fichier (`docker network ls`).
+`<dossier>_default` : le réseau créé par Compose, nommé d'après le dossier du fichier, en minuscules et sans caractères spéciaux (`docker network ls`).
 
 [.notes]
 --
@@ -1422,6 +1424,14 @@ On a vu déjà l'instruction `depends_on` dans un fichier Docker Compose.
 - Cela peut être utile pour gérer des environnements de développement, de test et de production différents dans le même fichier Docker Compose.
 - Pour définir un profil pour un service, vous pouvez ajouter la clé `profiles` à la définition du service dans votre fichier Docker Compose.
 
+[.notes]
+--
+Rappel rapide : les profils ont déjà été présentés, on les revoit pour corriger une règle et enchaîner sur les fichiers override.
+Question à poser : avec TP12-BIS, et si je veux parfois GitLab seul, sans les runners ?
+`depends_on` ne répond pas à ça : il ordonne le démarrage, il ne choisit pas quels services démarrent.
+Lien projet final : le complément « Multi-environnements » demande dev/staging/prod. Les profils sont une des deux réponses ; l'autre, les fichiers override, vient juste après.
+--
+
 [%auto-animate]
 == 👤 Profils dans Docker Compose 🐙
 Par exemple :
@@ -1442,7 +1452,7 @@ Dans cet exemple, le service mon_service appartient au profil dev.
 == 👤 Profils dans Docker Compose 🐙
 
 [%step]
-- Pour démarrer seulement les services qui appartiennent à un certain profil, vous pouvez utiliser l'option `--profile` de la commande `docker compose`, placée *avant* la sous-commande `up`.
+- Pour activer les services d'un profil, vous pouvez utiliser l'option `--profile` de la commande `docker compose`, placée *avant* la sous-commande `up`.
 - Par exemple :
 
 [%step]
@@ -1451,7 +1461,13 @@ Dans cet exemple, le service mon_service appartient au profil dev.
 docker compose --profile dev up
 ----
 [%step]
-Cette commande démarrera seulement les services qui appartiennent au profil `dev`.
+Cette commande démarre les services du profil `dev`, *et tous les services qui n'ont pas de profil* : ceux-là démarrent toujours.
+
+[.notes]
+--
+Mesuré le 2026-10-13 (Compose 5.5.1) avec un service `db` sans profil : `docker compose --profile dev config --services` affiche `db` et `service_dev`.
+`docker compose up --profile dev` échoue : `unknown flag: --profile`. D'où l'insistance sur « avant `up` ».
+--
 
 [%auto-animate]
 == 👤 Profils dans Docker Compose 🐙
@@ -1497,17 +1513,82 @@ services:
 - Les profils dans Docker Compose sont un outil puissant pour gérer différents environnements dans le même fichier Docker Compose.
 - Ils peuvent rendre votre développement et vos tests plus efficaces et organisés.
 
+== ⚠️ Piège : les services sans profil démarrent toujours
+
+[source,yaml]
+----
+services:
+  db:
+    image: mon_image_db
+  service_dev:
+    image: mon_image_dev
+    profiles:
+      - dev
+----
+
+[source,bash]
+----
+docker compose config --services
+# db
+docker compose --profile dev config --services
+# db
+# service_dev
+----
+
+[.small%step]
+* Un service sans `profiles:` est toujours actif, quel que soit le profil demandé.
+* Nommer un service active son profil : `docker compose up service_dev` le démarre sans `--profile`.
+* `COMPOSE_PROFILES=dev,prod` équivaut à `--profile dev --profile prod`, et peut se mettre dans le `.env`.
+* `docker compose config --services` montre ce qui va démarrer, sans rien démarrer.
+
+[.notes]
+--
+Mesuré le 2026-10-13 (Compose 5.5.1) : un service profilé que l'on nomme démarre, avec ses dépendances, sans `--profile`.
+Piège associé : un service SANS profil qui dépend d'un service profilé casse toutes les commandes (`config` comprise) tant que le profil n'est pas actif : `depends on undefined service`.
+La forge Jenkins qui suit s'en sert : chaque agent (maven, python...) y a son profil, et `docker compose up ... maven` active le profil `maven` en nommant le service.
+--
+
+== 🧩 Profils ou fichiers override ?
+
+[source,bash]
+----
+# compose.yml et compose.override.yml sont fusionnés automatiquement
+docker compose up -d
+# en production, on choisit les fichiers explicitement
+docker compose -f compose.yml -f compose.prod.yml up -d
+# voir le résultat de la fusion, sans rien lancer
+docker compose -f compose.yml -f compose.prod.yml config
+----
+
+[%step]
+* Profils : activer ou non des *services* (un Kibana, un outil de debug, un runner).
+* Override : changer la *configuration* d'un même service selon l'environnement (ports, limites, `restart`).
+* C'est ce que demande le complément « Multi-environnements » du projet final.
+
+[.notes]
+--
+Mesuré le 2026-10-13 (Compose 5.5.1) : un `compose.override.yml` à côté de `compose.yml` est fusionné sans option (ses `ports` apparaissent dans `docker compose config`) ; avec `-f compose.yml -f compose.prod.yml`, l'override n'est plus lu, seul `compose.prod.yml` s'ajoute.
+Les fichiers suivants complètent ou remplacent les clés du premier : listes de ports ajoutées, valeurs simples remplacées. `docker compose config` est le seul moyen sûr de voir le résultat.
+--
+
 == 🔨🔥 Une autre forge, ça vous dit? 😐
 
 [%step]
 😏 Non, et bien, c'est parti quand même.
 [%step]
-https://raw.githubusercontent.com/jenkins-docs/quickstart-tutorials/refs/heads/main/docker-compose.yaml
+https://raw.githubusercontent.com/jenkins-docs/quickstart-tutorials/refs/heads/main/docker-compose.yaml (ci-dessous, une version simplifiée de 2024)
 [%step]
 [source,yaml]
 ----
 include::../code-samples/compose/jenkins-docker-compose.yml[]
 ----
+
+[.notes]
+--
+Pourquoi ce fichier : un vrai fichier Compose d'un projet Jenkins, qui utilise les profils qu'on vient de voir (un profil par agent : maven, python, node...).
+L'amont a évolué depuis cette copie : `docker-compose.yaml` tire désormais des images toutes faites depuis ghcr.io, et les `build:` sont dans `build-docker-compose.yaml`. Les étudiants verront un fichier différent après le `git clone`.
+La diapo sert à lire, pas à tout comprendre : ne commenter que `profiles`, `depends_on` avec `service_completed_successfully` (le sidekick génère les clés SSH puis s'arrête), et le volume partagé en lecture seule.
+--
 
 == 🔨🔥 Une autre forge, ça vous dit? 😐
 
@@ -1554,21 +1635,30 @@ include::../code-samples/compose/GSoC/python/Dockerfile[]
 git clone https://github.com/jenkins-docs/quickstart-tutorials.git
 ----
 [%step]
-À vous de modifier les sources de façon à passer par le cache ILI
+À vous de modifier les `FROM` des `dockerfiles/*/Dockerfile` qui viennent de Docker Hub, pour passer par le cache ILI (préfixe donné en séance, comme pour GitLab au TP #12-BIS).
 [%step]
-Ensuite, ne restera qu'à lancer la "forge":
-[%step]
-[source,bash]
-----
-docker compose up --build -d --force-recreate maven
-----
-[%step]
-Ou encore si vous voulez tout construire localement:
+Ensuite, construire et lancer la "forge" avec ces `Dockerfile` modifiés :
 [%step]
 [source,bash]
 ----
 docker compose -f build-docker-compose.yaml up --build -d --force-recreate maven
 ----
+[%step]
+Sans rien construire, avec les images toutes faites de ghcr.io (vos `FROM` ne servent alors à rien) :
+[%step]
+[source,bash]
+----
+docker compose up -d maven
+----
+
+[.notes]
+--
+Pourquoi le cache : Docker Hub limite les pulls anonymes à 100 par 6 h et par adresse IP, et toute la salle sort par la même adresse.
+Le cache ne concerne que les `FROM` Docker Hub de `build-docker-compose.yaml` : le fichier par défaut tire depuis ghcr.io.
+Nommer `maven` active son profil : démonstration directe de la diapo « Piège » sur les profils.
+Le Dockerfile Python affiché plus haut passe par un venv : sous Debian trixie, un `pip install` système est refusé (PEP 668, `externally-managed-environment`).
+Non vérifié pour cette séance : le temps de build réel de la forge.
+--
 
 
 [%auto-animate]
@@ -1590,6 +1680,13 @@ Et pourquoi pas s'attaquer au docker compose qui a généré ce cours ?
 ----
 include::../code-samples/compose/cours/docker-compose.yml[tags=**]
 ----
+
+[.notes]
+--
+Changement d'échelle : après un fichier qu'on n'a pas écrit, le fichier qui construit les diapositives qu'ils ont sous les yeux. Ils peuvent cloner le dépôt et lancer `make build`.
+Les extraits qui suivent sont une copie figée (dans `content/code-samples/compose/cours/`) : le fichier à la racine du dépôt a évolué depuis, par exemple il exige `CURRENT_UID`.
+Ce qu'on y cherche, et qui sert pour le projet : ancres YAML, variables d'environnement, et comment éviter de tourner en root.
+--
 
 [%auto-animate]
 == Autre étude de cas 📚🔍
@@ -1614,7 +1711,7 @@ include::../code-samples/compose/cours/docker-compose.yml[tags="entete,ancre"]
 Docker Compose permet de définir et de gérer plusieurs services Docker dans un seul fichier YAML.
 [%step]
 - Les ancres (`&`) et les alias (`*`) sont des fonctionnalités YAML qui peuvent être utilisées dans Docker Compose pour réutiliser des configurations.
-- Une ancre est une référence à un objet ou à une valeur dans un fichier YAML.
+- Une ancre donne un nom à un objet ou à une valeur dans un fichier YAML.
 Elle est définie en utilisant l'opérateur `&` suivi d'un nom unique.
 
 [%step]
@@ -1625,7 +1722,17 @@ x-slides-base: &slides-base
     context: ./
 ----
 [%step]
-Dans cet exemple, `x-slides-base` est une ancre qui représente un objet avec une clé `build`.
+Dans cet exemple, `&slides-base` est l'ancre, posée sur un objet avec une clé `build`.
+`x-slides-base` est un champ d'extension : Compose ignore toute clé de premier niveau qui commence par `x-`.
+
+[.notes]
+--
+Deux mécanismes à séparer au tableau :
+1. `x-slides-base` : clé `x-`, que Compose ignore au lieu de refuser une clé inconnue. C'est le « parking » de l'ancre.
+2. `&slides-base` / `*slides-base` / `<<:` : du YAML pur, pas du Compose. `<<:` fusionne le contenu de l'ancre dans le service ; les clés écrites à côté l'emportent.
+Montrer le résultat réel : `docker compose config` affiche le fichier après fusion, sans ancre.
+Utile pour le projet : factoriser `logging`, `restart` et `deploy` communs à tous les services.
+--
 
 [%auto-animate]
 == ➡️🔄 Les ancres dans `docker compose` ⚓
@@ -1638,9 +1745,10 @@ services:
   serve:
     <<: *slides-base
 ----
-[%step]
+[.small%step]
 - Les ancres permettent de réutiliser des configurations, ce qui rend le fichier Docker Compose plus lisible et plus facile à maintenir.
 - Si vous devez modifier une configuration qui est utilisée à plusieurs endroits, vous pouvez simplement modifier l'ancre.
+- ⚠️ `<<:` fusionne en surface : redéfinir `environment:` dans le service *remplace* toute la liste de l'ancre, au lieu de la compléter.
 - En conclusion, les ancres et les alias sont des outils puissants pour gérer des configurations complexes dans Docker Compose. Ils permettent de réduire la duplication et d'améliorer la lisibilité de votre fichier Docker Compose.
 
 [%auto-animate]
@@ -1693,6 +1801,12 @@ L'image publiée `ghcr.io/astefanutti/decktape` ne suffit plus telle quelle.
 [%step]
 Un petit `Dockerfile` `FROM ghcr.io/astefanutti/decktape` règle les deux premiers points ; Compose le construit avec `build:`.
 
+[.notes]
+--
+Message à retenir, pas les détails : une image publiée sert de base, on la complète avec un petit Dockerfile `FROM ...` plutôt que de bricoler dans `command:`.
+Le troisième point (HOME seulement pour l'uid 1000) est la conséquence de `user: ${CURRENT_UID}` : en changeant d'utilisateur, on perd ce que l'image avait préparé pour le sien. Même famille de problèmes qu'à l'exercice 2 du chapitre sécurité.
+--
+
 [%auto-animate]
 == Autre étude de cas 📚🔍
 
@@ -1708,10 +1822,11 @@ include::../code-samples/compose/cours/docker-compose.yml[tags=ancre]
 == ➡️🔄 Build quoi? 🛠️📦
 [.column]
 --
-[%step]
+[.small%step]
 - Docker BuildKit est un outil de construction de Docker qui apporte de nombreuses améliorations par rapport à l'ancien système de construction.
-- L'une de ces améliorations est la mise en cache en ligne.
-- La mise en cache en ligne est une fonctionnalité de Docker BuildKit qui permet de réutiliser les couches de cache existantes lors de la construction d'une image Docker.
+- BuildKit est le constructeur par défaut depuis Docker Engine 23 : rien à activer.
+- Il sait ranger les informations de cache *dans l'image* elle-même (cache « inline »).
+- Une autre machine (la CI, par exemple) qui récupère cette image peut alors s'en servir comme cache, avec `cache_from:`. En local, le cache des couches fonctionne déjà sans cette option.
 
 [%step]
 image::multi-layered-cake-removebg-preview.png[height=100]
@@ -1719,7 +1834,7 @@ image::multi-layered-cake-removebg-preview.png[height=100]
 [.column.is-one-third]
 --
 [%step]
-Elle est activée en définissant l'argument `BUILDKIT_INLINE_CACHE` à `1`.
+Ce cache inline s'active en définissant l'argument `BUILDKIT_INLINE_CACHE` à `1`.
 
 [%step]
 [source,yaml]
@@ -1727,6 +1842,13 @@ Elle est activée en définissant l'argument `BUILDKIT_INLINE_CACHE` à `1`.
 args:
   BUILDKIT_INLINE_CACHE: 1
 ----
+--
+
+[.notes]
+--
+« Inline » = embarqué dans l'image, rien à voir avec Internet.
+Ici l'option ne sert à rien : l'image n'est pas poussée, et le fichier n'a pas de `cache_from:`. Elle date d'une époque où l'on pensait en tirer un gain local.
+Source : https://docs.docker.com/build/cache/backends/inline/
 --
 
 [%auto-animate]
@@ -1744,7 +1866,14 @@ include::../code-samples/compose/cours/docker-compose.yml[tags=environnement]
 Trois variables d'environnement sont définies pour le conteneur Docker : `PRESENTATION_URL`, `REPOSITORY_URL` et `SOURCE_FILE`.
 `SOURCE_FILE` choisit le fichier racine : `SOURCE_FILE=index-examen.adoc make build` construit le sujet d'examen.
 [%step]
-Ces variables sont définies à l'aide de la syntaxe `${VARIABLE_NAME}`, qui est une manière standard d'accéder aux variables d'environnement dans les fichiers de configuration YAML.
+Ces variables sont définies à l'aide de la syntaxe `${VARIABLE_NAME}` : c'est l'interpolation de Compose, empruntée au shell. YAML lui-même ne la connaît pas.
+--
+
+[.notes]
+--
+Faire taper `docker compose config` : c'est LA commande pour voir les valeurs après substitution, la première à lancer quand une variable « ne marche pas ».
+Ne pas confondre deux usages : le `.env` que Compose lit pour substituer `${...}` dans le YAML, et `env_file:`, qui injecte des variables dans le conteneur.
+Le projet final exige un `.env` non versionné et un `.env.example` versionné : c'est ici que ça commence.
 --
 
 [%auto-animate]
@@ -1778,13 +1907,21 @@ include::../code-samples/compose/cours/docker-compose.yml[tags=environnement]
 include::../code-samples/compose/cours/docker-compose.yml[tags=utilisateur]
 ----
 [%step]
-* Dans Docker, chaque instruction dans le Dockerfile est exécutée par un utilisateur particulier.
+* Dans un conteneur, chaque processus tourne sous un utilisateur donné.
 * Par défaut, cet utilisateur est root, mais pour des raisons de sécurité, il est souvent recommandé d'exécuter les processus en tant qu'utilisateur non root.
 * Cette ligne définit l'ID de l'utilisateur qui exécutera les commandes à l'intérieur du conteneur Docker à la valeur de la variable d'environnement `CURRENT_UID`.
 * La syntaxe `${CURRENT_UID}` est utilisée pour accéder à la valeur d'une variable d'environnement.
 * Dans ce cas, Docker Compose recherchera une variable d'environnement nommée `CURRENT_UID` et utilisera sa valeur.
 * Si `CURRENT_UID` n'est pas défini, Docker Compose *n'échoue pas* : même avertissement, même chaîne vide. `user:` reçoit une valeur vide.
 * Le conteneur démarre donc *en root* — exactement l'inverse de ce que cette ligne cherchait à obtenir.
+
+[.notes]
+--
+Distinguer au tableau : `USER` dans le Dockerfile fixe l'utilisateur par défaut de l'image ; `user:` dans Compose le remplace au lancement, sans reconstruire.
+Ici, `user:` sert à écrire dans `dist/` (montage bind) avec l'uid de l'étudiant, pour que les fichiers produits lui appartiennent sur l'hôte.
+Mesuré le 2026-10-13 : `user: ""` donne bien `uid=0(root)`.
+Le chapitre sécurité reprend la question sous l'angle « pas de root » : c'est le même réglage.
+--
 
 == 🛡️ Rendre une variable vraiment obligatoire
 
@@ -1808,13 +1945,25 @@ user: ${CURRENT_UID:?CURRENT_UID est obligatoire}
 * C'est la forme à écrire quand la valeur est obligatoire.
 * C'est celle qu'utilise le `docker-compose.yml` à la racine de ce dépôt : sans `CURRENT_UID` (que `make` fournit), il s'arrête au lieu de construire en root.
 
+[.notes]
+--
+Deux formes, une différence : `${VAR:?msg}` échoue si VAR est absente OU vide ; `${VAR?msg}` seulement si elle est absente. Le chapitre sécurité utilise la seconde : pour un mot de passe, préférer la première, sinon une ligne `DB_PASSWORD=` vide dans `.env` passe.
+À retenir pour le projet : toutes les variables sans valeur par défaut raisonnable en `:?`.
+--
+
 [%auto-animate]
 == Autre étude de cas 📚🔍
 
-[source,yaml]
+[source,dockerfile]
 ----
 include::../code-samples/compose/cours/Dockerfile[]
 ----
+
+[.notes]
+--
+Diapo « indigeste » volontaire : ne pas la lire, enchaîner sur les extraits.
+Mini-quiz possible sur la ligne 6 : pourquoi pas de commentaire après chaque `\` ? Parce que `\` n'est une continuation que s'il termine la ligne. Une version précédente de ce fichier avait ces commentaires et ne se construisait plus (`unknown instruction: git`).
+--
 
 [%auto-animate]
 == Autre étude de cas 📚🔍
@@ -1835,7 +1984,7 @@ include::../code-samples/compose/cours/Dockerfile[lines=16..23]
 include::../code-samples/compose/cours/Dockerfile[lines=29..34]
 ----
 [%step]
-* Il télécharge également et installe une version spécifique de `FontAwesome`
+* Il télécharge également et installe une version spécifique de `FontAwesome` (étape retirée depuis du Dockerfile à la racine du dépôt).
 
 [%auto-animate]
 == Autre étude de cas 📚🔍
@@ -1869,6 +2018,27 @@ include::../code-samples/compose/cours/Dockerfile[lines=54..56]
 
 == 🐋 Tini dans Docker
 
+== 🤔 Pourquoi le PID 1 est-il spécial ?
+
+[source,bash]
+----
+docker container run --rm alpine ps
+# PID   USER     TIME  COMMAND
+#     1 root      0:00 ps
+----
+
+[%step]
+* Dans un conteneur, la commande lancée devient le processus n°1.
+* Sur un Linux classique, le PID 1 est `init` : il récolte les processus orphelins terminés (les « zombies »).
+* Le noyau protège le PID 1 : un signal qu'il ne gère pas explicitement (le SIGTERM de `docker container stop`) est ignoré.
+* Docker attend alors, puis tue le conteneur (SIGKILL, code de sortie 137).
+
+[.notes]
+--
+Mesuré le 2026-10-13 (Docker 29.8.2) : `alpine sleep 300` sans init met 3,3 s à s'arrêter, code 137 ; avec `--init`, 0,3 s, code 143 (SIGTERM reçu et traité).
+`docker container run --rm --init alpine ps` montre `/sbin/docker-init -- ps` en PID 1 : c'est Tini, embarqué dans Docker.
+--
+
 == 🤔 Qu'est-ce que Tini ?
 
 Tini est un `init` minuscule mais valide pour les conteneurs. Il est conçu pour être le système init le plus simple possible.
@@ -1877,13 +2047,13 @@ Tini est un `init` minuscule mais valide pour les conteneurs. Il est conçu pour
 
 Tini fait deux choses :
 
-. Il génère votre processus en tant que son enfant (directement, pas en tant que petit-enfant, comme le ferait un shell).
-. Il attend ensuite les signaux et les transmet au processus enfant.
+. Il lance votre processus comme son enfant direct (pas comme petit-enfant, comme le ferait un shell).
+. Il relaie ensuite les signaux à cet enfant, et récolte les processus orphelins qui lui reviennent.
 
 == 🎯 Pourquoi Tini est-il utile dans Docker ?
 
-. Docker exécute un seul processus dans un conteneur par défaut. Si ce processus génère des processus enfants et ne les récolte pas correctement, ils deviennent des processus zombies.
-. Tini assure que ces processus zombies sont correctement récoltés, améliorant ainsi le comportement du conteneur et réduisant la probabilité de cas limites.
+. Docker exécute un seul processus dans un conteneur par défaut. Quand un processus meurt, ses enfants orphelins sont rattachés au PID 1 ; si personne ne les récolte, ils restent à l'état de zombies.
+. Tini, en PID 1, récolte ces orphelins et transmet les signaux : `docker container stop` arrête alors proprement l'application.
 
 == 🐋 Tini dans notre Dockerfile
 
@@ -1896,8 +2066,34 @@ ENTRYPOINT ["/sbin/tini","-g","gulp"]
 
 . Cela signifie que Tini est le premier processus qui est lancé dans notre conteneur.
 . Il lancera ensuite `gulp` en tant que processus enfant.
-. Tout signal envoyé au conteneur sera transmis par Tini à `gulp`.
-. Si `gulp` génère des processus enfants et ne les récolte pas, Tini le fera.
+. Avec `-g`, tout signal envoyé au conteneur est relayé par Tini à tout le *groupe* de `gulp` (gulp et ses sous-processus).
+. Les processus orphelins qui finissent rattachés au PID 1 sont récoltés par Tini.
+
+[.notes]
+--
+Tant que gulp vit, ses enfants zombies restent les siens : Tini ne récolte que les orphelins.
+Mesuré le 2026-10-13 : `tini -g` en PID 1, `docker stop` → le `trap TERM` de l'enfant s'exécute, arrêt en 0,5 s.
+--
+
+== 🐋 Tini sans toucher au Dockerfile
+
+[source,yaml]
+----
+services:
+  app:
+    image: mon_image
+    init: true
+----
+
+[%step]
+* `init: true` (ou `docker container run --init`) : Docker injecte son propre Tini, `docker-init`, en PID 1.
+* Pas besoin d'`apk add tini` ni de changer l'`ENTRYPOINT`.
+* Pour le projet : une ligne, qui règle les arrêts lents (code 137 au lieu de 143).
+
+[.notes]
+--
+Mesuré le 2026-10-13 : `init: true` → PID 1 = `docker-init`, et `docker-init --version` → `tini version 0.19.0`.
+--
 
 [%auto-animate]
 == 🐋 Docker peut travailler main dans la main avec d'autres outils... 👫🤝
@@ -1916,7 +2112,7 @@ include::../code-samples/compose/cours/Makefile[lines=8..15]
 ----
 [%step]
 * Voilà d'où vient le `CURRENT_UID` que `docker-compose.yml` consomme quelques diapos plus haut.
-* Compose ne le calcule pas, et ne se plaint pas non plus s'il manque : c'est au `Makefile` de le poser.
+* Compose ne le calcule pas : c'est au `Makefile` de le poser. Écrit `${CURRENT_UID}`, comme dans cette copie, Compose ne se plaint pas s'il manque ; écrit `${CURRENT_UID:?…}`, comme à la racine, il s'arrête.
 * `$(shell id -u):$(shell id -g)` le lit à chaque appel, au lieu de le figer dans `.env`.
 
 [%auto-animate]
@@ -1933,10 +2129,14 @@ Cette configuration de docker compose concerne Docker BuildKit, une fonctionnali
 ** Si ce n'est pas le cas, elle lui attribue la valeur `1`, ce qui active Docker BuildKit.
 * De même, `COMPOSE_DOCKER_CLI_BUILD ?= 1` vérifie si la variable d'environnement `COMPOSE_DOCKER_CLI_BUILD` est déjà définie.
 ** Si ce n'est pas le cas, elle lui attribue la valeur `1`.
-** Cette variable d'environnement est utilisée pour activer l'utilisation de Docker CLI lors de l'utilisation de Docker Compose.
-** C'est nécessaire car Docker Compose ne supporte pas BuildKit par défaut, donc cette variable d'environnement est une solution de contournement pour l'activer.
+** Elle servait à l'ancien `docker-compose` (v1, en Python), qui ne passait pas par BuildKit sans elle.
 [%step]
-En résumé, ces deux lignes de code activent Docker BuildKit pour améliorer les performances de construction des images Docker lors de l'utilisation de Docker Compose.
+Aujourd'hui, ces deux lignes sont historiques : BuildKit est le constructeur par défaut, et Compose v2 ignore `COMPOSE_DOCKER_CLI_BUILD`. Elles ne changent plus rien ; dans un nouveau projet, ne pas les recopier.
+
+[.notes]
+--
+Source : https://docs.docker.com/compose/how-tos/environment-variables/envvars/ (section « Unsupported in Compose V2 »).
+--
 
 [%auto-animate]
 == 🐋 Docker peut travailler main dans la main avec d'autres outils... 👫🤝
@@ -1945,6 +2145,12 @@ En résumé, ces deux lignes de code activent Docker BuildKit pour améliorer le
 ----
 include::../code-samples/compose/cours/Makefile[lines=22..39]
 ----
+
+[.notes]
+--
+`$(call ...)` : des « fonctions » Make qui factorisent la ligne `docker compose`. Même idée que les ancres YAML, côté Makefile.
+Faire remarquer `compose_run` : `--user=0` force root, à l'opposé de ce que `CURRENT_UID` vient d'établir. Question à poser : dans quel cas est-ce acceptable ?
+--
 
 [%auto-animate]
 == 🐋 Docker peut travailler main dans la main avec d'autres outils... 👫🤝
@@ -1957,6 +2163,20 @@ include::../code-samples/compose/cours/Makefile[lines=44..50]
 * Cette règle `Makefile` est utilisée pour construire le projet à l'intérieur d'un conteneur Docker.
 * Elle utilise la fonction `compose_up` pour exécuter la commande `docker compose up` avec l'option `--exit-code-from=build`.
 * Cette option permet à la commande `docker compose up` de renvoyer le code de sortie du service `build`, ce qui permet à Make de savoir si la construction du projet a réussi ou non.
+
+[{invert}]
+== 🔐 De « ça démarre » à « ça tient en production »
+
+[%step]
+* Compose sait lancer une stack complète : vous l'avez fait avec GitLab et ses runners.
+* Une stack qui démarre n'est pas une stack sûre : qui tourne en root ? où sont les mots de passe ?
+* Chapitre suivant : une application qui fonctionne, et qui est pleine de failles.
+* Tout ce qu'on va corriger est exigé dans le projet final.
+
+[.notes]
+--
+Rappeler les déjà-vus qui reviennent : healthcheck et `depends_on` (début du chapitre Compose, TP #12), `user:` et `${VAR:?}` (étude de cas du cours), `restart:` (TP #12-BIS).
+--
 
 == 📖🔚 Fin du chapitre docker compose 🐋🐙
 

@@ -6,8 +6,8 @@ WORKDIR /app
 # Copier les fichiers de dépendances
 COPY package*.json ./
 
-# ✅ Installer TOUTES les dépendances (nécessaires pour le build)
-RUN npm ci && npm cache clean --force
+# ✅ Installer TOUTES les dépendances (le build en a besoin ; pas de package-lock.json, donc pas de npm ci)
+RUN npm install --no-audit --no-fund && npm cache clean --force
 
 # Copier le code source
 COPY . .
