@@ -134,8 +134,8 @@ Savoir que mon PID 1 est toujours en cours d'exécution n'est peut-être pas la 
 
 [source,bash]
 ----
-FROM ghost:3
-RUN apt update && apt install curl -y \
+FROM ghost:6
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
         && rm -rf /var/lib/apt/lists/*
 
 HEALTHCHECK --interval=1m --timeout=30s --retries=3 CMD curl --fail http://localhost:2368 || exit 1
@@ -264,7 +264,7 @@ image::personal-access-token-settings.png[background, size=cover]
 
 WARNING: Notez bien le token, vous ne le reverrez plus jamais.
 
-https://dependabot-gitlab.gitlab.io/dependabot/guide/getting-started.html#step-3-start-the-app[L'étape suivante], c'est de positionner les valeurs de certaines variables d'environnement.
+https://dependabot-gitlab.gitlab.io/dependabot/guide/getting-started.html#step-3-choose-how-to-run-the-application[L'étape suivante], c'est de positionner les valeurs de certaines variables d'environnement.
 Ça peut être dans un `.env`, ou dans les variables d'environnement de votre machine.
 [source,bash]
 ----
@@ -279,7 +279,7 @@ Démarrez l'application avec `docker compose`:
 
 [source,bash]
 ----
-curl -s https://gitlab.com/dependabot-gitlab/dependabot/-/raw/v3.8.0-alpha.1/docker-compose.yml | docker compose -f - up -d
+curl -s https://gitlab.com/dependabot-gitlab/dependabot/-/raw/v7.11.0-alpha.1/docker-compose.yml | docker compose -f - up -d
 ----
 [%step]
 image::dependabot-cant-see-gitlab.png[]
@@ -312,7 +312,6 @@ Vous vous souvenez du chapitre sur les réseaux Docker ?
 [%step]
 [source,yaml]
 ----
-version: '3'
 services:
   web:
     image: web
@@ -335,7 +334,7 @@ networks:
 
 [source,yaml]
 ----
-include::../code-samples/bonus/dependabot/symbiosis/docker-compose-dependabot.yml[lines=135..137]
+include::../code-samples/bonus/dependabot/symbiosis/docker-compose-dependabot.yml[lines=135..138]
 [...]
 include::../code-samples/bonus/dependabot/symbiosis/docker-compose-dependabot.yml[lines=203..204]
 ----
@@ -395,8 +394,7 @@ Victoire?
 
 [source,bash]
 ----
-docker compose -f docker-compose-dependabot.yml exec -it -u root web b
-ash
+docker compose -f docker-compose-dependabot.yml exec -it -u root web bash
 root@95def7cb933d:/home/dependabot/app# ping symbiosis-gitlab-1.symbiosis_mynetwork
 PING symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2) 56(84) bytes of data.
 64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=1 ttl=64 time=0.165 ms
@@ -866,16 +864,16 @@ Jean-Michel, t'assures pas une 🥜, là...
 include::../code-samples/tp14/Dockerfile[]
 ----
 [%step]
-Finalement, le 💀 de notre `Dockerfile` était déjà bon...
+Le 💀 était presque bon (sous Alpine, nginx répond 404 partout par défaut).
 [%step]
-Ou presque... Rien ne vous gêne dans ce Dockerfile?
+Rien d'autre ne vous gêne dans ce Dockerfile?
 [%step]
 👫 don't let 👫...
 
 [%auto-animate]
 == 🐳😴 Lazy Docker
 
-https://blog.stephane-robert.info/docs/conteneurs/moteurs-conteneurs/lazydocker/
+https://blog.stephane-robert.info/docs/conteneurs/outils/lazydocker/
 
 [%auto-animate]
 [.columns]
@@ -918,11 +916,11 @@ Les TPs sont vos meilleurs amis.
 
 La documentation officielle de Docker
 
-https://docs.docker.com/engine/reference/run/
+https://docs.docker.com/engine/containers/run/
 
-https://docs.docker.com/engine/reference/builder/
+https://docs.docker.com/reference/dockerfile/
 
-https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
+https://docs.docker.com/build/building/best-practices/
 
 == 🤔👉 One more thing
 

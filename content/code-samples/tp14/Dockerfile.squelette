@@ -7,8 +7,8 @@ RUN apk add --no-cache nginx
 # Exposer le port 80
 EXPOSE 80
 
-# Ajouter un fichier HTML (remplacer /chemin/vers/votre/fichier.html par le chemin réel vers votre fichier HTML)
-ADD /chemin/vers/votre/fichier.html /usr/share/nginx/html
+# Ajouter le fichier HTML (à récupérer depuis l'image de Jean-Michel)
+COPY html/index.html /usr/share/nginx/html/
 
 # Définir le point d'entrée pour lancer nginx
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
