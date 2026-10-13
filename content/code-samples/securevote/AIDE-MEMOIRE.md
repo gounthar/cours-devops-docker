@@ -79,13 +79,19 @@ RUN groupadd -r appuser && useradd -r -g appuser appuser
 
 WORKDIR /app
 
-# Copier avec les bons propriétaires
+# Dépendances d'abord (requirements.txt doit contenir gunicorn)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copier avec les bons propriétaires (dont gunicorn.conf.py)
 COPY --chown=appuser:appuser . .
 
 # ✅ Passer à l'utilisateur non-root
 USER appuser
 
-CMD ["python", "app.py"]
+# ✅ Serveur WSGI de production (pas le serveur de développement de Flask)
+ENV PYTHONUNBUFFERED=1
+CMD ["gunicorn", "--config", "gunicorn.conf.py", "app:app"]
 ```
 
 ### Gestion des secrets

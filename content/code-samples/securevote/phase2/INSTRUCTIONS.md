@@ -239,15 +239,59 @@ environment:
   POSTGRES_PASSWORD: ${DB_PASSWORD}
 ```
 
-4. **Modifier app.py pour valider les secrets**
+4. **Modifier app.py pour valider les secrets et couper le mode debug**
 
 ```python
 SECRET_KEY = os.getenv('SECRET_KEY')
 if not SECRET_KEY:
     raise ValueError("SECRET_KEY doit être définie !")
+FLASK_ENV = os.getenv('FLASK_ENV', 'production')
 ```
 
-5. **Tester**
+En bas du fichier, `debug=True` est écrit en dur : le `FLASK_ENV=production` du `.env` n'a donc aucun effet. Le mode debug affiche le code et les variables en cas d'erreur, et sa console interactive, protégée par un code PIN affiché dans les logs du conteneur, exécute du Python dans le conteneur. Ne l'activez qu'en développement :
+
+```python
+if __name__ == '__main__':
+    init_db()
+    debug_mode = FLASK_ENV == 'development'
+    app.run(host='0.0.0.0', port=5000, debug=debug_mode)
+```
+
+5. **Remplacer le serveur de développement par Gunicorn**
+
+`python app.py` lance le serveur intégré de Flask, qui l'annonce lui-même au démarrage : `WARNING: This is a development server. Do not use it in a production deployment.` En production, on utilise un serveur WSGI comme Gunicorn.
+
+Ajoutez-le à `backend/requirements.txt` :
+
+```text
+gunicorn==23.0.0
+```
+
+Gunicorn importe `app.py` sans exécuter le bloc `if __name__ == '__main__'` : `init_db()` ne serait plus appelée et les tables ne seraient pas créées. Créez `backend/gunicorn.conf.py` pour l'appeler une fois au démarrage :
+
+```python
+bind = "0.0.0.0:5000"
+workers = 2
+accesslog = "-"  # journal des requêtes sur la sortie standard
+
+
+def on_starting(server):
+    """Initialise la base une seule fois, avant le lancement des workers."""
+    from app import init_db
+    init_db()
+```
+
+Dans `backend/Dockerfile`, remplacez la commande de démarrage :
+
+```dockerfile
+# Logs Python envoyés tout de suite (sinon un print fait avant le fork
+# des workers sort une fois par worker)
+ENV PYTHONUNBUFFERED=1
+
+CMD ["gunicorn", "--config", "gunicorn.conf.py", "app:app"]
+```
+
+6. **Tester**
 
 ```bash
 # Sans .env, ça doit échouer
@@ -261,7 +305,7 @@ docker compose up -d
 docker compose ps
 ```
 
-6. **Vérifier que les secrets ne sont plus visibles**
+7. **Vérifier que les secrets ne sont plus visibles**
 
 ```bash
 # Vérifier qu'on ne peut pas voir les secrets en clair
@@ -273,18 +317,40 @@ cat docker-compose.yml | grep -i password
 # Doit afficher : ${DB_PASSWORD}, pas la vraie valeur
 ```
 
+8. **Vérifier que Gunicorn sert l'application**
+
+```bash
+docker compose logs backend | grep -E "Starting gunicorn|development server"
+# Doit afficher « Starting gunicorn », et aucune ligne « development server ».
+# Plusieurs « Starting gunicorn » : le backend a redémarré (restart: on-failure).
+# Cause la plus fréquente : PostgreSQL n'était pas encore prêt.
+# Vérifiez qu'il tourne maintenant :
+curl http://localhost:8080/health
+# Si ça échoue, lisez l'erreur dans : docker compose logs backend
+```
+
+`depends_on` ne fait qu'ordonner le démarrage des conteneurs : il n'attend pas que PostgreSQL accepte les connexions. Si la base met longtemps à démarrer, le backend peut épuiser ses tentatives (`on-failure:5`) et rester arrêté (`Exited`). Une fois la base prête, relancez-le :
+
+```bash
+docker compose restart backend
+```
+
+La phase 3 règle ce problème avec un healthcheck sur la base et `condition: service_healthy`.
+
 ### Validation
 
 - ✅ Fichier `.env` créé et fonctionnel
 - ✅ `.env` dans `.gitignore`
 - ✅ Plus aucun secret en clair dans `docker-compose.yml`
 - ✅ Application démarre et fonctionne
+- ✅ Backend servi par Gunicorn, mode debug coupé
 
 ### Points clés
 - **JAMAIS** committer de secrets dans Git
 - Utiliser `.env.example` comme template sans valeurs sensibles
 - Documenter les secrets requis
 - Utiliser des générateurs de secrets forts
+- Le serveur intégré de Flask et son mode debug sont réservés au développement
 
 ## Checkpoint intermédiaire
 
@@ -292,6 +358,7 @@ cat docker-compose.yml | grep -i password
 - ✅ Utiliser des images slim/alpine
 - ✅ S'exécuter avec des utilisateurs non-root
 - ✅ Avoir tous les secrets dans .env
+- ✅ Servir le backend avec Gunicorn, sans mode debug
 - ✅ Fonctionner correctement sur http://localhost:8080
 
 Testez l'application avant de continuer.
@@ -403,6 +470,7 @@ docker compose exec backend ping database
 - 5 ports exposés inutilement
 - Réseau unique par défaut
 - Pas de healthcheck réel
+- Flask en mode debug, sur son serveur de développement
 
 ### Après (Phase 2) ✅
 - Images slim/alpine avec ~5-10 CVE (réduction de 95%)
@@ -411,6 +479,7 @@ docker compose exec backend ping database
 - 1 seul port exposé (8080)
 - Réseaux isolés par fonction
 - Healthcheck fonctionnel qui teste les dépendances
+- Gunicorn en production, mode debug coupé
 
 ## Tests de validation finale
 
