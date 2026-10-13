@@ -52,8 +52,6 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: securevote-frontend
-    environment:
-      REACT_APP_API_URL: /api  # ✅ URL relative via proxy
     # ✅ Port NON exposé directement
     networks:
       - frontend-network
