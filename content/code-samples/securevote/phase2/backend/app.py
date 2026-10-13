@@ -12,6 +12,7 @@ CORS(app)
 DATABASE_URL = os.getenv('DATABASE_URL')
 REDIS_URL = os.getenv('REDIS_URL')
 SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret')
+FLASK_ENV = os.getenv('FLASK_ENV', 'production')
 
 app.config['SECRET_KEY'] = SECRET_KEY
 
@@ -165,6 +166,7 @@ if __name__ == '__main__':
     # Initialiser la DB au démarrage
     init_db()
 
-    # VULNÉRABILITÉ : debug=True en production expose des informations sensibles !
-    # VULNÉRABILITÉ : host='0.0.0.0' expose sur toutes les interfaces
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Lancement direct (python app.py) : développement local uniquement.
+    # Dans le conteneur, c'est Gunicorn qui sert l'application (voir gunicorn.conf.py).
+    debug_mode = FLASK_ENV == 'development'
+    app.run(host='0.0.0.0', port=5000, debug=debug_mode)
