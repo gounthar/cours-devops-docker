@@ -1,12 +1,10 @@
 from flask import Flask, jsonify, request
-from flask_cors import CORS
 import psycopg2
 import redis
 import os
 import json
 
 app = Flask(__name__)
-CORS(app)
 
 # ✅ Configuration depuis les variables d'environnement
 DATABASE_URL = os.getenv('DATABASE_URL')
