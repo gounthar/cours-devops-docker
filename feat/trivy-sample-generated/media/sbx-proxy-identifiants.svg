@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 820" width="1800" height="820" role="img" aria-label="Le poste hôte contient une microVM et, hors de la VM, le démon sbx avec le proxy d'identifiants qui garde le secret réel. Dans la VM, le programme ne voit que DEMO_TOKEN égal à une valeur de substitution. Sa requête passe par le proxy : vers httpbin.org, hôte déclaré, la substitution est remplacée par la valeur réelle ; vers un autre hôte, la substitution part telle quelle.">
+  <style>
+    .t { font-family: "Trebuchet MS", "Century Gothic", Verdana, sans-serif; fill: #1C334E; }
+    .h { font-size: 40px; font-weight: bold; }
+    .b { font-size: 32px; }
+    .code { font-family: "DejaVu Sans Mono", Menlo, Consolas, monospace; font-size: 28px; fill: #000000; }
+    .ok { fill: #1B7A3A; }
+    .ko { fill: #B03A2E; }
+  </style>
+  <defs>
+    <marker id="fleche" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1C334E"/>
+    </marker>
+  </defs>
+  <rect width="1800" height="820" fill="#FFFFFF"/>
+
+  <!-- Poste hôte -->
+  <rect x="10" y="10" width="1100" height="800" fill="#F2F2F2" stroke="#1C334E" stroke-width="5"/>
+  <text x="40" y="65" class="t h">Poste hôte</text>
+
+  <!-- microVM -->
+  <rect x="50" y="110" width="560" height="660" fill="#D9D9D9" stroke="#1C334E" stroke-width="5" stroke-dasharray="18 10"/>
+  <text x="80" y="165" class="t h">microVM (noyau propre)</text>
+  <text x="80" y="240" class="t b">Le programme voit :</text>
+  <text x="80" y="290" class="code">DEMO_TOKEN=</text>
+  <text x="80" y="330" class="code">sbx-cs-oQlw2y1oLoOzfg5D</text>
+  <text x="80" y="420" class="t b">Il envoie :</text>
+  <text x="80" y="470" class="code">Authorization: Bearer</text>
+  <text x="80" y="510" class="code">sbx-cs-oQlw2y1oLoOzfg5D</text>
+  <text x="80" y="620" class="t b">La valeur réelle n'est</text>
+  <text x="80" y="660" class="t b">nulle part dans la VM.</text>
+
+  <!-- Proxy, hors de la VM -->
+  <rect x="680" y="250" width="390" height="300" fill="#FFFFFF" stroke="#1C334E" stroke-width="5"/>
+  <text x="710" y="305" class="t h">sbx daemon</text>
+  <text x="710" y="350" class="t b">proxy d'identifiants</text>
+  <text x="710" y="430" class="t b">garde le secret réel :</text>
+  <text x="710" y="480" class="code">valeur-reelle-576</text>
+
+  <line x1="610" y1="400" x2="672" y2="400" stroke="#1C334E" stroke-width="5" marker-end="url(#fleche)"/>
+
+  <!-- Internet -->
+  <text x="1150" y="65" class="t h">Internet</text>
+
+  <line x1="1070" y1="330" x2="1172" y2="250" stroke="#1C334E" stroke-width="5" marker-end="url(#fleche)"/>
+  <rect x="1180" y="130" width="600" height="220" fill="#FFFFFF" stroke="#1B7A3A" stroke-width="5"/>
+  <text x="1210" y="185" class="t h ok">httpbin.org (déclaré)</text>
+  <text x="1210" y="240" class="t b">reçoit :</text>
+  <text x="1210" y="290" class="code">Bearer valeur-reelle-576</text>
+
+  <line x1="1070" y1="470" x2="1172" y2="560" stroke="#1C334E" stroke-width="5" marker-end="url(#fleche)"/>
+  <rect x="1180" y="460" width="600" height="220" fill="#FFFFFF" stroke="#B03A2E" stroke-width="5"/>
+  <text x="1210" y="515" class="t h ko">autre hôte</text>
+  <text x="1210" y="570" class="t b">reçoit :</text>
+  <text x="1210" y="620" class="code">Bearer sbx-cs-oQlw2y1o…</text>
+</svg>
