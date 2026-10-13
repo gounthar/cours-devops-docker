@@ -9,7 +9,13 @@ Démarrer l'application SecureVote et identifier les vulnérabilités de sécuri
 - Docker et Docker Compose installés
 - Ports 8080, 5000, 5432, 6379, 3000 disponibles
 
-> **Port déjà pris ?** Si un PostgreSQL ou un Redis tourne déjà sur votre machine (installé localement ou dans un autre conteneur), `docker compose up` s'arrête sur une erreur qui cite le port, par exemple :
+> **Port déjà pris ?** Si un PostgreSQL ou un Redis tourne déjà sur votre machine (installé localement ou dans un autre conteneur), `docker compose up` peut s'arrêter sur une erreur qui cite le port. Avec un service installé sur la machine :
+>
+> ```
+> failed to bind host port 0.0.0.0:5432/tcp: address already in use
+> ```
+>
+> Avec un autre conteneur qui publie déjà ce port :
 >
 > ```
 > Bind for 0.0.0.0:5432 failed: port is already allocated
