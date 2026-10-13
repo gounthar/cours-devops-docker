@@ -4295,6 +4295,7 @@ volumes:
 <div class="openblock column"><div class="content"><div class="paragraph"><p>Pour trouver le mot de passe, il va falloir le demander gentiment à Gitlab:</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose -f tp12-bis.yml exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password
 Password: qaPxXU+RqioolV3bAljvs2VYnyYa4jO/UYcis/UXLAk=</code></pre></div></div>
+<div class="paragraph fragment"><p>⚠️ Ce fichier disparaît au premier redémarrage du conteneur après 24 h : changez le mot de passe <code>root</code> dès la première connexion.</p></div>
 <div class="paragraph fragment"><p>Ensuite, il va falloir restreindre l&#8217;accès:</p></div>
 <div class="imageblock fragment"><img src="media/sign-up-restrictions.png" alt="sign up restrictions"></div></div></div></div></section><section id="jai_ma_forge_bon_et_maintenant_4" data-auto-animate><h2>🔨🔥 J&#8217;ai ma forge! Bon, et maintenant? 😐</h2><div class="slide-content"><div class="paragraph"><p>Pour utiliser le runner GitLab dans GitLab, vous devez le configurer.</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Pour une configuration correcte, nous aurons besoin d&#8217;un jeton copié depuis le portail.</p></li><li class="fragment"><p>Pire que ça, pas un jeton, mais carrément une commande à adapter à <code>docker compose</code>.</p></li><li class="fragment"><p>Sur <a href="http://localhost/admin/runners" class="bare">http://localhost/admin/runners</a>, cliquez sur "Create instance runner".</p></li><li class="fragment"><p>Cochez "Run untagged jobs".</p></li><li class="fragment"><p>Donnez une description au runner.</p></li><li class="fragment"><p>Cliquez sur le bouton "Create runner".</p></li><li class="fragment"><p>Sur la page "Register runner", gardez "Linux".</p></li><li class="fragment"><p>Vous avez ensuite une commande à copier et modifier pour <code>docker compose</code>, avec un jeton par runner.</p></li></ul></div>
@@ -4315,20 +4316,26 @@ Verifying runner... is valid       runner=bl16wVzQO runner_name=runner-1
 Runner registered successfully. Feel free to start it, [...]
 
 Configuration (with the authentication token) was saved in "/etc/gitlab-runner/config.toml"</code></pre></div></div>
-<div class="paragraph fragment"><p><code>&lt;dossier&gt;_default</code> : le réseau créé par Compose, nommé d&#8217;après le dossier du fichier (<code>docker network ls</code>).</p></div>
+<div class="paragraph fragment"><p><code>&lt;dossier&gt;_default</code> : le réseau créé par Compose, nommé d&#8217;après le dossier du fichier, en minuscules et sans caractères spéciaux (<code>docker network ls</code>).</p></div>
 <aside class="notes"><div class="paragraph"><p>Mesuré le 2026-10-07, GitLab et GitLab Runner 19.4.1, exécuteur <code>docker</code>, un job <code>cat /etc/os-release</code> sur un projet de test :</p></div>
 <div class="ulist"><ul><li><p><code>--url <a href="http://gitlab" class="bare">http://gitlab</a></code> seul : le runner s&#8217;enregistre, mais le job échoue au clonage, <code>unable to access 'http://localhost/root/demo.git/'</code>. GitLab donne aux jobs l&#8217;adresse tirée de <code>external_url</code>, et dans le conteneur du job <code>localhost</code> n&#8217;est pas GitLab.</p></li><li><p>avec <code>--clone-url <a href="http://gitlab" class="bare">http://gitlab</a></code> mais sans <code>--docker-network-mode</code> : <code>Could not resolve host: gitlab</code>. Les conteneurs des jobs sont créés hors du réseau de Compose.</p></li><li><p>avec les deux : le job clone le dépôt et réussit (<code>Job succeeded</code>).</p></li></ul></div>
 <div class="paragraph"><p>Sans <code>--non-interactive</code>, <code>register</code> demande l&#8217;URL, le nom, l&#8217;exécuteur (répondre <code>docker</code>, pas <code>shell</code>) puis l&#8217;image par défaut, mais ni l&#8217;URL de clonage ni le réseau : il faudrait les ajouter ensuite à la main dans <code>config.toml</code>.
 Le fichier écrit garde ces réglages : <code>clone_url</code> et, sous <code>[runners.docker]</code>, <code>network_mode</code>.</p></div></aside></div></section><section data-background-image="media/gitlab-runners-compose.png" data-background-size="cover" data-auto-animate></section><section id="profils_dans_docker_compose" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="paragraph"><p>On a vu déjà l&#8217;instruction <code>depends_on</code> dans un fichier Docker Compose.</p></div>
-<div class="ulist"><ul><li class="fragment"><p>Elle permet de définir des dépendances entre les services.</p></li><li class="fragment"><p>Mais que faire si on veut définir un lot de services qui fonctionnent ensemble, sans pour autant être en interdépendance ?</p></li><li class="fragment"><p>Les profils dans Docker Compose permettent de définir des groupes de services qui peuvent être activés ou désactivés ensemble.</p></li><li class="fragment"><p>Cela peut être utile pour gérer des environnements de développement, de test et de production différents dans le même fichier Docker Compose.</p></li><li class="fragment"><p>Pour définir un profil pour un service, vous pouvez ajouter la clé <code>profiles</code> à la définition du service dans votre fichier Docker Compose.</p></li></ul></div></div></section><section id="profils_dans_docker_compose_2" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="paragraph"><p>Par exemple :</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Elle permet de définir des dépendances entre les services.</p></li><li class="fragment"><p>Mais que faire si on veut définir un lot de services qui fonctionnent ensemble, sans pour autant être en interdépendance ?</p></li><li class="fragment"><p>Les profils dans Docker Compose permettent de définir des groupes de services qui peuvent être activés ou désactivés ensemble.</p></li><li class="fragment"><p>Cela peut être utile pour gérer des environnements de développement, de test et de production différents dans le même fichier Docker Compose.</p></li><li class="fragment"><p>Pour définir un profil pour un service, vous pouvez ajouter la clé <code>profiles</code> à la définition du service dans votre fichier Docker Compose.</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>Rappel rapide : les profils ont déjà été présentés, on les revoit pour corriger une règle et enchaîner sur les fichiers override.
+Question à poser : avec TP12-BIS, et si je veux parfois GitLab seul, sans les runners ?
+<code>depends_on</code> ne répond pas à ça : il ordonne le démarrage, il ne choisit pas quels services démarrent.
+Lien projet final : le complément « Multi-environnements » demande dev/staging/prod. Les profils sont une des deux réponses ; l&#8217;autre, les fichiers override, vient juste après.</p></div></aside></div></section><section id="profils_dans_docker_compose_2" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="paragraph"><p>Par exemple :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   mon_service:
     image: mon_image
     profiles:
       - dev</code></pre></div></div>
-<div class="paragraph fragment"><p>Dans cet exemple, le service mon_service appartient au profil dev.</p></div></div></section><section id="profils_dans_docker_compose_3" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Pour démarrer seulement les services qui appartiennent à un certain profil, vous pouvez utiliser l&#8217;option <code>--profile</code> de la commande <code>docker compose</code>, placée <strong>avant</strong> la sous-commande <code>up</code>.</p></li><li class="fragment"><p>Par exemple :</p></li></ul></div>
+<div class="paragraph fragment"><p>Dans cet exemple, le service mon_service appartient au profil dev.</p></div></div></section><section id="profils_dans_docker_compose_3" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Pour activer les services d&#8217;un profil, vous pouvez utiliser l&#8217;option <code>--profile</code> de la commande <code>docker compose</code>, placée <strong>avant</strong> la sous-commande <code>up</code>.</p></li><li class="fragment"><p>Par exemple :</p></li></ul></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose --profile dev up</code></pre></div></div>
-<div class="paragraph fragment"><p>Cette commande démarrera seulement les services qui appartiennent au profil <code>dev</code>.</p></div></div></section><section id="profils_dans_docker_compose_4" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Les profils peuvent rendre votre fichier Docker Compose plus organisé et flexible.</p></li><li class="fragment"><p>Ils vous permettent de définir différents environnements dans le même fichier et de choisir facilement quels services démarrer en fonction de vos besoins.</p></li><li class="fragment"><p>Jetons un coup d&#8217;œil à un exemple de fichier Docker Compose avec des profils :</p></li></ul></div>
+<div class="paragraph fragment"><p>Cette commande démarre les services du profil <code>dev</code>, <strong>et tous les services qui n&#8217;ont pas de profil</strong> : ceux-là démarrent toujours.</p></div>
+<aside class="notes"><div class="paragraph"><p>Mesuré le 2026-10-13 (Compose 5.5.1) avec un service <code>db</code> sans profil : <code>docker compose --profile dev config --services</code> affiche <code>db</code> et <code>service_dev</code>.
+<code>docker compose up --profile dev</code> échoue : <code>unknown flag: --profile</code>. D&#8217;où l&#8217;insistance sur « avant <code>up</code> ».</p></div></aside></div></section><section id="profils_dans_docker_compose_4" data-auto-animate><h2>👤 Profils dans Docker Compose 🐙</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Les profils peuvent rendre votre fichier Docker Compose plus organisé et flexible.</p></li><li class="fragment"><p>Ils vous permettent de définir différents environnements dans le même fichier et de choisir facilement quels services démarrer en fonction de vos besoins.</p></li><li class="fragment"><p>Jetons un coup d&#8217;œil à un exemple de fichier Docker Compose avec des profils :</p></li></ul></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   service_dev:
     image: mon_image_dev
@@ -4347,8 +4354,31 @@ Le fichier écrit garde ces réglages : <code>clone_url</code> et, sous <code>[r
     image: mon_image_prod
     profiles:
       - prod</code></pre></div></div>
-<div class="ulist"><ul><li class="fragment"><p>Nous pouvons choisir de démarrer seulement les services de développement avec <code>docker compose --profile dev up</code>, ou uniquement les services de production avec <code>docker compose --profile prod up</code>.</p></li><li class="fragment"><p>Les profils dans Docker Compose sont un outil puissant pour gérer différents environnements dans le même fichier Docker Compose.</p></li><li class="fragment"><p>Ils peuvent rendre votre développement et vos tests plus efficaces et organisés.</p></li></ul></div></div></section><section id="une_autre_forge_ça_vous_dit"><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph fragment"><p>😏 Non, et bien, c&#8217;est parti quand même.</p></div>
-<div class="paragraph fragment"><p><a href="https://raw.githubusercontent.com/jenkins-docs/quickstart-tutorials/refs/heads/main/docker-compose.yaml" class="bare">https://raw.githubusercontent.com/jenkins-docs/quickstart-tutorials/refs/heads/main/docker-compose.yaml</a></p></div>
+<div class="ulist"><ul><li class="fragment"><p>Nous pouvons choisir de démarrer seulement les services de développement avec <code>docker compose --profile dev up</code>, ou uniquement les services de production avec <code>docker compose --profile prod up</code>.</p></li><li class="fragment"><p>Les profils dans Docker Compose sont un outil puissant pour gérer différents environnements dans le même fichier Docker Compose.</p></li><li class="fragment"><p>Ils peuvent rendre votre développement et vos tests plus efficaces et organisés.</p></li></ul></div></div></section><section id="piège_les_services_sans_profil_démarrent_toujours"><h2>⚠️ Piège : les services sans profil démarrent toujours</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  db:
+    image: mon_image_db
+  service_dev:
+    image: mon_image_dev
+    profiles:
+      - dev</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose config --services
+# db
+docker compose --profile dev config --services
+# db
+# service_dev</code></pre></div></div>
+<div class="ulist small"><ul><li class="fragment"><p>Un service sans <code>profiles:</code> est toujours actif, quel que soit le profil demandé.</p></li><li class="fragment"><p>Nommer un service active son profil : <code>docker compose up service_dev</code> le démarre sans <code>--profile</code>.</p></li><li class="fragment"><p><code>COMPOSE_PROFILES=dev,prod</code> équivaut à <code>--profile dev --profile prod</code>, et peut se mettre dans le <code>.env</code>.</p></li><li class="fragment"><p><code>docker compose config --services</code> montre ce qui va démarrer, sans rien démarrer.</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>Mesuré le 2026-10-13 (Compose 5.5.1) : un service profilé que l&#8217;on nomme démarre, avec ses dépendances, sans <code>--profile</code>.
+Piège associé : un service SANS profil qui dépend d&#8217;un service profilé casse toutes les commandes (<code>config</code> comprise) tant que le profil n&#8217;est pas actif : <code>depends on undefined service</code>.
+La forge Jenkins qui suit s&#8217;en sert : chaque agent (maven, python&#8230;&#8203;) y a son profil, et <code>docker compose up &#8230;&#8203; maven</code> active le profil <code>maven</code> en nommant le service.</p></div></aside></div></section><section id="profils_ou_fichiers_override"><h2>🧩 Profils ou fichiers override ?</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># compose.yml et compose.override.yml sont fusionnés automatiquement
+docker compose up -d
+# en production, on choisit les fichiers explicitement
+docker compose -f compose.yml -f compose.prod.yml up -d
+# voir le résultat de la fusion, sans rien lancer
+docker compose -f compose.yml -f compose.prod.yml config</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Profils : activer ou non des <strong>services</strong> (un Kibana, un outil de debug, un runner).</p></li><li class="fragment"><p>Override : changer la <strong>configuration</strong> d&#8217;un même service selon l&#8217;environnement (ports, limites, <code>restart</code>).</p></li><li class="fragment"><p>C&#8217;est ce que demande le complément « Multi-environnements » du projet final.</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>Mesuré le 2026-10-13 (Compose 5.5.1) : un <code>compose.override.yml</code> à côté de <code>compose.yml</code> est fusionné sans option (ses <code>ports</code> apparaissent dans <code>docker compose config</code>) ; avec <code>-f compose.yml -f compose.prod.yml</code>, l&#8217;override n&#8217;est plus lu, seul <code>compose.prod.yml</code> s&#8217;ajoute.
+Les fichiers suivants complètent ou remplacent les clés du premier : listes de ports ajoutées, valeurs simples remplacées. <code>docker compose config</code> est le seul moyen sûr de voir le résultat.</p></div></aside></div></section><section id="une_autre_forge_ça_vous_dit"><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph fragment"><p>😏 Non, et bien, c&#8217;est parti quand même.</p></div>
+<div class="paragraph fragment"><p><a href="https://raw.githubusercontent.com/jenkins-docs/quickstart-tutorials/refs/heads/main/docker-compose.yaml" class="bare">https://raw.githubusercontent.com/jenkins-docs/quickstart-tutorials/refs/heads/main/docker-compose.yaml</a> (ci-dessous, une version simplifiée de 2024)</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   # Le service sidekick est responsable de la génération des clés SSH et de la vérification de leur existence.
   sidekick_service:
@@ -4502,7 +4532,10 @@ Le fichier écrit garde ces réglages : <code>clone_url</code> et, sous <code>[r
 volumes:
   jenkins_home:  # Un volume pour stocker les données de Jenkins.
   agent-ssh-dir:  # Un volume pour stocker les clés SSH.
-    name: agent-ssh-dir  # Le nom du volume.</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_2"><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph"><p>Indigeste? 😨</p></div>
+    name: agent-ssh-dir  # Le nom du volume.</code></pre></div></div>
+<aside class="notes"><div class="paragraph"><p>Pourquoi ce fichier : un vrai fichier Compose d&#8217;un projet Jenkins, qui utilise les profils qu&#8217;on vient de voir (un profil par agent : maven, python, node&#8230;&#8203;).
+L&#8217;amont a évolué depuis cette copie : <code>docker-compose.yaml</code> tire désormais des images toutes faites depuis ghcr.io, et les <code>build:</code> sont dans <code>build-docker-compose.yaml</code>. Les étudiants verront un fichier différent après le <code>git clone</code>.
+La diapo sert à lire, pas à tout comprendre : ne commenter que <code>profiles</code>, <code>depends_on</code> avec <code>service_completed_successfully</code> (le sidekick génère les clés SSH puis s&#8217;arrête), et le volume partagé en lecture seule.</p></div></aside></div></section><section id="une_autre_forge_ça_vous_dit_2"><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph"><p>Indigeste? 😨</p></div>
 <div class="paragraph fragment"><p>Ne relevons que les points importants:</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service maven est un agent Jenkins avec Maven installé.
   maven:
@@ -4569,16 +4602,19 @@ RUN echo "PATH=${PATH}" &gt;&gt; /etc/environment &amp;&amp; chown -R jenkins:je
       retries: 5  # Le nombre d'échecs consécutifs nécessaires pour considérer un service comme malsain.
     volumes:
       - agent-ssh-dir:/home/jenkins/.ssh:ro  # Monte le volume agent-ssh-dir au chemin /home/jenkins/.ssh à l'intérieur du conteneur en lecture seule.</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_5" data-auto-animate><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Use the base image
-FROM jenkins/ssh-agent:8.6.0-jdk17 as ssh-agent
+FROM jenkins/ssh-agent:8.6.0-jdk17 AS ssh-agent
 
 # Install necessary Dependencies
 RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends \
-    binutils ca-certificates curl git python3 python3-pip python3-setuptools python3-wheel python3-dev wget
+    binutils ca-certificates curl git python3 python3-pip python3-setuptools python3-venv python3-wheel python3-dev wget
 
 # Create an alias for python3 as python
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
-# Install required python packages
+# Install required python packages in a virtual environment:
+# Debian trixie refuses a system-wide pip install (PEP 668, externally-managed-environment)
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:${PATH}"
 RUN pip install docker-py feedparser nosexcover prometheus_client pycobertura pylint pytest pytest-cov requests setuptools sphinx pyinstaller
 
 # Add the Jenkins agent user to the environment
@@ -4587,11 +4623,16 @@ RUN echo "PATH=${PATH}" &gt;&gt; /etc/environment
 # Set ownership for Jenkins agent home directory
 RUN chown -R jenkins:jenkins "${JENKINS_AGENT_HOME}"</code></pre></div></div></div></section><section id="une_autre_forge_ça_vous_dit_6" data-auto-animate><h2>🔨🔥 Une autre forge, ça vous dit? 😐</h2><div class="slide-content"><div class="paragraph"><p>À vous maintenant!</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">git clone https://github.com/jenkins-docs/quickstart-tutorials.git</code></pre></div></div>
-<div class="paragraph fragment"><p>À vous de modifier les sources de façon à passer par le cache ILI</p></div>
-<div class="paragraph fragment"><p>Ensuite, ne restera qu&#8217;à lancer la "forge":</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose up --build -d --force-recreate maven</code></pre></div></div>
-<div class="paragraph fragment"><p>Ou encore si vous voulez tout construire localement:</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose -f build-docker-compose.yaml up --build -d --force-recreate maven</code></pre></div></div></div></section><section data-background-image="media/jenkins-compose.png" data-background-size="cover" data-auto-animate></section><section id="autre_étude_de_cas" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker compose qui a généré ce cours ?</p></div></div></section><section id="autre_étude_de_cas_2" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker compose qui a généré ce cours ?</p></div>
+<div class="paragraph fragment"><p>À vous de modifier les <code>FROM</code> des <code>dockerfiles/*/Dockerfile</code> qui viennent de Docker Hub, pour passer par le cache ILI (préfixe donné en séance, comme pour GitLab au TP #12-BIS).</p></div>
+<div class="paragraph fragment"><p>Ensuite, construire et lancer la "forge" avec ces <code>Dockerfile</code> modifiés :</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose -f build-docker-compose.yaml up --build -d --force-recreate maven</code></pre></div></div>
+<div class="paragraph fragment"><p>Sans rien construire, avec les images toutes faites de ghcr.io (vos <code>FROM</code> ne servent alors à rien) :</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose up -d maven</code></pre></div></div>
+<aside class="notes"><div class="paragraph"><p>Pourquoi le cache : Docker Hub limite les pulls anonymes à 100 par 6 h et par adresse IP, et toute la salle sort par la même adresse.
+Le cache ne concerne que les <code>FROM</code> Docker Hub de <code>build-docker-compose.yaml</code> : le fichier par défaut tire depuis ghcr.io.
+Nommer <code>maven</code> active son profil : démonstration directe de la diapo « Piège » sur les profils.
+Le Dockerfile Python affiché plus haut passe par un venv : sous Debian trixie, un <code>pip install</code> système est refusé (PEP 668, <code>externally-managed-environment</code>).
+Non vérifié pour cette séance : le temps de build réel de la forge.</p></div></aside></div></section><section data-background-image="media/jenkins-compose.png" data-background-size="cover" data-auto-animate></section><section id="autre_étude_de_cas" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker compose qui a généré ce cours ?</p></div></div></section><section id="autre_étude_de_cas_2" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker compose qui a généré ce cours ?</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># Ceci est un fichier Docker Compose pour un projet qui comprend plusieurs services.
 
 # 'x-slides-base' est une ancre YAML qui définit une configuration commune pour plusieurs services.
@@ -4673,7 +4714,10 @@ services:
       - HOME=/tmp
     # Volumes pour le conteneur Docker.
     volumes:
-      - ${DIST_DIR}:/slides</code></pre></div></div></div></section><section id="autre_étude_de_cas_3" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker compose qui a généré ce cours ?</p></div>
+      - ${DIST_DIR}:/slides</code></pre></div></div>
+<aside class="notes"><div class="paragraph"><p>Changement d&#8217;échelle : après un fichier qu&#8217;on n&#8217;a pas écrit, le fichier qui construit les diapositives qu&#8217;ils ont sous les yeux. Ils peuvent cloner le dépôt et lancer <code>make build</code>.
+Les extraits qui suivent sont une copie figée (dans <code>content/code-samples/compose/cours/</code>) : le fichier à la racine du dépôt a évolué depuis, par exemple il exige <code>CURRENT_UID</code>.
+Ce qu&#8217;on y cherche, et qui sert pour le projet : ancres YAML, variables d&#8217;environnement, et comment éviter de tourner en root.</p></div></aside></div></section><section id="autre_étude_de_cas_3" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Et pourquoi pas s&#8217;attaquer au docker compose qui a généré ce cours ?</p></div>
 <div class="paragraph fragment"><p>Indigeste? 😨</p></div>
 <div class="paragraph fragment"><p>Ne relevons que les points importants:</p></div>
 <div class="paragraph fragment"><p>Les ancres&#8230;&#8203;</p></div>
@@ -4707,16 +4751,22 @@ x-slides-base: &amp;slides-base
     - ./gulp/gulpfile.js:/app/gulpfile.js
     - ./gulp/tasks:/app/tasks
     - ./npm-packages:/app/npm-packages</code></pre></div></div></div></section><section id="les_ancres_dans_docker_compose" data-auto-animate><h2>➡️🔄 Les ancres dans <code>docker compose</code> ⚓</h2><div class="slide-content"><div class="paragraph"><p>Docker Compose permet de définir et de gérer plusieurs services Docker dans un seul fichier YAML.</p></div>
-<div class="ulist"><ul><li class="fragment"><p>Les ancres (<code>&amp;</code>) et les alias (<code>*</code>) sont des fonctionnalités YAML qui peuvent être utilisées dans Docker Compose pour réutiliser des configurations.</p></li><li class="fragment"><p>Une ancre est une référence à un objet ou à une valeur dans un fichier YAML.
+<div class="ulist"><ul><li class="fragment"><p>Les ancres (<code>&amp;</code>) et les alias (<code>*</code>) sont des fonctionnalités YAML qui peuvent être utilisées dans Docker Compose pour réutiliser des configurations.</p></li><li class="fragment"><p>Une ancre donne un nom à un objet ou à une valeur dans un fichier YAML.
 Elle est définie en utilisant l&#8217;opérateur <code>&amp;</code> suivi d&#8217;un nom unique.</p></li></ul></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">x-slides-base: &amp;slides-base
   build:
     context: ./</code></pre></div></div>
-<div class="paragraph fragment"><p>Dans cet exemple, <code>x-slides-base</code> est une ancre qui représente un objet avec une clé <code>build</code>.</p></div></div></section><section id="les_ancres_dans_docker_compose_2" data-auto-animate><h2>➡️🔄 Les ancres dans <code>docker compose</code> ⚓</h2><div class="slide-content"><div class="paragraph"><p>Les ancres peuvent être référencées ailleurs dans le fichier YAML en utilisant l&#8217;opérateur <code>*</code>.</p></div>
+<div class="paragraph fragment"><p>Dans cet exemple, <code>&amp;slides-base</code> est l&#8217;ancre, posée sur un objet avec une clé <code>build</code>.
+<code>x-slides-base</code> est un champ d&#8217;extension : Compose ignore toute clé de premier niveau qui commence par <code>x-</code>.</p></div>
+<aside class="notes"><div class="paragraph"><p>Deux mécanismes à séparer au tableau :
+1. <code>x-slides-base</code> : clé <code>x-</code>, que Compose ignore au lieu de refuser une clé inconnue. C&#8217;est le « parking » de l&#8217;ancre.
+2. <code>&amp;slides-base</code> / <code>*slides-base</code> / <code>&lt;&lt;:</code> : du YAML pur, pas du Compose. <code>&lt;&lt;:</code> fusionne le contenu de l&#8217;ancre dans le service ; les clés écrites à côté l&#8217;emportent.
+Montrer le résultat réel : <code>docker compose config</code> affiche le fichier après fusion, sans ancre.
+Utile pour le projet : factoriser <code>logging</code>, <code>restart</code> et <code>deploy</code> communs à tous les services.</p></div></aside></div></section><section id="les_ancres_dans_docker_compose_2" data-auto-animate><h2>➡️🔄 Les ancres dans <code>docker compose</code> ⚓</h2><div class="slide-content"><div class="paragraph"><p>Les ancres peuvent être référencées ailleurs dans le fichier YAML en utilisant l&#8217;opérateur <code>*</code>.</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   serve:
     &lt;&lt;: *slides-base</code></pre></div></div>
-<div class="ulist"><ul><li class="fragment"><p>Les ancres permettent de réutiliser des configurations, ce qui rend le fichier Docker Compose plus lisible et plus facile à maintenir.</p></li><li class="fragment"><p>Si vous devez modifier une configuration qui est utilisée à plusieurs endroits, vous pouvez simplement modifier l&#8217;ancre.</p></li><li class="fragment"><p>En conclusion, les ancres et les alias sont des outils puissants pour gérer des configurations complexes dans Docker Compose. Ils permettent de réduire la duplication et d&#8217;améliorer la lisibilité de votre fichier Docker Compose.</p></li></ul></div></div></section><section id="autre_étude_de_cas_4" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Le fameux qrcode&#8230;&#8203;</p></div>
+<div class="ulist small"><ul><li class="fragment"><p>Les ancres permettent de réutiliser des configurations, ce qui rend le fichier Docker Compose plus lisible et plus facile à maintenir.</p></li><li class="fragment"><p>Si vous devez modifier une configuration qui est utilisée à plusieurs endroits, vous pouvez simplement modifier l&#8217;ancre.</p></li><li class="fragment"><p>⚠️ <code>&lt;&lt;:</code> fusionne en surface : redéfinir <code>environment:</code> dans le service <strong>remplace</strong> toute la liste de l&#8217;ancre, au lieu de la compléter.</p></li><li class="fragment"><p>En conclusion, les ancres et les alias sont des outils puissants pour gérer des configurations complexes dans Docker Compose. Ils permettent de réduire la duplication et d&#8217;améliorer la lisibilité de votre fichier Docker Compose.</p></li></ul></div></div></section><section id="autre_étude_de_cas_4" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Le fameux qrcode&#8230;&#8203;</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Le service 'qrcode'.
   qrcode:
     &lt;&lt;: *slides-base
@@ -4764,7 +4814,9 @@ Elle est définie en utilisant l&#8217;opérateur <code>&amp;</code> suivi d&#82
     volumes:
       - ${DIST_DIR}:/slides</code></pre></div></div></div></section><section id="pourquoi_une_image_construite_et_pas_limage_publiée"><h2>Pourquoi une image construite, et pas l&#8217;image publiée ? 📄</h2><div class="slide-content"><div class="paragraph"><p>L&#8217;image publiée <code>ghcr.io/astefanutti/decktape</code> ne suffit plus telle quelle.</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Le PDF passe par deux étapes : decktape rend les diapositives en 2048x1536, puis <code>ghostscript</code> réduit le fichier. L&#8217;image publiée n&#8217;a pas <code>ghostscript</code>.</p></li><li class="fragment"><p>Chromium ne démarre dans le conteneur qu&#8217;avec <code>--no-sandbox</code> et <code>--disable-gpu</code>. Ces options vivent dans <code>entrypoint.sh</code>, d&#8217;où l&#8217;absence de <code>command:</code> dans le service.</p></li><li class="fragment"><p>L&#8217;image ne déclare un <code>HOME</code> que pour l&#8217;uid 1000. Avec un autre uid, Chromium échoue sur <code>chrome_crashpad_handler: --database is required</code> : d&#8217;où <code>HOME=/tmp</code>.
-Un petit <code>Dockerfile</code> <code>FROM ghcr.io/astefanutti/decktape</code> règle les deux premiers points ; Compose le construit avec <code>build:</code>.</p></li></ul></div></div></section><section id="autre_étude_de_cas_8" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Pour rappel, l&#8217;ancre contenait :</p></div>
+Un petit <code>Dockerfile</code> <code>FROM ghcr.io/astefanutti/decktape</code> règle les deux premiers points ; Compose le construit avec <code>build:</code>.</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>Message à retenir, pas les détails : une image publiée sert de base, on la complète avec un petit Dockerfile <code>FROM &#8230;&#8203;</code> plutôt que de bricoler dans <code>command:</code>.
+Le troisième point (HOME seulement pour l&#8217;uid 1000) est la conséquence de <code>user: ${CURRENT_UID}</code> : en changeant d&#8217;utilisateur, on perd ce que l&#8217;image avait préparé pour le sien. Même famille de problèmes qu&#8217;à l&#8217;exercice 2 du chapitre sécurité.</p></div></aside></div></section><section id="autre_étude_de_cas_8" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="paragraph"><p>Pour rappel, l&#8217;ancre contenait :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># 'x-slides-base' est une ancre YAML qui définit une configuration commune pour plusieurs services.
 x-slides-base: &amp;slides-base
   # La configuration de construction pour l'image Docker.
@@ -4792,11 +4844,14 @@ x-slides-base: &amp;slides-base
     - ${DIST_DIR}:/app/dist
     - ./gulp/gulpfile.js:/app/gulpfile.js
     - ./gulp/tasks:/app/tasks
-    - ./npm-packages:/app/npm-packages</code></pre></div></div></div></section><section id="build_quoi" class="columns" data-auto-animate><h2>➡️🔄 Build quoi? 🛠️📦</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="ulist"><ul><li class="fragment"><p>Docker BuildKit est un outil de construction de Docker qui apporte de nombreuses améliorations par rapport à l&#8217;ancien système de construction.</p></li><li class="fragment"><p>L&#8217;une de ces améliorations est la mise en cache en ligne.</p></li><li class="fragment"><p>La mise en cache en ligne est une fonctionnalité de Docker BuildKit qui permet de réutiliser les couches de cache existantes lors de la construction d&#8217;une image Docker.</p></li></ul></div>
+    - ./npm-packages:/app/npm-packages</code></pre></div></div></div></section><section id="build_quoi" class="columns" data-auto-animate><h2>➡️🔄 Build quoi? 🛠️📦</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="ulist small"><ul><li class="fragment"><p>Docker BuildKit est un outil de construction de Docker qui apporte de nombreuses améliorations par rapport à l&#8217;ancien système de construction.</p></li><li class="fragment"><p>BuildKit est le constructeur par défaut depuis Docker Engine 23 : rien à activer.</p></li><li class="fragment"><p>Il sait ranger les informations de cache <strong>dans l&#8217;image</strong> elle-même (cache « inline »).</p></li><li class="fragment"><p>Une autre machine (la CI, par exemple) qui récupère cette image peut alors s&#8217;en servir comme cache, avec <code>cache_from:</code>. En local, le cache des couches fonctionne déjà sans cette option.</p></li></ul></div>
 <div class="imageblock fragment"><img src="media/multi-layered-cake-removebg-preview.png" alt="multi layered cake removebg preview" height="100"></div></div></div>
-<div class="openblock column is-one-third"><div class="content"><div class="paragraph fragment"><p>Elle est activée en définissant l&#8217;argument <code>BUILDKIT_INLINE_CACHE</code> à <code>1</code>.</p></div>
+<div class="openblock column is-one-third"><div class="content"><div class="paragraph fragment"><p>Ce cache inline s&#8217;active en définissant l&#8217;argument <code>BUILDKIT_INLINE_CACHE</code> à <code>1</code>.</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">args:
-  BUILDKIT_INLINE_CACHE: 1</code></pre></div></div></div></div></div></section><section id="environnement" class="columns" data-auto-animate><h2>➡️🔄 Environnement 🌍🌿</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Variables d'environnement pour le conteneur Docker.
+  BUILDKIT_INLINE_CACHE: 1</code></pre></div></div></div></div>
+<aside class="notes"><div class="paragraph"><p>« Inline » = embarqué dans l&#8217;image, rien à voir avec Internet.
+Ici l&#8217;option ne sert à rien : l&#8217;image n&#8217;est pas poussée, et le fichier n&#8217;a pas de <code>cache_from:</code>. Elle date d&#8217;une époque où l&#8217;on pensait en tirer un gain local.
+Source : <a href="https://docs.docker.com/build/cache/backends/inline/" class="bare">https://docs.docker.com/build/cache/backends/inline/</a></p></div></aside></div></section><section id="environnement" class="columns" data-auto-animate><h2>➡️🔄 Environnement 🌍🌿</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Variables d'environnement pour le conteneur Docker.
   environment:
     - PRESENTATION_URL=${PRESENTATION_URL}
     - REPOSITORY_URL=${REPOSITORY_URL}
@@ -4804,7 +4859,10 @@ x-slides-base: &amp;slides-base
     - SOURCE_FILE=${SOURCE_FILE}</code></pre></div></div></div></div>
 <div class="openblock column"><div class="content"><div class="paragraph"><p>Trois variables d&#8217;environnement sont définies pour le conteneur Docker : <code>PRESENTATION_URL</code>, <code>REPOSITORY_URL</code> et <code>SOURCE_FILE</code>.
 <code>SOURCE_FILE</code> choisit le fichier racine : <code>SOURCE_FILE=index-examen.adoc make build</code> construit le sujet d&#8217;examen.</p></div>
-<div class="paragraph fragment"><p>Ces variables sont définies à l&#8217;aide de la syntaxe <code>${VARIABLE_NAME}</code>, qui est une manière standard d&#8217;accéder aux variables d&#8217;environnement dans les fichiers de configuration YAML.</p></div></div></div></div></section><section id="environnement_2" data-auto-animate><h2>➡️🔄 Environnement 🌍🌿</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Variables d'environnement pour le conteneur Docker.
+<div class="paragraph fragment"><p>Ces variables sont définies à l&#8217;aide de la syntaxe <code>${VARIABLE_NAME}</code> : c&#8217;est l&#8217;interpolation de Compose, empruntée au shell. YAML lui-même ne la connaît pas.</p></div></div></div>
+<aside class="notes"><div class="paragraph"><p>Faire taper <code>docker compose config</code> : c&#8217;est LA commande pour voir les valeurs après substitution, la première à lancer quand une variable « ne marche pas ».
+Ne pas confondre deux usages : le <code>.env</code> que Compose lit pour substituer <code>${&#8230;&#8203;}</code> dans le YAML, et <code>env_file:</code>, qui injecte des variables dans le conteneur.
+Le projet final exige un <code>.env</code> non versionné et un <code>.env.example</code> versionné : c&#8217;est ici que ça commence.</p></div></aside></div></section><section id="environnement_2" data-auto-animate><h2>➡️🔄 Environnement 🌍🌿</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # Variables d'environnement pour le conteneur Docker.
   environment:
     - PRESENTATION_URL=${PRESENTATION_URL}
     - REPOSITORY_URL=${REPOSITORY_URL}
@@ -4819,22 +4877,28 @@ x-slides-base: &amp;slides-base
     - SOURCE_FILE=${SOURCE_FILE}</code></pre></div></div>
 <div class="ulist"><ul><li><p>Si la variable n&#8217;est définie ni dans le shell ni dans le fichier <code>.env</code>, Docker Compose utilise la valeur par défaut spécifiée dans le fichier <code>docker-compose.yml</code> (s&#8217;il y en a une).</p></li><li><p>Dans notre cas, aucune valeur par défaut n&#8217;est spécifiée. Docker Compose n&#8217;échoue pas pour autant : il émet un avertissement, substitue une <strong>chaîne vide</strong>, et continue.</p></li><li><p><code>The "PRESENTATION_URL" variable is not set. Defaulting to a blank string.</code> — code de sortie 0.</p></li></ul></div></div></section><section id="autre_étude_de_cas_9" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  # L'ID utilisateur qui exécute les commandes à l'intérieur du conteneur.
   user: ${CURRENT_UID}</code></pre></div></div>
-<div class="ulist"><ul><li class="fragment"><p>Dans Docker, chaque instruction dans le Dockerfile est exécutée par un utilisateur particulier.</p></li><li class="fragment"><p>Par défaut, cet utilisateur est root, mais pour des raisons de sécurité, il est souvent recommandé d&#8217;exécuter les processus en tant qu&#8217;utilisateur non root.</p></li><li class="fragment"><p>Cette ligne définit l&#8217;ID de l&#8217;utilisateur qui exécutera les commandes à l&#8217;intérieur du conteneur Docker à la valeur de la variable d&#8217;environnement <code>CURRENT_UID</code>.</p></li><li class="fragment"><p>La syntaxe <code>${CURRENT_UID}</code> est utilisée pour accéder à la valeur d&#8217;une variable d&#8217;environnement.</p></li><li class="fragment"><p>Dans ce cas, Docker Compose recherchera une variable d&#8217;environnement nommée <code>CURRENT_UID</code> et utilisera sa valeur.</p></li><li class="fragment"><p>Si <code>CURRENT_UID</code> n&#8217;est pas défini, Docker Compose <strong>n&#8217;échoue pas</strong> : même avertissement, même chaîne vide. <code>user:</code> reçoit une valeur vide.</p></li><li class="fragment"><p>Le conteneur démarre donc <strong>en root</strong> — exactement l&#8217;inverse de ce que cette ligne cherchait à obtenir.</p></li></ul></div></div></section><section id="rendre_une_variable_vraiment_obligatoire"><h2>🛡️ Rendre une variable vraiment obligatoire</h2><div class="slide-content"><div class="paragraph"><p>Permissif :</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Dans un conteneur, chaque processus tourne sous un utilisateur donné.</p></li><li class="fragment"><p>Par défaut, cet utilisateur est root, mais pour des raisons de sécurité, il est souvent recommandé d&#8217;exécuter les processus en tant qu&#8217;utilisateur non root.</p></li><li class="fragment"><p>Cette ligne définit l&#8217;ID de l&#8217;utilisateur qui exécutera les commandes à l&#8217;intérieur du conteneur Docker à la valeur de la variable d&#8217;environnement <code>CURRENT_UID</code>.</p></li><li class="fragment"><p>La syntaxe <code>${CURRENT_UID}</code> est utilisée pour accéder à la valeur d&#8217;une variable d&#8217;environnement.</p></li><li class="fragment"><p>Dans ce cas, Docker Compose recherchera une variable d&#8217;environnement nommée <code>CURRENT_UID</code> et utilisera sa valeur.</p></li><li class="fragment"><p>Si <code>CURRENT_UID</code> n&#8217;est pas défini, Docker Compose <strong>n&#8217;échoue pas</strong> : même avertissement, même chaîne vide. <code>user:</code> reçoit une valeur vide.</p></li><li class="fragment"><p>Le conteneur démarre donc <strong>en root</strong> — exactement l&#8217;inverse de ce que cette ligne cherchait à obtenir.</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>Distinguer au tableau : <code>USER</code> dans le Dockerfile fixe l&#8217;utilisateur par défaut de l&#8217;image ; <code>user:</code> dans Compose le remplace au lancement, sans reconstruire.
+Ici, <code>user:</code> sert à écrire dans <code>dist/</code> (montage bind) avec l&#8217;uid de l&#8217;étudiant, pour que les fichiers produits lui appartiennent sur l&#8217;hôte.
+Mesuré le 2026-10-13 : <code>user: ""</code> donne bien <code>uid=0(root)</code>.
+Le chapitre sécurité reprend la question sous l&#8217;angle « pas de root » : c&#8217;est le même réglage.</p></div></aside></div></section><section id="rendre_une_variable_vraiment_obligatoire"><h2>🛡️ Rendre une variable vraiment obligatoire</h2><div class="slide-content"><div class="paragraph"><p>Permissif :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">user: ${CURRENT_UID}</code></pre></div></div>
 <div class="paragraph"><p>Obligatoire :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">user: ${CURRENT_UID:?CURRENT_UID est obligatoire}</code></pre></div></div>
-<div class="ulist"><ul><li class="fragment"><p><code>${VAR}</code> est permissif : variable absente, valeur vide, on continue.</p></li><li class="fragment"><p><code>${VAR:?message}</code> échoue pour de bon, dès <code>docker compose config</code> : le message s&#8217;affiche et le code de sortie est 1.</p></li><li class="fragment"><p>Rien ne démarre, donc rien ne démarre en root.</p></li><li class="fragment"><p>C&#8217;est la forme à écrire quand la valeur est obligatoire.</p></li><li class="fragment"><p>C&#8217;est celle qu&#8217;utilise le <code>docker-compose.yml</code> à la racine de ce dépôt : sans <code>CURRENT_UID</code> (que <code>make</code> fournit), il s&#8217;arrête au lieu de construire en root.</p></li></ul></div></div></section><section id="autre_étude_de_cas_10" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml"># Ce Dockerfile met en place un environnement Node.js avec des outils et dépendances supplémentaires.
+<div class="ulist"><ul><li class="fragment"><p><code>${VAR}</code> est permissif : variable absente, valeur vide, on continue.</p></li><li class="fragment"><p><code>${VAR:?message}</code> échoue pour de bon, dès <code>docker compose config</code> : le message s&#8217;affiche et le code de sortie est 1.</p></li><li class="fragment"><p>Rien ne démarre, donc rien ne démarre en root.</p></li><li class="fragment"><p>C&#8217;est la forme à écrire quand la valeur est obligatoire.</p></li><li class="fragment"><p>C&#8217;est celle qu&#8217;utilise le <code>docker-compose.yml</code> à la racine de ce dépôt : sans <code>CURRENT_UID</code> (que <code>make</code> fournit), il s&#8217;arrête au lieu de construire en root.</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>Deux formes, une différence : <code>${VAR:?msg}</code> échoue si VAR est absente OU vide ; <code>${VAR?msg}</code> seulement si elle est absente. Le chapitre sécurité utilise la seconde : pour un mot de passe, préférer la première, sinon une ligne <code>DB_PASSWORD=</code> vide dans <code>.env</code> passe.
+À retenir pour le projet : toutes les variables sans valeur par défaut raisonnable en <code>:?</code>.</p></div></aside></div></section><section id="autre_étude_de_cas_10" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Ce Dockerfile met en place un environnement Node.js avec des outils et dépendances supplémentaires.
 # Il est basé sur l'image Docker officielle de Node.js (variante Alpine).
 
 FROM node:26-alpine
 
-# Installer la dernière version des dépendances requises
+# curl (transferts par URL), git, tini (un init minuscule) et unzip. Pas de commentaire après un \ : il casse la ligne.
 # hadolint ignore=DL3018
 RUN apk add --no-cache \
-  curl \ # Outil pour transférer des données avec des URLs
-  git \ # Système de contrôle de version distribué
-  tini \ # Un init minuscule mais valide pour les conteneurs
-  unzip # Outil pour décompresser les fichiers zip
+  curl \
+  git \
+  tini \
+  unzip
 
 # Installer les dépendances NPM globalement (dernières versions)
 # hadolint ignore=DL3016,DL3059
@@ -4878,7 +4942,9 @@ EXPOSE 8000
 
 # Utiliser tini comme point d'entrée, et exécuter gulp par défaut
 ENTRYPOINT ["/sbin/tini","-g","gulp"]
-CMD ["default"]</code></pre></div></div></div></section><section id="autre_étude_de_cas_11" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">RUN npm install --global npm npm-check-updates # Mettre à jour npm à la dernière version et installer npm-check-updates
+CMD ["default"]</code></pre></div></div>
+<aside class="notes"><div class="paragraph"><p>Diapo « indigeste » volontaire : ne pas la lire, enchaîner sur les extraits.
+Mini-quiz possible sur la ligne 6 : pourquoi pas de commentaire après chaque <code>\</code> ? Parce que <code>\</code> n&#8217;est une continuation que s&#8217;il termine la ligne. Une version précédente de ce fichier avait ces commentaires et ne se construisait plus (<code>unknown instruction: git</code>).</p></div></aside></div></section><section id="autre_étude_de_cas_11" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">RUN npm install --global npm npm-check-updates # Mettre à jour npm à la dernière version et installer npm-check-updates
 
 # Copier les dépendances NPM de l'application dans l'image Docker
 COPY ./npm-packages /app/npm-packages
@@ -4892,7 +4958,7 @@ RUN curl --silent --show-error --location --output /tmp/fontawesome.zip \
   &amp;&amp; unzip -q /tmp/fontawesome.zip -d /tmp \
   &amp;&amp; mv /tmp/"fontawesome-free-${FONTAWESOME_VERSION}-web" /app/fontawesome \
   &amp;&amp; rm -rf /tmp/font*</code></pre></div></div>
-<div class="ulist"><ul><li class="fragment"><p>Il télécharge également et installe une version spécifique de <code>FontAwesome</code></p></li></ul></div></div></section><section id="autre_étude_de_cas_13" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Installer les dépendances NPM en utilisant le package-lock.json
+<div class="ulist"><ul><li class="fragment"><p>Il télécharge également et installe une version spécifique de <code>FontAwesome</code> (étape retirée depuis du Dockerfile à la racine du dépôt).</p></li></ul></div></div></section><section id="autre_étude_de_cas_13" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Installer les dépendances NPM en utilisant le package-lock.json
 # Si l'installation échoue, revenir à une installation npm régulière
 RUN { npm install-clean &amp;&amp; npx update-browserslist-db@latest; } || npm install
 
@@ -4911,10 +4977,22 @@ EXPOSE 8000</code></pre></div></div>
 <div class="ulist"><ul><li class="fragment"><p>Les tâches <code>gulp</code> et la configuration sont copiées dans l&#8217;image Docker, un volume est défini pour le répertoire <code>/app</code>, et le port <code>8000</code> est exposé pour <code>HTTP</code>.</p></li></ul></div></div></section><section id="autre_étude_de_cas_15" data-auto-animate><h2>Autre étude de cas 📚🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Utiliser tini comme point d'entrée, et exécuter gulp par défaut
 ENTRYPOINT ["/sbin/tini","-g","gulp"]
 CMD ["default"]</code></pre></div></div>
-<div class="ulist"><ul><li class="fragment"><p>Le point d&#8217;entrée est défini sur <code>tini</code>, et <code>gulp</code> est exécuté par défaut.</p></li></ul></div></div></section><section id="tini_dans_docker"><h2>🐋 Tini dans Docker</h2></section><section id="quest_ce_que_tini"><h2>🤔 Qu&#8217;est-ce que Tini ?</h2><div class="slide-content"><div class="paragraph"><p>Tini est un <code>init</code> minuscule mais valide pour les conteneurs. Il est conçu pour être le système init le plus simple possible.</p></div></div></section><section id="que_fait_tini"><h2>🛠️ Que fait Tini ?</h2><div class="slide-content"><div class="paragraph"><p>Tini fait deux choses :</p></div>
-<div class="olist arabic"><ol class="arabic"><li><p>Il génère votre processus en tant que son enfant (directement, pas en tant que petit-enfant, comme le ferait un shell).</p></li><li><p>Il attend ensuite les signaux et les transmet au processus enfant.</p></li></ol></div></div></section><section id="pourquoi_tini_est_il_utile_dans_docker"><h2>🎯 Pourquoi Tini est-il utile dans Docker ?</h2><div class="slide-content"><div class="olist arabic"><ol class="arabic"><li><p>Docker exécute un seul processus dans un conteneur par défaut. Si ce processus génère des processus enfants et ne les récolte pas correctement, ils deviennent des processus zombies.</p></li><li><p>Tini assure que ces processus zombies sont correctement récoltés, améliorant ainsi le comportement du conteneur et réduisant la probabilité de cas limites.</p></li></ol></div></div></section><section id="tini_dans_notre_dockerfile"><h2>🐋 Tini dans notre Dockerfile</h2><div class="slide-content"><div class="paragraph"><p>Dans notre Dockerfile, nous utilisons Tini comme point d&#8217;entrée :</p></div>
+<div class="ulist"><ul><li class="fragment"><p>Le point d&#8217;entrée est défini sur <code>tini</code>, et <code>gulp</code> est exécuté par défaut.</p></li></ul></div></div></section><section id="tini_dans_docker"><h2>🐋 Tini dans Docker</h2></section><section id="pourquoi_le_pid_1_est_il_spécial"><h2>🤔 Pourquoi le PID 1 est-il spécial ?</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm alpine ps
+# PID   USER     TIME  COMMAND
+#     1 root      0:00 ps</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Dans un conteneur, la commande lancée devient le processus n°1.</p></li><li class="fragment"><p>Sur un Linux classique, le PID 1 est <code>init</code> : il récolte les processus orphelins terminés (les « zombies »).</p></li><li class="fragment"><p>Le noyau protège le PID 1 : un signal qu&#8217;il ne gère pas explicitement (le SIGTERM de <code>docker container stop</code>) est ignoré.</p></li><li class="fragment"><p>Docker attend alors, puis tue le conteneur (SIGKILL, code de sortie 137).</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>Mesuré le 2026-10-13 (Docker 29.8.2) : <code>alpine sleep 300</code> sans init met 3,3 s à s&#8217;arrêter, code 137 ; avec <code>--init</code>, 0,3 s, code 143 (SIGTERM reçu et traité).
+<code>docker container run --rm --init alpine ps</code> montre <code>/sbin/docker-init&#8201;&#8212;&#8201;ps</code> en PID 1 : c&#8217;est Tini, embarqué dans Docker.</p></div></aside></div></section><section id="quest_ce_que_tini"><h2>🤔 Qu&#8217;est-ce que Tini ?</h2><div class="slide-content"><div class="paragraph"><p>Tini est un <code>init</code> minuscule mais valide pour les conteneurs. Il est conçu pour être le système init le plus simple possible.</p></div></div></section><section id="que_fait_tini"><h2>🛠️ Que fait Tini ?</h2><div class="slide-content"><div class="paragraph"><p>Tini fait deux choses :</p></div>
+<div class="olist arabic"><ol class="arabic"><li><p>Il lance votre processus comme son enfant direct (pas comme petit-enfant, comme le ferait un shell).</p></li><li><p>Il relaie ensuite les signaux à cet enfant, et récolte les processus orphelins qui lui reviennent.</p></li></ol></div></div></section><section id="pourquoi_tini_est_il_utile_dans_docker"><h2>🎯 Pourquoi Tini est-il utile dans Docker ?</h2><div class="slide-content"><div class="olist arabic"><ol class="arabic"><li><p>Docker exécute un seul processus dans un conteneur par défaut. Quand un processus meurt, ses enfants orphelins sont rattachés au PID 1 ; si personne ne les récolte, ils restent à l&#8217;état de zombies.</p></li><li><p>Tini, en PID 1, récolte ces orphelins et transmet les signaux : <code>docker container stop</code> arrête alors proprement l&#8217;application.</p></li></ol></div></div></section><section id="tini_dans_notre_dockerfile"><h2>🐋 Tini dans notre Dockerfile</h2><div class="slide-content"><div class="paragraph"><p>Dans notre Dockerfile, nous utilisons Tini comme point d&#8217;entrée :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">ENTRYPOINT ["/sbin/tini","-g","gulp"]</code></pre></div></div>
-<div class="olist arabic"><ol class="arabic"><li><p>Cela signifie que Tini est le premier processus qui est lancé dans notre conteneur.</p></li><li><p>Il lancera ensuite <code>gulp</code> en tant que processus enfant.</p></li><li><p>Tout signal envoyé au conteneur sera transmis par Tini à <code>gulp</code>.</p></li><li><p>Si <code>gulp</code> génère des processus enfants et ne les récolte pas, Tini le fera.</p></li></ol></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Ce Makefile est utilisé pour gérer le projet Docker Compose.
+<div class="olist arabic"><ol class="arabic"><li><p>Cela signifie que Tini est le premier processus qui est lancé dans notre conteneur.</p></li><li><p>Il lancera ensuite <code>gulp</code> en tant que processus enfant.</p></li><li><p>Avec <code>-g</code>, tout signal envoyé au conteneur est relayé par Tini à tout le <strong>groupe</strong> de <code>gulp</code> (gulp et ses sous-processus).</p></li><li><p>Les processus orphelins qui finissent rattachés au PID 1 sont récoltés par Tini.</p></li></ol></div>
+<aside class="notes"><div class="paragraph"><p>Tant que gulp vit, ses enfants zombies restent les siens : Tini ne récolte que les orphelins.
+Mesuré le 2026-10-13 : <code>tini -g</code> en PID 1, <code>docker stop</code> → le <code>trap TERM</code> de l&#8217;enfant s&#8217;exécute, arrêt en 0,5 s.</p></div></aside></div></section><section id="tini_sans_toucher_au_dockerfile"><h2>🐋 Tini sans toucher au Dockerfile</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  app:
+    image: mon_image
+    init: true</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p><code>init: true</code> (ou <code>docker container run --init</code>) : Docker injecte son propre Tini, <code>docker-init</code>, en PID 1.</p></li><li class="fragment"><p>Pas besoin d'`apk add tini` ni de changer l'`ENTRYPOINT`.</p></li><li class="fragment"><p>Pour le projet : une ligne, qui règle les arrêts lents (code 137 au lieu de 143).</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>Mesuré le 2026-10-13 : <code>init: true</code> → PID 1 = <code>docker-init</code>, et <code>docker-init --version</code> → <code>tini version 0.19.0</code>.</p></div></aside></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Ce Makefile est utilisé pour gérer le projet Docker Compose.
 
 # Définir les valeurs par défaut pour les variables DIST_DIR et REPOSITORY_URL.
 DIST_DIR ?= $(CURDIR)/dist
@@ -5013,13 +5091,14 @@ qrcode:
 # d'intégration continue.
 CURRENT_UID ?= $(shell id -u):$(shell id -g)
 export CURRENT_UID</code></pre></div></div>
-<div class="ulist"><ul><li class="fragment"><p>Voilà d&#8217;où vient le <code>CURRENT_UID</code> que <code>docker-compose.yml</code> consomme quelques diapos plus haut.</p></li><li class="fragment"><p>Compose ne le calcule pas, et ne se plaint pas non plus s&#8217;il manque : c&#8217;est au <code>Makefile</code> de le poser.</p></li><li class="fragment"><p><code>$(shell id -u):$(shell id -g)</code> le lit à chaque appel, au lieu de le figer dans <code>.env</code>.</p></li></ul></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_3" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Activer Docker BuildKit pour une construction plus rapide et la mise en cache des images.
+<div class="ulist"><ul><li class="fragment"><p>Voilà d&#8217;où vient le <code>CURRENT_UID</code> que <code>docker-compose.yml</code> consomme quelques diapos plus haut.</p></li><li class="fragment"><p>Compose ne le calcule pas : c&#8217;est au <code>Makefile</code> de le poser. Écrit <code>${CURRENT_UID}</code>, comme dans cette copie, Compose ne se plaint pas s&#8217;il manque ; écrit <code>${CURRENT_UID:?…}</code>, comme à la racine, il s&#8217;arrête.</p></li><li class="fragment"><p><code>$(shell id -u):$(shell id -g)</code> le lit à chaque appel, au lieu de le figer dans <code>.env</code>.</p></li></ul></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_3" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Activer Docker BuildKit pour une construction plus rapide et la mise en cache des images.
 DOCKER_BUILDKIT ?= 1
 COMPOSE_DOCKER_CLI_BUILD ?= 1
 export DOCKER_BUILDKIT COMPOSE_DOCKER_CLI_BUILD</code></pre></div></div>
 <div class="paragraph"><p>Cette configuration de docker compose concerne Docker BuildKit, une fonctionnalité de Docker qui améliore les performances de construction des images Docker.</p></div>
-<div class="ulist"><ul><li><p>La ligne <code>DOCKER_BUILDKIT ?= 1</code> vérifie si la variable d&#8217;environnement <code>DOCKER_BUILDKIT</code> est déjà définie.</p><div class="ulist"><ul><li><p>Si ce n&#8217;est pas le cas, elle lui attribue la valeur <code>1</code>, ce qui active Docker BuildKit.</p></li></ul></div></li><li><p>De même, <code>COMPOSE_DOCKER_CLI_BUILD ?= 1</code> vérifie si la variable d&#8217;environnement <code>COMPOSE_DOCKER_CLI_BUILD</code> est déjà définie.</p><div class="ulist"><ul><li><p>Si ce n&#8217;est pas le cas, elle lui attribue la valeur <code>1</code>.</p></li><li><p>Cette variable d&#8217;environnement est utilisée pour activer l&#8217;utilisation de Docker CLI lors de l&#8217;utilisation de Docker Compose.</p></li><li><p>C&#8217;est nécessaire car Docker Compose ne supporte pas BuildKit par défaut, donc cette variable d&#8217;environnement est une solution de contournement pour l&#8217;activer.
-En résumé, ces deux lignes de code activent Docker BuildKit pour améliorer les performances de construction des images Docker lors de l&#8217;utilisation de Docker Compose.</p></li></ul></div></li></ul></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_4" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Définition des commandes shell réutilisables pour Docker Compose.
+<div class="ulist"><ul><li><p>La ligne <code>DOCKER_BUILDKIT ?= 1</code> vérifie si la variable d&#8217;environnement <code>DOCKER_BUILDKIT</code> est déjà définie.</p><div class="ulist"><ul><li><p>Si ce n&#8217;est pas le cas, elle lui attribue la valeur <code>1</code>, ce qui active Docker BuildKit.</p></li></ul></div></li><li><p>De même, <code>COMPOSE_DOCKER_CLI_BUILD ?= 1</code> vérifie si la variable d&#8217;environnement <code>COMPOSE_DOCKER_CLI_BUILD</code> est déjà définie.</p><div class="ulist"><ul><li><p>Si ce n&#8217;est pas le cas, elle lui attribue la valeur <code>1</code>.</p></li><li><p>Elle servait à l&#8217;ancien <code>docker-compose</code> (v1, en Python), qui ne passait pas par BuildKit sans elle.
+Aujourd&#8217;hui, ces deux lignes sont historiques : BuildKit est le constructeur par défaut, et Compose v2 ignore <code>COMPOSE_DOCKER_CLI_BUILD</code>. Elles ne changent plus rien ; dans un nouveau projet, ne pas les recopier.</p></li></ul></div></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>Source : <a href="https://docs.docker.com/compose/how-tos/environment-variables/envvars/" class="bare">https://docs.docker.com/compose/how-tos/environment-variables/envvars/</a> (section « Unsupported in Compose V2 »).</p></div></aside></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_4" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Définition des commandes shell réutilisables pour Docker Compose.
 
 # compose_cmd est une fonction qui exécute la commande 'docker compose' avec le fichier docker-compose.yml du répertoire courant.
 # Elle prend un argument $(1) qui représente les options supplémentaires à passer à la commande 'docker compose'.
@@ -5036,15 +5115,18 @@ compose_up = $(call compose_cmd, up --build $(1))
 # compose_run est une fonction qui utilise compose_cmd pour exécuter 'docker compose run'.
 # Elle prend un argument $(1) qui représente les options supplémentaires à passer à la commande 'docker compose run'.
 # L'option '--user=0' est toujours incluse, ce qui signifie que les commandes seront exécutées en tant que root à l'intérieur du conteneur.
-compose_run = $(call compose_cmd, run --user=0 $(1))</code></pre></div></div></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_5" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Construire le projet à l'intérieur d'un conteneur Docker.
+compose_run = $(call compose_cmd, run --user=0 $(1))</code></pre></div></div>
+<aside class="notes"><div class="paragraph"><p><code>$(call &#8230;&#8203;)</code> : des « fonctions » Make qui factorisent la ligne <code>docker compose</code>. Même idée que les ancres YAML, côté Makefile.
+Faire remarquer <code>compose_run</code> : <code>--user=0</code> force root, à l&#8217;opposé de ce que <code>CURRENT_UID</code> vient d&#8217;établir. Question à poser : dans quel cas est-ce acceptable ?</p></div></aside></div></section><section id="docker_peut_travailler_main_dans_la_main_avec_dautres_outils_5" data-auto-animate><h2>🐋 Docker peut travailler main dans la main avec d&#8217;autres outils&#8230;&#8203; 👫🤝</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-makefile hljs" data-noescape="true" data-lang="makefile"># Construire le projet à l'intérieur d'un conteneur Docker.
 # Cette règle Makefile utilise la fonction compose_up définie précédemment pour exécuter 'docker compose up' avec l'option '--exit-code-from=build'.
 # L'option '--exit-code-from=build' signifie que la commande 'docker compose up' renverra le code de sortie du service 'build'.
 # Si le service 'build' se termine avec un code de sortie non nul (ce qui signifie qu'une erreur s'est produite), alors 'docker compose up' se terminera également avec un code de sortie non nul.
 # Cela permet à Make de savoir si la construction du projet a réussi ou non.
 build:
 	@$(call compose_up,--exit-code-from=build build)</code></pre></div></div>
-<div class="ulist"><ul><li class="fragment"><p>Cette règle <code>Makefile</code> est utilisée pour construire le projet à l&#8217;intérieur d&#8217;un conteneur Docker.</p></li><li class="fragment"><p>Elle utilise la fonction <code>compose_up</code> pour exécuter la commande <code>docker compose up</code> avec l&#8217;option <code>--exit-code-from=build</code>.</p></li><li class="fragment"><p>Cette option permet à la commande <code>docker compose up</code> de renvoyer le code de sortie du service <code>build</code>, ce qui permet à Make de savoir si la construction du projet a réussi ou non.</p></li></ul></div></div></section><section id="fin_du_chapitre_docker_compose"><h2>📖🔚 Fin du chapitre docker compose 🐋🐙</h2><div class="slide-content"><div class="imageblock"><img src="media/bitmoji-whale%20friend.png" alt="bitmoji whale friend" height="500"></div></div></section></section>
-<section><section id="sécurité_et_production_docker" data-background-color="Navy"><h2>Sécurité et Production Docker</h2><div class="slide-content"><div class="imageblock"><img src="media/security-production-header.png" alt="security production header" height="400"></div><aside class="notes"><div class="paragraph"><p>Durée totale : 3 heures
+<div class="ulist"><ul><li class="fragment"><p>Cette règle <code>Makefile</code> est utilisée pour construire le projet à l&#8217;intérieur d&#8217;un conteneur Docker.</p></li><li class="fragment"><p>Elle utilise la fonction <code>compose_up</code> pour exécuter la commande <code>docker compose up</code> avec l&#8217;option <code>--exit-code-from=build</code>.</p></li><li class="fragment"><p>Cette option permet à la commande <code>docker compose up</code> de renvoyer le code de sortie du service <code>build</code>, ce qui permet à Make de savoir si la construction du projet a réussi ou non.</p></li></ul></div></div></section><section id="de_ça_démarre_à_ça_tient_en_production" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>🔐 De « ça démarre » à « ça tient en production »</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Compose sait lancer une stack complète : vous l&#8217;avez fait avec GitLab et ses runners.</p></li><li class="fragment"><p>Une stack qui démarre n&#8217;est pas une stack sûre : qui tourne en root ? où sont les mots de passe ?</p></li><li class="fragment"><p>Chapitre suivant : une application qui fonctionne, et qui est pleine de failles.</p></li><li class="fragment"><p>Tout ce qu&#8217;on va corriger est exigé dans le projet final.</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>Rappeler les déjà-vus qui reviennent : healthcheck et <code>depends_on</code> (début du chapitre Compose, TP #12), <code>user:</code> et <code>${VAR:?}</code> (étude de cas du cours), <code>restart:</code> (TP #12-BIS).</p></div></aside></div></section><section id="fin_du_chapitre_docker_compose"><h2>📖🔚 Fin du chapitre docker compose 🐋🐙</h2><div class="slide-content"><div class="imageblock"><img src="media/bitmoji-whale%20friend.png" alt="bitmoji whale friend" height="500"></div></div></section></section>
+<section><section id="sécurité_et_production_docker" data-background-color="Navy"><h2>Sécurité et Production Docker</h2><div class="slide-content"><div class="imageblock"><img src="media/security-production-header.png" alt="security production header" height="400"></div><aside class="notes"><div class="paragraph"><p>Conçu comme une séance de 3 h à lui seul : exercices 30 min + 1h15 + 1h, plus la théorie. Ce qui ne tient pas en séance se fait en autonomie.
 Session pratique avec projet fil rouge SecureVote</p></div></aside></div></section><section id="objectifs_de_la_session"><h2>Objectifs de la session</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Comprendre et appliquer les bonnes pratiques de sécurité Docker</p></li><li class="fragment"><p>Optimiser les conteneurs pour la production</p></li><li class="fragment"><p>Gérer les registres d&#8217;images Docker</p></li><li class="fragment"><p>Déployer une application sécurisée et production-ready</p></li></ul></div>
 <aside class="notes"><div class="paragraph"><p>Cette session est entièrement basée sur un projet fil rouge : SecureVote
 Les étudiants partent d&#8217;une version fonctionnelle mais dangereuse
@@ -5087,7 +5169,7 @@ docker compose ps
 
 # Suivre les logs (Ctrl+C pour quitter)
 docker compose logs -f</code></pre></div></div>
-<div class="ulist"><ul><li class="fragment"><p><strong>Attendre</strong> que tous les services soient UP (~30 secondes)</p></li><li class="fragment"><p>Accédez à <a href="http://localhost:8080" class="bare">http://localhost:8080</a></p></li><li class="fragment"><p>Testez l&#8217;application de vote</p></li></ul></div>
+<div class="ulist"><ul><li class="fragment"><p><strong>Attendre</strong> que tous les services soient UP : premier lancement = plusieurs minutes (≈ 4 Go d&#8217;images à télécharger et construire), ensuite ~30 secondes</p></li><li class="fragment"><p>Accédez à <a href="http://localhost:8080" class="bare">http://localhost:8080</a></p></li><li class="fragment"><p>Testez l&#8217;application de vote</p></li></ul></div>
 <aside class="notes"><div class="paragraph"><p>Phase cruciale : les étudiants doivent DÉCOUVRIR eux-mêmes les vulnérabilités.
 IMPORTANT : Backend peut prendre 10-20s à démarrer → nginx redémarre automatiquement après.
 Si "host not found in upstream" dans logs nginx : c&#8217;est NORMAL, attendre 30s.
@@ -5105,19 +5187,20 @@ Secrets = la donnée la plus sensible, jamais en clair.
 Cette structure va guider toute la Phase 2.</p></div></aside></div></section><section id="principe_du_moindre_privilège"><h2>Principe du moindre privilège</h2><div class="slide-content"><div class="quoteblock"><blockquote><div class="paragraph"><p>Un conteneur ne devrait avoir QUE les permissions nécessaires à son fonctionnement</p></div></blockquote></div>
 <div class="ulist"><ul><li class="fragment"><p>Pas d&#8217;exécution en tant que root</p></li><li class="fragment"><p>Capacités Linux minimales</p></li><li class="fragment"><p>Système de fichiers en lecture seule quand possible</p></li><li class="fragment"><p>Réseau isolé</p></li></ul></div></div></section><section id="scan_de_vulnérabilités"><h2>Scan de vulnérabilités</h2><div class="slide-content"><div class="paragraph"><p>Les images Docker peuvent contenir des vulnérabilités connues (CVE)</p></div>
 <div class="paragraph"><p><strong>Outils de scan :</strong></p></div>
-<div class="ulist"><ul><li class="fragment"><p>Docker Scout (intégré à Docker Desktop)</p></li><li class="fragment"><p>Trivy (open source, très populaire)</p></li><li class="fragment"><p>Snyk, Grype</p></li></ul></div></div></section><section id="docker_scout_en_action"><h2>Docker Scout en action</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Scanner une image locale
+<div class="ulist"><ul><li class="fragment"><p>Docker Scout (intégré à Docker Desktop ; sous Linux sans Desktop : plugin à installer et <code>docker login</code> obligatoire)</p></li><li class="fragment"><p>Trivy (open source, très populaire)</p></li><li class="fragment"><p>Snyk, Grype</p></li></ul></div></div></section><section id="docker_scout_en_action"><h2>Docker Scout en action</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Scanner une image locale
 docker scout cves python:3.11
 
 # Comparer deux images
 docker scout compare python:3.11 --to python:3.11-slim</code></pre></div></div>
 <div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Démonstration live recommandée</td></tr></table></div>
 <aside class="notes"><div class="paragraph"><p>DÉMONSTRATION LIVE ESSENTIELLE ici ! Les étudiants doivent VOIR les CVE en temps réel.
-Comparer python:3.11 vs python:3.11-slim : différence spectaculaire (150+ CVE vs 20-30).
-Si Docker Scout ne fonctionne pas, basculer sur Trivy : "docker container run aquasec/trivy image python:3.11"
+Comparer python:3.11 vs python:3.11-slim : différence spectaculaire. Mesuré le 2026-10-13 avec Scout : ~330 → ~40 CVE. Trivy compte autrement (~3300 → ~170) : comparer avec le même outil.
+Si Docker Scout ne fonctionne pas, basculer sur Trivy : "docker container run --rm aquasec/trivy:0.75.0 image python:3.11" (toujours avec un tag : voir l&#8217;incident de mars 2026 plus loin).
 Montrer que le scan prend 10-30 secondes : c&#8217;est acceptable pour un pipeline CI/CD.
-Insister : ce n&#8217;est pas paranoïaque, c&#8217;est STANDARD en 2025.</p></div></aside></div></section><section id="installation_de_trivy"><h2>Installation de Trivy</h2><div class="slide-content"><div class="paragraph"><p><strong>Méthode rapide (pour le TP) :</strong></p></div>
+Insister : ce n&#8217;est pas paranoïaque, c&#8217;est STANDARD.</p></div></aside></div></section><section id="installation_de_trivy"><h2>Installation de Trivy</h2><div class="slide-content"><div class="paragraph"><p><strong>Méthode rapide (pour le TP) :</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Installation directe du binaire
-curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
+curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
+  | sudo sh -s -- -b /usr/local/bin v0.75.0
 trivy --version</code></pre></div></div>
 <div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content"><code>curl | sudo sh</code> est pratique MAIS dangereux en production !</td></tr></table></div>
 <div class="paragraph"><p><strong>Méthode sécurisée (recommandée) :</strong></p></div>
@@ -5128,12 +5211,13 @@ curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/inst
 less /tmp/trivy-install.sh
 
 # 3. Exécuter après vérification
-sudo sh /tmp/trivy-install.sh -b /usr/local/bin</code></pre></div></div>
+sudo sh /tmp/trivy-install.sh -b /usr/local/bin v0.75.0</code></pre></div></div>
+<div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Toujours une version explicite (incident de mars 2026, voir les notes).</td></tr></table></div>
 <aside class="notes"><div class="paragraph"><p><strong>IMPORTANT - PRATIQUE vs SÉCURITÉ :</strong></p></div>
 <div class="paragraph"><p>Dans un chapitre sécurité, il est crucial de montrer LES DEUX approches :</p></div>
 <div class="paragraph"><p><strong>Méthode rapide (curl | sudo sh) :</strong>
 - ✅ Pratique pour le TP (gain de temps)
-- ✅ Recommandée par la doc officielle Trivy
+- ✅ Recommandée par la doc officielle Trivy (avec un tag de version, comme ici)
 - ❌ DANGEREUX : exécute du code non vérifié en root
 - ❌ Attaque potentielle : script modifié = compromission totale</p></div>
 <div class="paragraph"><p><strong>Méthode sécurisée (télécharger → inspecter → exécuter) :</strong>
@@ -5148,19 +5232,25 @@ sudo sh /tmp/trivy-install.sh -b /usr/local/bin</code></pre></div></div>
 "En sécurité, il y a souvent un compromis entre praticité et sécurité.
 Pour un TP pédagogique, curl|sh est OK. En production sur serveur critique, TOUJOURS inspecter avant."</p></div>
 <div class="paragraph"><p>Fonctionne sur toutes les distributions : Debian (y compris Trixie), Ubuntu, RHEL, etc.
-Sur Debian Trixie/Testing : c&#8217;est LA méthode à utiliser (le repo apt ne supporte pas encore trixie).</p></div>
+Le dépôt apt officiel marche aussi, y compris sur trixie : il utilise maintenant une suite <code>generic</code>.</p></div>
+<div class="paragraph"><p><strong>L&#8217;INCIDENT DE MARS 2026 (GHSA-69fq-xp46-6x23) :</strong>
+- Le 2026-03-19, la chaîne de publication de Trivy a été compromise : la v0.69.4 malveillante était « latest » pendant ~3 h, sur GitHub Releases, les paquets deb/rpm, get.trivy.dev et les images. Docker Hub a reçu aussi 0.69.5 et 0.69.6 malveillantes le 2026-03-22.
+- Sans tag, <code>install.sh</code> et <code>aquasec/trivy</code> sans version installaient la version piégée.
+- Le script vérifie le sha256 contre le <code>checksums.txt</code> de la MÊME release : ça ne protège pas d&#8217;une release compromise à la source.
+- Éviter 0.69.4 à 0.69.6. Vérification plus forte : signature Sigstore (<code>cosign verify-blob</code> avec les fichiers <code>.sigstore.json</code> publiés depuis la v0.68.1).
+- Message à faire passer : l&#8217;outil de sécurité est lui-même une dépendance de la chaîne d&#8217;approvisionnement.</p></div>
 <div class="paragraph"><p><strong>PRODUCTION - VERSION PINNING ET INTÉGRITÉ :</strong></p></div>
 <div class="paragraph"><p>Pour une sécurité maximale en production, deux améliorations essentielles :</p></div>
-<div class="olist arabic"><ol class="arabic"><li><p><strong>Version pinning</strong> : Pin une version spécifique au lieu de "latest"</p><div class="ulist"><ul><li><p>Évite les breaking changes inattendus</p></li><li><p>Le script d&#8217;installation supporte la sélection de release</p></li><li><p>Exemple : <code>curl -sfL &#8230;&#8203; | sudo sh -s&#8201;&#8212;&#8201;-b /usr/local/bin v0.54.0</code></p></li></ul></div></li><li><p><strong>Vérification d&#8217;intégrité</strong> : Checksum ou signature avant exécution</p><div class="ulist"><ul><li><p>Télécharger le checksum depuis GitHub releases</p></li><li><p>Vérifier avec <code>sha256sum --check</code></p></li><li><p>Garantit que le binaire n&#8217;a pas été altéré</p></li></ul></div></li></ol></div>
+<div class="olist arabic"><ol class="arabic"><li><p><strong>Version pinning</strong> : Pin une version spécifique au lieu de "latest"</p><div class="ulist"><ul><li><p>Évite les breaking changes inattendus</p></li><li><p>Le script d&#8217;installation supporte la sélection de release</p></li><li><p>Exemple : <code>curl -sfL &#8230;&#8203; | sudo sh -s&#8201;&#8212;&#8201;-b /usr/local/bin v0.75.0</code></p></li></ul></div></li><li><p><strong>Vérification d&#8217;intégrité</strong> : Checksum ou signature avant exécution</p><div class="ulist"><ul><li><p>Télécharger le checksum depuis GitHub releases</p></li><li><p>Vérifier avec <code>sha256sum --check</code></p></li><li><p>Garantit que le binaire n&#8217;a pas été altéré EN ROUTE, pas que la release elle-même est saine (voir l&#8217;incident de mars 2026) : pour ça, la signature Sigstore</p></li></ul></div></li></ol></div>
 <div class="paragraph"><p>Ces étapes sont omises dans le TP pour simplicité, mais OBLIGATOIRES en production CI/CD.</p></div></aside></div></section><section id="installation_trivy_alternatives"><h2>Installation Trivy : Alternatives</h2><div class="slide-content"><div class="paragraph"><p><strong>Si vous n&#8217;avez pas les droits sudo :</strong></p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Via Docker (aucune installation nécessaire)
 docker container run --rm \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  -v $HOME/.cache/trivy:/root/.cache \
-  aquasec/trivy:0.54.1 image python:3.11</code></pre></div></div>
-<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Pin la version (<code>:0.54.1</code>) et persist le cache (<code>-v $HOME/.cache</code>) pour performances</td></tr></table></div>
+  -v $HOME/.cache/trivy:/root/.cache/trivy \
+  aquasec/trivy:0.75.0 image python:3.11</code></pre></div></div>
+<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Pin la version (<code>:0.75.0</code>, jamais <code>latest</code>) et persist le cache (<code>-v $HOME/.cache/trivy</code>) pour performances</td></tr></table></div>
 <div class="paragraph"><p><strong>Autres systèmes :</strong></p></div>
-<div class="ulist"><ul><li class="fragment"><p><strong>macOS :</strong> <code>brew install trivy</code></p></li><li class="fragment"><p><strong>Debian/Ubuntu stable :</strong> Via apt (voir documentation)</p></li></ul></div>
+<div class="ulist"><ul><li class="fragment"><p><strong>macOS :</strong> <code>brew install trivy</code></p></li><li class="fragment"><p><strong>Debian/Ubuntu (y compris trixie) :</strong> dépôt apt officiel, suite <code>generic</code> (voir documentation)</p></li></ul></div>
 <aside class="notes"><div class="paragraph"><p><strong>MÉTHODE DOCKER :</strong>
 - Aucune installation nécessaire
 - Garantit que tout le monde a la même version
@@ -5169,18 +5259,18 @@ docker container run --rm \
 <div class="paragraph"><p><strong>CHOIX POUR LE TP :</strong>
 - Démonstration enseignant : script d&#8217;installation (rapide, propre)
 - Étudiants : script d&#8217;installation OU Docker selon permissions
-- Première utilisation : le scan sera lent (~30s) car télécharge la base CVE (~200 Mo)
+- Première utilisation : le scan sera lent (~30s) car télécharge la base CVE (~130 Mo, ~1,5 Go une fois décompressée)
+- Méthode Docker : le cache appartient à root sur l&#8217;hôte (le conteneur tourne en root) ; <code>sudo rm</code> pour le supprimer
 - Mise à jour de la base : <code>trivy image --download-db-only</code></p></div>
 <div class="paragraph"><p><strong>TROUBLESHOOTING :</strong>
 - Permission denied → Ajouter sudo ou utiliser méthode Docker
-- Erreur "trixie Release not found" (si tentative apt) → Utiliser le script</p></div></aside></div></section><section id="exemple_de_résultat_trivy"><h2>Exemple de résultat Trivy</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">trivy image python:3.11
+- Erreur "trixie Release not found" (vieille doc apt) → utiliser la suite <code>generic</code> ou le script</p></div></aside></div></section><section id="exemple_de_résultat_trivy"><h2>Exemple de résultat Trivy</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">trivy image python:3.11
 
-Total: 145 vulnerabilities (52 HIGH, 93 MEDIUM)
-┌──────────┬──────────────┬──────────┬─────────┐
-│ Library  │ Vulnerability│ Severity │ Version │
-│ openssl  │ CVE-2023-XXX │ HIGH     │ 1.1.1n  │
-│ curl     │ CVE-2023-YYY │ MEDIUM   │ 7.68.0  │
-└──────────┴──────────────┴──────────┴─────────┘</code></pre></div></div>
+Total: 3277 (UNKNOWN: 83, LOW: 1360, MEDIUM: 1501, HIGH: 317, CRITICAL: 16)</code></pre></div></div>
+<div class="paragraph"><p>Colonnes : Library, Vulnerability, Severity, Status, Installed Version, Fixed Version, Title.</p></div>
+<aside class="notes"><div class="paragraph"><p>Mesuré le 2026-10-13 avec Trivy 0.75.0 sur <code>python:3.11</code> (Debian 13). Le chiffre bouge chaque jour.
+Beaucoup de lignes sont en Status <code>affected</code> sans version corrigée : <code>--ignore-unfixed</code> ne garde que ce qu&#8217;on peut corriger.
+Même image en <code>python:3.11-slim</code> : ~170.</p></div></aside>
 <div class="paragraph fragment"><p><strong>Action :</strong> Mettre à jour, changer d&#8217;image de base, appliquer des patches</p></div></div></section><section id="utilisateurs_non_root"><h2>Utilisateurs non-root</h2><div class="slide-content"><div class="paragraph"><p><strong>Problème :</strong> Par défaut, les processus s&#8217;exécutent en tant que root</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM python:3.11
 COPY app.py /app/
@@ -5198,30 +5288,33 @@ COPY app.py /app/
 RUN chown -R appuser:appuser /app
 
 USER appuser
-CMD ["python", "/app/app.py"]</code></pre></div></div></div></section><section id="bonnes_pratiques_utilisateur"><h2>Bonnes pratiques utilisateur</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Toujours créer un utilisateur dédié</p></li><li class="fragment"><p>UID &gt; 1000 (éviter conflits système)</p></li><li class="fragment"><p>Ne jamais revenir à root après USER</p></li><li class="fragment"><p>Vérifier : <code>docker container exec &lt;container&gt; id</code></p></li></ul></div>
+CMD ["python", "/app/app.py"]</code></pre></div></div></div></section><section id="bonnes_pratiques_utilisateur"><h2>Bonnes pratiques utilisateur</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Toujours créer un utilisateur dédié</p></li><li class="fragment"><p>UID qui ne coïncide avec aucun compte de l&#8217;hôte propriétaire de fichiers montés</p></li><li class="fragment"><p>Ne jamais revenir à root après USER</p></li><li class="fragment"><p>Vérifier : <code>docker container exec &lt;container&gt; id</code></p></li></ul></div>
 <aside class="notes"><div class="paragraph"><p>Pourquoi <code>id</code> et pas <code>whoami</code> ? <code>whoami</code> traduit l&#8217;UID en nom via <code>/etc/passwd</code>.
 Avec <code>docker container run --user 1001:1001</code>, l&#8217;UID 1001 n&#8217;existe pas dans l&#8217;image :
 <code>whoami: cannot find name for user ID 1001</code> (image Debian comme python:3.11-slim).
 <code>id</code> affiche l&#8217;UID dans tous les cas : <code>uid=1001 gid=1001 groups=1001</code>.
 Point à faire passer : le noyau ne connaît que des numéros, le nom n&#8217;est qu&#8217;une étiquette dans <code>/etc/passwd</code>.</p></div></aside></div></section><section id="comprendre_les_uid_linux"><h2>Comprendre les UID Linux</h2><div class="slide-content"><div class="paragraph"><p>Linux numérote les utilisateurs (User ID) :</p></div>
 <div class="ulist"><ul><li class="fragment"><p><strong>UID 0</strong> : root (super-utilisateur)</p></li><li class="fragment"><p><strong>UID 1-999</strong> : comptes système (www-data, postgres, redis&#8230;&#8203;)</p></li><li class="fragment"><p><strong>UID ≥ 1000</strong> : utilisateurs normaux et applications</p></li></ul></div>
-<div class="admonitionblock warning fragment"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Avec volumes montés, UID &lt; 1000 peut créer des conflits de sécurité !</td></tr></table></div>
+<div class="admonitionblock warning fragment"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Le noyau ne voit que des numéros : avec des volumes montés, un UID de conteneur qui coïncide avec un compte de l&#8217;hôte (33 = www-data, mais aussi 1000 = souvent le premier utilisateur humain) accède à ses fichiers.</td></tr></table></div>
 <aside class="notes"><div class="paragraph"><p><strong>POURQUOI C&#8217;EST IMPORTANT :</strong></p></div>
 <div class="paragraph"><p>Si vous créez un utilisateur avec UID 33 (www-data) dans votre conteneur,
 et que l&#8217;hôte a AUSSI www-data (UID 33), le conteneur pourra accéder aux fichiers
 de www-data sur l&#8217;HÔTE via les volumes montés = faille de sécurité !</p></div>
 <div class="paragraph"><p><strong>BONNE PRATIQUE :</strong>
-- Sans volumes montés : <code>useradd -r</code> acceptable (crée UID système &lt; 1000)
-- Avec volumes montés : <code>useradd -u 1001</code> ou laisser le système choisir (≥ 1000)</p></div>
-<div class="paragraph"><p>Dans SecureVote, <code>-r</code> est acceptable car pas de volumes montés critiques avec l&#8217;hôte.</p></div></aside></div></section><section id="uid_exemple_pratique"><h2>UID : Exemple pratique</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># RISQUÉ : UID fixe &lt; 1000
+- Ce n&#8217;est pas la plage (&lt; ou ≥ 1000) qui compte, c&#8217;est la collision avec un compte de l&#8217;hôte qui possède des fichiers montés.
+- <code>useradd appuser</code> sans option donne 1000 : l&#8217;UID du premier compte humain de beaucoup de machines (c&#8217;est le cas sur un poste WSL). Pas plus sûr que 33.
+- Sans volumes montés : <code>useradd -r</code> acceptable (crée un UID système, 999 dans la phase 2).
+- Avec volumes montés : choisir un UID explicite, absent de l&#8217;hôte (<code>useradd -u 10001</code>).</p></div>
+<div class="paragraph"><p>Dans SecureVote, <code>-r</code> est acceptable car pas de volumes montés critiques avec l&#8217;hôte.</p></div></aside></div></section><section id="uid_exemple_pratique"><h2>UID : Exemple pratique</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># RISQUÉ : UID d'un compte connu de l'hôte
 RUN useradd -u 33 appuser
 # Conflit possible si l'hôte a www-data (UID 33) !
 
-# SÛR : UID &gt; 1000
-RUN useradd -u 1001 appuser
+# RISQUÉ AUSSI : sans option, useradd donne 1000,
+# souvent le premier utilisateur humain de l'hôte
+RUN useradd appuser
 
-# OU laisser le système choisir (sera ≥ 1000)
-RUN useradd appuser</code></pre></div></div>
+# MIEUX : un UID explicite, absent de l'hôte
+RUN useradd -u 10001 appuser</code></pre></div></div>
 <div class="paragraph fragment"><p>Vérifier : <code>docker container exec &lt;container&gt; id</code></p></div>
 <aside class="notes"><div class="paragraph"><p>Montrer la commande <code>id</code> dans un conteneur pour voir l&#8217;UID assigné.
 Exemple de résultat : uid=1001(appuser) gid=1001(appuser) groups=1001(appuser)</p></div>
@@ -5261,10 +5354,24 @@ secrets/</code></pre></div></div>
   DB_HOST: ${DB_HOST?required}          # Erreur si non défini</code></pre></div></div>
 <div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Docker Compose charge automatiquement le fichier .env</td></tr></table></div>
 <div class="paragraph"><p><strong>Syntaxes avancées :</strong></p></div>
-<div class="ulist"><ul><li class="fragment"><p><code>${VAR:-default}</code> : Utilise <code>default</code> si VAR n&#8217;est pas définie</p></li><li class="fragment"><p><code>${VAR?error message}</code> : Échoue avec message si VAR manquante</p></li><li class="fragment"><p>Utile pour séparer config obligatoire vs optionnelle</p></li></ul></div></div></section><section id="alternative_1_docker_secrets"><h2>Alternative 1 : Docker Secrets</h2><div class="slide-content"><div class="paragraph"><p><strong>Gestion native dans Docker Swarm</strong></p></div>
-<div class="ulist"><ul><li class="fragment"><p>Secrets cryptés dans le cluster Swarm</p></li><li class="fragment"><p>Montés en RAM dans <code>/run/secrets/</code></p></li><li class="fragment"><p>Accès contrôlé par service</p></li></ul></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">echo "secret123" | docker secret create db_password -
-docker service create --secret db_password postgres</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p><code>${VAR:-default}</code> : Utilise <code>default</code> si VAR n&#8217;est pas définie</p></li><li class="fragment"><p><code>${VAR?error message}</code> : Échoue avec message si VAR manquante</p></li><li class="fragment"><p>Utile pour séparer config obligatoire vs optionnelle</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p><code>${VAR:?message}</code> échoue aussi si la variable est VIDE : préférable pour un mot de passe (une ligne <code>DB_PASSWORD=</code> passe sinon).
+<code>.env</code> règle le problème de Git, pas celui de <code>docker container inspect</code> : la valeur y reste visible (mesuré sur la phase 2 : <code>SECRET_KEY</code>, <code>DATABASE_URL</code> avec le mot de passe). Transition vers les secrets Compose, diapo suivante.</p></div></aside></div></section><section id="alternative_1_docker_secrets"><h2>Alternative 1 : Docker Secrets</h2><div class="slide-content"><div class="paragraph"><p><strong>Avec Compose, sans Swarm :</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt   # secrets/ est dans .gitignore</code></pre></div></div>
+<div class="ulist"><ul><li class="fragment"><p>Le fichier est monté dans <code>/run/secrets/db_password</code>, et la valeur n&#8217;apparaît pas dans <code>docker container inspect</code>.</p></li><li class="fragment"><p>Avec Swarm en plus : secrets chiffrés dans le cluster, montés en RAM (tmpfs).</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>Mesuré le 2026-10-13 (Compose 5.5.1, sans Swarm) : postgres démarre avec <code>POSTGRES_PASSWORD_FILE</code>, <code>cat /run/secrets/db_password</code> affiche la valeur, <code>docker inspect</code> ne la contient pas.
+L&#8217;image postgres ne lit pas <code>/run/secrets</code> d&#8217;elle-même : c&#8217;est la variable <code>*_FILE</code> qui le lui dit. Beaucoup d&#8217;images officielles suivent cette convention.
+Hors Swarm, c&#8217;est un simple montage du fichier de l&#8217;hôte, sans chiffrement : le chiffrement au repos et le tmpfs sont propres à Swarm.
+Version Swarm : <code>docker swarm init</code>, <code>echo "secret123" | docker secret create db_password -</code>, puis <code>docker service create --secret db_password -e POSTGRES_PASSWORD_FILE=/run/secrets/db_password postgres:15-alpine</code>.</p></div></aside>
 <aside class="notes"><div class="paragraph"><p><strong>DOCKER SECRETS - GUIDE DÉTAILLÉ</strong></p></div>
 <div class="paragraph"><p>Qu&#8217;est-ce que c&#8217;est ?
 - Système de gestion de secrets intégré à Docker Swarm (orchestrateur Docker natif)
@@ -5278,12 +5385,12 @@ docker service create --secret db_password postgres</code></pre></div></div>
 ✅ Rotation possible (créer nouveau secret, redéployer service)
 ✅ Gratuit, inclus dans Docker</p></div>
 <div class="paragraph"><p><strong>Inconvénients :</strong>
-❌ Nécessite Docker Swarm (pas Compose standalone ou Kubernetes)
+❌ Chiffrement et stockage en RAM : Swarm seulement. Compose seul monte un simple fichier (déjà mieux que l&#8217;environnement)
 ❌ Moins de fonctionnalités que Vault (pas de rotation automatique, audit limité)
 ❌ Courbe d&#8217;apprentissage Swarm si vous utilisez Compose</p></div>
 <div class="paragraph"><p><strong>Comment ça fonctionne :</strong>
 1. Créer le secret : <code>docker secret create db_password secret.txt</code>
-2. Attribuer au service : <code>docker service create --secret db_password myapp</code>
+2. Attribuer au service : <code>docker service create --secret db_password myapp</code> (et lui dire où lire : <code>-e POSTGRES_PASSWORD_FILE=/run/secrets/db_password</code> pour postgres)
 3. Application lit <code>/run/secrets/db_password</code> (fichier en RAM)</p></div>
 <div class="paragraph"><p><strong>Quand l&#8217;utiliser :</strong>
 - Environnements Docker Swarm en production
@@ -5330,8 +5437,8 @@ vault read database/creds/myapp
 - Besoin de secrets dynamiques (ex: credentials DB temporaires pour chaque déploiement)
 - Équipe dédiée à la sécurité/infrastructure</p></div>
 <div class="paragraph"><p><strong>Coût/Ressources :</strong>
-- Open source : gratuit mais features limitées
-- Enterprise : $$$ (à partir de 15k$/an pour petite org)
+- Édition communautaire : gratuite, mais sous licence BSL depuis 2023 (pas open source au sens OSI). Fork open source : OpenBao (Linux Foundation)
+- Enterprise : $$$ (tarif sur devis)
 - Nécessite : 1-2 personnes dédiées pour l&#8217;opérationnel</p></div>
 <div class="paragraph"><p><strong>Pour SecureVote :</strong>
 Overkill pour le TP. Mentionner comme évolution si l&#8217;application devient un service SaaS avec 1000+ clients.</p></div></aside></div></section><section id="alternative_3_cloud_providers"><h2>Alternative 3 : Cloud Providers</h2><div class="slide-content"><div class="paragraph"><p><strong>Services managés AWS / Azure / GCP</strong></p></div>
@@ -5353,7 +5460,7 @@ Overkill pour le TP. Mentionner comme évolution si l&#8217;application devient 
 - Intégration avec Azure AD pour l&#8217;authentification
 - HSM hardware optionnel (clés stockées dans modules cryptographiques certifiés)
 - Managed identities pour AKS, App Service, Functions
-- Coût : ~0.03$/secret/mois + 0.03$/10k opérations</p></div>
+- Coût : pas de coût par secret (offre Standard), ~0.03$/10k opérations</p></div>
 <div class="paragraph"><p><strong>3. GCP Secret Manager</strong>
 - Intégration native avec Cloud Run, GKE, Cloud Functions
 - Réplication multi-région automatique
@@ -5373,8 +5480,8 @@ Overkill pour le TP. Mentionner comme évolution si l&#8217;application devient 
 ❌ Features variables selon provider (AWS plus complet que GCP)</p></div>
 <div class="paragraph"><p><strong>Comparaison des coûts (exemple 100 secrets, 1M requêtes/mois) :</strong>
 - AWS : ~40$ + 5$ = 45$/mois
-- Azure : ~3$ + 3$ = 6$/mois
-- GCP : ~6$ + 30$ = 36$/mois
+- Azure : ~3$/mois (opérations seulement)
+- GCP : ~6$ + 3$ = 9$/mois
 - Vault self-hosted : ~200$/mois (serveur) + temps équipe</p></div>
 <div class="paragraph"><p><strong>Quand l&#8217;utiliser :</strong>
 - Infrastructure déjà sur un cloud public (AWS, Azure, GCP)
@@ -5391,7 +5498,7 @@ DB_PASSWORD="secret123" docker compose up -d
 # Ou via export
 export DB_PASSWORD="secret123"
 docker compose up -d</code></pre></div></div>
-<div class="admonitionblock warning fragment"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Visible dans <code>ps aux</code> et historique shell !</td></tr></table></div>
+<div class="admonitionblock warning fragment"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Visible dans l&#8217;historique du shell et dans <code>docker container inspect</code> !</td></tr></table></div>
 <aside class="notes"><div class="paragraph"><p><strong>VARIABLES D&#8217;ENVIRONNEMENT SHELL</strong></p></div>
 <div class="paragraph"><p>Qu&#8217;est-ce que c&#8217;est ?
 - Passer les secrets via variables d&#8217;environnement du shell au lancement
@@ -5404,7 +5511,7 @@ docker compose up -d</code></pre></div></div>
 ✅ Pas de dépendance externe
 ✅ Idéal pour scripts one-shot</p></div>
 <div class="paragraph"><p><strong>Inconvénients :</strong>
-❌ Visible dans <code>ps aux</code> (autres utilisateurs de la machine peuvent voir)
+❌ Visible dans <code>docker container inspect</code>, et dans <code>/proc/&lt;pid&gt;/environ</code> pour root et le même utilisateur (pas dans <code>ps aux</code> : seuls les arguments de commande s&#8217;y voient)
 ❌ Reste dans l&#8217;historique shell (~/.bash_history) si export
 ❌ Moins pratique pour plusieurs secrets (commande très longue)
 ❌ Perd les secrets si session shell se ferme (pas persistant)
@@ -5426,10 +5533,11 @@ docker compose up -d
 # Les variables sont injectées par le runner
 script:
   - docker compose up -d  # $DB_PASSWORD déjà disponible</code></pre></div></div>
-<div class="paragraph"><p><strong>Problème de sécurité - ps aux :</strong></p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Autre utilisateur peut voir :
-ps aux | grep docker
-# user  1234  ... docker compose up -d  # DB_PASSWORD=secret123 visible !</code></pre></div></div>
+<div class="paragraph"><p><strong>Ce qui se voit dans <code>ps aux</code>, et ce qui ne se voit pas :</strong></p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Variable d'environnement : PAS dans ps aux
+DB_PASSWORD=secret123 docker compose up -d
+# Argument de commande : visible par tous les utilisateurs dans ps aux
+mysql --password=secret123</code></pre></div></div>
 <div class="paragraph"><p><strong>Quand l&#8217;utiliser :</strong>
 - Développement local rapide (test ponctuel)
 - CI/CD pipelines (GitLab CI, GitHub Actions, Jenkins)
@@ -5439,11 +5547,11 @@ ps aux | grep docker
 - Environnements éphémères (conteneurs CI qui sont détruits après)</p></div>
 <div class="paragraph"><p><strong>Quand NE PAS l&#8217;utiliser :</strong>
 - Production (trop risqué, pas d&#8217;audit)
-- Serveurs partagés (autres users peuvent voir)
+- Serveurs partagés (historique shell, <code>docker inspect</code> pour qui a accès au moteur)
 - Secrets critiques (passwords DB prod, API keys sensibles)</p></div>
 <div class="paragraph"><p><strong>Pour SecureVote :</strong>
 Acceptable pour tests locaux rapides. Mais préférer .env pour le TP (plus pédagogique, plus réaliste).
-CI/CD bonus : montrer comment GitLab CI/GitHub Actions injectent les secrets.</p></div></aside></div></section><section id="comparaison_des_solutions"><h2>Comparaison des solutions</h2><div class="slide-content"><table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:20%"><col style="width:20%"><col style="width:20%"><col style="width:40%"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Solution</th><th class="tableblock halign-left valign-top">Complexité</th><th class="tableblock halign-left valign-top">Coût</th><th class="tableblock halign-left valign-top">Cas d&#8217;usage</th></tr><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Fichiers .env</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">⚪ Faible</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">💰 Gratuit</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Dev, petits projets</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Docker Secrets</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">🟡 Moyenne</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">💰 Gratuit</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Docker Swarm prod</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Vault</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">🔴 Élevée</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">💰💰 Variable</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Grandes organisations</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Cloud Secrets</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">🟡 Moyenne</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">💰💰 Payant</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Déjà sur cloud</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Variables shell</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">⚪ Faible</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">💰 Gratuit</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Dev local, CI/CD</p></td></tr></table>
+CI/CD bonus : montrer comment GitLab CI/GitHub Actions injectent les secrets.</p></div></aside></div></section><section id="comparaison_des_solutions"><h2>Comparaison des solutions</h2><div class="slide-content"><table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:20%"><col style="width:20%"><col style="width:20%"><col style="width:40%"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Solution</th><th class="tableblock halign-left valign-top">Complexité</th><th class="tableblock halign-left valign-top">Coût</th><th class="tableblock halign-left valign-top">Cas d&#8217;usage</th></tr><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Fichiers .env</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">⚪ Faible</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">💰 Gratuit</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Dev, petits projets</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Docker Secrets</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">🟡 Moyenne</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">💰 Gratuit</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Compose (fichier monté), Swarm prod (chiffré)</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Vault</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">🔴 Élevée</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">💰💰 Variable</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Grandes organisations</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Cloud Secrets</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">🟡 Moyenne</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">💰💰 Payant</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Déjà sur cloud</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Variables shell</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">⚪ Faible</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">💰 Gratuit</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Dev local, CI/CD</p></td></tr></table>
 <aside class="notes"><div class="paragraph"><p><strong>GUIDE DE DÉCISION - Quelle solution choisir ?</strong></p></div>
 <div class="paragraph"><p><strong>Arbre de décision simple :</strong></p></div>
 <div class="olist arabic"><ol class="arabic"><li><p><strong>Vous êtes en développement local ?</strong>
@@ -5526,36 +5634,39 @@ Les étudiants doivent appliquer CONCRÈTEMENT tout ce qui vient d&#8217;être v
 Recommandé : travail en binôme pour favoriser l&#8217;entraide.
 Circuler activement : c&#8217;est ici qu&#8217;ils vont bloquer.
 Checkpoints réguliers toutes les 20-25 min pour synchroniser le groupe.
-Objectif : phase1/ ne doit PLUS être utilisée, tout le monde sur phase2/.</p></div></aside></div></section><section id="exercice_1_images_sécurisées_20_min"><h2>Exercice 1 : Images sécurisées (20 min)</h2><div class="slide-content"><div class="paragraph"><p><strong>Mission :</strong></p></div>
+On modifie les fichiers de phase1/. phase2/ est le corrigé : ne l&#8217;ouvrir que pour comparer.
+Avant de lancer phase2/ pour comparer : <code>docker compose down</code> dans phase1/ (mêmes <code>container_name</code>, sinon <code>Conflict. The container name "/securevote-cache" is already in use</code>).</p></div></aside></div></section><section id="exercice_1_images_sécurisées_20_min"><h2>Exercice 1 : Images sécurisées (20 min)</h2><div class="slide-content"><div class="paragraph"><p><strong>Mission :</strong></p></div>
 <div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Scanner les images avec Docker Scout ou Trivy</p></li><li class="fragment"><p>Identifier les vulnérabilités critiques</p></li><li class="fragment"><p>Remplacer par des images <code>-slim</code> ou <code>-alpine</code></p></li><li class="fragment"><p>Re-scanner et comparer</p></li></ol></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker scout cves securevote-backend:latest
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Dans phase1/ : Compose nomme l'image &lt;dossier&gt;-&lt;service&gt;
+docker scout cves phase1-backend
 # Modifier Dockerfile → python:3.11-slim
 docker compose build backend
-docker scout cves securevote-backend:latest</code></pre></div></div>
+docker scout cves phase1-backend</code></pre></div></div>
 <aside class="notes"><div class="paragraph"><p>Premier exercice : relativement simple pour mettre en confiance.
-Résultat attendu : python:3.11 (150+ CVE) → python:3.11-slim (20-30 CVE) = 80-90% de réduction.
-Pour Node : node:20 → node:20-alpine = encore plus spectaculaire.
+Résultat attendu (Scout, mesuré le 2026-10-13) : python:3.11 (~330 CVE) → python:3.11-slim (~40 CVE), ~89 % de réduction.
+Pourquoi <code>phase1-backend</code> et pas <code>securevote-backend</code> : <code>container_name</code> renomme le conteneur, pas l&#8217;image. Avec le mauvais nom, Scout et Trivy cherchent l&#8217;image sur Docker Hub et échouent.
+Pour Node : node:20 → node:24-alpine. Node 20 est en fin de vie depuis le 2026-04-30 : la phase 2 du dépôt est encore en node:20, à signaler.
 Piège fréquent : oublier de rebuild après modification = image non scannée.
 Attention : alpine peut casser certaines dépendances (musl vs glibc) → préférer slim si problème.
 Montrer que le fichier phase2/INSTRUCTIONS.md contient des indices.</p></div></aside></div></section><section id="exercice_2_utilisateurs_non_root_25_min"><h2>Exercice 2 : Utilisateurs non-root (25 min)</h2><div class="slide-content"><div class="paragraph"><p><strong>Mission :</strong></p></div>
-<div class="paragraph"><p>Modifier tous les Dockerfiles pour des utilisateurs non-root</p></div>
+<div class="paragraph"><p>Modifier tous les Dockerfiles de <code>phase1/</code> pour des utilisateurs non-root</p></div>
 <div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Backend Python : créer <code>flaskuser</code></p></li><li class="fragment"><p>Frontend React : créer <code>reactuser</code></p></li><li class="fragment"><p>Nginx : utiliser <code>nginx-unprivileged</code></p></li></ol></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM python:3.11-slim
 RUN groupadd -r flaskuser &amp;&amp; useradd -r -g flaskuser flaskuser
-USER flaskuser</code></pre></div></div></div></section><section id="vérification_utilisateurs"><h2>Vérification utilisateurs</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose exec backend ps aux
-# Le processus principal (PID 1) doit tourner en tant que flaskuser
+USER flaskuser</code></pre></div></div></div></section><section id="vérification_utilisateurs"><h2>Vérification utilisateurs</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose top backend frontend
+# Colonne UID : flaskuser (999) et reactuser (1001), jamais root
 
-docker compose exec frontend ps aux
-# Le processus principal (PID 1) doit tourner en tant que reactuser</code></pre></div></div>
+docker compose exec backend id</code></pre></div></div>
+<div class="admonitionblock note"><table><tr><td class="icon"><i class="fa fa-info-circle" title="Note"></i></td><td class="content"><code>ps</code> n&#8217;existe pas dans <code>python:3.11-slim</code> : <code>docker compose top</code> le remplace, depuis l&#8217;hôte.</td></tr></table></div>
 <div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Si vous voyez UID 0 ou <code>root</code> pour le processus principal, c&#8217;est à corriger !</td></tr></table></div></div></section><section id="exercice_3_sécuriser_les_secrets_30_min"><h2>Exercice 3 : Sécuriser les secrets (30 min)</h2><div class="slide-content"><div class="paragraph"><p><strong>Mission :</strong></p></div>
 <div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Identifier les secrets en clair dans docker-compose.yml</p></li><li class="fragment"><p>Créer <code>.env</code> (sans le commiter !)</p></li><li class="fragment"><p>Ajouter <code>.env</code> au <code>.gitignore</code></p></li><li class="fragment"><p>Utiliser les variables : <code>${DB_PASSWORD}</code></p></li><li class="fragment"><p>Créer <code>.env.example</code> comme template</p></li></ol></div></div></section><section id="checkpoint_phase_2"><h2>Checkpoint Phase 2</h2><div class="slide-content"><div class="paragraph"><p>Vérification collective :</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Scans : moins de vulnérabilités ?</p></li><li class="fragment"><p>Aucun conteneur en root ?</p></li><li class="fragment"><p>Aucun secret en clair versionné ?</p></li><li class="fragment"><p>Application fonctionne ?</p></li></ul></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose ps
-docker compose exec backend ps aux
-trivy image securevote-backend:latest --severity HIGH,CRITICAL</code></pre></div></div></div></section><section id="configuration_production" data-background-color="DarkGreen"><h2>Configuration Production</h2><div class="slide-content"><div class="exampleblock columns"><div class="content"><div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Développement :</strong></p></div>
+docker compose top
+trivy image phase1-backend --severity HIGH,CRITICAL</code></pre></div></div></div></section><section id="configuration_production" data-background-color="DarkGreen"><h2>Configuration Production</h2><div class="slide-content"><div class="exampleblock columns"><div class="content"><div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Développement :</strong></p></div>
 <div class="ulist"><ul><li><p>Ressources illimitées</p></li><li><p>Logs verbeux</p></li><li><p>Redémarrages manuels</p></li></ul></div></div></div>
 <div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Production :</strong></p></div>
-<div class="ulist"><ul><li><p>Ressources limitées</p></li><li><p>Logs structurés</p></li><li><p>Auto-healing</p></li></ul></div></div></div></div></div>
+<div class="ulist"><ul><li><p>Ressources limitées</p></li><li><p>Logs structurés</p></li><li><p>Redémarrage automatique</p></li></ul></div></div></div></div></div>
 <aside class="notes"><div class="paragraph"><p>Transition importante : Phase 2 = sécurité, Phase 3 = production/fiabilité.
 En dev : on se fiche des ressources, on veut du confort (logs détaillés, restart manuel).
 En prod : on veut de la STABILITÉ, de la PRÉVISIBILITÉ, de l&#8217;AUTO-RÉPARATION.
@@ -5572,21 +5683,30 @@ En prod, TOUJOURS définir des limites. C&#8217;est comme les ceintures de sécu
     deploy:
       resources:
         limits:
-          cpus: '0.5'      # Max 50% CPU
+          cpus: '0.5'      # Max un demi-cœur
           memory: 512M     # Max 512 Mo RAM
         reservations:
-          cpus: '0.25'     # Min garanti
-          memory: 256M</code></pre></div></div></div></section><section id="choisir_les_bonnes_valeurs"><h2>Choisir les bonnes valeurs</h2><div class="slide-content"><div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Démarrer sans limites</p></li><li class="fragment"><p>Observer : <code>docker container stats</code></p></li><li class="fragment"><p>Ajouter 20-30% de marge</p></li><li class="fragment"><p>Tester sous charge</p></li><li class="fragment"><p>Ajuster</p></li></ol></div></div></section><section id="politiques_de_redémarrage"><h2>Politiques de redémarrage</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+          cpus: '0.25'     # Ignoré hors Swarm
+          memory: 256M     # Limite souple, pas une garantie</code></pre></div></div>
+<aside class="notes"><div class="paragraph"><p><code>cpus: '0.5'</code> = la moitié d&#8217;UN cœur, pas 50 % du serveur (<code>docker inspect</code> → <code>NanoCpus=500000000</code>).
+Mesuré le 2026-10-13 (Engine 29.8.2, Compose 5.5.1) : les <code>limits</code> sont appliquées par <code>docker compose</code> sans Swarm, comme <code>mem_limit</code>/<code>cpus</code>.
+<code>reservations.cpus</code> n&#8217;est pas appliqué hors Swarm (<code>CpuShares=0</code>), et <code>reservations.memory</code> devient <code>MemoryReservation</code>, une limite souple.</p></div></aside></div></section><section id="choisir_les_bonnes_valeurs"><h2>Choisir les bonnes valeurs</h2><div class="slide-content"><div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Démarrer sans limites</p></li><li class="fragment"><p>Observer : <code>docker container stats</code></p></li><li class="fragment"><p>Ajouter 20-30% de marge</p></li><li class="fragment"><p>Tester sous charge</p></li><li class="fragment"><p>Ajuster</p></li></ol></div></div></section><section id="politiques_de_redémarrage"><h2>Politiques de redémarrage</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   backend:
-    restart: no              # Jamais
-    restart: always          # Toujours
-    restart: on-failure      # Si erreur
-    restart: unless-stopped  # Sauf arrêt manuel</code></pre></div></div>
+    restart: unless-stopped
+    # Valeurs possibles (une seule clé restart par service) :
+    #   no             : jamais
+    #   always         : toujours
+    #   on-failure     : si le processus sort en erreur
+    #   unless-stopped : sauf arrêt manuel</code></pre></div></div>
+<div class="admonitionblock note"><table><tr><td class="icon"><i class="fa fa-info-circle" title="Note"></i></td><td class="content">Une seule clé <code>restart:</code> par service : quatre clés à la suite, c&#8217;est un YAML invalide (<code>mapping key "restart" already defined</code>).</td></tr></table></div>
 <div class="paragraph fragment"><p><strong>Production :</strong> Privilégier <code>unless-stopped</code> ou <code>on-failure</code></p></div></div></section><section id="restart_avec_limite"><h2>Restart avec limite</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   backend:
-    restart: on-failure</code></pre></div></div>
-<div class="admonitionblock note"><table><tr><td class="icon"><i class="fa fa-info-circle" title="Note"></i></td><td class="content">Pour limiter le nombre de tentatives en Docker Swarm, utilisez <code>deploy.restart_policy.max_attempts: 5</code></td></tr></table></div>
-<div class="paragraph"><p>Évite les boucles infinies de redémarrage</p></div></div></section><section id="health_checks"><h2>Health checks</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+    restart: on-failure:5</code></pre></div></div>
+<div class="paragraph"><p><code>on-failure:5</code> : au plus 5 redémarrages, puis Docker abandonne.</p></div>
+<div class="paragraph"><p>Évite les boucles infinies de redémarrage</p></div>
+<aside class="notes"><div class="paragraph"><p>Pas besoin de Swarm pour limiter les tentatives : <code>on-failure:N</code> marche avec <code>docker compose</code>.
+Mesuré le 2026-10-13 : <code>on-failure:3</code> → <code>RestartCount=3</code>, puis le conteneur reste arrêté.
+<code>deploy.restart_policy.max_attempts</code> est aussi appliqué hors Swarm (traduit en <code>on-failure:N</code>).</p></div></aside></div></section><section id="health_checks"><h2>Health checks</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   backend:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
@@ -5594,7 +5714,10 @@ En prod, TOUJOURS définir des limites. C&#8217;est comme les ceintures de sécu
       timeout: 10s
       retries: 3
       start_period: 40s</code></pre></div></div>
-<aside class="notes"><div class="paragraph"><p>Health check = le contrôle aérien de vos conteneurs.
+<div class="admonitionblock note"><table><tr><td class="icon"><i class="fa fa-info-circle" title="Note"></i></td><td class="content">Hors Swarm et Kubernetes, un conteneur <code>unhealthy</code> n&#8217;est <strong>pas</strong> redémarré, même avec <code>restart: always</code>. Le healthcheck sert à <code>depends_on: condition: service_healthy</code> et à la supervision ; le redémarrage vient de <code>restart:</code>, quand le processus meurt.</td></tr></table></div>
+<aside class="notes"><div class="paragraph"><p>Mesuré le 2026-10-13 : <code>restart: always</code> + healthcheck qui échoue toujours → <code>running</code>, <code>unhealthy</code>, <code>RestartCount=0</code>.
+Le <code>curl</code> du test doit exister dans l&#8217;image : le Dockerfile du backend de la phase 3 l&#8217;installe exprès.
+Health check = le contrôle aérien de vos conteneurs.
 Un conteneur peut être "running" mais MORT à l&#8217;intérieur (app crashée, connexion DB perdue).
 docker container ls montre "Up" mais healthcheck montre "unhealthy" = problème détecté !
 Exemple concret : backend démarre en 5s, mais connexion DB prend 30s → start_period: 40s.
@@ -5615,7 +5738,7 @@ def health():
         condition: service_started</code></pre></div></div>
 <div class="ulist"><ul><li class="fragment"><p><code>service_started</code> : Démarré (pas forcément prêt)</p></li><li class="fragment"><p><code>service_healthy</code> : Healthcheck validé</p></li><li class="fragment"><p><code>service_completed_successfully</code> : Terminé avec succès</p></li></ul></div></div></section><section id="monitoring_et_logs"><h2>Monitoring et logs</h2><div class="slide-content"><div class="paragraph"><p><strong>Observabilité :</strong></p></div>
 <div class="ulist"><ul><li class="fragment"><p><strong>Logs</strong> : Que s&#8217;est-il passé ?</p></li><li class="fragment"><p><strong>Métriques</strong> : Combien de CPU/RAM/requêtes ?</p></li><li class="fragment"><p><strong>Traces</strong> : Quel chemin a pris une requête ?</p></li></ul></div>
-<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">TP13 a déjà couvert ELK</td></tr></table></div></div></section><section id="driver_de_logs"><h2>Driver de logs</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
+<div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Le TP #13 (dans les bonus) monte une stack ELK</td></tr></table></div></div></section><section id="driver_de_logs"><h2>Driver de logs</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   backend:
     logging:
       driver: "json-file"
@@ -5630,7 +5753,7 @@ def health():
 <aside class="notes"><div class="paragraph"><p>Phase finale : transformation en app production-ready.
 Les étudiants ont maintenant une app SÉCURISÉE (Phase 2), ils vont la rendre FIABLE.
 Cette phase inclut des TESTS de résilience : tuer des conteneurs, faire du load testing.
-C&#8217;est ici qu&#8217;on voit si l&#8217;auto-healing fonctionne vraiment !
+C&#8217;est ici qu&#8217;on voit si le redémarrage automatique fonctionne vraiment !
 Les scripts load_test.sh et kill_test.sh sont fournis dans phase3/scripts/.
 Encourager l&#8217;expérimentation : "cassez votre app volontairement pour voir ce qui se passe".
 Temps : 1h = 3 exercices de 15-25 min chacun + checkpoint final.</p></div></aside></div></section><section id="exercice_4_limites_de_ressources_20_min"><h2>Exercice 4 : Limites de ressources (20 min)</h2><div class="slide-content"><div class="paragraph"><p><strong>Mission :</strong></p></div>
@@ -5639,25 +5762,33 @@ Temps : 1h = 3 exercices de 15-25 min chacun + checkpoint final.</p></div></asid
 ./load_test.sh
 docker container stats</code></pre></div></div></div></section><section id="exercice_5_restart_et_health_25_min"><h2>Exercice 5 : Restart et Health (25 min)</h2><div class="slide-content"><div class="paragraph"><p><strong>Mission :</strong></p></div>
 <div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Ajouter politiques de redémarrage</p></li><li class="fragment"><p>Créer endpoint <code>/health</code> dans backend</p></li><li class="fragment"><p>Configurer healthchecks</p></li><li class="fragment"><p>Tester en tuant un conteneur</p></li></ol></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose kill backend
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Simuler un plantage : tuer le processus principal depuis l'extérieur
+docker container run --rm --pid=host --privileged alpine:3.22 \
+  kill -9 $(docker container inspect -f '{{.State.Pid}}' securevote-backend)
 docker compose ps
-docker compose logs backend</code></pre></div></div></div></section><section id="exercice_6_dépendances_15_min"><h2>Exercice 6 : Dépendances (15 min)</h2><div class="slide-content"><div class="paragraph"><p><strong>Mission :</strong></p></div>
+docker compose logs backend</code></pre></div></div>
+<div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content"><code>docker compose kill</code> ne convient pas : Docker le compte comme un arrêt manuel, et aucune politique <code>restart:</code> ne relance le conteneur.</td></tr></table></div>
+<aside class="notes"><div class="paragraph"><p>Mesuré le 2026-10-13 (Engine 29.8.2) avec <code>restart: on-failure:5</code> : après <code>docker compose kill</code>, <code>Exited (137)</code> et <code>RestartCount=0</code> ; après le <code>kill -9</code> extérieur, le conteneur repart (<code>RestartCount=1</code>).
+<code>docker compose exec backend kill 1</code> ne marche pas non plus : le PID 1 ignore les signaux qu&#8217;il ne gère pas.
+Le conteneur <code>--privileged --pid=host</code> voit tous les processus de la machine : c&#8217;est justement ce qu&#8217;on a appris à ne pas faire en production. Ici, c&#8217;est un outil de test, lancé à la main et supprimé aussitôt (<code>--rm</code>).
+<code>scripts/kill_test.sh</code> fait la même chose pour backend, base et cache.</p></div></aside></div></section><section id="exercice_6_dépendances_15_min"><h2>Exercice 6 : Dépendances (15 min)</h2><div class="slide-content"><div class="paragraph"><p><strong>Mission :</strong></p></div>
 <div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Configurer <code>depends_on</code> avec conditions</p></li><li class="fragment"><p>Tester ordre de démarrage</p></li><li class="fragment"><p>Simuler indisponibilité DB</p></li><li class="fragment"><p>Vérifier backend ne démarre pas sans DB</p></li></ol></div></div></section><section id="checkpoint_phase_3"><h2>Checkpoint Phase 3</h2><div class="slide-content"><div class="paragraph"><p>Application production-ready :</p></div>
-<div class="ulist"><ul><li class="fragment"><p>Limites de ressources ✅</p></li><li class="fragment"><p>Auto-healing ✅</p></li><li class="fragment"><p>Health checks ✅</p></li><li class="fragment"><p>Dépendances ordonnées ✅</p></li><li class="fragment"><p>Logs optimisés ✅</p></li></ul></div>
+<div class="ulist"><ul><li class="fragment"><p>Limites de ressources ✅</p></li><li class="fragment"><p>Redémarrage automatique ✅</p></li><li class="fragment"><p>Health checks ✅</p></li><li class="fragment"><p>Dépendances ordonnées ✅</p></li><li class="fragment"><p>Logs optimisés ✅</p></li></ul></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose config --services
 docker compose ps
 docker container stats --no-stream</code></pre></div></div></div></section><section id="registres_et_distribution" data-background-color="Navy"><h2>Registres et Distribution</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Serveur de stockage d&#8217;images Docker</p></li><li class="fragment"><p>Équivalent de npm pour Node, PyPI pour Python</p></li><li class="fragment"><p>Public (Docker Hub) ou privé (self-hosted)</p></li><li class="fragment"><p>Gestion des versions (tags)</p></li></ul></div></div></section><section id="docker_hub_2"><h2>Docker Hub</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image pull nginx:latest
 # Équivalent à :
 docker image pull docker.io/library/nginx:latest</code></pre></div></div>
-<div class="ulist"><ul><li class="fragment"><p>Gratuit pour images publiques</p></li><li class="fragment"><p>Limites de rate (pull anonyme)</p></li></ul></div></div></section><section id="registres_privés"><h2>Registres privés</h2><div class="slide-content"><div class="paragraph"><p><strong>Pourquoi ?</strong></p></div>
-<div class="ulist"><ul><li class="fragment"><p>Images propriétaires</p></li><li class="fragment"><p>Contrôle d&#8217;accès</p></li><li class="fragment"><p>Compliance et sécurité</p></li><li class="fragment"><p>Pas de limite de rate</p></li></ul></div></div></section><section id="solutions_de_registres"><h2>Solutions de registres</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p><strong>Docker Registry</strong> (open source)</p></li><li class="fragment"><p><strong>Harbor</strong> (CNCF, avec scan)</p></li><li class="fragment"><p><strong>AWS ECR</strong>, <strong>Azure ACR</strong>, <strong>GCP GCR</strong></p></li><li class="fragment"><p><strong>GitLab / GitHub Container Registry</strong></p></li></ul></div></div></section><section id="démarrer_un_registre_local"><h2>Démarrer un registre local</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 5000:5000 --name registry registry:2
-docker image tag securevote-backend:latest localhost:5000/securevote-backend:latest
-docker image push localhost:5000/securevote-backend:latest</code></pre></div></div></div></section><section id="tags_et_versions"><h2>Tags et versions</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Bonne pratique : versionner
+<div class="ulist"><ul><li class="fragment"><p>Gratuit pour images publiques</p></li><li class="fragment"><p>Limites : 100 pulls / 6 h en anonyme, <strong>par adresse IP</strong> (toute la salle derrière le même NAT partage les 100), 200 avec un compte gratuit</p></li></ul></div></div></section><section id="registres_privés"><h2>Registres privés</h2><div class="slide-content"><div class="paragraph"><p><strong>Pourquoi ?</strong></p></div>
+<div class="ulist"><ul><li class="fragment"><p>Images propriétaires</p></li><li class="fragment"><p>Contrôle d&#8217;accès</p></li><li class="fragment"><p>Compliance et sécurité</p></li><li class="fragment"><p>Pas de limite de téléchargement imposée par un tiers</p></li></ul></div></div></section><section id="solutions_de_registres"><h2>Solutions de registres</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p><strong>Docker Registry</strong> (open source)</p></li><li class="fragment"><p><strong>Harbor</strong> (CNCF, avec scan)</p></li><li class="fragment"><p><strong>AWS ECR</strong>, <strong>Azure ACR</strong>, <strong>GCP Artifact Registry</strong> (GCR est fermé depuis mars 2025)</p></li><li class="fragment"><p><strong>GitLab / GitHub Container Registry</strong></p></li></ul></div></div></section><section id="démarrer_un_registre_local"><h2>Démarrer un registre local</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 5050:5000 --name registry registry:3
+docker image tag securevote-backend:latest localhost:5050/securevote-backend:latest
+docker image push localhost:5050/securevote-backend:latest</code></pre></div></div>
+<div class="admonitionblock note"><table><tr><td class="icon"><i class="fa fa-info-circle" title="Note"></i></td><td class="content">Port 5050 côté hôte : le 5000 est déjà pris par le backend SecureVote de la phase 1 (et par AirPlay sur macOS récent).</td></tr></table></div></div></section><section id="tags_et_versions"><h2>Tags et versions</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Bonne pratique : versionner
 docker image tag myapp:latest myregistry.com/myapp:1.2.3
 docker image tag myapp:latest myregistry.com/myapp:1.2
 docker image tag myapp:latest myregistry.com/myapp:latest</code></pre></div></div>
 <div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content">Plusieurs tags → même image</td></tr></table></div></div></section><section id="exercice_7_registre_local_bonus"><h2>Exercice 7 : Registre local (Bonus)</h2><div class="slide-content"><div class="paragraph"><p><strong>Si le temps le permet :</strong></p></div>
-<div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Démarrer registre local (port 5000)</p></li><li class="fragment"><p>Tagger images SecureVote</p></li><li class="fragment"><p>Pousser vers registre</p></li><li class="fragment"><p>Modifier docker-compose.yml</p></li><li class="fragment"><p>Re-déployer</p></li></ol></div></div></section><section id="récapitulatif_et_bonnes_pratiques" data-background-color="MediumBlue"><h2>Récapitulatif et bonnes pratiques</h2></section><section id="checklist_sécurité"><h2>Checklist sécurité</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>✅ Images officielles et à jour</p></li><li class="fragment"><p>✅ Scan régulier des vulnérabilités</p></li><li class="fragment"><p>✅ Utilisateurs non-root systématiques</p></li><li class="fragment"><p>✅ Secrets jamais en clair</p></li><li class="fragment"><p>✅ Réseau isolé par défaut</p></li></ul></div></div></section><section id="checklist_production"><h2>Checklist production</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>✅ Limites de ressources CPU/RAM</p></li><li class="fragment"><p>✅ Politiques de redémarrage</p></li><li class="fragment"><p>✅ Health checks implémentés</p></li><li class="fragment"><p>✅ Dépendances ordonnées</p></li><li class="fragment"><p>✅ Logs structurés et rotation</p></li></ul></div></div></section><section id="ce_quon_a_appris"><h2>Ce qu&#8217;on a appris</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Sécuriser une application Docker de bout en bout</p></li><li class="fragment"><p>Scanner et corriger les vulnérabilités</p></li><li class="fragment"><p>Gérer les secrets correctement</p></li><li class="fragment"><p>Configurer pour la production</p></li><li class="fragment"><p>Distribuer via registres</p></li></ul></div></div></section><section id="securevote_avantaprès"><h2>SecureVote : Avant/Après</h2><div class="slide-content"><div class="exampleblock columns"><div class="content"><div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Avant :</strong></p></div>
+<div class="olist arabic"><ol class="arabic"><li class="fragment"><p>Démarrer registre local (port 5050)</p></li><li class="fragment"><p>Tagger images SecureVote</p></li><li class="fragment"><p>Pousser vers registre</p></li><li class="fragment"><p>Modifier docker-compose.yml</p></li><li class="fragment"><p>Re-déployer</p></li></ol></div></div></section><section id="récapitulatif_et_bonnes_pratiques" data-background-color="MediumBlue"><h2>Récapitulatif et bonnes pratiques</h2></section><section id="checklist_sécurité"><h2>Checklist sécurité</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>✅ Images officielles et à jour</p></li><li class="fragment"><p>✅ Scan régulier des vulnérabilités</p></li><li class="fragment"><p>✅ Utilisateurs non-root systématiques</p></li><li class="fragment"><p>✅ Secrets jamais en clair</p></li><li class="fragment"><p>✅ Réseau isolé par défaut</p></li></ul></div></div></section><section id="checklist_production"><h2>Checklist production</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>✅ Limites de ressources CPU/RAM</p></li><li class="fragment"><p>✅ Politiques de redémarrage</p></li><li class="fragment"><p>✅ Health checks implémentés</p></li><li class="fragment"><p>✅ Dépendances ordonnées</p></li><li class="fragment"><p>✅ Logs structurés et rotation</p></li></ul></div></div></section><section id="ce_quon_a_appris"><h2>Ce qu&#8217;on a appris</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Sécuriser une application Docker de bout en bout</p></li><li class="fragment"><p>Scanner et corriger les vulnérabilités</p></li><li class="fragment"><p>Gérer les secrets correctement</p></li><li class="fragment"><p>Configurer pour la production</p></li><li class="fragment"><p>Distribuer via registres</p></li></ul></div></div></section><section id="securevote_avantaprès"><h2>SecureVote : Avant/Après</h2><div class="slide-content"><div class="exampleblock columns"><div class="content"><div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Avant :</strong></p></div>
 <div class="ulist"><ul><li><p>Images non scannées</p></li><li><p>Root partout</p></li><li><p>Secrets en clair</p></li><li><p>Pas de limites</p></li></ul></div></div></div>
 <div class="openblock column"><div class="content"><div class="paragraph"><p><strong>Après :</strong></p></div>
 <div class="ulist"><ul><li><p>Images slim, scannées</p></li><li><p>Utilisateurs dédiés</p></li><li><p>Secrets protégés</p></li><li><p>Production-ready ✅</p></li></ul></div></div></div></div></div></div></section><section id="troubleshooting_production"><h2>🔧 Troubleshooting Production</h2><div class="slide-content"><aside class="notes"><div class="paragraph"><p>Section duration: 5 minutes
@@ -5676,7 +5807,7 @@ docker container inspect --format='{{.State.Status}}' nom-conteneur
 # Voir le code de sortie
 docker container inspect --format='{{.State.ExitCode}}' nom-conteneur</code></pre></div></div>
 <div class="paragraph"><p><strong>Problèmes courants</strong> :</p></div>
-<table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:28.5714%"><col style="width:42.8571%"><col style="width:28.5715%"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Symptôme</th><th class="tableblock halign-left valign-top">Cause probable</th><th class="tableblock halign-left valign-top">Solution</th></tr><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>host not found in upstream</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">NGINX : résolution DNS statique</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Utiliser variables : <code>set $backend "app:8080"</code> + <code>proxy_pass <a href="http://$backend" class="bare">http://$backend</a></code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>cannot assign requested address</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Port déjà utilisé</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Changer port ou arrêter service conflictuel</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>no such file or directory</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Volume mal configuré</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Vérifier chemin absolu dans volumes</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>permission denied</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Problème permissions fichier</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Vérifier propriétaire et chmod</p></td></tr></table>
+<table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:28.5714%"><col style="width:42.8571%"><col style="width:28.5715%"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Symptôme</th><th class="tableblock halign-left valign-top">Cause probable</th><th class="tableblock halign-left valign-top">Solution</th></tr><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>host not found in upstream</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">NGINX : résolution DNS statique</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>resolver 127.0.0.11 valid=10s;</code> (DNS interne de Docker) + <code>set $backend "app:8080"</code> + <code>proxy_pass <a href="http://$backend" class="bare">http://$backend</a></code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>port is already allocated</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Port de l&#8217;hôte déjà pris</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Changer port ou arrêter service conflictuel</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>cannot assign requested address</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">L&#8217;IP de <code>-p IP:port</code> n&#8217;existe pas sur l&#8217;hôte</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Publier sur une IP de la machine, ou sans IP</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>no such file or directory</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Volume mal configuré</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Vérifier chemin absolu dans volumes</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>permission denied</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Problème permissions fichier</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Vérifier propriétaire et chmod</p></td></tr></table>
 <h3>Health Checks qui échouent</h3><div class="paragraph"><p><strong>Étape 1</strong> : Vérifier le status des services</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose ps
 
@@ -5691,10 +5822,10 @@ docker container inspect --format='{{.State.Health.Status}}' nom-conteneur
 # Voir les derniers logs du health check
 docker container inspect --format='{{json .State.Health.Log}}' nom-conteneur | jq</code></pre></div></div>
 <div class="paragraph"><p><strong>Codes de sortie importants</strong> :</p></div>
-<div class="ulist"><ul><li><p><strong>0</strong> : Health check réussi ✅</p></li><li><p><strong>1</strong> : Health check échoué (erreur applicative)</p></li><li><p><strong>127</strong> : Commande non trouvée (outil manquant dans l&#8217;image)</p></li><li><p><strong>137</strong> : Tué par signal (timeout)</p></li></ul></div>
+<div class="ulist"><ul><li><p><strong>0</strong> : Health check réussi ✅</p></li><li><p><strong>1</strong> : Health check échoué (erreur applicative)</p></li><li><p><strong>-1</strong> : Docker n&#8217;a pas pu exécuter la sonde (outil absent avec la forme <code>CMD</code>, ou délai dépassé : <code>Health check exceeded timeout</code>)</p></li><li><p><strong>127</strong> : outil absent avec la forme <code>CMD-SHELL</code> (c&#8217;est le shell qui ne le trouve pas)</p></li></ul></div>
 <div class="paragraph"><p><strong>Problèmes courants</strong> :</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-text hljs" data-noescape="true" data-lang="text">ExitCode: 127
-Output: "/bin/sh: curl: not found"
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-text hljs" data-noescape="true" data-lang="text">ExitCode: -1
+Output: "exec: \"curl\": executable file not found in $PATH"
 → Solution : Installer curl dans Dockerfile</code></pre></div></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-text hljs" data-noescape="true" data-lang="text">ExitCode: 1
 Output: "Connection refused"
@@ -5703,8 +5834,8 @@ Output: "Connection refused"
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash"># Voir tous les événements
 docker events
 
-# Filtrer par conteneur
-docker events --filter container=nom-conteneur
+# Filtrer par conteneur (nom réel : docker compose ps)
+docker events --filter container=securevote-backend
 
 # Filtrer par type d'événement
 docker events --filter event=start
@@ -5712,8 +5843,8 @@ docker events --filter event=die
 docker events --filter event=health_status
 
 # Combiner plusieurs filtres
-docker events --filter container=backend --filter event=health_status</code></pre></div></div>
-<div class="paragraph"><p><strong>Exemple de sortie</strong> :</p></div>
+docker events --filter container=securevote-backend --filter event=health_status</code></pre></div></div>
+<div class="paragraph"><p><strong>Exemple de sortie</strong> (abrégée) :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-text hljs" data-noescape="true" data-lang="text">2026-01-12T10:30:15 container health_status: unhealthy (name=backend)
 2026-01-12T10:30:20 container die (name=backend, exitCode=137)
 2026-01-12T10:30:25 container start (name=backend)</code></pre></div></div>
@@ -5726,11 +5857,11 @@ docker compose up -d
 
 # Observer en temps réel les changements de santé</code></pre></div></div>
 <h3>📊 Checklist de Debugging</h3><div class="paragraph"><p>Quand un problème survient en production :</p></div>
-<div class="olist arabic"><ol class="arabic"><li class="fragment"><p>✅ <code>docker compose ps</code> → Identifier les services en erreur</p></li><li class="fragment"><p>✅ <code>docker container logs &lt;service&gt;</code> → Lire les logs d&#8217;erreur</p></li><li class="fragment"><p>✅ <code>docker container inspect &lt;service&gt;</code> → Vérifier la configuration</p></li><li class="fragment"><p>✅ Si unhealthy : <code>docker container inspect</code> pour voir Health.Log</p></li><li class="fragment"><p>✅ <code>docker events</code> en parallèle pour monitoring temps réel</p></li></ol></div>
+<div class="olist arabic"><ol class="arabic"><li class="fragment"><p>✅ <code>docker compose ps</code> → Identifier les services en erreur</p></li><li class="fragment"><p>✅ <code>docker compose logs &lt;service&gt;</code> → Lire les logs d&#8217;erreur</p></li><li class="fragment"><p>✅ <code>docker container inspect &lt;conteneur&gt;</code> → Vérifier la configuration</p></li><li class="fragment"><p>✅ Si unhealthy : <code>docker container inspect</code> pour voir Health.Log</p></li><li class="fragment"><p>✅ <code>docker events</code> en parallèle pour monitoring temps réel</p></li></ol></div>
 <div class="admonitionblock tip"><table><tr><td class="icon"><i class="fa fa-lightbulb-o" title="Tip"></i></td><td class="content"><div class="paragraph"><p><strong>Commande magique de debugging</strong> :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose ps &amp;&amp; \
 docker compose logs --tail=50 &amp;&amp; \
-docker events --filter type=container</code></pre></div></div>
+docker events --filter event=health_status --filter event=die --filter event=start</code></pre></div></div>
 <div class="paragraph"><p>Affiche : statuts, logs récents, et écoute les événements !</p></div></td></tr></table></div></div></section><section id="vérifier_la_signature_dune_image"><h2>Vérifier la signature d&#8217;une image</h2><div class="slide-content"><div class="paragraph"><p>Cosign (projet Sigstore) vérifie qui a signé une image, pas seulement qu&#8217;elle est signée :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --rm ghcr.io/sigstore/cosign/cosign:v3.1.3 verify \
   --certificate-identity=krel-trust@k8s-releng-prod.iam.gserviceaccount.com \
@@ -5756,7 +5887,7 @@ Faire vérifier une image par elle-même ne prouve rien : une image modifiée pe
 8 décembre 2026. Docker oriente vers Sigstore/Cosign ou Notation.</p></div>
 <div class="paragraph"><p>Signer soi-même : <code>cosign sign &lt;image&gt;</code> en mode « keyless » ouvre une authentification OIDC
 (GitHub, Google…) et inscrit la signature dans le journal de transparence Rekor.
-En CI, l&#8217;identité est celle du workflow.</p></div></aside></div></section><section id="aller_plus_loin"><h2>Aller plus loin</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p><strong>Orchestration</strong> : Kubernetes, Docker Swarm</p></li><li class="fragment"><p><strong>Secrets Management</strong> : Vault, Sealed Secrets</p></li><li class="fragment"><p><strong>Image Signing</strong> : Cosign (Sigstore), Notation</p></li><li class="fragment"><p><strong>Runtime Security</strong> : Falco, Aqua Security</p></li></ul></div></div></section><section id="ressources_utiles"><h2>Ressources utiles</h2><div class="slide-content"><div class="ulist"><ul><li><p>Docker Security: <a href="https://docs.docker.com/engine/security/" class="bare">https://docs.docker.com/engine/security/</a></p></li><li><p>CIS Docker Benchmark</p></li><li><p>Trivy: <a href="https://github.com/aquasecurity/trivy" class="bare">https://github.com/aquasecurity/trivy</a></p></li><li><p>OWASP Docker Security Cheat Sheet</p></li></ul></div></div></section><section id="fin_de_la_session" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Fin de la session</h2><div class="slide-content"><div class="paragraph"><p>Bravo, vous avez transformé SecureVote en application sécurisée et production-ready !</p></div>
+En CI, l&#8217;identité est celle du workflow.</p></div></aside></div></section><section id="aller_plus_loin"><h2>Aller plus loin</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p><strong>Orchestration</strong> : Kubernetes, Docker Swarm</p></li><li class="fragment"><p><strong>Secrets Management</strong> : Vault, Sealed Secrets</p></li><li class="fragment"><p><strong>Image Signing</strong> : Cosign (Sigstore), Notation</p></li><li class="fragment"><p><strong>Runtime Security</strong> : Falco, Aqua Security</p></li></ul></div></div></section><section id="ressources_utiles"><h2>Ressources utiles</h2><div class="slide-content"><div class="ulist"><ul><li><p>Docker Security: <a href="https://docs.docker.com/engine/security/" class="bare">https://docs.docker.com/engine/security/</a></p></li><li><p>CIS Docker Benchmark</p></li><li><p>Trivy: <a href="https://github.com/aquasecurity/trivy" class="bare">https://github.com/aquasecurity/trivy</a></p></li><li><p>OWASP Docker Security Cheat Sheet</p></li></ul></div></div></section><section id="fin_du_chapitre_sécurité_et_production" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Fin du chapitre sécurité et production</h2><div class="slide-content"><div class="paragraph"><p>Bravo, vous avez transformé SecureVote en application sécurisée et production-ready !</p></div>
 <aside class="notes"><div class="paragraph"><p>Questions et discussion finale
 Retours sur expérience
 Difficultés rencontrées</p></div></aside></div></section><section id="questions"><h2>Questions ?</h2><div class="slide-content"><div class="paragraph"><p><span class="icon"><i class="fa fa-envelope"></i></span> <a href="mailto:gounthar@gmail.com">gounthar@gmail.com</a></p></div></div></section></section>
@@ -5835,8 +5966,8 @@ C /var/log/nginx
 A /var/log/nginx/access.log
 A /var/log/nginx/error.log</code></pre></div></div>
 <div class="paragraph fragment"><p>Une bonne piste pour savoir quels volumes déclarer !</p></div></div></section><section id="healthcheck"><h2>HealthCheck</h2><div class="slide-content"><div class="paragraph"><p>Savoir que mon PID 1 est toujours en cours d&#8217;exécution n&#8217;est peut-être pas la meilleure piste pour savoir si mon conteneur est en bonne santé !</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">FROM ghost:3
-RUN apt update &amp;&amp; apt install curl -y \
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">FROM ghost:6
+RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends curl \
         &amp;&amp; rm -rf /var/lib/apt/lists/*
 
 HEALTHCHECK --interval=1m --timeout=30s --retries=3 CMD curl --fail http://localhost:2368 || exit 1</code></pre></div></div>
@@ -5866,17 +5997,16 @@ nginx</pre></div></div>
 <div class="imageblock"><img src="https://avatars.githubusercontent.com/u/27347476?s=200&v=4" alt="27347476?s=200&amp;v=4"></div>
 <div class="paragraph fragment"><p>Il ouvre automatiquement des merge requests pour les mises à jour de dépendances dans vos projets GitLab.</p></div></div></section><section id="comment_dependabot_fonctionne_t_il_avec_docker"><h2>🛠️ Comment Dependabot fonctionne-t-il avec Docker ?</h2><div class="slide-content"><div class="paragraph"><p>Dependabot peut analyser vos <code>Dockerfiles</code> et vos fichiers <code>docker-compose</code> pour trouver les dépendances qui peuvent être mises à jour.</p></div>
 <div class="paragraph fragment"><p>Il crée ensuite des merge requests pour chaque mise à jour de dépendance.</p></div></div></section><section id="pourquoi_utiliser_dependabot_avec_docker"><h2>🎯 Pourquoi utiliser Dependabot avec Docker ?</h2><div class="slide-content"><div class="olist arabic"><ol class="arabic"><li><p>Garder vos dépendances à jour est crucial pour la sécurité et la stabilité de vos applications.</p></li><li><p>Dependabot automatise ce processus, vous faisant gagner du temps et réduisant le risque d&#8217;oublier une mise à jour importante.</p></li><li><p>Dependabot n&#8217;est pas magique, il faut que votre CI soit capable de construire votre application avec les nouvelles dépendances.</p></li><li><p>Ce qui n&#8217;est pas testé ne fonctionne pas.</p></li></ol></div></div></section><section id="comment_configurer_dependabot_pour_gitlab" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="ulist"><ul><li><p>Malheureusement, il n&#8217;y a pas encore de support officiel pour GitLab dans Dependabot (et vice versa).</p></li><li><p>Notre forge Gitlab est définie dans un fichier docker-compose.yml, et Dependabot aussi.</p></li><li><p>Dependabot doit avoir accès à notre forge GitLab pour pouvoir ouvrir des merge requests.</p></li><li><p>Suivons donc <a href="https://dependabot-gitlab.gitlab.io/dependabot/guide/getting-started.html#step-2-set-up-access-tokens">la documentation officielle</a>.</p></li></ul></div></div></section><section data-background-image="media/personal-access-token.png" data-background-size="cover" data-auto-animate></section><section data-background-image="media/personal-access-token-settings.png" data-background-size="cover" data-auto-animate></section><section id="comment_configurer_dependabot_pour_gitlab_2" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Notez bien le token, vous ne le reverrez plus jamais.</td></tr></table></div>
-<div class="paragraph"><p><a href="https://dependabot-gitlab.gitlab.io/dependabot/guide/getting-started.html#step-3-start-the-app">L&#8217;étape suivante</a>, c&#8217;est de positionner les valeurs de certaines variables d&#8217;environnement.
+<div class="paragraph"><p><a href="https://dependabot-gitlab.gitlab.io/dependabot/guide/getting-started.html#step-3-choose-how-to-run-the-application">L&#8217;étape suivante</a>, c&#8217;est de positionner les valeurs de certaines variables d&#8217;environnement.
 Ça peut être dans un <code>.env</code>, ou dans les variables d&#8217;environnement de votre machine.</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">export SETTINGS__GITLAB_URL=http://localhost
 export SETTINGS__GITLAB_ACCESS_TOKEN=glpat-XXXXXXXXXXXXXXXXXXXX</code></pre></div></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_3" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="paragraph"><p>Démarrez l&#8217;application avec <code>docker compose</code>:</p></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">curl -s https://gitlab.com/dependabot-gitlab/dependabot/-/raw/v3.8.0-alpha.1/docker-compose.yml | docker compose -f - up -d</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">curl -s https://gitlab.com/dependabot-gitlab/dependabot/-/raw/v7.11.0-alpha.1/docker-compose.yml | docker compose -f - up -d</code></pre></div></div>
 <div class="imageblock fragment"><img src="media/dependabot-cant-see-gitlab.png" alt="dependabot cant see gitlab"></div>
 <div class="paragraph fragment"><p>😢</p></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_4" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="paragraph"><p>Vous vous souvenez du chapitre sur les réseaux Docker ?</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Dans Docker, chaque conteneur a son propre espace de nom réseau, ce qui signifie que localhost à l&#8217;intérieur d&#8217;un conteneur fait référence au conteneur lui-même, et non à la machine hôte ou à d&#8217;autres conteneurs.</p></li><li class="fragment"><p>Lorsque vous essayez de faire un <code>ping</code> sur <code>gitlab-instance-gitlab-1</code> depuis le conteneur web, il ne connaît pas le nom d&#8217;hôte <code>gitlab-instance-gitlab-1</code> car il n&#8217;est pas dans le même espace de nom réseau.</p></li><li class="fragment"><p>Pour permettre aux conteneurs de communiquer entre eux, ils doivent être dans le même réseau Docker.</p></li></ul></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_5" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="ulist"><ul><li><p>Lorsque vous utilisez Docker Compose, il crée automatiquement un réseau par défaut pour votre application et tout service défini dans le <code>docker-compose.yml</code> peut atteindre les autres en utilisant le nom du service comme nom d&#8217;hôte.</p></li></ul></div>
 <div class="ulist"><ul><li class="fragment"><p>Dans notre cas, le conteneur <code>web</code> et le conteneur <code>gitlab-instance-gitlab-1</code> ne sont pas dans le même réseau Docker.</p></li><li class="fragment"><p>Vous pouvez vérifier cela en inspectant les réseaux de chaque conteneur à l&#8217;aide de la commande <code>docker container inspect</code>.</p></li><li class="fragment"><p>S&#8217;ils ne sont pas dans le même réseau, nous pouvons créer un réseau et ajouter les deux services à celui-ci dans notre fichier <code>docker-compose.yml</code>.</p></li></ul></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_6" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="ulist"><ul><li><p>Voici un exemple :</p></li></ul></div>
-<div class="listingblock"><div class="content"><pre>version: '3'
-services:
+<div class="listingblock"><div class="content"><pre>services:
   web:
     image: web
     networks:
@@ -5890,6 +6020,7 @@ networks:
 <div class="ulist"><ul><li class="fragment"><p>Après avoir mis à jour votre fichier <code>docker-compose.yml</code>, vous devez recréer vos conteneurs pour que les modifications prennent effet.</p></li><li class="fragment"><p>Vous pouvez le faire avec la commande <code>docker compose up -d --force-recreate</code>.</p></li><li class="fragment"><p>Après cela, vous devriez pouvoir faire un <code>ping</code> sur <code>gitlab-instance-gitlab-1</code> depuis le conteneur web.</p></li></ul></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_7" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  web:
     image: *base_image
     networks:
+      - mynetwork
 [...]
 networks:
   mynetwork:</code></pre></div></div>
@@ -5930,8 +6061,7 @@ Host is up (0.000024s latency).
 MAC Address: 02:42:AC:1E:00:09 (Unknown)
 Nmap scan report for 95def7cb933d (172.30.0.10)
 Host is up.</code></pre></div></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_9" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="paragraph"><p>Victoire?</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose -f docker-compose-dependabot.yml exec -it -u root web b
-ash
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose -f docker-compose-dependabot.yml exec -it -u root web bash
 root@95def7cb933d:/home/dependabot/app# ping symbiosis-gitlab-1.symbiosis_mynetwork
 PING symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2) 56(84) bytes of data.
 64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=1 ttl=64 time=0.165 ms
@@ -6113,8 +6243,8 @@ RUN apk add --no-cache nginx
 # Exposer le port 80
 EXPOSE 80
 
-# Ajouter un fichier HTML (remplacer /chemin/vers/votre/fichier.html par le chemin réel vers votre fichier HTML)
-ADD /chemin/vers/votre/fichier.html /usr/share/nginx/html
+# Ajouter le fichier HTML (à récupérer depuis l'image de Jean-Michel)
+COPY html/index.html /usr/share/nginx/html/
 
 # Définir le point d'entrée pour lancer nginx
 ENTRYPOINT ["nginx", "-g", "daemon off;"]</code></pre></div></div>
@@ -6153,22 +6283,23 @@ FROM alpine
 
 # Installe Nginx sans conserver l'index des paquets dans la couche.
 # Nginx est un serveur web populaire qui peut également être utilisé comme proxy inverse, équilibreur de charge et cache HTTP.
-RUN apk add --no-cache nginx
+# Le site par défaut de nginx sous Alpine répond 404 partout : on le remplace.
+RUN apk add --no-cache nginx \
+ &amp;&amp; printf 'server {\n    listen 80;\n    root /usr/share/nginx/html;\n}\n' &gt; /etc/nginx/http.d/default.conf
 
 # Expose le port 80 au monde extérieur. C'est le port standard pour le trafic HTTP.
 EXPOSE 80
 
-# Ajoute un fichier HTML à la racine du document Nginx.
-# Remplacez /chemin/vers/votre/fichier.html par le chemin réel vers votre fichier HTML.
-ADD /chemin/vers/votre/fichier.html /usr/share/nginx/html
+# Barre finale obligatoire : sans elle, COPY crée un FICHIER nommé html.
+COPY html/index.html /usr/share/nginx/html/
 
 # Définit le point d'entrée pour le conteneur. Cette commande sera exécutée lorsque le conteneur démarre.
 # La commande "nginx" démarre le serveur Nginx.
 # Le flag "-g" nous permet de définir des directives globales. Dans ce cas, nous disons à Nginx de fonctionner au premier plan (daemon off;).
 ENTRYPOINT ["nginx", "-g", "daemon off;"]</code></pre></div></div>
-<div class="paragraph fragment"><p>Finalement, le 💀 de notre <code>Dockerfile</code> était déjà bon&#8230;&#8203;</p></div>
-<div class="paragraph fragment"><p>Ou presque&#8230;&#8203; Rien ne vous gêne dans ce Dockerfile?</p></div>
-<div class="paragraph fragment"><p>👫 don&#8217;t let 👫&#8230;&#8203;</p></div></div></section><section id="lazy_docker" data-auto-animate><h2>🐳😴 Lazy Docker</h2><div class="slide-content"><div class="paragraph"><p><a href="https://blog.stephane-robert.info/docs/conteneurs/moteurs-conteneurs/lazydocker/" class="bare">https://blog.stephane-robert.info/docs/conteneurs/moteurs-conteneurs/lazydocker/</a></p></div></div></section><section id="conseils_pour_léval" class="columns" data-auto-animate><h2>Conseils pour l&#8217;éval'</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="imageblock"><img src="media/final%20answer.png" alt="final answer" height="500"></div></div></div>
+<div class="paragraph fragment"><p>Le 💀 était presque bon (sous Alpine, nginx répond 404 partout par défaut).</p></div>
+<div class="paragraph fragment"><p>Rien d&#8217;autre ne vous gêne dans ce Dockerfile?</p></div>
+<div class="paragraph fragment"><p>👫 don&#8217;t let 👫&#8230;&#8203;</p></div></div></section><section id="lazy_docker" data-auto-animate><h2>🐳😴 Lazy Docker</h2><div class="slide-content"><div class="paragraph"><p><a href="https://blog.stephane-robert.info/docs/conteneurs/outils/lazydocker/" class="bare">https://blog.stephane-robert.info/docs/conteneurs/outils/lazydocker/</a></p></div></div></section><section id="conseils_pour_léval" class="columns" data-auto-animate><h2>Conseils pour l&#8217;éval'</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="imageblock"><img src="media/final%20answer.png" alt="final answer" height="500"></div></div></div>
 <div class="openblock column"><div class="content"><div class="ulist"><ul><li><p><a href="https://moodle.univ-artois.fr/mod/resource/view.php?id=39414" class="bare">https://moodle.univ-artois.fr/mod/resource/view.php?id=39414</a></p></li><li><p><a href="https://moodle.univ-artois.fr/mod/choicegroup/view.php?id=39415" class="bare">https://moodle.univ-artois.fr/mod/choicegroup/view.php?id=39415</a></p></li><li><p><a href="https://moodle.univ-artois.fr/mod/assign/view.php?id=39416" class="bare">https://moodle.univ-artois.fr/mod/assign/view.php?id=39416</a></p></li></ul></div></div></div></div></section><section id="conseils_pour_leval" data-auto-animate><h2>Conseils pour l&#8217;eval'</h2><div class="slide-content"><div class="imageblock"><img src="media/dont%20panic.png" alt="dont panic" height="500"></div></div></section><section id="vous_devez_avoir_les_compétences_suivantes"><h2>Vous devez avoir les compétences suivantes:</h2><div class="slide-content"><div class="paragraph"><p>Savoir lancer un container avec toutes les options</p></div>
 <div class="ulist"><ul><li><p><code>-v, -p, -w, -e, --rm, etc.</code></p></li></ul></div>
 <div class="paragraph"><p>Écrire un Dockerfile optimisé pour "dockeriser" une application</p></div>
@@ -6177,9 +6308,9 @@ ENTRYPOINT ["nginx", "-g", "daemon off;"]</code></pre></div></div>
 <div class="paragraph"><p>Savoir s&#8217;outiller pour avoir des images qui servent d&#8217;environnement d&#8217;exécution à votre CI.</p></div>
 <div class="paragraph"><p>Monter un écosystème applicatif complexe via docker-compose.</p></div></div></section><section id="que_revoir"><h2>Que revoir ?</h2><div class="slide-content"><div class="paragraph"><p>Les TPs sont vos meilleurs amis.</p></div>
 <div class="paragraph"><p>La documentation officielle de Docker</p></div>
-<div class="paragraph"><p><a href="https://docs.docker.com/engine/reference/run/" class="bare">https://docs.docker.com/engine/reference/run/</a></p></div>
-<div class="paragraph"><p><a href="https://docs.docker.com/engine/reference/builder/" class="bare">https://docs.docker.com/engine/reference/builder/</a></p></div>
-<div class="paragraph"><p><a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/" class="bare">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/</a></p></div></div></section><section id="one_more_thing"><h2>🤔👉 One more thing</h2><div class="slide-content"><div class="imageblock"><img src="media/415439355-image7.png" alt="415439355 image7" height="500"></div></div></section></section>
+<div class="paragraph"><p><a href="https://docs.docker.com/engine/containers/run/" class="bare">https://docs.docker.com/engine/containers/run/</a></p></div>
+<div class="paragraph"><p><a href="https://docs.docker.com/reference/dockerfile/" class="bare">https://docs.docker.com/reference/dockerfile/</a></p></div>
+<div class="paragraph"><p><a href="https://docs.docker.com/build/building/best-practices/" class="bare">https://docs.docker.com/build/building/best-practices/</a></p></div></div></section><section id="one_more_thing"><h2>🤔👉 One more thing</h2><div class="slide-content"><div class="imageblock"><img src="media/415439355-image7.png" alt="415439355 image7" height="500"></div></div></section></section>
 <section><section id="bibliographie" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Bibliographie</h2></section><section id="ligne_de_commande_2"><h2>Ligne de commande</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://tldp.org" class="bare">https://tldp.org</a></p></li><li><p><a href="https://en.wikipedia.org/wiki/POSIX" class="bare">https://en.wikipedia.org/wiki/POSIX</a></p></li><li><p><a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop" class="bare">https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop</a></p></li><li><p><a href="https://linuxhandbook.com/linux-directory-structure/" class="bare">https://linuxhandbook.com/linux-directory-structure/</a></p></li><li><p><a href="https://blog.stephane-robert.info/docs/admin-serveurs/linux/script-shell/" class="bare">https://blog.stephane-robert.info/docs/admin-serveurs/linux/script-shell/</a></p></li><li><p><a href="https://tldp.org/LDP/abs/html/" class="bare">https://tldp.org/LDP/abs/html/</a></p></li></ul></div></div></section><section id="git_vcs"><h2>Git / VCS</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://docs.github.com" class="bare">https://docs.github.com</a></p></li><li><p><a href="https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control" class="bare">https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control</a></p></li><li><p><a href="https://martinfowler.com/bliki/VersionControlTools.html" class="bare">https://martinfowler.com/bliki/VersionControlTools.html</a></p></li><li><p><a href="https://martinfowler.com/bliki/FeatureBranch.html" class="bare">https://martinfowler.com/bliki/FeatureBranch.html</a></p></li><li><p><a href="https://about.gitlab.com/topics/version-control/what-is-gitlab-flow/" class="bare">https://about.gitlab.com/topics/version-control/what-is-gitlab-flow/</a></p></li><li><p><a href="https://www.atlassian.com/git/tutorials/comparing-workflows" class="bare">https://www.atlassian.com/git/tutorials/comparing-workflows</a></p></li><li><p><a href="https://nvie.com/posts/a-successful-git-branching-model/" class="bare">https://nvie.com/posts/a-successful-git-branching-model/</a></p></li><li><p><a href="https://blog.stephane-robert.info/docs/developper/version/git/introduction/" class="bare">https://blog.stephane-robert.info/docs/developper/version/git/introduction/</a></p></li></ul></div></div></section><section id="intégration_continue"><h2>Intégration Continue</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://martinfowler.com/articles/continuousIntegration.html" class="bare">https://martinfowler.com/articles/continuousIntegration.html</a></p></li><li><p><a href="https://martinfowler.com/bliki/ContinuousDelivery.html" class="bare">https://martinfowler.com/bliki/ContinuousDelivery.html</a></p></li><li><p><a href="https://continuousdelivery.com/" class="bare">https://continuousdelivery.com/</a></p></li><li><p><a href="https://blog.arungupta.me/continuous-integration-delivery-deployment-maturity-model" class="bare">https://blog.arungupta.me/continuous-integration-delivery-deployment-maturity-model</a></p></li><li><p><a href="https://blog.crisp.se/2013/02/05/yassalsundman/continuous-delivery-vs-continuous-deployment" class="bare">https://blog.crisp.se/2013/02/05/yassalsundman/continuous-delivery-vs-continuous-deployment</a></p></li></ul></div></div></section><section id="docker_2"><h2>Docker</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://labs.play-with-docker.com/" class="bare">https://labs.play-with-docker.com/</a></p></li><li><p><a href="https://dduportal.github.io/cours/cnam-docker-2018" class="bare">https://dduportal.github.io/cours/cnam-docker-2018</a></p></li><li><p><a href="https://kodekloud.com/blog/docker-for-beginners/" class="bare">https://kodekloud.com/blog/docker-for-beginners/</a></p></li><li><p><a href="https://www.slideshare.net/dotCloud/why-docker" class="bare">https://www.slideshare.net/dotCloud/why-docker</a></p></li><li><p><a href="https://docs.docker.com/engine/reference/builder/" class="bare">https://docs.docker.com/engine/reference/builder/</a></p></li><li><p><a href="https://www.r-bloggers.com/2021/05/best-practices-for-r-with-docker/" class="bare">https://www.r-bloggers.com/2021/05/best-practices-for-r-with-docker/</a></p></li><li><p><a href="https://github.com/wagoodman/dive" class="bare">https://github.com/wagoodman/dive</a></p></li><li><p><a href="https://docs.docker.com/engine/tutorials/networkingcontainers/" class="bare">https://docs.docker.com/engine/tutorials/networkingcontainers/</a></p></li><li><p><a href="https://docs.docker.com/engine/network/drivers/" class="bare">https://docs.docker.com/engine/network/drivers/</a></p></li><li><p><a href="https://blog.stephane-robert.info/post/docker-buildkit-partie-1/" class="bare">https://blog.stephane-robert.info/post/docker-buildkit-partie-1/</a></p></li><li><p><a href="https://dev.to/montells/docker-args-1ael" class="bare">https://dev.to/montells/docker-args-1ael</a></p></li></ul></div></div></section><section id="devops"><h2>DevOps</h2><div class="slide-content"><div class="ulist"><ul><li><p><a href="https://blog.stephane-robert.info/docs/glossaire/introduction/" class="bare">https://blog.stephane-robert.info/docs/glossaire/introduction/</a></p></li></ul></div></div></section></section>
 <section id="merci" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Merci !</h2><div class="slide-content"><div class="paragraph"><p><span class="icon"><i class="fa fa-envelope"></i></span> <a href="mailto:gounthar@gmail.com">gounthar@gmail.com</a></p></div>
 <div class="paragraph small"><small><a href="https://gounthar.github.io/cours-devops-docker/main">Slides: https://gounthar.github.io/cours-devops-docker/main</a></small></div>
