@@ -373,7 +373,7 @@ docker compose logs backend
 - Secrets Management : HashiCorp Vault
 - Monitoring : Prometheus + Grafana
 - CI/CD : GitHub Actions, GitLab CI
-- Image Signing : Cosign (Sigstore), Notation (Docker Content Trust est retiré)
+- Image Signing : Cosign (Sigstore), Notation (Docker Content Trust est en cours de retrait : Notary v1 ferme le 8 décembre 2026)
 - Runtime Security : Falco
 
 ---

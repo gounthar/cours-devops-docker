@@ -115,7 +115,7 @@ Faire travailler les étudiants en binômes avec les questions :
 
 4. **Scanner les vulnérabilités** (5 min)
    ```bash
-   docker scout cves phase2-backend --only-severity critical
+   docker scout cves phase1-backend --only-severity critical
    ```
    → Discussion : Combien de CVE critiques ? Pourquoi ?
 
@@ -329,7 +329,7 @@ Si la session avance bien et qu'il reste du temps :
 
 1. Démarrer un registre local
    ```bash
-   docker run -d -p 5000:5000 --name registry registry:2
+   docker run -d -p 5050:5000 --name registry registry:3
    ```
 
 2. Tagger et pousser les images

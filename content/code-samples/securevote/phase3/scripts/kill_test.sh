@@ -15,24 +15,33 @@ test_resilience() {
 
     echo "🔪 Test du service: $service"
     echo "  1. État initial..."
-    docker compose ps $service
+    docker compose ps "$service"
 
     # `docker compose kill` compte comme un arrêt manuel : aucune politique
     # `restart:` ne relance le conteneur. Pour simuler un vrai plantage, on tue
     # le processus principal depuis l'extérieur, comme le ferait le noyau (OOM).
     echo "  2. Plantage simulé (kill -9 du processus principal)..."
-    local pid
-    pid=$(docker inspect -f '{{.State.Pid}}' "$(docker compose ps -q $service)")
+    local cid pid
+    cid=$(docker compose ps -q "$service")
+    if [ -z "$cid" ]; then
+        echo "  ❌ Service $service introuvable (lancé depuis le dossier phase3/ ?)"
+        return
+    fi
+    pid=$(docker inspect -f '{{.State.Pid}}' "$cid")
+    if [ "${pid:-0}" -le 0 ]; then
+        echo "  ❌ Service $service arrêté, rien à tuer"
+        return
+    fi
     docker run --rm --pid=host --privileged alpine:3.22 kill -9 "$pid"
 
     echo "  3. Attente de $wait_time secondes..."
     sleep $wait_time
 
     echo "  4. État après redémarrage automatique..."
-    docker compose ps $service
+    docker compose ps "$service"
 
     # Vérifier si le conteneur est healthy
-    if docker compose ps $service | grep -q "(healthy)"; then
+    if docker compose ps "$service" | grep -q "(healthy)"; then
         echo "  ✅ Service $service récupéré avec succès"
     else
         echo "  ⚠️  Service $service en cours de récupération..."
