@@ -1099,7 +1099,7 @@ Un `httpd` en reverse-proxy devant une application Java dans Tomcat.
 Écrivez un `docker-compose.yml` qui :
 [%step]
 * construit l'image du proxy à partir du dossier `proxy` et publie son port 80 ;
-* déploie `dockertraining.war` dans un Tomcat basé sur `tomcat:11.0.26-jdk25-temurin` ;
+* déploie `dockertraining.war` dans un Tomcat basé sur `tomcat:11.0.27-jdk25-temurin` ;
 * indique au proxy où trouver Tomcat, avec la variable d'environnement `backend_destination` ;
 * ne démarre le proxy qu'une fois l'application **répondante**, pas seulement le conteneur lancé.
 
