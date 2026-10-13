@@ -16,15 +16,18 @@ name: Trivy sample
 
 on:
   schedule:
-    # Lundi 08:17 UTC : ni la minute de link-check.yml (06:27), ni celle de
-    # gh-pages-prune.yml (05:13), ni celle de anatomy-commands.yml (07:41).
-    - cron: '17 8 * * 1'
+    # Le 1er du mois, 08:17 UTC. La base de vulnérabilités bouge tous les
+    # jours, donc un rythme hebdomadaire ouvrirait une PR presque chaque
+    # semaine pour un chiffre d'illustration. 08:17 ne croise aucune autre
+    # tâche planifiée (link-check 06:27, gh-pages-prune 05:13,
+    # anatomy-commands 07:41), même quand le 1er tombe un lundi.
+    - cron: '17 8 1 * *'
   workflow_dispatch:
   push:
     branches: [main]
     paths:
       # L'image scannée est celle du backend phase1 : quand updatecli la
-      # fait monter, le chiffre doit suivre sans attendre le lundi.
+      # fait monter, le chiffre doit suivre sans attendre le 1er du mois.
       - content/code-samples/securevote/phase1/backend/Dockerfile
       - scripts/gen_trivy_sample.py
       - .github/workflows/trivy-sample.yml
