@@ -5266,11 +5266,13 @@ docker container run --rm \
 - Permission denied → Ajouter sudo ou utiliser méthode Docker
 - Erreur "trixie Release not found" (vieille doc apt) → utiliser la suite <code>generic</code> ou le script</p></div></aside></div></section><section id="exemple_de_résultat_trivy"><h2>Exemple de résultat Trivy</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">trivy image python:3.11
 
-Total: 3277 (UNKNOWN: 83, LOW: 1360, MEDIUM: 1501, HIGH: 317, CRITICAL: 16)</code></pre></div></div>
+python:3.11 (debian 13.7)
+Total: 3602 (UNKNOWN: 97, LOW: 1592, MEDIUM: 1588, HIGH: 309, CRITICAL: 16)</code></pre></div></div>
 <div class="paragraph"><p>Colonnes : Library, Vulnerability, Severity, Status, Installed Version, Fixed Version, Title.</p></div>
-<aside class="notes"><div class="paragraph"><p>Mesuré le 2026-10-13 avec Trivy 0.75.0 sur <code>python:3.11</code> (Debian 13). Le chiffre bouge chaque jour.
+<aside class="notes"><div class="paragraph"><p>Mesuré le 2026-10-13 avec Trivy 0.75.0 sur <code>python:3.11</code> (Debian 13.7), par le workflow trivy-sample.yml. Le chiffre bouge chaque jour : 3277 le matin du 2026-10-13, 3602 le soir.
+Ce total est celui de la cible système (paquets Debian 13.7) ; les paquets Python de l&#8217;image ont leur propre ligne <code>Total:</code>.
 Beaucoup de lignes sont en Status <code>affected</code> sans version corrigée : <code>--ignore-unfixed</code> ne garde que ce qu&#8217;on peut corriger.
-Même image en <code>python:3.11-slim</code> : ~170.</p></div></aside>
+Même image en <code>python:3.11-slim</code> : 166.</p></div></aside>
 <div class="paragraph fragment"><p><strong>Action :</strong> Mettre à jour, changer d&#8217;image de base, appliquer des patches</p></div></div></section><section id="utilisateurs_non_root"><h2>Utilisateurs non-root</h2><div class="slide-content"><div class="paragraph"><p><strong>Problème :</strong> Par défaut, les processus s&#8217;exécutent en tant que root</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM python:3.11
 COPY app.py /app/
