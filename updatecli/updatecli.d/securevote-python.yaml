@@ -50,6 +50,8 @@ sources:
       key: ".[4].cycle"
 
 conditions:
+  # Each target waits only for the image tag it would write, so a late
+  # python:<latest>-slim does not hold back phase1 and phase2.
   testPythonLatestSlimPublished:
     name: "Test that the python:<latest>-slim image tag exists"
     kind: dockerimage
@@ -79,6 +81,9 @@ targets:
     kind: dockerfile
     sourceid: pythonLatestMinus4
     scmid: default
+    disableconditions: true
+    dependson:
+      - "condition#testPythonLatestMinus4Published"
     spec:
       file: content/code-samples/securevote/phase1/backend/Dockerfile
       instruction:
@@ -89,6 +94,9 @@ targets:
     kind: dockerfile
     sourceid: pythonLatestMinus1
     scmid: default
+    disableconditions: true
+    dependson:
+      - "condition#testPythonLatestMinus1SlimPublished"
     transformers:
       - addsuffix: "-slim"
     spec:
@@ -101,6 +109,9 @@ targets:
     kind: dockerfile
     sourceid: pythonLatest
     scmid: default
+    disableconditions: true
+    dependson:
+      - "condition#testPythonLatestSlimPublished"
     transformers:
       - addsuffix: "-slim"
     spec:
