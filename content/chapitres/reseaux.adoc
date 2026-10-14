@@ -558,12 +558,12 @@ Créez un projet avec :
 ----
 services:
   webapp:
-    image: nginx:1.31.6-alpine3.24
+    image: nginx:1.31.7-alpine3.24
     ports:
       - "8080:80"
 
   proxy:
-    image: nginx:1.31.6-alpine3.24
+    image: nginx:1.31.7-alpine3.24
     ports:
       - "8000:80"
     volumes:
