@@ -5899,36 +5899,44 @@ Difficultés rencontrées</p></div></aside></div></section><section id="question
 <div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
 <div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div>
 <div class="imageblock"><img src="media/902050214-image2.png" alt="902050214 image2"></div></div></section><section id="il_en_remet_une_couche" data-auto-animate><h2>"Il en remet une couche"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image history nginx
-IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
-f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daemon…   0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  STOPSIGNAL SIGTERM           0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  EXPOSE 80                    0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENTRYPOINT ["/docker-entr…   0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:0fd5fca330dcd6a7…   1.04kB
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:1d0a4127e78a26c1…   1.96kB
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:e7e183879c35719c…   1.2kB
-&lt;missing&gt;           4 weeks ago         /bin/sh -c set -x     &amp;&amp; addgroup --system -…   63.6MB
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV PKG_RELEASE=1~buster     0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV NJS_VERSION=0.4.4        0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV NGINX_VERSION=1.19.3     0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  LABEL maintainer=NGINX Do…   0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  CMD ["bash"]                 0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) ADD file:0dc53e7886c35bc21…   69.2MB</code></pre></div></div></div></section><section id="il_en_remet_une_couche_2" data-auto-animate><h2>"Il en remet une couche"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image history nginx
-IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
-f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daemon…   0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  STOPSIGNAL SIGTERM           0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  EXPOSE 80                    0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENTRYPOINT ["/docker-entr…   0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:0fd5fca330dcd6a7…   1.04kB
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:1d0a4127e78a26c1…   1.96kB
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:e7e183879c35719c…   1.2kB
-&lt;missing&gt;           4 weeks ago         /bin/sh -c set -x     &amp;&amp; addgroup --system -…   63.6MB
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV PKG_RELEASE=1~buster     0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV NJS_VERSION=0.4.4        0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV NGINX_VERSION=1.19.3     0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  LABEL maintainer=NGINX Do…   0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  CMD ["bash"]                 0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) ADD file:0dc53e7886c35bc21…   69.2MB</code></pre></div></div>
+IMAGE          CREATED      CREATED BY                                      SIZE      COMMENT
+f9ea18bfa4fa   8 days ago   CMD ["nginx" "-g" "daemon off;"]                0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   STOPSIGNAL SIGQUIT                              0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   EXPOSE map[80/tcp:{}]                           0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENTRYPOINT ["/docker-entrypoint.sh"]            0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   COPY 30-tune-worker-processes.sh /docker-ent…   16.4kB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   COPY 20-envsubst-on-templates.sh /docker-ent…   12.3kB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   COPY 15-local-resolvers.envsh /docker-entryp…   12.3kB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   COPY 10-listen-on-ipv6-by-default.sh /docker…   12.3kB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   COPY docker-entrypoint.sh / # buildkit          8.19kB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   RUN /bin/sh -c set -x     &amp;&amp; groupadd --syst…   88.7MB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV DYNPKG_RELEASE=1~trixie                     0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV PKG_RELEASE=1~trixie                        0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV ACME_VERSION=0.4.1                          0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV NJS_RELEASE=1~trixie                        0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV NJS_VERSION=1.0.1                           0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV NGINX_VERSION=1.31.6                        0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   LABEL maintainer=NGINX Docker Maintainers &lt;d…   0B        buildkit.dockerfile.v0
+&lt;missing&gt;      9 days ago   # debian.sh --arch 'amd64' out/ 'trixie' '@1…   87.7MB    debuerreotype 0.17</code></pre></div></div></div></section><section id="il_en_remet_une_couche_2" data-auto-animate><h2>"Il en remet une couche"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image history nginx
+IMAGE          CREATED      CREATED BY                                      SIZE      COMMENT
+f9ea18bfa4fa   8 days ago   CMD ["nginx" "-g" "daemon off;"]                0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   STOPSIGNAL SIGQUIT                              0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   EXPOSE map[80/tcp:{}]                           0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENTRYPOINT ["/docker-entrypoint.sh"]            0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   COPY 30-tune-worker-processes.sh /docker-ent…   16.4kB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   COPY 20-envsubst-on-templates.sh /docker-ent…   12.3kB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   COPY 15-local-resolvers.envsh /docker-entryp…   12.3kB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   COPY 10-listen-on-ipv6-by-default.sh /docker…   12.3kB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   COPY docker-entrypoint.sh / # buildkit          8.19kB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   RUN /bin/sh -c set -x     &amp;&amp; groupadd --syst…   88.7MB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV DYNPKG_RELEASE=1~trixie                     0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV PKG_RELEASE=1~trixie                        0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV ACME_VERSION=0.4.1                          0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV NJS_RELEASE=1~trixie                        0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV NJS_VERSION=1.0.1                           0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV NGINX_VERSION=1.31.6                        0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   LABEL maintainer=NGINX Docker Maintainers &lt;d…   0B        buildkit.dockerfile.v0
+&lt;missing&gt;      9 days ago   # debian.sh --arch 'amd64' out/ 'trixie' '@1…   87.7MB    debuerreotype 0.17</code></pre></div></div>
 <div class="paragraph"><p>Il est préférable de limiter le nombre de couches pour limiter la bande passante.</p></div></div></section><section id="il_en_remet_une_couche_3" data-auto-animate><h2>"Il en remet une couche"</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">RUN apk add --no-cache \
      patch \
      tar \
@@ -6102,20 +6110,25 @@ Options:
   -L, --follow-link   Always follow symlinks in SRC_PATH
   -q, --quiet         Suppress progress output during copy</code></pre></div></div></div></section><section id="debugging_docker_image_history"><h2>Debugging : docker image history</h2><div class="slide-content"><div class="paragraph"><p>Cette commande permet d&#8217;afficher la concaténation de tous les Dockerfiles qui ont abouti à cette image.</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image history nginx
-IMAGE               CREATED             CREATED BY                                      SIZE                f35646e83998        4 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daemon…   0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  STOPSIGNAL SIGTERM           0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  EXPOSE 80                    0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENTRYPOINT ["/docker-entr…   0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:0fd5fca330dcd6a7…   1.04kB
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:1d0a4127e78a26c1…   1.96kB
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) COPY file:e7e183879c35719c…   1.2kB
-&lt;missing&gt;           4 weeks ago         /bin/sh -c set -x     &amp;&amp; addgroup --system -…   63.6MB
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV PKG_RELEASE=1~buster     0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV NJS_VERSION=0.4.4        0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  ENV NGINX_VERSION=1.19.3     0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  LABEL maintainer=NGINX Do…   0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop)  CMD ["bash"]                 0B
-&lt;missing&gt;           4 weeks ago         /bin/sh -c #(nop) ADD file:0dc53e7886c35bc21…   69.2MB</code></pre></div></div></div></section><section id="debugging_docker_container_stats"><h2>Debugging : docker container stats</h2><div class="slide-content"><div class="paragraph"><p>Cette commande permet d&#8217;avoir les stats en temps réel d&#8217;un conteneur.</p></div>
+IMAGE          CREATED      CREATED BY                                      SIZE      COMMENT
+f9ea18bfa4fa   8 days ago   CMD ["nginx" "-g" "daemon off;"]                0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   STOPSIGNAL SIGQUIT                              0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   EXPOSE map[80/tcp:{}]                           0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENTRYPOINT ["/docker-entrypoint.sh"]            0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   COPY 30-tune-worker-processes.sh /docker-ent…   16.4kB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   COPY 20-envsubst-on-templates.sh /docker-ent…   12.3kB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   COPY 15-local-resolvers.envsh /docker-entryp…   12.3kB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   COPY 10-listen-on-ipv6-by-default.sh /docker…   12.3kB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   COPY docker-entrypoint.sh / # buildkit          8.19kB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   RUN /bin/sh -c set -x     &amp;&amp; groupadd --syst…   88.7MB    buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV DYNPKG_RELEASE=1~trixie                     0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV PKG_RELEASE=1~trixie                        0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV ACME_VERSION=0.4.1                          0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV NJS_RELEASE=1~trixie                        0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV NJS_VERSION=1.0.1                           0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   ENV NGINX_VERSION=1.31.6                        0B        buildkit.dockerfile.v0
+&lt;missing&gt;      8 days ago   LABEL maintainer=NGINX Docker Maintainers &lt;d…   0B        buildkit.dockerfile.v0
+&lt;missing&gt;      9 days ago   # debian.sh --arch 'amd64' out/ 'trixie' '@1…   87.7MB    debuerreotype 0.17</code></pre></div></div></div></section><section id="debugging_docker_container_stats"><h2>Debugging : docker container stats</h2><div class="slide-content"><div class="paragraph"><p>Cette commande permet d&#8217;avoir les stats en temps réel d&#8217;un conteneur.</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container stats 42f128
 CONTAINER           CPU %     MEM USAGE/LIMIT     MEM %     NET I/O
 42f128              0.00%     1.454 MB/4.145 GB   0.04%     648 B/648 B</code></pre></div></div></div></section><section id="travaux_pratiques_14"><h2>🎓 Travaux pratiques #14</h2><div class="slide-content"><div class="paragraph"><p>Notre valeureux collègue Jean-Michel s&#8217;initiait à l&#8217;art mystérieux de Docker, et généreusement partageait ses créations sous forme d&#8217;images Docker pour l&#8217;entreprise.</p></div>
