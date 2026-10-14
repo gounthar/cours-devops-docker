@@ -6135,16 +6135,16 @@ f4caa4a641729c0ab3d7b5974fa735c128047f75292c7f16495b72c7c6808502</code></pre></d
 <div class="paragraph fragment"><p>C&#8217;est lancé ?</p></div></div></section><section id="solution_travaux_pratiques_14_2" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls --format '{{.Names}}' | grep "bad"</code></pre></div></div>
 <div class="paragraph fragment"><p>Oups, il n&#8217;est pas là&#8230;&#8203;</p></div>
 <div class="paragraph fragment"><p>Essayons encore.</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls -a --format '{{.Names}}' | grep "bad"
-bad-1</code></pre></div></div>
-<div class="paragraph fragment"><p>C&#8217;est donc lancé, mais il a crashé.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container ls -a --format '{{.Names}} {{.Status}}' | grep "bad"
+bad-1 Exited (0) 5 seconds ago</code></pre></div></div>
+<div class="paragraph fragment"><p>C&#8217;est donc lancé, mais il s&#8217;est arrêté aussitôt. Avec le code 0, comme si tout allait bien&#8230;&#8203;</p></div>
 <div class="paragraph fragment"><p>Allons donc chercher les logs&#8230;&#8203;</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container logs bad-1
 Error : nginx is not executable</code></pre></div></div>
 <div class="paragraph fragment"><p>On a trouvé le problème !</p></div>
-<div class="paragraph fragment"><p>Spoiler alert : on a trouvé UN problème, pas LE problème.</p></div></div></section><section id="solution_travaux_pratiques_14_3" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="paragraph"><p>Je ne sais pas ce qu&#8217;a fait Jean-Michel, mais il a cassé le binaire de Nginx.</p></div>
+<div class="paragraph fragment"><p>Spoiler alert : on a trouvé UN problème, pas LE problème.</p></div></div></section><section id="solution_travaux_pratiques_14_3" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="paragraph"><p>Le message accuse le binaire de Nginx.</p></div>
 <div class="paragraph fragment"><p>Est-ce un problème de permission, de dépendance, de version, de compilation ?</p></div>
-<div class="paragraph fragment"><p>En tous cas, c&#8217;est cassé.</p></div>
+<div class="paragraph fragment"><p>Avant de croire le message sur parole, enquêtons.</p></div>
 <div class="paragraph fragment"><p>Regardons un peu ce que nous dit docker image inspect de tout ça&#8230;&#8203;</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">docker image inspect bad-nginx:1
 [
@@ -6251,20 +6251,29 @@ COPY html/index.html /usr/share/nginx/html/
 # Définir le point d'entrée pour lancer nginx
 ENTRYPOINT ["nginx", "-g", "daemon off;"]</code></pre></div></div>
 <div class="paragraph fragment"><p>Comment récupérer ce fichu fichier HTML?</p></div></div></section><section id="solution_travaux_pratiques_14_11" class="columns" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="openblock column is-half"><div class="content"><div class="paragraph"><p>Essayons de lancer un conteneur basé sur notre image, et de récupérer le fichier HTML.</p></div>
-<div class="paragraph fragment"><p>Le binaire <code>nginx</code> est non fonctionnel, essayons de lancer un conteneur avec un shell.</p></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --name bad-2 --entrypoint=sh bad-nginx:1 sh
+<div class="paragraph fragment"><p>Le message accuse le binaire <code>nginx</code> : passons par un shell pour aller voir.</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --entrypoint=sh \
+  bad-nginx:1 sh
 /usr/bin/sh: /usr/bin/sh: cannot execute binary file</code></pre></div></div></div></div>
 <div class="openblock column is-one-quarter"><div class="content"><div class="imageblock fragment"><img src="https://media.tenor.com/3gzS4mCevVkAAAAC/francais-queendugif.gif" alt="francais queendugif"></div>
 <div class="paragraph fragment"><p>Oui, je sais, il y a une faute dans la légende du gif&#8230;&#8203;</p></div></div></div>
-<div class="openblock column is-one-quarter"><div class="content"><div class="admonitionblock warning fragment"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Jean-Micheeeeeeeeeeeeeeeeel, j&#8217;ai deux mots à te dire! 😡</td></tr></table></div></div></div></div></section><section id="solution_travaux_pratiques_14_12" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="paragraph"><p>Le conteneur qui tourne, on oublie, donc&#8230;&#8203; Jean-Michel a laissé un terrain miné derrière lui. 💣</p></div>
-<div class="paragraph fragment"><p>Mais on a d&#8217;autres armes en réserve&#8230;&#8203; Le <code>docker container create</code> par exemple !</p></div>
+<div class="openblock column is-one-quarter"><div class="content"><div class="admonitionblock warning fragment"><table><tr><td class="icon"><i class="fa fa-warning" title="Warning"></i></td><td class="content">Pour une fois, Jean-Michel n&#8217;y est pour rien : le <code>sh</code> de trop demande à <code>sh</code> de lire le binaire <code>sh</code> comme un script. 🤦</td></tr></table></div></div></div></div></section><section id="solution_travaux_pratiques_14_12" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="paragraph"><p>Sans le <code>sh</code> de trop, le shell marche :</p></div>
+<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -it --rm --entrypoint=sh bad-nginx:1
+sh-4.4# ls -l /usr/sbin/nginx
+-rwxr-xr-x 1 root root 1264168 Oct  7  2019 /usr/sbin/nginx
+sh-4.4# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful</code></pre></div></div>
+<div class="paragraph fragment"><p>Le binaire est exécutable, sa configuration est valide : le message d&#8217;erreur ment.</p></div>
+<div class="paragraph fragment"><p>Le coupable est ailleurs. On y reviendra.</p></div></div></section><section id="solution_travaux_pratiques_14_13" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="paragraph"><p>Pour récupérer des fichiers, inutile de lancer quoi que ce soit dans l&#8217;image.</p></div>
+<div class="paragraph fragment"><p>On a d&#8217;autres armes en réserve&#8230;&#8203; Le <code>docker container create</code> par exemple, qui crée le conteneur sans le démarrer !</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container create --name temp_container bad-nginx:1
 9149745197df413f7966181f6ca517b68713edd32ff7c35cea6e958d549a7553</code></pre></div></div>
 <div class="paragraph fragment"><p>Utilisons maintenant docker container cp pour récupérer le fichier HTML.</p></div>
 <div class="paragraph fragment"><p>Quel est le répertoire où nginx s&#8217;attend à trouver ses fichiers HTML à servir?</p></div>
 <div class="paragraph fragment"><p><code>/usr/share/nginx/html</code></p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">mkdir /tmp/html &amp;&amp; cd /tmp/html
-docker container cp temp_container:/usr/share/nginx/html .</code></pre></div></div></div></section><section id="solution_travaux_pratiques_14_13" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">head html/index.html</code></pre></div></div>
+docker container cp temp_container:/usr/share/nginx/html .</code></pre></div></div></div></section><section id="solution_travaux_pratiques_14_14" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">head html/index.html</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"&gt;
 
 &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"&gt;
@@ -6278,7 +6287,18 @@ docker container cp temp_container:/usr/share/nginx/html .</code></pre></div></d
 <div class="paragraph fragment"><p>Jean-Michel n&#8217;avait même pas fini de remplir son fichier HTML&#8230;&#8203;
 C&#8217;est encore le fichier de base de nginx sous CentOs.
 😞</p></div>
-<div class="paragraph fragment"><p>Jean-Michel, t&#8217;assures pas une 🥜, là&#8230;&#8203;</p></div></div></section><section id="solution_travaux_pratiques_14_14" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Ce Dockerfile met en place un serveur web simple en utilisant Nginx sur Alpine Linux.
+<div class="paragraph fragment"><p>Jean-Michel, t&#8217;assures pas une 🥜, là&#8230;&#8203;</p></div></div></section><section id="solution_travaux_pratiques_14_15" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="paragraph"><p>Et ce fameux <code>/tmp/entrypoint.sh</code>, celui que lance notre <code>ENTRYPOINT</code> ?</p></div>
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container cp temp_container:/tmp/entrypoint.sh .
+cat entrypoint.sh
+#!/bin/bash
+
+if [ -x /usr/sbin/nginx ];then
+echo "Error : nginx is not executable"
+exit
+fi
+exec $*</code></pre></div></div>
+<div class="paragraph fragment"><p>Voilà LE problème. Ou plutôt, LES problèmes.</p></div></div></section><section id="solution_travaux_pratiques_14_16" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="ulist"><ul><li class="fragment"><p>Le test est inversé : <code>-x</code> est vrai quand nginx <strong>est</strong> exécutable. Il fallait <code>! -x</code>.</p></li><li class="fragment"><p><code>exit</code> sans code renvoie 0 : d&#8217;où le <code>Exited (0)</code>, alors que le script annonce une erreur.</p></li><li class="fragment"><p>Même test corrigé, le script ne reçoit rien : avec un <code>ENTRYPOINT</code> en forme shell (<code>/bin/sh -c</code>), le <code>CMD</code> n&#8217;est pas transmis.</p></li><li class="fragment"><p>Et en lui passant le <code>CMD</code> à la main ? <code>nginx</code> seul passe en arrière-plan, et le conteneur s&#8217;arrête aussitôt. <code>$*</code> sans guillemets coupe <code>'daemon off;'</code> en deux, et nginx refuse l&#8217;option <code>off;</code>.</p></li></ul></div>
+<div class="paragraph fragment"><p>D&#8217;où un <code>ENTRYPOINT</code> en forme exec, sans script, dans notre Dockerfile.</p></div></div></section><section id="solution_travaux_pratiques_14_17" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Ce Dockerfile met en place un serveur web simple en utilisant Nginx sur Alpine Linux.
 
 # Utilise Alpine Linux comme image de base. Alpine Linux est une distribution Linux légère et orientée sécurité.
 FROM alpine
