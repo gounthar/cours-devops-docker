@@ -6051,38 +6051,16 @@ MAC Address: 02:42:50:A6:7C:5A (Unknown)
 Nmap scan report for symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2)
 Host is up (0.000012s latency).
 MAC Address: 02:42:AC:1E:00:02 (Unknown)
-Nmap scan report for symbiosis-gitlab-runner-1-1.symbiosis_mynetwork (172.30.0.3)
-Host is up (0.000015s latency).
-MAC Address: 02:42:AC:1E:00:03 (Unknown)
-Nmap scan report for symbiosis-gitlab-runner-2-1.symbiosis_mynetwork (172.30.0.4)
-Host is up (0.000032s latency).
-MAC Address: 02:42:AC:1E:00:04 (Unknown)
-Nmap scan report for symbiosis-redis-1.symbiosis_mynetwork (172.30.0.5)
-Host is up (0.0000070s latency).
-MAC Address: 02:42:AC:1E:00:05 (Unknown)
-Nmap scan report for symbiosis-mongodb-1.symbiosis_mynetwork (172.30.0.6)
-Host is up (0.000016s latency).
-MAC Address: 02:42:AC:1E:00:06 (Unknown)
-Nmap scan report for symbiosis-docker-1.symbiosis_mynetwork (172.30.0.7)
-Host is up (0.000021s latency).
-MAC Address: 02:42:AC:1E:00:07 (Unknown)
-Nmap scan report for symbiosis-worker-1.symbiosis_mynetwork (172.30.0.9)
-Host is up (0.000024s latency).
-MAC Address: 02:42:AC:1E:00:09 (Unknown)
+...
 Nmap scan report for 95def7cb933d (172.30.0.10)
 Host is up.</code></pre></div></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_9" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="paragraph"><p>Victoire?</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose -f docker-compose-dependabot.yml exec -it -u root web bash
 root@95def7cb933d:/home/dependabot/app# ping symbiosis-gitlab-1.symbiosis_mynetwork
 PING symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2) 56(84) bytes of data.
 64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=1 ttl=64 time=0.165 ms
-64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=2 ttl=64 time=0.053 ms
-64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=3 ttl=64 time=0.039 ms
-64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=4 ttl=64 time=0.040 ms
-64 bytes from symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2): icmp_seq=5 ttl=64 time=0.056 ms
-^C
+...
 --- symbiosis-gitlab-1.symbiosis_mynetwork ping statistics ---
-5 packets transmitted, 5 received, 0% packet loss, time 4165ms
-rtt min/avg/max/mdev = 0.039/0.070/0.165/0.047 ms</code></pre></div></div>
+5 packets transmitted, 5 received, 0% packet loss, time 4165ms</code></pre></div></div>
 <div class="imageblock fragment"><img src="media/dependabot-404-gitlab.png" alt="dependabot 404 gitlab"></div>
 <div class="paragraph fragment"><p>On y est presque!</p></div>
 <aside class="notes"><div class="paragraph"><p>dependabot gitlab
