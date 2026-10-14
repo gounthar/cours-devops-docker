@@ -4,7 +4,6 @@
 FROM alpine
 
 # Installe Nginx sans conserver l'index des paquets dans la couche.
-# Nginx est un serveur web populaire qui peut également être utilisé comme proxy inverse, équilibreur de charge et cache HTTP.
 # Le site par défaut de nginx sous Alpine répond 404 partout : on le remplace.
 RUN apk add --no-cache nginx \
  && printf 'server {\n    listen 80;\n    root /usr/share/nginx/html;\n}\n' > /etc/nginx/http.d/default.conf
@@ -15,7 +14,6 @@ EXPOSE 80
 # Barre finale obligatoire : sans elle, COPY crée un FICHIER nommé html.
 COPY html/index.html /usr/share/nginx/html/
 
-# Définit le point d'entrée pour le conteneur. Cette commande sera exécutée lorsque le conteneur démarre.
-# La commande "nginx" démarre le serveur Nginx.
-# Le flag "-g" nous permet de définir des directives globales. Dans ce cas, nous disons à Nginx de fonctionner au premier plan (daemon off;).
+# Définit le point d'entrée du conteneur : le serveur Nginx.
+# Le flag "-g" passe une directive globale : "daemon off;" garde Nginx au premier plan.
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
