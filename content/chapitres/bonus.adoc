@@ -595,12 +595,12 @@ Regardons un peu ce que nous dit docker image inspect de tout ça...
 docker image inspect bad-nginx:1
 [
     {
-        "Id": "sha256:a469e4d1cb0c61324298fc6fde09f78f211420a1848b690dec35d9ac324a6cab",
+        "Id": "sha256:2fd3346e0c2f4702c87ab6da02046d5656c4428267221da3df1bf0b99990a160",
         "RepoTags": [
             "bad-nginx:1"
         ],
         [...]
-        "ContainerConfig": {
+        "Config": {
             [...]
             "ExposedPorts": {
                 "80/tcp": {}
@@ -627,8 +627,7 @@ On a un PATH, c'est bon signe.
             "Cmd": [
                 "/bin/sh",
                 "-c",
-                "#(nop) ",
-                "CMD [\"/bin/sh\" \"-c\" \"nginx\"]"
+                "nginx"
             ],
 ----
 [%step]
@@ -658,7 +657,7 @@ On a un Entrypoint, c'est bon signe.
                 [...]
             }
         },
-        "DockerVersion": "18.09.0",
+        "Created": "2020-11-15T15:39:43.438668882Z",
         [...]
         "Architecture": "amd64",
         "Os": "linux",
@@ -678,7 +677,7 @@ On a un Entrypoint, c'est bon signe.
                 [...]
             }
         },
-        "DockerVersion": "18.09.0",
+        "Created": "2020-11-15T15:39:43.438668882Z",
         [...]
         "Architecture": "amd64",
         "Os": "linux",
@@ -689,7 +688,7 @@ On a un Entrypoint, c'est bon signe.
 [%step]
 C'est bien une image Linux `amd64` (donc pour ton PC, mais pas pour ton Mac M1, toi là-bas), mais argh, c'est basé sur CentOS, pas sur Alpine ou Debian !
 [%step]
-Ça a été construit avec une vieille version de Docker.
+Et elle date de novembre 2020 : plus de cinq ans sans mise à jour.
 [%step]
 Qu'est-ce qu'on fait maintenant ?
 
@@ -709,14 +708,14 @@ image::https://img.20mn.fr/JejnWnikSbSj5suCAo9pug/1200x768_stephane-bern-arrive-
 ----
 docker image history bad-nginx:1
 IMAGE          CREATED       CREATED BY                                      SIZE      COMMENT
-a469e4d1cb0c   3 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0B
-<missing>      3 years ago   /bin/sh -c #(nop)  ENTRYPOINT ["/bin/sh" "-c…   0B
-<missing>      3 years ago   /bin/sh -c #(nop)  EXPOSE 80                    0B
-<missing>      3 years ago   /bin/sh -c #(nop) COPY file:b0fc89bcaf962602…   98B
-<missing>      3 years ago   /bin/sh -c yum install -y nginx && yum clean…   56.7MB
-<missing>      3 years ago   /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
-<missing>      3 years ago   /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B
-<missing>      3 years ago   /bin/sh -c #(nop) ADD file:538afc0c5c964ce0d…   215MB
+2fd3346e0c2f   5 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0B
+<missing>      5 years ago   /bin/sh -c #(nop)  ENTRYPOINT ["/bin/sh" "-c…   0B
+<missing>      5 years ago   /bin/sh -c #(nop)  EXPOSE 80                    0B
+<missing>      5 years ago   /bin/sh -c #(nop) COPY file:b0fc89bcaf962602…   12.3kB
+<missing>      5 years ago   /bin/sh -c yum install -y nginx && yum clean…   63.2MB
+<missing>      6 years ago   /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+<missing>      6 years ago   /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B
+<missing>      6 years ago   /bin/sh -c #(nop) ADD file:538afc0c5c964ce0d…   240MB
 ----
 [%step]
 Ça se lit de bas en haut...
@@ -727,7 +726,7 @@ La deuxième ligne, c'est une métadata, on s'en fiche un peu.
 [%step]
 La troisième ligne, c'est le `CMD` de l'image de base, qui est `bash`.
 [%step]
-La quatrième ligne, c'est l'installation de Nginx par l'infâme `yum` de Centos (déjà repéré dans le `docker image inspect`).
+La quatrième ligne, c'est l'installation de Nginx par l'infâme `yum` de CentOS.
 --
 
 [%auto-animate]
@@ -737,21 +736,23 @@ La quatrième ligne, c'est l'installation de Nginx par l'infâme `yum` de Centos
 ----
 docker image history bad-nginx:1
 IMAGE          CREATED       CREATED BY                                      SIZE      COMMENT
-a469e4d1cb0c   3 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0B
-<missing>      3 years ago   /bin/sh -c #(nop)  ENTRYPOINT ["/bin/sh" "-c…   0B
-<missing>      3 years ago   /bin/sh -c #(nop)  EXPOSE 80                    0B
-<missing>      3 years ago   /bin/sh -c #(nop) COPY file:b0fc89bcaf962602…   98B
-<missing>      3 years ago   /bin/sh -c yum install -y nginx && yum clean…   56.7MB
-<missing>      3 years ago   /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
-<missing>      3 years ago   /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B
-<missing>      3 years ago   /bin/sh -c #(nop) ADD file:538afc0c5c964ce0d…   215MB
+2fd3346e0c2f   5 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0B
+<missing>      5 years ago   /bin/sh -c #(nop)  ENTRYPOINT ["/bin/sh" "-c…   0B
+<missing>      5 years ago   /bin/sh -c #(nop)  EXPOSE 80                    0B
+<missing>      5 years ago   /bin/sh -c #(nop) COPY file:b0fc89bcaf962602…   12.3kB
+<missing>      5 years ago   /bin/sh -c yum install -y nginx && yum clean…   63.2MB
+<missing>      6 years ago   /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+<missing>      6 years ago   /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B
+<missing>      6 years ago   /bin/sh -c #(nop) ADD file:538afc0c5c964ce0d…   240MB
 ----
 [%step]
-La cinquième ligne, c'est sans doute la copie du fichier `index.html`.
+La cinquième ligne copie `/tmp/entrypoint.sh` (visible avec `--no-trunc`). Retenez-le.
 [%step]
-La sixième ligne, c'est l' `EXPOSE` de l'image finale, qui est `80` (déjà repéré dans le `docker image inspect`).
+La sixième ligne, c'est l' `EXPOSE` de l'image finale, qui est `80` (déjà vu avec `inspect`).
 [%step]
-La septième ligne, c'est le `ENTRYPOINT` de l'image finale, qui est `/bin/sh -c /tmp/entrypoint.sh` (déjà repéré dans le `docker image inspect`).
+La septième ligne, c'est le `ENTRYPOINT` de l'image finale, qui est `/bin/sh -c /tmp/entrypoint.sh` (déjà vu avec `inspect`).
+[%step]
+Les `#(nop)` et le `COMMENT` vide évoquent l'ancien builder (BuildKit y met `buildkit.dockerfile.v0`). Un indice, pas une preuve.
 
 [%auto-animate]
 == ✅ Solution travaux pratiques #14🕵️‍♂️🔍
