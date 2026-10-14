@@ -6149,12 +6149,12 @@ Error : nginx is not executable</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">docker image inspect bad-nginx:1
 [
     {
-        "Id": "sha256:a469e4d1cb0c61324298fc6fde09f78f211420a1848b690dec35d9ac324a6cab",
+        "Id": "sha256:2fd3346e0c2f4702c87ab6da02046d5656c4428267221da3df1bf0b99990a160",
         "RepoTags": [
             "bad-nginx:1"
         ],
         [...]
-        "ContainerConfig": {
+        "Config": {
             [...]
             "ExposedPorts": {
                 "80/tcp": {}
@@ -6167,8 +6167,7 @@ Error : nginx is not executable</code></pre></div></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">            "Cmd": [
                 "/bin/sh",
                 "-c",
-                "#(nop) ",
-                "CMD [\"/bin/sh\" \"-c\" \"nginx\"]"
+                "nginx"
             ],</code></pre></div></div>
 <div class="paragraph fragment"><p>On a un CMD, c&#8217;est bon signe.</p></div></div></section><section id="solution_travaux_pratiques_14_5" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-json hljs" data-noescape="true" data-lang="json">            [...]
             "Entrypoint": [
@@ -6184,7 +6183,7 @@ Error : nginx is not executable</code></pre></div></div>
                 [...]
             }
         },
-        "DockerVersion": "18.09.0",
+        "Created": "2020-11-15T15:39:43.438668882Z",
         [...]
         "Architecture": "amd64",
         "Os": "linux",
@@ -6197,7 +6196,7 @@ Error : nginx is not executable</code></pre></div></div>
                 [...]
             }
         },
-        "DockerVersion": "18.09.0",
+        "Created": "2020-11-15T15:39:43.438668882Z",
         [...]
         "Architecture": "amd64",
         "Os": "linux",
@@ -6205,36 +6204,37 @@ Error : nginx is not executable</code></pre></div></div>
     }
 ]</code></pre></div></div>
 <div class="paragraph fragment"><p>C&#8217;est bien une image Linux <code>amd64</code> (donc pour ton PC, mais pas pour ton Mac M1, toi là-bas), mais argh, c&#8217;est basé sur CentOS, pas sur Alpine ou Debian !</p></div>
-<div class="paragraph fragment"><p>Ça a été construit avec une vieille version de Docker.</p></div>
+<div class="paragraph fragment"><p>Et elle date de novembre 2020 : plus de cinq ans sans mise à jour.</p></div>
 <div class="paragraph fragment"><p>Qu&#8217;est-ce qu&#8217;on fait maintenant ?</p></div></div></section><section id="solution_travaux_pratiques_14_7" class="columns" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="openblock column"><div class="content"><div class="paragraph"><p>Tournons-nous vers l&#8217;histoire !</p></div>
 <div class="imageblock"><img src="https://img.20mn.fr/JejnWnikSbSj5suCAo9pug/1200x768_stephane-bern-arrive-elysee-4-octobre-2017.jpg" alt="1200x768 stephane bern arrive elysee 4 octobre 2017"></div></div></div>
 <div class="openblock column"><div class="content"><div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image history bad-nginx:1
 IMAGE          CREATED       CREATED BY                                      SIZE      COMMENT
-a469e4d1cb0c   3 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0B
-&lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  ENTRYPOINT ["/bin/sh" "-c…   0B
-&lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  EXPOSE 80                    0B
-&lt;missing&gt;      3 years ago   /bin/sh -c #(nop) COPY file:b0fc89bcaf962602…   98B
-&lt;missing&gt;      3 years ago   /bin/sh -c yum install -y nginx &amp;&amp; yum clean…   56.7MB
-&lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
-&lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B
-&lt;missing&gt;      3 years ago   /bin/sh -c #(nop) ADD file:538afc0c5c964ce0d…   215MB</code></pre></div></div>
+2fd3346e0c2f   5 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0B
+&lt;missing&gt;      5 years ago   /bin/sh -c #(nop)  ENTRYPOINT ["/bin/sh" "-c…   0B
+&lt;missing&gt;      5 years ago   /bin/sh -c #(nop)  EXPOSE 80                    0B
+&lt;missing&gt;      5 years ago   /bin/sh -c #(nop) COPY file:b0fc89bcaf962602…   12.3kB
+&lt;missing&gt;      5 years ago   /bin/sh -c yum install -y nginx &amp;&amp; yum clean…   63.2MB
+&lt;missing&gt;      6 years ago   /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+&lt;missing&gt;      6 years ago   /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B
+&lt;missing&gt;      6 years ago   /bin/sh -c #(nop) ADD file:538afc0c5c964ce0d…   240MB</code></pre></div></div>
 <div class="paragraph fragment"><p>Ça se lit de bas en haut&#8230;&#8203;</p></div>
 <div class="paragraph fragment"><p>Le premier <code>ADD</code> est l&#8217;image de base, CentOS.</p></div>
 <div class="paragraph fragment"><p>La deuxième ligne, c&#8217;est une métadata, on s&#8217;en fiche un peu.</p></div>
 <div class="paragraph fragment"><p>La troisième ligne, c&#8217;est le <code>CMD</code> de l&#8217;image de base, qui est <code>bash</code>.</p></div>
-<div class="paragraph fragment"><p>La quatrième ligne, c&#8217;est l&#8217;installation de Nginx par l&#8217;infâme <code>yum</code> de Centos (déjà repéré dans le <code>docker image inspect</code>).</p></div></div></div></div></section><section id="solution_travaux_pratiques_14_8" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image history bad-nginx:1
+<div class="paragraph fragment"><p>La quatrième ligne, c&#8217;est l&#8217;installation de Nginx par l&#8217;infâme <code>yum</code> de CentOS.</p></div></div></div></div></section><section id="solution_travaux_pratiques_14_8" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker image history bad-nginx:1
 IMAGE          CREATED       CREATED BY                                      SIZE      COMMENT
-a469e4d1cb0c   3 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0B
-&lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  ENTRYPOINT ["/bin/sh" "-c…   0B
-&lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  EXPOSE 80                    0B
-&lt;missing&gt;      3 years ago   /bin/sh -c #(nop) COPY file:b0fc89bcaf962602…   98B
-&lt;missing&gt;      3 years ago   /bin/sh -c yum install -y nginx &amp;&amp; yum clean…   56.7MB
-&lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
-&lt;missing&gt;      3 years ago   /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B
-&lt;missing&gt;      3 years ago   /bin/sh -c #(nop) ADD file:538afc0c5c964ce0d…   215MB</code></pre></div></div>
-<div class="paragraph fragment"><p>La cinquième ligne, c&#8217;est sans doute la copie du fichier <code>index.html</code>.</p></div>
-<div class="paragraph fragment"><p>La sixième ligne, c&#8217;est l' <code>EXPOSE</code> de l&#8217;image finale, qui est <code>80</code> (déjà repéré dans le <code>docker image inspect</code>).</p></div>
-<div class="paragraph fragment"><p>La septième ligne, c&#8217;est le <code>ENTRYPOINT</code> de l&#8217;image finale, qui est <code>/bin/sh -c /tmp/entrypoint.sh</code> (déjà repéré dans le <code>docker image inspect</code>).</p></div></div></section><section id="solution_travaux_pratiques_14_9" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="paragraph"><p>Résumons-nous&#8230;&#8203; On a:</p></div>
+2fd3346e0c2f   5 years ago   /bin/sh -c #(nop)  CMD ["/bin/sh" "-c" "ngin…   0B
+&lt;missing&gt;      5 years ago   /bin/sh -c #(nop)  ENTRYPOINT ["/bin/sh" "-c…   0B
+&lt;missing&gt;      5 years ago   /bin/sh -c #(nop)  EXPOSE 80                    0B
+&lt;missing&gt;      5 years ago   /bin/sh -c #(nop) COPY file:b0fc89bcaf962602…   12.3kB
+&lt;missing&gt;      5 years ago   /bin/sh -c yum install -y nginx &amp;&amp; yum clean…   63.2MB
+&lt;missing&gt;      6 years ago   /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+&lt;missing&gt;      6 years ago   /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B
+&lt;missing&gt;      6 years ago   /bin/sh -c #(nop) ADD file:538afc0c5c964ce0d…   240MB</code></pre></div></div>
+<div class="paragraph fragment"><p>La cinquième ligne copie <code>/tmp/entrypoint.sh</code> (visible avec <code>--no-trunc</code>). Retenez-le.</p></div>
+<div class="paragraph fragment"><p>La sixième ligne, c&#8217;est l' <code>EXPOSE</code> de l&#8217;image finale, qui est <code>80</code> (déjà vu avec <code>inspect</code>).</p></div>
+<div class="paragraph fragment"><p>La septième ligne, c&#8217;est le <code>ENTRYPOINT</code> de l&#8217;image finale, qui est <code>/bin/sh -c /tmp/entrypoint.sh</code> (déjà vu avec <code>inspect</code>).</p></div>
+<div class="paragraph fragment"><p>Les <code>#(nop)</code> et le <code>COMMENT</code> vide évoquent l&#8217;ancien builder (BuildKit y met <code>buildkit.dockerfile.v0</code>). Un indice, pas une preuve.</p></div></div></section><section id="solution_travaux_pratiques_14_9" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍</h2><div class="slide-content"><div class="paragraph"><p>Résumons-nous&#8230;&#8203; On a:</p></div>
 <div class="ulist"><ul><li class="fragment"><p>une image de base CentOS (à remplacer par Alpine ou Debian)</p></li><li class="fragment"><p>une installation de <code>nginx</code>.</p></li><li class="fragment"><p>un port <code>80</code> exposé</p></li><li class="fragment"><p>un <code>ENTRYPOINT</code> qui lance un script <code>nginx</code></p></li><li class="fragment"><p>un fichier HTML, qu&#8217;on n&#8217;a pas encore récupéré
 Ça progresse&#8230;&#8203; On peut donc créer un premier 💀 Dockerfile</p></li></ul></div></div></section><section id="solution_travaux_pratiques_14_10" data-auto-animate><h2>✅ Solution travaux pratiques #14🕵️‍♂️🔍💀</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile"># Utiliser Alpine ou Debian comme image de base
 FROM alpine
