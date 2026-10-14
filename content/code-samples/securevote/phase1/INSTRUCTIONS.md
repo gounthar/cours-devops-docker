@@ -9,6 +9,22 @@ Démarrer l'application SecureVote et identifier les vulnérabilités de sécuri
 - Docker et Docker Compose installés
 - Ports 8080, 5000, 5432, 6379, 3000 disponibles
 
+> **Port déjà pris ?** Si un PostgreSQL ou un Redis tourne déjà sur votre machine (installé localement ou dans un autre conteneur), `docker compose up` peut s'arrêter sur une erreur qui cite le port. Avec un service installé sur la machine :
+>
+> ```
+> failed to bind host port 0.0.0.0:5432/tcp: address already in use
+> ```
+>
+> Avec un autre conteneur qui publie déjà ce port :
+>
+> ```
+> Bind for 0.0.0.0:5432 failed: port is already allocated
+> ```
+>
+> Trouvez qui occupe le port (`docker ps`, ou `sudo ss -ltnp | grep -E ':(5432|6379) '` sous Linux) et arrêtez-le le temps du TP. Sinon, changez seulement le port côté hôte dans `docker-compose.yml`, par exemple `"15432:5432"` : les autres conteneurs joignent la base par son nom de service, pas par ce port.
+>
+> Ne supprimez pas ces lignes `ports:` : exposer PostgreSQL et Redis sur l'hôte fait partie des vulnérabilités à repérer à l'étape 3, quel que soit le port choisi côté hôte (15432 après le changement ci-dessus).
+
 ## Étape 1 : Démarrage de l'application (5 min)
 
 1. Clonez ou téléchargez le projet SecureVote Phase 1
