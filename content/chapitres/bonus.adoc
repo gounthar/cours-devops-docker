@@ -562,11 +562,11 @@ Essayons encore.
 [%step]
 [source,bash]
 ----
-docker container ls -a --format '{{.Names}}' | grep "bad"
-bad-1
+docker container ls -a --format '{{.Names}} {{.Status}}' | grep "bad"
+bad-1 Exited (0) 5 seconds ago
 ----
 [%step]
-C'est donc lancé, mais il a crashé.
+C'est donc lancé, mais il s'est arrêté aussitôt. Avec le code 0, comme si tout allait bien...
 [%step]
 Allons donc chercher les logs...
 [%step]
@@ -582,11 +582,11 @@ Spoiler alert : on a trouvé UN problème, pas LE problème.
 
 [%auto-animate]
 == ✅ Solution travaux pratiques #14🕵️‍♂️🔍
-Je ne sais pas ce qu'a fait Jean-Michel, mais il a cassé le binaire de Nginx.
+Le message accuse le binaire de Nginx.
 [%step]
 Est-ce un problème de permission, de dépendance, de version, de compilation ?
 [%step]
-En tous cas, c'est cassé.
+Avant de croire le message sur parole, enquêtons.
 [%step]
 Regardons un peu ce que nous dit docker image inspect de tout ça...
 [%step]
@@ -782,12 +782,13 @@ Comment récupérer ce fichu fichier HTML?
 --
 Essayons de lancer un conteneur basé sur notre image, et de récupérer le fichier HTML.
 [%step]
-Le binaire `nginx` est non fonctionnel, essayons de lancer un conteneur avec un shell.
+Le message accuse le binaire `nginx` : passons par un shell pour aller voir.
 [%step]
 
 [source,bash]
 ----
-docker container run -it --name bad-2 --entrypoint=sh bad-nginx:1 sh
+docker container run -it --entrypoint=sh \
+  bad-nginx:1 sh
 /usr/bin/sh: /usr/bin/sh: cannot execute binary file
 ----
 --
@@ -801,14 +802,31 @@ Oui, je sais, il y a une faute dans la légende du gif...
 [.column.is-one-quarter]
 --
 [%step]
-WARNING: Jean-Micheeeeeeeeeeeeeeeeel, j'ai deux mots à te dire! 😡
+WARNING: Pour une fois, Jean-Michel n'y est pour rien : le `sh` de trop demande à `sh` de lire le binaire `sh` comme un script. 🤦
 --
 
 [%auto-animate]
 == ✅ Solution travaux pratiques #14🕵️‍♂️🔍
-Le conteneur qui tourne, on oublie, donc... Jean-Michel a laissé un terrain miné derrière lui. 💣
+Sans le `sh` de trop, le shell marche :
+[source,bash]
+----
+docker container run -it --rm --entrypoint=sh bad-nginx:1
+sh-4.4# ls -l /usr/sbin/nginx
+-rwxr-xr-x 1 root root 1264168 Oct  7  2019 /usr/sbin/nginx
+sh-4.4# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+----
 [%step]
-Mais on a d'autres armes en réserve... Le `docker container create` par exemple !
+Le binaire est exécutable, sa configuration est valide : le message d'erreur ment.
+[%step]
+Le coupable est ailleurs. On y reviendra.
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #14🕵️‍♂️🔍
+Pour récupérer des fichiers, inutile de lancer quoi que ce soit dans l'image.
+[%step]
+On a d'autres armes en réserve... Le `docker container create` par exemple, qui crée le conteneur sans le démarrer !
 [%step]
 [source,bash]
 ----
@@ -855,6 +873,39 @@ C'est encore le fichier de base de nginx sous CentOs.
 😞
 [%step]
 Jean-Michel, t'assures pas une 🥜, là...
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #14🕵️‍♂️🔍
+Et ce fameux `/tmp/entrypoint.sh`, celui que lance notre `ENTRYPOINT` ?
+[%step]
+[source,bash]
+----
+docker container cp temp_container:/tmp/entrypoint.sh .
+cat entrypoint.sh
+#!/bin/bash
+
+if [ -x /usr/sbin/nginx ];then
+echo "Error : nginx is not executable"
+exit
+fi
+exec $*
+----
+[%step]
+Voilà LE problème. Ou plutôt, LES problèmes.
+
+[%auto-animate]
+== ✅ Solution travaux pratiques #14🕵️‍♂️🔍
+[%step]
+* Le test est inversé : `-x` est vrai quand nginx *est* exécutable. Il fallait `! -x`.
+[%step]
+* `exit` sans code renvoie 0 : d'où le `Exited (0)`, alors que le script annonce une erreur.
+[%step]
+* Même test corrigé, le script ne reçoit rien : avec un `ENTRYPOINT` en forme shell (`/bin/sh -c`), le `CMD` n'est pas transmis.
+[%step]
+* Et en lui passant le `CMD` à la main ? `nginx` seul passe en arrière-plan, et le conteneur s'arrête aussitôt. `$*` sans guillemets coupe `'daemon off;'` en deux, et nginx refuse l'option `off;`.
+
+[%step]
+D'où un `ENTRYPOINT` en forme exec, sans script, dans notre Dockerfile.
 
 
 [%auto-animate]
