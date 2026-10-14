@@ -752,7 +752,7 @@ La sixième ligne, c'est l' `EXPOSE` de l'image finale, qui est `80` (déjà vu 
 [%step]
 La septième ligne, c'est le `ENTRYPOINT` de l'image finale, qui est `/bin/sh -c /tmp/entrypoint.sh` (déjà vu avec `inspect`).
 [%step]
-Et les `#(nop)` trahissent l'ancien builder : BuildKit aurait écrit `buildkit.dockerfile.v0` en `COMMENT`.
+Les `#(nop)` et le `COMMENT` vide évoquent l'ancien builder (BuildKit y met `buildkit.dockerfile.v0`). Un indice, pas une preuve.
 
 [%auto-animate]
 == ✅ Solution travaux pratiques #14🕵️‍♂️🔍
