@@ -415,7 +415,7 @@ ul.byline li + li {
 }
 </style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/v4-shims.min.css"><link rel="stylesheet" href="./styles/build.css"></head><body><div class="reveal"><div class="slides"><section class="title" data-state="title"><h1>🇫🇷 Devops </h1><h2>Docker</h2><div class="preamble"><div class="paragraph title"><p>2026/2027</p></div>
 <div class="imageblock"><img src="media/qrcode.png" alt="QRCode to this presentation" height="150"></div>
-<div class="ulist small"><ul><li><p>Présentation disponible à l’adresse: <a href="https://gounthar.github.io/cours-devops-docker/main">https://gounthar.github.io/cours-devops-docker/main</a></p></li><li><p>Version PDF de la présentation : <a href="slides.pdf" target="_blank"><span class="icon"><i class="fa fa-file-pdf"></i></span> Cliquez ici</a></p></li><li><p>Contenu sous licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">Creative Commons Attribution 4.0 International License</a></p></li><li><p>Code source de la présentation: <a href="https://github.com/gounthar/cours-devops-docker" target="_blank"><span class="icon"><i class="fab fa-github"></i></span> https://github.com/gounthar/cours-devops-docker</a></p></li><li><p>Mis à jour le&#160;: 14 octobre 2026</p></li></ul></div></div></section>
+<div class="ulist small"><ul><li><p>Présentation disponible à l’adresse: <a href="https://gounthar.github.io/cours-devops-docker/main">https://gounthar.github.io/cours-devops-docker/main</a></p></li><li><p>Version PDF de la présentation : <a href="slides.pdf" target="_blank"><span class="icon"><i class="fa fa-file-pdf"></i></span> Cliquez ici</a></p></li><li><p>Contenu sous licence <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">Creative Commons Attribution 4.0 International License</a></p></li><li><p>Code source de la présentation: <a href="https://github.com/gounthar/cours-devops-docker" target="_blank"><span class="icon"><i class="fab fa-github"></i></span> https://github.com/gounthar/cours-devops-docker</a></p></li><li><p>Mis à jour le&#160;: 15 octobre 2026</p></li></ul></div></div></section>
 <section id="comment_utiliser_cette_présentation" class="dark background columns" data-background-color="MediumBlue" data-background-image="media/logo-t-shirt-transparent-1080.png" data-background-size="contain" data-background-position="left" data-background-opacity="0.1"><h2>Comment utiliser cette présentation ?</h2><div class="slide-content"><div class="openblock column"><div class="content"></div></div>
 <div class="openblock column"><div class="content"><div class="ulist"><ul><li><p>Pour naviguer, utilisez les flèches en bas à droite (ou celles de votre clavier)</p><div class="ulist"><ul><li><p>Gauche/Droite: changer de chapitre</p></li><li><p>Haut/Bas: naviguer dans un chapitre</p></li></ul></div></li><li><p>Pour avoir une vue globale : utiliser la touche "o" (pour "<strong>Overview</strong>")</p></li></ul></div></div></div></div></section>
 <section><section id="bonjour" data-background-color="rgb(248, 228, 130)" data-state="invert"><h2>Bonjour !</h2><div class="slide-content"><div class="imageblock"><img src="media/bitmoji-hello.png" alt="bitmoji hello" width="200"></div><div class="imageblock"><img src="media/hello-from-docker.svg" alt="hello from docker"></div><div class="paragraph small"><small>La suite: vers le bas ⬇️</small></div></div></section><section data-background-color="rgb(248, 228, 130)" data-background-image="media/docker_love.png" data-background-size="contain" data-background-position="center" data-state="invert"><div class="slide-content">
@@ -2961,7 +2961,7 @@ Accept-Ranges: bytes</code></pre></div></div>
 &lt;li&gt;&lt;a href="http://home.web.cern.ch/about"&gt;Learn about CERN, the physics laboratory where the web was born&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</code></pre></div></div>
-<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM nginx:1.31.6-alpine3.24
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-dockerfile hljs" data-noescape="true" data-lang="dockerfile">FROM nginx:1.31.7-alpine3.24
 
 # La page servie par défaut par nginx
 COPY index.html /usr/share/nginx/html/index.html</code></pre></div></div>
@@ -3191,7 +3191,7 @@ Les données n&#8217;existent que tant que le conteneur est en cours d&#8217;ex�
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run --name some-nginx \
   -v /some/content:/usr/share/nginx/html:ro \
   -d \
-  nginx:1.31.6-alpine3.24</code></pre></div></div>
+  nginx:1.31.7-alpine3.24</code></pre></div></div>
 <div class="paragraph small"><small>Source : <a href="https://hub.docker.com/_/nginx" class="bare">https://hub.docker.com/_/nginx</a></small></div>
 <div class="imageblock fragment"><img src="media/383920810-image7.png" alt="383920810 image7"></div></div></section><section id="mapping_de_filesystem_4"><h2>🗺️📂 Mapping de FileSystem</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">-v /some/content:/usr/share/nginx/html:ro   # un dossier
 -v ~/.bash_history:/.bash_history           # un fichier</code></pre></div></div>
@@ -3222,7 +3222,7 @@ RUN echo hello &gt; ./world.txt</code></pre></div></div>
 <div class="paragraph fragment"><p>Placez vos fichiers HTML dans un répertoire sur votre machine hôte, puis mappez ce répertoire vers le conteneur Nginx.</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 8000:80 --name mon-nginx \
   -v /chemin/vers/la/page/web/sur/lhote:/usr/share/nginx/html \
-  nginx:1.31.6-alpine3.24</code></pre></div></div>
+  nginx:1.31.7-alpine3.24</code></pre></div></div>
 <div class="paragraph fragment"><p>Remplacez <code>/chemin/vers/la/page/web/sur/lhote</code> par le chemin réel vers le répertoire contenant vos fichiers de la page web sur l&#8217;hôte.</p></div></div></section><section id="solution_travaux_pratiques_8_2" data-auto-animate><h2>✅ Solution travaux pratiques #8</h2><div class="slide-content"><div class="paragraph title"><p>En utilisant un volume nommé (Named Volume) :</p></div>
 <div class="paragraph fragment"><p>Créez un volume nommé et copiez vos fichiers de la page web dedans.</p></div>
 <div class="paragraph fragment"><p>Montez ce volume nommé dans le conteneur Nginx.</p></div>
@@ -3245,7 +3245,7 @@ docker container rm copie</code></pre></div></div></div></section><section id="s
 <div class="paragraph"><p>Maintenant, lancez le conteneur Nginx et montez le volume nommé :</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker container run -d -p 8000:80 --name mon-nginx \
   -v mon-nginx-html:/usr/share/nginx/html \
-  nginx:1.31.6-alpine3.24</code></pre></div></div></div></section><section id="travaux_pratiques_9"><h2>🎓 Travaux pratiques #9</h2><div class="slide-content"><div class="paragraph title"><p>Étapes:</p></div>
+  nginx:1.31.7-alpine3.24</code></pre></div></div></div></section><section id="travaux_pratiques_9"><h2>🎓 Travaux pratiques #9</h2><div class="slide-content"><div class="paragraph title"><p>Étapes:</p></div>
 <div class="ulist"><ul><li class="fragment"><p>Créer un volume nommé "data"</p></li><li class="fragment"><p>Démarrer un container attaché à ce volume</p></li><li class="fragment"><p>Lancer un processus qui écrit un fichier dans le volume</p></li><li class="fragment"><p>Démarrer un second container attaché à ce volume</p></li><li class="fragment"><p>Lire les données du volume depuis le second container</p></li><li class="fragment"><p>Supprimer le volume</p></li></ul></div></div></section><section id="solution_travaux_pratiques_9"><h2>✅ Solution travaux pratiques #9</h2><div class="slide-content"><div class="paragraph"><p>Créer un volume nommé "data" :</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker volume create data</code></pre></div></div>
 <div class="paragraph fragment"><p>Démarrer un premier conteneur attaché à ce volume :</p></div>
@@ -3482,12 +3482,12 @@ Autre remède à l&#8217;ordre de démarrage seul : depends_on dans Compose (mes
 <div class="olist arabic"><ol class="arabic"><li><p><strong>NGINX</strong> (proxy) vers <code>webapp</code></p></li><li><p><strong>webapp</strong> (serveur web simple, port 80 dans le conteneur, 8080 sur l&#8217;hôte)</p></li></ol></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">services:
   webapp:
-    image: nginx:1.31.6-alpine3.24
+    image: nginx:1.31.7-alpine3.24
     ports:
       - "8080:80"
 
   proxy:
-    image: nginx:1.31.6-alpine3.24
+    image: nginx:1.31.7-alpine3.24
     ports:
       - "8000:80"
     volumes:
