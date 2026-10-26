@@ -6026,8 +6026,7 @@ export SETTINGS__GITLAB_ACCESS_TOKEN=glpat-XXXXXXXXXXXXXXXXXXXX</code></pre></di
     networks:
       - mynetwork
 networks:
-  mynetwork:</pre></div></div>
-<div class="ulist"><ul><li class="fragment"><p>Après avoir mis à jour votre fichier <code>docker-compose.yml</code>, vous devez recréer vos conteneurs pour que les modifications prennent effet.</p></li><li class="fragment"><p>Vous pouvez le faire avec la commande <code>docker compose up -d --force-recreate</code>.</p></li><li class="fragment"><p>Après cela, vous devriez pouvoir faire un <code>ping</code> sur <code>gitlab-instance-gitlab-1</code> depuis le conteneur web.</p></li></ul></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_7" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  web:
+  mynetwork:</pre></div></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_7" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="ulist"><ul><li><p>Après avoir mis à jour votre fichier <code>docker-compose.yml</code>, vous devez recréer vos conteneurs pour que les modifications prennent effet.</p></li><li><p>Vous pouvez le faire avec la commande <code>docker compose up -d --force-recreate</code>.</p></li><li><p>Après cela, vous devriez pouvoir faire un <code>ping</code> sur <code>gitlab-instance-gitlab-1</code> depuis le conteneur web.</p></li></ul></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_8" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-noescape="true" data-lang="yaml">  web:
     image: *base_image
     networks:
       - mynetwork
@@ -6042,7 +6041,7 @@ networks:
       - mynetwork
 [...]
 networks:
-  mynetwork:</code></pre></div></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_8" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="paragraph"><p>Sauf que&#8230;&#8203;</p></div>
+  mynetwork:</code></pre></div></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_9" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="paragraph"><p>Sauf que&#8230;&#8203;</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">root@95def7cb933d:/home/dependabot/app# nmap -sn 172.30.0.0/16
 Starting Nmap 7.80 ( https://nmap.org ) at 2023-11-21 20:45 UTC
 Nmap scan report for 172.30.0.1
@@ -6053,7 +6052,7 @@ Host is up (0.000012s latency).
 MAC Address: 02:42:AC:1E:00:02 (Unknown)
 ...
 Nmap scan report for 95def7cb933d (172.30.0.10)
-Host is up.</code></pre></div></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_9" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="paragraph"><p>Victoire?</p></div>
+Host is up.</code></pre></div></div></div></section><section id="comment_configurer_dependabot_pour_gitlab_10" data-auto-animate><h2>🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️</h2><div class="slide-content"><div class="paragraph"><p>Victoire?</p></div>
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">docker compose -f docker-compose-dependabot.yml exec -it -u root web bash
 root@95def7cb933d:/home/dependabot/app# ping symbiosis-gitlab-1.symbiosis_mynetwork
 PING symbiosis-gitlab-1.symbiosis_mynetwork (172.30.0.2) 56(84) bytes of data.
