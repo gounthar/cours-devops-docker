@@ -368,7 +368,7 @@ pdf: anatomy naming
 	@$(call compose_up, --exit-code-from=pdf pdf)
 
 # Asciidoctor Docker image version - kept updated via updatecli
-ASCIIDOCTOR_IMAGE ?= asciidoctor/docker-asciidoctor:1.108.0
+ASCIIDOCTOR_IMAGE ?= asciidoctor/docker-asciidoctor:1.108.1
 
 exam-pdf:
 	@echo "Generating detailed exam PDF with LaTeX-style formatting..."
