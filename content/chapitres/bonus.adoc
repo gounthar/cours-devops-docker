@@ -332,7 +332,10 @@ services:
 networks:
   mynetwork:
 ----
-[%step]
+
+[%auto-animate]
+== 🚀 Comment configurer Dependabot pour GitLab ? 🦊🛠️
+
 * Après avoir mis à jour votre fichier `docker-compose.yml`, vous devez recréer vos conteneurs pour que les modifications prennent effet.
 * Vous pouvez le faire avec la commande `docker compose up -d --force-recreate`.
 * Après cela, vous devriez pouvoir faire un `ping` sur `gitlab-instance-gitlab-1` depuis le conteneur web.
