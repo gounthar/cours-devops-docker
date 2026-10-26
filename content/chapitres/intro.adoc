@@ -514,7 +514,7 @@ http://web.archive.org/web/20200810061020/https://www.docker.com/blog/raspberry-
 image::esxpi.png[background, size=contain, position=left]
 
 [.small]
-https://www.architecting.it/blog/esxi-on-raspberry-pi/
+http://web.archive.org/web/20240304145820/https://www.architecting.it/blog/esxi-on-raspberry-pi/
 
 [%auto-animate]
 == Conteneur != VM
