@@ -170,7 +170,7 @@ Héberger du contenu statique, d'après la page de l'image :
 docker container run --name some-nginx \
   -v /some/content:/usr/share/nginx/html:ro \
   -d \
-  nginx:1.31.7-alpine3.24
+  nginx:1.31.8-alpine3.24
 ----
 
 [.small]
@@ -319,7 +319,7 @@ Placez vos fichiers HTML dans un répertoire sur votre machine hôte, puis mappe
 ----
 docker container run -d -p 8000:80 --name mon-nginx \
   -v /chemin/vers/la/page/web/sur/lhote:/usr/share/nginx/html \
-  nginx:1.31.7-alpine3.24
+  nginx:1.31.8-alpine3.24
 ----
 [%step]
 Remplacez `/chemin/vers/la/page/web/sur/lhote` par le chemin réel vers le répertoire contenant vos fichiers de la page web sur l'hôte.
@@ -384,7 +384,7 @@ Maintenant, lancez le conteneur Nginx et montez le volume nommé :
 ----
 docker container run -d -p 8000:80 --name mon-nginx \
   -v mon-nginx-html:/usr/share/nginx/html \
-  nginx:1.31.7-alpine3.24
+  nginx:1.31.8-alpine3.24
 ----
 
 == 🎓 Travaux pratiques #9
