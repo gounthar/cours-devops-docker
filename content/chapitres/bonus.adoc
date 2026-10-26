@@ -293,7 +293,8 @@ Démarrez l'application avec `docker compose`:
 
 [source,bash]
 ----
-curl -s https://gitlab.com/dependabot-gitlab/dependabot/-/raw/v7.11.0-alpha.1/docker-compose.yml | docker compose -f - up -d
+curl -s https://gitlab.com/dependabot-gitlab/dependabot/-/raw/v7.11.0-alpha.1/docker-compose.yml \
+  | docker compose -f - up -d
 ----
 [%step]
 image::dependabot-cant-see-gitlab.png[]
