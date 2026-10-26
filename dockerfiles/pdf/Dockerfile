@@ -9,7 +9,9 @@ ENV CURRENT_UID=${CURRENT_UID}
 ENV DIST_DIR=${DIST_DIR}
 
 USER root
-RUN apk add --no-cache ghostscript dos2unix
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ghostscript dos2unix \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy entrypoint.sh to the root directory and set permissions
 COPY entrypoint.sh /entrypoint.sh
