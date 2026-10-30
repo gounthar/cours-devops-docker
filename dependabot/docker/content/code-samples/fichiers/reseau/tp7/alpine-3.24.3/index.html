@@ -3109,7 +3109,7 @@ COPY app.go	.
 
 RUN CGO_ENABLED=0 GOOS=linux go build  -ldflags "-s -w" -o app .
 
-FROM alpine:3.24.2
+FROM alpine:3.24.3
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
@@ -3127,7 +3127,7 @@ COPY app.go	.
 
 RUN CGO_ENABLED=0 GOOS=linux go build  -ldflags "-s -w" -o app .
 
-FROM alpine:3.24.2
+FROM alpine:3.24.3
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
