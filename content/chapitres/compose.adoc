@@ -1183,7 +1183,7 @@ La page servie est « Infinite Mario ».
 [%step]
 * Pour les services gitlab-runner-1 et gitlab-runner-2:
 [%step]
-** utilisez l'image `gitlab/gitlab-runner:alpine-v19.5.1` (préfixée par le cache spécifique ILI),
+** utilisez l'image `gitlab/gitlab-runner:alpine-v19.5.2` (préfixée par le cache spécifique ILI),
 ** redémarrez toujours le conteneur s'il s'arrête,
 ** dépendez du service gitlab et montez le socket Docker et le fichier de configuration de GitLab Runner.
 [%step]
@@ -1253,7 +1253,7 @@ Monter `/var/run/docker.sock`, c'est la même prudence que le port 2375 vu au ch
 Docker le dit lui-même : « only trusted users should be allowed to control your Docker daemon » (https://docs.docker.com/engine/security/#docker-daemon-attack-surface).
 
 Le socket ne sert qu'à l'exécuteur `docker`.
-Mesuré le 2026-10-07 avec `gitlab/gitlab-runner:alpine-v19.5.1` : l'image n'a pas de client `docker`, c'est le runner lui-même qui appelle l'API du moteur pour créer les conteneurs des jobs, à côté du sien (pas de Docker-in-Docker).
+Mesuré le 2026-10-07 avec `gitlab/gitlab-runner:alpine-v19.5.2` : l'image n'a pas de client `docker`, c'est le runner lui-même qui appelle l'API du moteur pour créer les conteneurs des jobs, à côté du sien (pas de Docker-in-Docker).
 Avec l'exécuteur `shell`, les jobs tournent dans le conteneur du runner et le socket ne sert à rien.
 --
 
