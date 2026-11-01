@@ -3,9 +3,9 @@
 :trivy-image: python:3.11
 :trivy-target: python:3.11 (debian 13.7)
 :trivy-distro: Debian 13.7
-:trivy-total: 3602
-:trivy-total-line: Total: 3602 (UNKNOWN: 97, LOW: 1592, MEDIUM: 1588, HIGH: 309, CRITICAL: 16)
+:trivy-total: 3863
+:trivy-total-line: Total: 3863 (UNKNOWN: 41, LOW: 1858, MEDIUM: 1495, HIGH: 453, CRITICAL: 16)
 :trivy-slim-image: python:3.11-slim
 :trivy-slim-total: 166
 :trivy-version: 0.75.0
-:trivy-date: 2026-10-13
+:trivy-date: 2026-11-01
