@@ -5267,9 +5267,9 @@ docker container run --rm \
 - Erreur "trixie Release not found" (vieille doc apt) → utiliser la suite <code>generic</code> ou le script</p></div></aside></div></section><section id="exemple_de_résultat_trivy"><h2>Exemple de résultat Trivy</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-bash hljs" data-noescape="true" data-lang="bash">trivy image python:3.11
 
 python:3.11 (debian 13.7)
-Total: 3602 (UNKNOWN: 97, LOW: 1592, MEDIUM: 1588, HIGH: 309, CRITICAL: 16)</code></pre></div></div>
+Total: 3863 (UNKNOWN: 41, LOW: 1858, MEDIUM: 1495, HIGH: 453, CRITICAL: 16)</code></pre></div></div>
 <div class="paragraph"><p>Colonnes : Library, Vulnerability, Severity, Status, Installed Version, Fixed Version, Title.</p></div>
-<aside class="notes"><div class="paragraph"><p>Mesuré le 2026-10-13 avec Trivy 0.75.0 sur <code>python:3.11</code> (Debian 13.7), par le workflow trivy-sample.yml. Le chiffre bouge chaque jour : 3277 le matin du 2026-10-13, 3602 le soir.
+<aside class="notes"><div class="paragraph"><p>Mesuré le 2026-11-01 avec Trivy 0.75.0 sur <code>python:3.11</code> (Debian 13.7), par le workflow trivy-sample.yml. Le chiffre bouge chaque jour : 3277 le matin du 2026-10-13, 3602 le soir.
 Ce total est celui de la cible système (paquets Debian 13.7) ; les paquets Python de l&#8217;image ont leur propre ligne <code>Total:</code>.
 Beaucoup de lignes sont en Status <code>affected</code> sans version corrigée : <code>--ignore-unfixed</code> ne garde que ce qu&#8217;on peut corriger.
 Même image en <code>python:3.11-slim</code> : 166.</p></div></aside>
