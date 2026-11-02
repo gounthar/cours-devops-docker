@@ -183,17 +183,21 @@ REPO_EXCLUDE = $(if $(filter file://%,$(REPOSITORY_URL)),--exclude '^$(REPOSITOR
 ## ne depend que du code, donc les quatre partagent les memes positions et
 ## reveal.js peut les interpoler.
 DIAGRAM_CARDS = content/media/dockerfile-defi.svg:content/code-samples/images/defi/Dockerfile
+## Surchargeable pour une seule raison : dependabot-diagrams.yml lance le
+## generateur de main (de confiance) sur les fichiers de la branche dependabot,
+## avec `make -C <branche> -f <main>/Makefile DIAGRAM_GEN=<main>/scripts/...`.
+DIAGRAM_GEN ?= $(CURDIR)/scripts/gen_dockerfile_card.py
 
 diagrams:
 	@for pair in $(DIAGRAM_CARDS); do \
 	  svg=$${pair%%:*}; src=$${pair#*:}; \
-	  python3 $(CURDIR)/scripts/gen_dockerfile_card.py "$(CURDIR)/$$src" "$(CURDIR)/$$svg" --steps || exit 1; \
+	  python3 $(DIAGRAM_GEN) "$(CURDIR)/$$src" "$(CURDIR)/$$svg" --steps || exit 1; \
 	done
 
 check-diagrams:
 	@for pair in $(DIAGRAM_CARDS); do \
 	  svg=$${pair%%:*}; src=$${pair#*:}; \
-	  python3 $(CURDIR)/scripts/gen_dockerfile_card.py "$(CURDIR)/$$src" "$(CURDIR)/$$svg" --steps --check || exit 1; \
+	  python3 $(DIAGRAM_GEN) "$(CURDIR)/$$src" "$(CURDIR)/$$svg" --steps --check || exit 1; \
 	done
 
 ## L'elagage de gh-pages supprime des fichiers sur une branche publiee, sans
