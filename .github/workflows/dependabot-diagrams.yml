@@ -1,0 +1,86 @@
+---
+# Régénère les cartes SVG dérivées d'un Dockerfile sur les PR dependabot.
+#
+# `make check-diagrams` (dans `make verify`) bloque une PR dont le SVG commité
+# ne correspond plus à son Dockerfile (#537). Or dependabot monte l'étiquette
+# du Dockerfile sans toucher au SVG, donc chaque bump d'Alpine du défi JRE
+# échouait en Build Slides et attendait un `make diagrams` à la main (#699).
+#
+# Trois choix, chacun pour une raison :
+#
+# - `pull_request_target`, et non `pull_request` : une PR dependabot reçoit un
+#   jeton en lecture seule sur `pull_request`, elle ne peut donc rien pousser.
+#   En contrepartie, ce déclencheur donne un jeton en écriture : rien de la
+#   branche n'est exécuté. Le Makefile et le générateur viennent de main
+#   (`trusted/`) ; la branche (`pr/`) ne fournit que des données, le Dockerfile
+#   lu et les SVG écrits.
+#
+# - Pas de filtre `paths:` : la liste des cartes vit dans DIAGRAM_CARDS, dans
+#   le Makefile. La recopier ici serait la seconde copie qui se périme. Le job
+#   tourne donc sur chaque PR dependabot et ne fait rien quand le SVG est déjà
+#   à jour.
+#
+# - Un `workflow_dispatch` après le push : un commit poussé avec GITHUB_TOKEN
+#   ne déclenche aucun workflow. Sans lui, Build Slides, check requis, ne
+#   tournerait jamais sur le nouveau commit et la PR resterait bloquée.
+name: Dependabot diagrams
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions: {}
+
+jobs:
+  regenerate:
+    name: 'Regenerate diagrams'
+    # Auteur dependabot ET branche de ce dépôt : jamais une PR de fork.
+    if: >-
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # pousser les SVG régénérés
+      actions: write    # relancer Build Slides par workflow_dispatch
+    concurrency:
+      group: dependabot-diagrams-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    env:
+      HEAD_REF: ${{ github.event.pull_request.head.ref }}
+    steps:
+      # Sur pull_request_target, la référence par défaut est la branche de base.
+      - name: 'Checkout main (trusted generator)'
+        uses: actions/checkout@v7
+        with:
+          path: trusted
+          persist-credentials: false
+      - name: 'Checkout the Dependabot branch (data only)'
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          path: pr
+      - name: 'Regenerate with the trusted Makefile and script'
+        run: |
+          make -C pr -f "$GITHUB_WORKSPACE/trusted/Makefile" diagrams \
+            DIAGRAM_GEN="$GITHUB_WORKSPACE/trusted/scripts/gen_dockerfile_card.py"
+      - name: 'Commit and push if anything changed'
+        id: push
+        working-directory: pr
+        run: |
+          if [ -z "$(git status --porcelain -- content/media)" ]; then
+            echo "Cartes déjà à jour, rien à pousser."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add content/media
+          git commit -m "chore(diagrams): regenerate cards after dependency bump" \
+            -m "Output of make diagrams, run by dependabot-diagrams.yml."
+          git push origin "HEAD:refs/heads/$HEAD_REF"
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+      - name: 'Run Build Slides on the new commit'
+        if: steps.push.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run build-workflow.yml --repo "$GITHUB_REPOSITORY" --ref "$HEAD_REF"
