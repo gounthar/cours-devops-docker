@@ -264,7 +264,7 @@ docker container run \
   --read-only \
   --tmpfs /usr/local/apache2/logs \
   --tmpfs /tmp \
-  httpd:2.4.69-alpine3.24
+  httpd:2.4.71-alpine3.24
 ----
 
 [%step]
