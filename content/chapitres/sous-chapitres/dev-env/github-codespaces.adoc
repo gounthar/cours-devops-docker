@@ -997,7 +997,7 @@ Ce qui se passe réellement
 **9. Cheat Sheets :**
 
 **Docker Cheat Sheet :**
-- https://docs.docker.com/get-started/docker_cheatsheet.pdf
+- https://raw.githubusercontent.com/docker/docs/587b827a4/static/get-started/docker_cheatsheet.pdf[Docker Cheat Sheet (PDF, janvier 2025)]
 - Liste des commandes essentielles
 - À garder sous la main pendant les TPs
 
